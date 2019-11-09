@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.core;
 import android.content.Context;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseBll;
@@ -22,6 +23,7 @@ import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoLoadActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IIRCMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCCallback;
@@ -33,10 +35,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.NewIRCMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.business.UselessNotice;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.CoursewarePreload;
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.LivePluginGrayConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LiveModuleConfigInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LivePlugin;
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LivePluginRequestParam;
+import com.xueersi.parentsmeeting.modules.livevideo.config.BigLiveCfg;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveActivityState;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
@@ -78,6 +82,7 @@ import static com.xueersi.common.sharedata.ShareDataManager.SHAREDATA_NOT_CLEAR;
  * created  at 2018/6/20 10:32
  */
 public class LiveBll2 extends BaseBll implements TeacherIsPresent {
+
     Logger logger = LoggerFactory.getLogger("LiveBll2");
     /**
      * 需处理 topic 业务集合
@@ -190,7 +195,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         }
         boolean isBigLive = mBaseActivity.getIntent().getBooleanExtra("isBigLive", false);
         if (isBigLive) {
-            liveAndBackDebugIml = new LiveDebugBigClassIml(context, mLiveType, mLiveId, mCourseId);
+            liveAndBackDebugIml = new LiveDebugBigClassIml(context, mLiveType, mLiveId, mCourseId, false);
         } else {
             liveAndBackDebugIml = new LiveAndBackDebugIml(context, mLiveType, mLiveId, mCourseId);
         }
@@ -226,8 +231,9 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         }
         mLiveTopic.setMode(LiveTopic.MODE_CLASS);
         boolean isBigLive = mBaseActivity.getIntent().getBooleanExtra("isBigLive", false);
+        Log.e("ckTrac", "=====>LiveBll2_isBigLive=" + isBigLive);
         if (isBigLive) {
-            liveAndBackDebugIml = new LiveDebugBigClassIml(context, mLiveType, mLiveId, mCourseId);
+            liveAndBackDebugIml = new LiveDebugBigClassIml(context, mLiveType, mLiveId, mCourseId, false);
         } else {
             liveAndBackDebugIml = new LiveAndBackDebugIml(context, mLiveType, mLiveId, mCourseId);
         }
@@ -510,13 +516,11 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
-            mHttpManager.bigLiveEnter(iPlanId, mLiveType, iStuCouId, callBack);
+            mHttpManager.bigLiveEnter(iPlanId, LiveBusinessResponseParser.getBizIdFromLiveType(mLiveType),
+                    iStuCouId, BigLiveCfg.BIGLIVE_CURRENT_ACCEPTPLANVERSION, callBack);
         } else {
             onGetInfoSuccess(getInfo);
-
         }
-
     }
 
 
@@ -553,6 +557,17 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
             mHttpManager.addHeaderParams("bizId", mLiveType + "");
             mHttpManager.addHeaderParams("SESSIONID", AppBll.getInstance().getLiveSessionId());
             //Log.e("ckTrac","====>LiveBll2_initBigLiveRoom:"+ AppBll.getInstance().getLiveSessionId());
+            String classId = getInfo.getStudentLiveInfo() != null ? getInfo.getStudentLiveInfo().getClassId() : "0";
+            int iClassId = 0;
+            try {
+                iClassId = Integer.parseInt(classId);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            String strStuCouId = TextUtils.isEmpty(mStuCouId) ? "" : mStuCouId;
+            mHttpManager.addBusinessParams("stuCouId", strStuCouId);
+            mHttpManager.addBusinessParams("classId", iClassId);
+            mHttpManager.addBusinessParams("isPlayback", 0);
         }
         if (liveLog != null) {
             liveLog.setGetInfo(mGetInfo);
@@ -848,7 +863,13 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                     ArtsExtLiveInfo info = mHttpResponseParser.parseArtsExtLiveInfo(responseEntity);
                     mGetInfo.setBlockChinese(info.getBolockChinese() == 1);
+
+                    LiveGetInfo.EvenDriveInfo evenDriveInfo = new LiveGetInfo.EvenDriveInfo();
+                    evenDriveInfo.setIsOpenStimulation(info.getIsOpenStimulation());
+//                    evenDriveInfo.setEvenNum(info.getEvenDriveRightEvenNumUrl());
+                    mGetInfo.setEvenDriveInfo(evenDriveInfo);
                     mGetInfo.setArtsExtLiveInfo(info);
+
                     List<LiveBaseBll> businessBllTemps = new ArrayList<>(businessBlls);
                     for (LiveBaseBll businessBll : businessBllTemps) {
                         try {
@@ -1165,7 +1186,9 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
             }
         }
 
-    };
+    }
+
+    ;
 
 
     /**
@@ -1243,7 +1266,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                 LiveTopic liveTopic = mBigLiveHttpParser.parseBigLiveTopic(mLiveTopic, jsonObject, mLiveType);
                 boolean teacherModeChanged = !mLiveTopic.getMode().equals(liveTopic.getMode());
                 ////直播相关//////
-                if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
+               /* if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
                     //模式切换
                     if (!(mLiveTopic.getMode().equals(liveTopic.getMode()))) {
                         String oldMode = mLiveTopic.getMode();
@@ -1272,7 +1295,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                             }
                         }
                     }
-                }
+                }*/
                 //////////////
                 if (teacherModeChanged) {
                     mLiveTopic.setMode(liveTopic.getMode());
@@ -1719,10 +1742,10 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
     }
 
 
-    public void grayBusinessControl(){
-        if(grayControl !=null && mGetInfo !=null) {
+    public void grayBusinessControl() {
+        if (grayControl != null && mGetInfo != null) {
             LivePluginRequestParam param = new LivePluginRequestParam();
-            param.bizId = 2;
+            param.bizId = mLiveType;
             if (!TextUtils.isEmpty(mGetInfo.getId())) {
                 param.planId = Integer.valueOf(mGetInfo.getId());
             }
@@ -1752,6 +1775,14 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                         mLiveModuleConfigInfo = (LiveModuleConfigInfo) JsonUtil.jsonToObject(jsonString,
                                 LiveModuleConfigInfo.class);
                         mGetInfo.setLiveModuleConfigInfo(mLiveModuleConfigInfo);
+                        String preloadUrl = mGetInfo.getProperties(LivePluginGrayConfig.MOUDLE_FUTURE_COURSEWARE, "preloadUrl");
+                        if(!TextUtils.isEmpty(preloadUrl)){
+                            String liveId = mGetInfo.getId();
+                            CoursewarePreload coursewarePreload = new CoursewarePreload(mContext, -1);
+                            coursewarePreload.setmHttpManager(mHttpManager);
+                            coursewarePreload.setBig(1,preloadUrl);
+                            coursewarePreload.getCoursewareInfo(liveId);
+                        }
                     }
                     if (!isEmpty(mLiveModuleConfigInfo)) {
                         callBack.onDataSucess(mLiveModuleConfigInfo);
@@ -1781,16 +1812,16 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
     /**
      * 根据moduleId 查找 Plugin
      *
-     * @param pluginId
+     * @param moduleId
      * @return
      */
-    public LivePlugin getLivePluginByModuleId(int pluginId) {
+    public LivePlugin getLivePluginByModuleId(int moduleId) {
         LivePlugin plugin = null;
         LiveModuleConfigInfo info = mLiveModuleConfigInfo;
         if (info != null && info.plugins != null) {
             List<LivePlugin> plugins = info.plugins;
             for (int i = 0; i < plugins.size(); i++) {
-                if (pluginId == plugins.get(i).pluginId) {
+                if (moduleId == plugins.get(i).moduleId) {
                     plugin = plugins.get(i);
                     break;
                 }
@@ -1822,26 +1853,6 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         return plugin;
     }
 
-
-    /**
-     * 根据moudlid key 返回属性
-     *
-     * @param pluginId
-     * @param key
-     * @return
-     */
-    public String getProperties(int pluginId, String key) {
-        LivePlugin plugin = getLivePluginByModuleId(LivePluginGrayConfig.MOUDLE_GIFT);
-        if (plugin != null) {
-            Map<String, String> maplist = plugin.properties;
-            if (maplist != null) {
-                return maplist.get(key);
-            }
-        }
-        return "";
-    }
-
-
     /**
      * 根据moudlid 功能是否打开
      *
@@ -1856,7 +1867,11 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         return false;
     }
 
-    public void setGrayCtrolListener(AbstractBusinessDataCallBack grayControl ){
+    public void setGrayCtrolListener(AbstractBusinessDataCallBack grayControl) {
         this.grayControl = grayControl;
+    }
+
+    public AllLiveBasePagerIml getAllLiveBasePagerIml() {
+        return allLiveBasePagerIml;
     }
 }

@@ -3,16 +3,17 @@ package com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker;
 import android.app.Activity;
 import android.support.annotation.UiThread;
 
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
-import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.HalfBodySceneTransAnim;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.entity.SuperSpeakerRedPackageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.entity.UploadVideoEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.StorageUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.SuperSpeakerUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.widget.SuperSpeakerBridge;
-import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
@@ -31,17 +32,51 @@ import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
 import okhttp3.Call;
+
+import static com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.ISuperSpeakerContract.IS_LIVE;
 
 public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicAction, ISuperSpeakerContract.ICameraPresenter {
 
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
+    public static boolean myTest = true;
+
     public SuperSpeakerBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
+    }
 
+    @Override
+    public void initView() {
+        super.initView();
+//        Observable.
+//                just(AppConfig.DEBUG && myTest).
+//                filter(new Predicate<Boolean>() {
+//                    @Override
+//                    public boolean test(Boolean aBoolean) throws Exception {
+//                        return aBoolean;
+//                    }
+//                }).
+//                delay(2, TimeUnit.SECONDS).
+//                observeOn(AndroidSchedulers.mainThread()).
+//                subscribe(new Consumer<Boolean>() {
+//                    @Override
+//                    public void accept(Boolean aBoolean) throws Exception {
+//                        if (aBoolean) {//主讲态) {
+//                            logger.i("accept");
+//                            mGetInfo.setId(String.valueOf(454400));
+//                            courseWareId = String.valueOf(1);
+//                            srcType = String.valueOf(40);
+//                            if ((!UploadVideoService.getUploadingList().contains(StorageUtils.getVideoPath(mGetInfo.getId(), courseWareId)))) {
+//                                performShowRecordCamera(10, 65);
+//                            }
+//                        }
+//                    }
+//                });
     }
 
     @Override
@@ -57,30 +92,7 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
                         " courseWareId:" + courseWareId +
                         " recordVideoTotalTime:" + recordVideoTotalTime +
                         " answerTime:" + answerTime);
-
-//                        .observeOn()
-//                Observable.
-//                        create(new ObservableOnSubscribe<Boolean>() {
-//                            @Override
-//                            public void subscribe(ObservableEmitter<Boolean> e) throws Exception {
-//                                e.onNext(data.optBoolean("open"));
-//                                e.onComplete();
-//                            }
-//                        }).
-                compositeDisposable.add(createObserValbeDelay(data.optBoolean("open")).
-                        observeOn(AndroidSchedulers.mainThread()).
-                        subscribe(new Consumer<Boolean>() {
-                            @Override
-                            public void accept(Boolean bol) throws Exception {
-                                if (bol) {
-                                    performShowRecordCamera(answerTime, recordVideoTotalTime);
-                                } else {
-                                    if (superSpeakerBridge != null) {
-                                        superSpeakerBridge.timeUp();
-                                    }
-                                }
-                            }
-                        }));
+                compositeDisposable.add(getObservable(data, answerTime, recordVideoTotalTime));
 
                 break;
             }
@@ -88,6 +100,23 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
                 break;
             }
         }
+    }
+
+    private Disposable getObservable(final JSONObject data, final int answerTime, final int recordVideoTotalTime) {
+        return createObserValbeDelay(data.optBoolean("open")).
+                observeOn(AndroidSchedulers.mainThread()).
+                subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean bol) throws Exception {
+                        if (bol) {
+                            performShowRecordCamera(answerTime, recordVideoTotalTime);
+                        } else {
+                            if (superSpeakerBridge != null) {
+                                superSpeakerBridge.timeUp();
+                            }
+                        }
+                    }
+                });
     }
 
     private HalfBodySceneTransAnim mTransAnim;
@@ -138,34 +167,7 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
                 srcType = dataJson.optString("srcType");
                 final int recordVideoTotalTime = dataJson.optInt("recordTime");
                 final int answerTime = dataJson.optInt("answerTime");
-//                Observable.
-//                        create(new ObservableOnSubscribe<Boolean>() {
-//                            @Override
-//                            public void subscribe(ObservableEmitter<Boolean> e) throws Exception {
-//                                e.onNext(dataJson.optBoolean("open"));
-//                                e.onComplete();
-//                            }
-//                        }).
-//                        map(new Function<Boolean, Boolean>() {
-//                            @Override
-//                            public Boolean apply(Boolean bol) throws Exception {
-//                                //1打开试题并且点击提交按钮
-//                                return bol && ShareDataManager.getInstance().getInt(
-//                                        ShareDataConfig.SUPER_SPEAKER_UPLOAD_SP_KEY + "_" + mGetInfo.getId() + "_" + courseWareId,
-//                                        0,
-//                                        ShareDataManager.SHAREDATA_NOT_CLEAR) == 0;
-//
-//                            }
-//                        }).
-//                        doOnNext(new Consumer<Boolean>() {
-//                            @Override
-//                            public void accept(Boolean aBoolean) throws Exception {
-//                                if (aBoolean) {
-//                                    showAnima();
-//                                }
-//                            }
-//                        }).
-//                        delay(2, TimeUnit.SECONDS).
+
                 compositeDisposable.add(createObserValbeDelay(dataJson.optBoolean("open")).
                         observeOn(AndroidSchedulers.mainThread()).
                         subscribe(new Consumer<Boolean>() {
@@ -191,13 +193,9 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
                     public Boolean apply(Boolean bol) throws Exception {
                         //1打开试题并且点击提交按钮
                         return bol
-                                && ShareDataManager.getInstance().getInt(
-                                ShareDataConfig.SUPER_SPEAKER_UPLOAD_SP_KEY + "_" + mGetInfo.getId() + "_" + courseWareId,
-                                0,
-                                ShareDataManager.SHAREDATA_NOT_CLEAR) == 0
-                                &&
-                                mGetInfo.getLiveTopic().getMode().equals(LiveTopic.MODE_CLASS);//主讲态
-
+                                && (!UploadVideoService.getUploadingList().contains(
+                                StorageUtils.getVideoPath(mGetInfo.getId(), courseWareId)))
+                                && mGetInfo.getLiveTopic().getMode().equals(LiveTopic.MODE_CLASS);//主讲态
 
                     }
                 }).
@@ -210,6 +208,17 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
                         }
                     }
                 });
+    }
+
+
+    /**
+     * 当前Service是否存在
+     *
+     * @return
+     */
+    private boolean isServiceAlive() {
+
+        return SuperSpeakerUtils.isServiceExisted(mContext, UploadVideoService.class.getName());
     }
 
     private Observable createObserValbeDelay(boolean is) {
@@ -229,18 +238,6 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
      */
     @UiThread
     private void performShowRecordCamera(int answerTime, int recordTime) {
-//        AndroidAudioConverter.load(mContext, new ILoadCallback() {
-//            @Override
-//            public void onSuccess() {
-//                // Great!
-//            }
-//
-//            @Override
-//            public void onFailure(Exception error) {
-//                // FFmpeg is not supported by device
-//                error.printStackTrace();
-//            }
-//        });
         try {
             if (superSpeakerBridge != null && superSpeakerBridge.containsView()) {
                 return;
@@ -252,9 +249,10 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
             uploadVideoEntity.setSrcType(srcType);
             uploadVideoEntity.setStuCouId(mGetInfo.getStuCouId());
             uploadVideoEntity.setStuId(mGetInfo.getStuId());
-            uploadVideoEntity.setIsPlayBack("1");
+            uploadVideoEntity.setIsPlayBack(IS_LIVE);
             uploadVideoEntity.setIsUpload("1");
-            superSpeakerBridge = new SuperSpeakerBridge(mContext, this, mRootView, mGetInfo.getId(), courseWareId, 1, uploadVideoEntity);
+            superSpeakerBridge = new SuperSpeakerBridge(mContext, this,
+                    mRootView, mGetInfo.getId(), courseWareId, IS_LIVE, uploadVideoEntity);
             superSpeakerBridge.performShowRecordCamera(answerTime, recordTime);
         } catch (Exception e) {
             e.printStackTrace();
@@ -316,7 +314,7 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
                 mGetInfo.getId(),
                 mGetInfo.getStuCouId(),
                 mGetInfo.getStuId(),
-                "1",
+                IS_LIVE,
                 courseWareId,
                 srcType,
                 isForce,
@@ -341,8 +339,6 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
                                         }
                                     }
                                 });
-//                        SuperSpeakerRedPackageEntity entity = ;
-
                     }
 
                     @Override
@@ -376,7 +372,7 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
                 mGetInfo.getId(),
                 mGetInfo.getStuCouId(),
                 mGetInfo.getStuId(),
-                "1",
+                IS_LIVE,
                 courseWareId,
                 srcType,
                 videoUrl,

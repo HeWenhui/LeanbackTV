@@ -320,6 +320,8 @@ public class LivePlaybackMediaController extends MediaController2 {
                 }
 
             }
+        } else if(LocalCourseConfig.CATEGORY_SCIENCE_VOTE == videoQuestionEntity.getvCategory()){
+            textView.setText("投票");
         }
         final ImageView ivPlay = (ImageView) contentView.findViewById(R.id.iv_liveplayback_point_play);
         final int insretTime = videoQuestionEntity.getvQuestionInsretTime();

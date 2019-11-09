@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -137,7 +138,7 @@ public class SpeechResultPager extends LiveBasePager {
         if (tvSpeechResultMyPraise != null) {
             tvSpeechResultMyPraise.setText("" + speechResultEntity.praise);
         }
-        ImageLoader.with(mContext).load(speechResultEntity.headUrl).error(R.drawable.app_livevideo_enteampk_boy_bg_img_nor).into(civSpeechResultHead);
+        ImageLoader.with(ContextManager.getContext()).load(speechResultEntity.headUrl).error(R.drawable.app_livevideo_enteampk_boy_bg_img_nor).into(civSpeechResultHead);
 
         if (ProxUtil.getProxUtil().get(mContext, BetterMeContract.BetterMePresenter.class) != null) {
             StuSegmentEntity stuSegmentEntity = ProxUtil.getProxUtil().get(mContext, BetterMeContract
