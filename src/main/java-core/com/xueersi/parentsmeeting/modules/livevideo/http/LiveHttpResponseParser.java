@@ -2847,6 +2847,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         memberEntity.setEnglishName(virtuJson.optString("englishName"));
         memberEntity.setIconUrl(virtuJson.optString("avatar"));
         subGroupEntity.setVirStuInfo(memberEntity);
+
+        subGroupEntity.setVideoList(jsonObject.optJSONObject("videoList"));
         return subGroupEntity;
     }
 }
