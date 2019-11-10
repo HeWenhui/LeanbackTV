@@ -82,4 +82,9 @@ public class TcpConstants {
     public static boolean isTypeOfCannon(short type) {
         return type == VOICE_CANNO_TYPE || type == WHAT_IS_MISSING_TYPE;
     }
+
+    /** 业务类型，1v2小组互动 业务类型 */
+    public final static short TYPE_GROUP_CLASS_GAME = 14;
+    /** 操作类型，1v2小组互动 操作类型 */
+    public final static int OP_GROUP_CLASS_GAME_DATA= 18;
 }
