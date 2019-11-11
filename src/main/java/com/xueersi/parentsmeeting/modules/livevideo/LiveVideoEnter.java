@@ -514,9 +514,9 @@ public class LiveVideoEnter {
                         BaseBll.postDataLoadEvent(mDataLoadEntity);
                     }
                 });
-                StableLogHashMap logHashMap = new StableLogHashMap("init_back");
-                logHashMap.put("status", "" + init);
-                UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LogConfig.LIVE_X5_LOG, logHashMap.getData());
+//                StableLogHashMap logHashMap = new StableLogHashMap("init_back");
+//                logHashMap.put("status", "" + init);
+//                UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LogConfig.LIVE_X5_LOG, logHashMap.getData());
                 if (!init) {
                     return;
                 }
