@@ -87,4 +87,6 @@ public class TcpConstants {
     public final static short TYPE_GROUP_CLASS_GAME = 14;
     /** 操作类型，1v2小组互动 操作类型 */
     public final static int OP_GROUP_CLASS_GAME_DATA= 18;
+    /** 业务类型，1v2小组互动 互踢 业务类型 */
+    public final static short TYPE_KICK_OUT= 16;
 }
