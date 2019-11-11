@@ -962,6 +962,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
 
         @Override
         public void onDisconnect(IRCConnection connection, boolean isQuitting) {
+            delayMillis = -1;
             if (mMessageActions != null && mMessageActions.size() > 0) {
                 for (MessageAction mesAction : mMessageActions) {
                     mesAction.onDisconnect(connection, isQuitting);
@@ -1050,6 +1051,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                                     LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                                 }
                             }
+                            delayMillis = -1;
                         }
                     };
                     if (delayMillis > 0) {
@@ -1086,16 +1088,16 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                 return;
             }
             logger.e("======>onTopic:" + topicstr);
-            if (TextUtils.isEmpty(topicstr)) {
+            if (delayMillis > 0 || TextUtils.isEmpty(topicstr)) {
                 return;
             }
             lastTopicstr = topicstr;
             JSONTokener jsonTokener = null;
             try {
                 jsonTokener = new JSONTokener(topicstr);
-                final JSONObject jsonObject = new JSONObject(jsonTokener);
-                final LiveTopic liveTopic = mHttpResponseParser.parseLiveTopic(mLiveTopic, jsonObject, mLiveType);
-                final boolean teacherModeChanged = !mLiveTopic.getMode().equals(liveTopic.getMode());
+                JSONObject jsonObject = new JSONObject(jsonTokener);
+                LiveTopic liveTopic = mHttpResponseParser.parseLiveTopic(mLiveTopic, jsonObject, mLiveType);
+                boolean teacherModeChanged = !mLiveTopic.getMode().equals(liveTopic.getMode());
                 ////直播相关//////
                 if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
                     //模式切换
@@ -1135,24 +1137,13 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                     mGetInfo.setMode(liveTopic.getMode());
                 }
                 if (mTopicActions != null && mTopicActions.size() > 0) {
-                    Runnable runnable = new Runnable() {
-                        @Override
-                        public void run() {
-                            for (TopicAction mTopicAction : mTopicActions) {
-                                try {
-                                    mTopicAction.onTopic(liveTopic, jsonObject, teacherModeChanged);
-                                } catch (Exception e) {
-                                    LiveCrashReport.postCatchedException(new LiveException(TAG, e));
-                                }
-                            }
+                    for (TopicAction mTopicAction : mTopicActions) {
+                        try {
+                            mTopicAction.onTopic(liveTopic, jsonObject, teacherModeChanged);
+                        } catch (Exception e) {
+                            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                         }
-                    };
-                    logger.i("onTopic:delayMillis=" + delayMillis);
-                    if (delayMillis > 0) {
-                        LiveMainHandler.postDelayed(runnable, delayMillis);
-                        delayMillis = -1;
-                    } else {
-                        runnable.run();
+
                     }
                 }
                 mLiveTopic.copy(liveTopic);
