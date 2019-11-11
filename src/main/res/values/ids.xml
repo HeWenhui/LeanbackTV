@@ -1137,18 +1137,7 @@
     <item name="iv_livevideo_small_chinese_understand_no" type="id" />
     <item name="iv_livevideo_small_chinese_understand_close" type="id" />
     <item name="iv_livevideo_small_chinese_understand_text" type="id" />
-    <!--全身直播体验课新增id-->
-    <item name="iv_livevideo_stand_experience_recommod_course_recommod_icon" type="id" />
-    <item name="iv_livevideo_stand_experience_recommod_course_teacher_img_background" type="id" />
-    <item name="ctl_recommod_course_thumbnail" type="id" />
-    <item name="iv_livevideo_stand_experience_recommond_course_close_btn" type="id" />
-    <item name="tv_livevideo_stand_experience_recommond_course_course_name" type="id" />
-    <item name="iv_livevideo_stand_experience_recommond_course_background" type="id" />
-    <item name="iv_livevideo_stand_experience_recommond_course_buy_btn" type="id" />
-    <item name="tv_livevideo_stand_experience_recommond_course_course_money" type="id" />
-    <item name="guideline_recommond_course" type="id" />
-    <item name="ctl_recommod_course" type="id" />
-    <item name="cvbv_recommond_course" type="id" />
+
     <item name="rg_stand_experience_learn_feedback_select2" type="id" />
     <item name="rb_stand_experience_learn_feedback_select2_button3" type="id" />
     <item name="rb_stand_experience_learn_feedback_select2_button2" type="id" />

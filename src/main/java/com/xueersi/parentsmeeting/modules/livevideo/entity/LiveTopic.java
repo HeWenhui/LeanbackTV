@@ -89,6 +89,9 @@ public class LiveTopic {
     }
 
     public List<String> getDisableSpeaking() {
+        if (disableSpeaking == null) {
+            disableSpeaking = new ArrayList<>();
+        }
         return disableSpeaking;
     }
 
@@ -220,6 +223,11 @@ public class LiveTopic {
          */
         private String onGroupSpeech;
 
+        /** 讨论区互动ID */
+        private String chatInteractionId;
+        /** 讨论区互动开关 open/close */
+        private String onChatInteract;
+
         public RoomStatusEntity() {
             classbegin = false;
             openbarrage = false;
@@ -256,6 +264,22 @@ public class LiveTopic {
             openlike = roomStatusEntity.openlike;
             groupSpeechRoom = roomStatusEntity.groupSpeechRoom;
             onGroupSpeech = roomStatusEntity.onGroupSpeech;
+        }
+
+        public String getChatInteractionId() {
+            return chatInteractionId;
+        }
+
+        public void setChatInteractionId(String chatInteractionId) {
+            this.chatInteractionId = chatInteractionId;
+        }
+
+        public String getOnChatInteract() {
+            return onChatInteract;
+        }
+
+        public void setOnChatInteract(String onChatInteract) {
+            this.onChatInteract = onChatInteract;
         }
 
         public boolean isOnbreak() {
@@ -510,6 +534,7 @@ public class LiveTopic {
         public void setOnGroupSpeech(String onGroupSpeech) {
             this.onGroupSpeech = onGroupSpeech;
         }
+
     }
 
     /**
@@ -809,7 +834,7 @@ public class LiveTopic {
             private int alloteam;
             private int allotpkman;
             private int openbox;
-            /**当前pk 进行到那一步**/
+            /** 当前pk 进行到那一步 **/
             private int PKStep;
 
             public int getPKStep() {
@@ -819,6 +844,7 @@ public class LiveTopic {
             public void setPKStep(int PKStep) {
                 this.PKStep = PKStep;
             }
+
             public void setAlloteam(int alloteam) {
                 this.alloteam = alloteam;
             }

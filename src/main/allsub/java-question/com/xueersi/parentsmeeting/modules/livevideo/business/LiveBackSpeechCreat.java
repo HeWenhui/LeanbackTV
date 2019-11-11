@@ -11,6 +11,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.RolePlayMachinePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.BaseSpeechCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.SpeechEvalAction;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.WrapSpeechEvalAction;
+import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSpeechAssessmentPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechAssAutoPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechAssessmentWebX5Pager;
@@ -99,7 +100,7 @@ public class LiveBackSpeechCreat implements BaseSpeechCreat {
         wrapSpeechEvalAction.setSpeechEvalAction(speechEvalAction);
         wrapSpeechEvalAction.setVideoQuestionLiveEntity(videoQuestionLiveEntity);
         //新课件平台，回放人机走原生
-        if (!isExperience && liveGetInfo.getLiveType() != 2 && "5".equals(videoQuestionLiveEntity.type)) {
+        if (liveGetInfo.getLiveType() != 2 && LiveQueConfig.EN_COURSE_TYPE_ROLEPLAY.equals(videoQuestionLiveEntity.type)) {
             RolePlayMachinePager rolePlayerPager = new RolePlayMachinePager(context,
                     videoQuestionLiveEntity, liveGetInfo.getId(), testId, liveGetInfo.getStuId(),
                     false, videoQuestionLiveEntity.nonce, wrapSpeechEvalAction, stuCouId, false, livePagerBack, rolePlayMachineBll, liveGetInfo);

@@ -120,6 +120,8 @@ public interface XESCODE {
     int VOTE_START_JOIN = 211;
     /** 投票发送给老师答案 */
     int VOTE_SEND = 212;
+    /** 理科投票新 */
+    int SCIENCE_VOTE = 410;
     /** 上墙-学生发送消息 */
 
     /**
@@ -322,4 +324,6 @@ public interface XESCODE {
     /** 大班整合 感谢学生*/
     int LIVE_BUSINESS_GIFT_THANK_STUDENT = 10110;
 
+    int FORUM_INTERACTION = 412;
+    int FORUM_INTERACTION_PRAISE = 10105;
 }

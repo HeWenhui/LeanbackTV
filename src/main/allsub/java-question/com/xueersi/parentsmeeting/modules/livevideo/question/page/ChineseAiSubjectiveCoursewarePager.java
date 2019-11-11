@@ -1276,7 +1276,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
         protected void otherMsg(StableLogHashMap logHashMap, String loadUrl) {
             logHashMap.put("testid", NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts));
             logHashMap.put("ispreload", "" + ispreload);
-            logHashMap.put("testsource", "" + ispreload);
+            logHashMap.put("liveId", "" + liveId);
             logHashMap.put("errtype", "webView");
             logHashMap.put("subtestid", getSubtestid());
             if (XESCODE.ARTS_SEND_QUESTION == detailInfo.noticeType) {

@@ -551,7 +551,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, BaseVo
             }
         };
         h5CoursewarePager = baseEnglishH5CoursewareCreat.creat(context, videoQuestionH5Entity, onH5ResultClose,
-                mVSectionID);
+                mVSectionID, liveViewAction);
         if (h5CoursewarePager != null && !(h5CoursewarePager instanceof IntelligentEvaluationH5Pager)) {
             h5CoursewarePager.setEnglishH5CoursewareBll(this);
             if (mLiveBll instanceof EnglishH5CoursewareSecHttp) {
@@ -1123,7 +1123,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, BaseVo
                 JSONObject answerdetail = new JSONObject();
                 JSONArray blanks = new JSONArray();
                 JSONArray choices = new JSONArray();
-                if (LocalCourseConfig.QUESTION_TYPE_BLANK.equals(videoQuestionLiveEntity1.type)) {
+                if (LocalCourseConfig.QUESTION_TYPE_BLANK.equals(videoQuestionLiveEntity1.type)||LiveQueConfig.EN_COURSE_TYPE_18.equals(videoQuestionLiveEntity1.type)) {
                     try {
                         if (isRight) {
                             blanks.put(0, result);

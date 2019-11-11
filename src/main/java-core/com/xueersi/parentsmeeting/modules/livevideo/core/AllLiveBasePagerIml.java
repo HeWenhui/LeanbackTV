@@ -4,14 +4,15 @@ import android.content.Context;
 
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
-import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.pager.BaseEvaluateTeacherPaper;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AllLiveBasePagerInter;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
-import com.xueersi.parentsmeeting.modules.livevideo.experience.pager.ExperienceQuitFeedbackPager;
+import com.xueersi.parentsmeeting.modules.livevideo.page.FirstPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by linyuqiang on 2018/7/30.
@@ -21,6 +22,8 @@ public class AllLiveBasePagerIml implements AllLiveBasePagerInter {
     protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
     private ArrayList<LiveBasePager> liveBasePagers = new ArrayList<>();
     Context context;
+
+    private volatile List<ViewRemoveObserver> unAttachViewObservers;
 
     public AllLiveBasePagerIml(Context context) {
         this.context = context;
@@ -58,11 +61,42 @@ public class AllLiveBasePagerIml implements AllLiveBasePagerInter {
     @Override
     public void removeLiveBasePager(LiveBasePager liveBasePager) {
         liveBasePagers.remove(liveBasePager);
+        notifyUnAttachPager(liveBasePager);
         if (liveBasePager.getLivePagerBack() != null) {
             LiveBackBll.ShowQuestion showQuestion = ProxUtil.getProxUtil().get(context, LiveBackBll.ShowQuestion.class);
             if (showQuestion != null) {
                 showQuestion.onHide(liveBasePager.getBaseVideoQuestionEntity());
             }
+        }
+    }
+
+    private synchronized void notifyUnAttachPager(LiveBasePager liveBasePager) {
+        if (unAttachViewObservers != null) {
+
+            Iterator<ViewRemoveObserver> iterator = unAttachViewObservers.iterator();
+            while (iterator.hasNext()) {
+                ViewRemoveObserver viewRemoveObserver = iterator.next();
+                if (viewRemoveObserver.removeViewCallBack(liveBasePager)) {
+                    iterator.remove();
+                }
+            }
+        }
+    }
+
+    @Override
+    public synchronized void addViewRemoveObserver(ViewRemoveObserver viewRemoveObserver) {
+        if (unAttachViewObservers == null) {
+            unAttachViewObservers = new ArrayList<>();
+        }
+        if (!unAttachViewObservers.contains(viewRemoveObserver)) {
+            unAttachViewObservers.add(viewRemoveObserver);
+        }
+    }
+
+    @Override
+    public synchronized void removeViewRemoveObserver(ViewRemoveObserver viewRemoveObserver) {
+        if (unAttachViewObservers != null) {
+            unAttachViewObservers.remove(viewRemoveObserver);
         }
     }
 
@@ -72,13 +106,13 @@ public class AllLiveBasePagerIml implements AllLiveBasePagerInter {
     private void sortPager(ArrayList<LiveBasePager> liveBasePagersTemp) {
         LiveBasePager liveBasePager;
         for (int i = 0; i < liveBasePagersTemp.size(); i++) {
-            if (liveBasePagersTemp.get(i) instanceof BaseEvaluateTeacherPaper || liveBasePagersTemp.get(i) instanceof
-                    ExperienceQuitFeedbackPager) {
-                liveBasePager = liveBasePagersTemp.get(i);
-                for (int j = i - 1; j >= 0; j--) {
-                    liveBasePagersTemp.set(j + 1, liveBasePagersTemp.get(j));
-                }
-                liveBasePagersTemp.set(0, liveBasePager);
+            liveBasePager = liveBasePagersTemp.get(i);
+            if (liveBasePager instanceof FirstPager) {
+//                for (int j = i - 1; j >= 0; j--) {
+//                    liveBasePagersTemp.set(j + 1, liveBasePagersTemp.get(j));
+//                }
+                liveBasePagersTemp.remove(i);
+                liveBasePagersTemp.add(0, liveBasePager);
                 break;
             }
         }

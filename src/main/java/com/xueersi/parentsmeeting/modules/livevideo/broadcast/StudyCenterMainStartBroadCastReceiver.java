@@ -12,14 +12,14 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 /**
  * 学习中心启动广播
  */
-public class StudyCenterMainStartBroadCastReceiver extends BroadcastReceiver {
-    private Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
-
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        CoursewarePreload coursewarePreload = new CoursewarePreload(context, -1);
-        logger.i("receive broadcast");
-        coursewarePreload.setmHttpManager(new LiveHttpManager(context));
-        coursewarePreload.getCoursewareInfo("");
-    }
-}
+//public class StudyCenterMainStartBroadCastReceiver extends BroadcastReceiver {
+//    private Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
+//
+//    @Override
+//    public void onReceive(Context context, Intent intent) {
+//        CoursewarePreload coursewarePreload = new CoursewarePreload(context, -1);
+//        logger.i("receive broadcast");
+//        coursewarePreload.setmHttpManager(new LiveHttpManager(context));
+//        coursewarePreload.getCoursewareInfo("");
+//    }
+//}

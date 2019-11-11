@@ -10,8 +10,6 @@ import java.util.Map;
  */
 public class LivePlugin {
 
-    public int pluginId;
-
     public String pluginName;
 
     public boolean isAllowed = true;
@@ -23,10 +21,9 @@ public class LivePlugin {
     @Override
     public String toString() {
         return "LivePlugin={" +
-                "pluginId=" + pluginId +
+                "moduleId=" + moduleId +
                 ", pluginName='" + pluginName + '\'' +
                 ", isAllowed=" + isAllowed +
-                ", moduleId=" + moduleId +
                 ", properties=" + properties +
                 '}';
     }
