@@ -226,9 +226,9 @@ public class LiveVideoLoadActivity extends BaseActivity {
                     DataLoadManager.newInstance().loadDataStyle(LiveVideoLoadActivity.this, mDataLoadEntity);
                 }
             });
-            StableLogHashMap logHashMap = new StableLogHashMap("init");
-            logHashMap.put("status", "" + init);
-            UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LogConfig.LIVE_X5_LOG, logHashMap.getData());
+//            StableLogHashMap logHashMap = new StableLogHashMap("init");
+//            logHashMap.put("status", "" + init);
+//            UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LogConfig.LIVE_X5_LOG, logHashMap.getData());
             if (!init) {
                 return;
             }

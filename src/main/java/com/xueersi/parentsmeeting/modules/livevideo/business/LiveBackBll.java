@@ -253,8 +253,8 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
                 }
             }
         }
-        if(mVideoEntity.isBigLive()) {
-            liveAndBackDebugIml  = new LiveDebugBigClassIml(activity, mLiveType, mVideoEntity.getLiveId(), mVideoEntity.getCourseId(),true);
+        if (mVideoEntity.isBigLive()) {
+            liveAndBackDebugIml = new LiveDebugBigClassIml(activity, mLiveType, mVideoEntity.getLiveId(), mVideoEntity.getCourseId(), true);
 
             ProxUtil.getProxUtil().put(activity, LiveAndBackDebug.class, liveAndBackDebugIml);
 
@@ -465,7 +465,9 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
                     liveGetInfo.setNewCourse(true);
                 }
             } else {
-                liveGetInfo.setNewCourse(false);
+                if (isExperience) {
+                    liveGetInfo.setNewCourse(false);
+                }
             }
         } catch (Exception e) {
             logger.e("onCreate", e);
@@ -499,26 +501,27 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
 
     /**
      * 大班整合添加 header 公共参数
+     *
      * @param liveGetInfo
      */
     private void addHttpDefaultParams(LiveGetInfo liveGetInfo) {
 
-        if(liveGetInfo != null && mHttpManager != null && liveGetInfo.isBigLive()){
-            mHttpManager.addHeaderParams("switch-grade",liveGetInfo.getGrade()+"");
-            String subjectId = (liveGetInfo.getSubjectIds()!= null && liveGetInfo.getSubjectIds().length >0)? liveGetInfo.getSubjectIds()[0]:"";
-            mHttpManager.addHeaderParams("switch-subject",subjectId);
-            mHttpManager.addHeaderParams("bizId",mLiveType+"");
-            String calssId = (liveGetInfo.getStudentLiveInfo() != null)?liveGetInfo.getStudentLiveInfo().getClassId():"0";
-            String stuCouId = TextUtils.isEmpty(liveGetInfo.getStuCouId())?"":liveGetInfo.getStuCouId();
+        if (liveGetInfo != null && mHttpManager != null && liveGetInfo.isBigLive()) {
+            mHttpManager.addHeaderParams("switch-grade", liveGetInfo.getGrade() + "");
+            String subjectId = (liveGetInfo.getSubjectIds() != null && liveGetInfo.getSubjectIds().length > 0) ? liveGetInfo.getSubjectIds()[0] : "";
+            mHttpManager.addHeaderParams("switch-subject", subjectId);
+            mHttpManager.addHeaderParams("bizId", mLiveType + "");
+            String calssId = (liveGetInfo.getStudentLiveInfo() != null) ? liveGetInfo.getStudentLiveInfo().getClassId() : "0";
+            String stuCouId = TextUtils.isEmpty(liveGetInfo.getStuCouId()) ? "" : liveGetInfo.getStuCouId();
             int iClassId = 0;
             try {
                 iClassId = Integer.parseInt(calssId);
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             mHttpManager.addBusinessParams("classId", iClassId);
             mHttpManager.addBusinessParams("stuCouId", stuCouId);
-            mHttpManager.addBusinessParams("isPlayback",1);
+            mHttpManager.addBusinessParams("isPlayback", 1);
         }
 
     }
@@ -841,7 +844,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
                     index = i;
                     break;
                 }
-            }else if (LocalCourseConfig.CATEGORY_SCIENCE_VOTE == videoQuestionEntity.getvCategory()) {
+            } else if (LocalCourseConfig.CATEGORY_SCIENCE_VOTE == videoQuestionEntity.getvCategory()) {
                 // 小学理科投票新
                 if (startTime <= playPosition && playPosition < endTime) {
                     mQuestionEntity = videoQuestionEntity;

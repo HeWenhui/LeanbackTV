@@ -282,14 +282,16 @@ public class ZipExtractorTask extends AsyncTask<Void, Integer, Exception> {
 
         protected static final byte[] EOCD_SIG = ZipLong.getBytes(101010256L);
         private RandomAccessFile archive;
+        StringBuilder stringBuilder;
 
         ZipTest(File f) throws IOException {
             this.archive = new RandomAccessFile(f, "r");
         }
 
         public boolean test(StringBuilder stringBuilder) {
+            this.stringBuilder = stringBuilder;
             try {
-                positionAtCentralDirectory(stringBuilder);
+                positionAtCentralDirectory();
                 return true;
             } catch (IOException e) {
                 e.printStackTrace();
@@ -297,7 +299,21 @@ public class ZipExtractorTask extends AsyncTask<Void, Integer, Exception> {
             return false;
         }
 
-        private void positionAtCentralDirectory(StringBuilder stringBuilder) throws IOException {
+        private StringBuilder append(String str) {
+            if (stringBuilder.length() < 5) {
+                stringBuilder.append(str);
+            }
+            return stringBuilder;
+        }
+
+        private StringBuilder append(int str) {
+            if (stringBuilder.length() < 5) {
+                stringBuilder.append(str);
+            }
+            return stringBuilder;
+        }
+
+        private void positionAtCentralDirectory() throws IOException {
             boolean found = false;
             long off = this.archive.length() - 22L;
             byte[] sig;
@@ -306,16 +322,16 @@ public class ZipExtractorTask extends AsyncTask<Void, Integer, Exception> {
                 sig = EOCD_SIG;
 
                 for (int curr = this.archive.read(); curr != -1; curr = this.archive.read()) {
-                    stringBuilder.append(curr).append(",");
+                    append(curr).append(",");
                     if (curr == sig[0]) {
                         curr = this.archive.read();
-                        stringBuilder.append(curr).append(",");
+                        append(curr).append(",");
                         if (curr == sig[1]) {
                             curr = this.archive.read();
-                            stringBuilder.append(curr).append(",");
+                            append(curr).append(",");
                             if (curr == sig[2]) {
                                 curr = this.archive.read();
-                                stringBuilder.append(curr);
+                                append(curr);
                                 if (curr == sig[3]) {
                                     found = true;
                                     break;

@@ -817,6 +817,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
 
     @Override
     public void destroy() {
+        mLogtf.d("destroy:isFinish=" + isFinish);
         isFinish = true;
         wvSubjectWeb.destroy();
     }
