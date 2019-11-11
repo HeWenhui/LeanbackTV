@@ -50,6 +50,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsExtLiveInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveBusinessResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpAction;
@@ -164,6 +165,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
     boolean lastChanged;
     String lastChannelId;
     AbstractBusinessDataCallBack grayControl;
+    private int isFlatfish = 0;
 
     /**
      * 直播的
@@ -842,6 +844,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
             mIRCMessage.modeChange(mGetInfo.getMode());
         }
 
+        isFlatfish = getInfo.getIsFlatfish();
         mIRCcallback = new IRCCallBackImp();
         mIRCMessage.setCallback(mIRCcallback);
         mIRCMessage.create();
@@ -1033,12 +1036,25 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                         break;
                 }
                 //////////////////////
-                long currentSeiTimetamp = liveVideoBll.getCurrentSeiTimetamp();
-                if (seiTimetamp > 0 && currentSeiTimetamp > 0) {
-                    delayMillis = seiTimetamp - currentSeiTimetamp;
+                if (isFlatfish == 1) {
+                    long currentSeiTimetamp = liveVideoBll.getCurrentSeiTimetamp();
+                    if (seiTimetamp > 0) {
+                        if (currentSeiTimetamp > 0) {
+                            delayMillis = seiTimetamp - currentSeiTimetamp;
+                        }
+                        StableLogHashMap stableLogHashMap = new StableLogHashMap("noticedelay");
+                        stableLogHashMap.put("type", "" + mtype);
+                        stableLogHashMap.put("vts", "" + seiTimetamp);
+                        stableLogHashMap.put("delayMillis", "" + delayMillis);
+                        stableLogHashMap.put("status", "" + (currentSeiTimetamp > 0));
+                        liveAndBackDebugIml.umsAgentDebugInter(LiveVideoConfig.LIVE_NOTICE_DELAY, stableLogHashMap.getData());
+                        if (delayMillis > 3000) {
+                            delayMillis = 3000;
+                        }
+                    }
+                    logger.i("onNotice:getCurrentSeiTimetamp:time=" + seiTimetamp + "," + new Date(seiTimetamp)
+                            + ",time2=" + currentSeiTimetamp + "," + new Date(seiTimetamp) + ",delayMillis=" + delayMillis);
                 }
-                logger.i("onNotice:getCurrentSeiTimetamp:time=" + seiTimetamp + "," + new Date(seiTimetamp)
-                        + ",time2=" + currentSeiTimetamp + "," + new Date(seiTimetamp) + ",delayMillis=" + delayMillis);
                 final List<NoticeAction> noticeActions = mNoticeActionMap.get(mtype);
                 if (noticeActions != null && noticeActions.size() > 0) {
                     Runnable runnable = new Runnable() {

@@ -121,6 +121,8 @@ public class LiveVideoConfig {
     public static String LIVE_ENGLISH_COURSEWARE = "live_h5waretest";
     /** 直播-接麦 */
     public static String LIVE_LINK_MIRCO = "live_selectmic";
+    /** 直播-notice延迟 */
+    public static String LIVE_NOTICE_DELAY = "live_notice_delay";
     /** 直播-H5题库互动题 */
     public static String LIVE_H5_TEST = "live_h5test";
     /** 直播-H5题库互动题-预加载 */
