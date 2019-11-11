@@ -29,6 +29,8 @@ public class AllBllConfig {
             "com.xueersi.parentsmeeting.modules.livevideo.teacherpraisesec.business.TeacherPraiseSecBll",
             //投票
             "com.xueersi.parentsmeeting.modules.livevideo.business.LiveVoteBll",
+            //理科投票
+            "com.xueersi.parentsmeeting.modules.livevideo.business.ScienceVoteBll",
             //智能私信
             "com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeIRCBll",
             //领奖台

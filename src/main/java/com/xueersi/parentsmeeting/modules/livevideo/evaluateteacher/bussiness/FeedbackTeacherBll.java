@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness;
 
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
@@ -32,6 +33,8 @@ public class FeedbackTeacherBll extends LiveBaseBll {
      */
     LiveFeedBackSecondPager pagerNew = null;
 
+    Runnable mRunableHttp;
+
     public FeedbackTeacherBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
     }
@@ -52,16 +55,24 @@ public class FeedbackTeacherBll extends LiveBaseBll {
         if (getInfo != null && (getInfo.getIsArts() == LiveVideoSAConfig.ART_SEC ||
                 getInfo.getIsArts() == LiveVideoSAConfig.ART_EN || getInfo.getIsArts() == LiveVideoSAConfig.ART_CH
                 || getInfo.getEducationStage().equals("4"))) {
-            postDelayed(new Runnable() {
+
+            mRunableHttp = new Runnable() {
                 @Override
                 public void run() {
                     long before = System.currentTimeMillis();
                     //耗时20-100ms
-                   // showFeedBack();
-                    checkIfShowFeedback();
+                    // showFeedBack();
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            checkIfShowFeedback();
+                        }
+                    }).start();
+
                     logger.d("onLiveInited:showFeedBack:time=" + (System.currentTimeMillis() - before));
                 }
-            }, 500);
+            };
+            postDelayed(mRunableHttp, 10000);
         }
     }
 
@@ -179,7 +190,12 @@ public class FeedbackTeacherBll extends LiveBaseBll {
             final ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                     .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             // addView(pager.getRootView(), params);
-            addView(pagerNew.getRootView(), params);
+
+            View view = pagerNew.getRootView();
+            if (view == null) {
+                return false;
+            }
+            addView(view, params);
             pagerNew.startLoading();
             return true;
         } else {
@@ -207,4 +223,11 @@ public class FeedbackTeacherBll extends LiveBaseBll {
 
     };
 
+    @Override
+    public void onDestroy() {
+        if(mRunableHttp!=null){
+            removeCallbacks(mRunableHttp);
+        }
+        super.onDestroy();
+    }
 }

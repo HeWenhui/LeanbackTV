@@ -11,11 +11,21 @@ public class ArtsExtLiveInfo {
     /** 是否是新文科课件平台 */
     private String newCourseWarePlatform;
     private int isGroupGameCourseWare = -1;
-    /**兼容课件组2019年夏季课件尺寸问题， 2019.4.4新增  0 旧尺寸，1 新尺寸*/
+    /** 兼容课件组2019年夏季课件尺寸问题， 2019.4.4新增  0 旧尺寸，1 新尺寸 */
     private String summerCourseWareSize;
 
-    private int bolockChinese ;
+    private int bolockChinese;
     private int evenDriveRightEvenNumUrl;
+
+    private int isOpenStimulation;
+
+    public int getIsOpenStimulation() {
+        return isOpenStimulation;
+    }
+
+    public void setIsOpenStimulation(int isOpenStimulation) {
+        this.isOpenStimulation = isOpenStimulation;
+    }
 
     public int getEvenDriveRightEvenNumUrl() {
         return evenDriveRightEvenNumUrl;

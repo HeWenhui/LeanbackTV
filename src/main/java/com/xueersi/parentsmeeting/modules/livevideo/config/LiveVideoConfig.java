@@ -200,6 +200,8 @@ public class LiveVideoConfig {
     /** 直播-小英语音聊天 */
     public static String LIVE_VOICE_VOLUME = "live_smallenglish_volume";
 
+    public static String LIVE_FORUM_INTERACTION = "live_liveroom";
+
     public static class ShareData {
 
     }

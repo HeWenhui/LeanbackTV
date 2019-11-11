@@ -87,6 +87,7 @@ public class ExperCourseResultPager extends LiveBasePager implements IArtsAnswer
     public void initData() {
         super.initData();
         int isRight = entity.getType();
+        mLogtf.d("initData:isRight=" + isRight + ",gold=" + entity.getGold());
         if (isRight == PrimaryScienceAnswerResultEntity.ABSLUTELY_WRONG) {
             tvBigqueResultTitle.setText("很遗憾答错了");
             ivBigqueResultTitle.setImageResource(R.drawable.bg_livevideo_expercour_result_wrong_title);

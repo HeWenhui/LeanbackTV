@@ -1214,6 +1214,22 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction,
     }
 
     /**
+     * 大班预加载互动题
+     *
+     * @param liveId
+     * @param requestCallBack
+     */
+    public void getBigLiveCourewareInfo(String url, String liveId, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        if (liveId != null && !"".equals(liveId)) {
+            params.addBodyParam("liveId", liveId);
+        }
+        requestCallBack.url = url;
+        params.setJson(JsonUtil.toJson(params.getBodyParams()));
+        sendJsonPost(requestCallBack.url, params, requestCallBack);
+    }
+
+    /**
      * 获得广告信息
      */
     public void getAdOnLL(String courseId, final HttpCallBack requestCallBack) {
@@ -2459,6 +2475,24 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction,
         params.addBodyParam("classId", classId);
         setDefaultParameter(params);
         sendPost(LiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE_VOTE_FOLD_COUNT, params, requestCallBack);
+    }
+
+    /**
+     * 理科投票新提交
+     *
+     * @param requestCallBack
+     */
+    public void ScienceVoteCommit(String planId, String classId, String interactionId, String option, String stuIRCId,String stuName,HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("bizId", "3");
+        params.addBodyParam("planId", planId);
+        params.addBodyParam("classId", classId);
+        params.addBodyParam("interactionId", interactionId);
+        params.addBodyParam("option", option);
+        params.addBodyParam("stuIRCId", stuIRCId);
+        params.addBodyParam("stuName", stuName);
+        setDefaultParameter(params);
+        sendPost(LiveQueHttpConfig.LIVE_SCIENCE_VOTE_SUBMIT, params, requestCallBack);
     }
 
     /**

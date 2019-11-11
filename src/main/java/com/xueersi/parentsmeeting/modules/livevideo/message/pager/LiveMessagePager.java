@@ -1879,12 +1879,12 @@ public class LiveMessagePager extends BaseEvenDriveCommonPager {
         }
         mNowEvenNum = nowEvenNum;
         mHighestRightNum = highestRightNum;
-        if (nowEvenNum.equals("0") || nowEvenNum.equals("1")) {
+        if (("0").equals(nowEvenNum) || ("1").equals(nowEvenNum)) {
             tvNowEvenNum.setText("连对 -");
         } else {
             tvNowEvenNum.setText("连对×" + nowEvenNum);
         }
-        if (highestRightNum.equals("0") || highestRightNum.equals("1") || !isAlpha(highestRightNum)) {
+        if (("0").equals(highestRightNum) || ("1").equals(highestRightNum) || !isAlpha(highestRightNum)) {
             tvHighestEvenNum.setText("最高 -");
         } else {
             tvHighestEvenNum.setText("最高×" + highestRightNum);
