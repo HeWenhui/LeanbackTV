@@ -68,6 +68,7 @@ import org.json.JSONTokener;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -1000,7 +1001,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
             try {
                 final JSONObject object = new JSONObject(notice);
                 final int mtype = object.getInt("type");
-                long seiTimetamp = object.optLong("seiTimetamp", -1);
+                long seiTimetamp = object.optLong("vts", -1);
                 com.xueersi.lib.log.Loger.e("LiveBll2", "=======>onNotice:" + mtype + ":" + this);
                 ///////播放器相关/////////
                 switch (mtype) {
@@ -1033,9 +1034,10 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                 //////////////////////
                 long currentSeiTimetamp = liveVideoBll.getCurrentSeiTimetamp();
                 if (seiTimetamp > 0 && currentSeiTimetamp > 0) {
-
+                    delayMillis = seiTimetamp - currentSeiTimetamp;
                 }
-                logger.i("onNotice:getCurrentSeiTimetamp:time=" + seiTimetamp + "," + currentSeiTimetamp + ",delayMillis=" + delayMillis);
+                logger.i("onNotice:getCurrentSeiTimetamp:time=" + seiTimetamp + "," + new Date(seiTimetamp)
+                        + ",time2=" + currentSeiTimetamp + "," + new Date(seiTimetamp) + ",delayMillis=" + delayMillis);
                 final List<NoticeAction> noticeActions = mNoticeActionMap.get(mtype);
                 if (noticeActions != null && noticeActions.size() > 0) {
                     Runnable runnable = new Runnable() {
