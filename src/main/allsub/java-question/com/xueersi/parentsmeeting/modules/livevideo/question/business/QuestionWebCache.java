@@ -57,6 +57,9 @@ public class QuestionWebCache {
                     startLoad = false;
                     webView.stopLoading();
                     webView.destroy();
+                    StableLogHashMap stableLogHashMap = new StableLogHashMap("loadtimeout");
+                    stableLogHashMap.put("newProgress", "" + newProgress);
+                    UmsAgentManager.umsAgentDebug(context, LiveVideoConfig.LIVE_H5_TEST_PRELOAD, stableLogHashMap.getData());
                 } catch (Exception e) {
                     LiveCrashReport.postCatchedException(TAG, e);
                 }
