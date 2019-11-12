@@ -330,4 +330,8 @@ public interface XESCODE {
     int GROUPCLASS_VIDEO_START = -10002;
     /** 英语1v2 视频态 关闭*/
     int GROUPCLASS_VIDEO_END = -10003;
+    /** 英语1v2 视频态 打开*/
+    int GROUPCLASS_VIDEO_ROLL_CALL_START = -10004;
+    /** 英语1v2 视频态 打开*/
+    int GROUPCLASS_VIDEO_ROLL_CALL_END = -10005;
 }
