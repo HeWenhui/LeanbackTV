@@ -60,6 +60,7 @@ import com.xueersi.ui.adapter.RCommonAdapter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 /**
  * 设置英文名
@@ -655,14 +656,24 @@ public class SettingEnglishLandActivity extends XesActivity {
             EngLishNameEntity recommendName = null;
 
             if (listName != null && listName.size() > 0) {
+                //创建Random类对象
+                Random random = new Random();
+                List<Integer>  list = new ArrayList<>();
+
                 for (int i = 0; i < listName.size(); i++) {
                     if (listRecommendName.size() == 3) {
                         break;
                     }
-                    if (!TextUtils.isEmpty(listName.get(i).getName())) {
+                    //产生随机数
+                    int number = random.nextInt(listName.size());
+                    if(list.contains(number)) {
+                        continue;
+                    }
+                    list.add(number);
+                    if (!TextUtils.isEmpty(listName.get(number).getName())) {
                         recommendName = new EngLishNameEntity();
-                        recommendName.setName(listName.get(i).getName());
-                        recommendName.setAudioPath(listName.get(i).getAudioPath());
+                        recommendName.setName(listName.get(number).getName());
+                        recommendName.setAudioPath(listName.get(number).getAudioPath());
                         listRecommendName.add(recommendName);
                     }
                 }

@@ -592,6 +592,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 recordStandliveEntity.setRecordUrl(recordStandLiveJson.optString("recordUrl"));
                 recordStandliveEntity.setVideoPath(recordStandLiveJson.optString("videoPath"));
                 recordStandliveEntity.setPartnerType(recordStandLiveJson.optInt("partnerType"));
+                recordStandliveEntity.setVideoId(recordStandLiveJson.optInt("videoId"));
 //                recordStandliveEntity.setDiffBegin(480);
                 getInfo.setRecordStandliveEntity(recordStandliveEntity);
                 getInfo.setMode(LiveTopic.MODE_CLASS);
@@ -2846,8 +2847,11 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         memberEntity.setGender(virtuJson.optInt("sex"));
         memberEntity.setEnglishName(virtuJson.optString("englishName"));
         memberEntity.setIconUrl(virtuJson.optString("avatar"));
+        JSONObject senceJson = jsonObject.optJSONObject("scene");
+        if(senceJson != null) {
+            memberEntity.setIndex(senceJson.optInt("groupIndex"));
+        }
         subGroupEntity.setVirStuInfo(memberEntity);
-
         subGroupEntity.setVideoList(jsonObject.optJSONObject("videoList"));
         return subGroupEntity;
     }

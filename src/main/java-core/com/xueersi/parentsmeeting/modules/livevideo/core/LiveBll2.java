@@ -1772,6 +1772,9 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
             entity.planId = Integer.valueOf(mGetInfo.getId());
         }
         entity.gender = LiveAppUserInfo.getInstance().getSexProcess();
+        if(mGetInfo.getRecordStandliveEntity()!=null) {
+            entity.videoId = mGetInfo.getRecordStandliveEntity().getVideoId();
+        }
         mHttpManager.get1V2VirtualStuData(entity, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {

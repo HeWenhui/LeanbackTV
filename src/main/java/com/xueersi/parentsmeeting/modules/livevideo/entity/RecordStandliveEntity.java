@@ -27,6 +27,10 @@ public class RecordStandliveEntity {
      * 1为真流2为假流
      */
     private int partnerType;
+    /*
+     * 视频id
+     */
+    private int videoId;
 
     public int getDiffBegin() {
         return diffBegin;
@@ -66,5 +70,13 @@ public class RecordStandliveEntity {
 
     public void setPartnerType(int partnerType) {
         this.partnerType = partnerType;
+    }
+
+    public int getVideoId() {
+        return videoId;
+    }
+
+    public void setVideoId(int videoId) {
+        this.videoId = videoId;
     }
 }

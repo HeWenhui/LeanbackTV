@@ -8,4 +8,8 @@ public class LivePostEntity {
     public int bizId;
     /** 性别 */
     public int gender;
+    /*
+     * 视频id
+     */
+    public int videoId;
 }
