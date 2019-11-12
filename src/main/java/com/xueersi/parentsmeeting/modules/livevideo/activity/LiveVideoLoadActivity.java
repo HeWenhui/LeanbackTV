@@ -431,7 +431,8 @@ public class LiveVideoLoadActivity extends BaseActivity {
                         LiveMainHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                if(bundle.getInt("pattern") ==8) {
+                                boolean isNeed = LiveAppUserInfo.getInstance().isNeedEnglishName();
+                                if(bundle.getInt("pattern") ==8 && !isNeed) {
                                     XueErSiRouter.startModule(mContext, "/groupclass/englishname", bundle);
                                 } else {
                                     com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
@@ -443,7 +444,8 @@ public class LiveVideoLoadActivity extends BaseActivity {
                 },
                 PermissionConfig.PERMISSION_CODE_AUDIO);
         if (have) {
-            if(bundle.getInt("pattern") ==8) {
+            boolean isNeed = LiveAppUserInfo.getInstance().isNeedEnglishName();
+            if(bundle.getInt("pattern") ==8 && !isNeed) {
                 XueErSiRouter.startModule(mContext, "/groupclass/englishname", bundle);
             } else {
                 com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);

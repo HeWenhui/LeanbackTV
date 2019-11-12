@@ -24,6 +24,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.activity.HalfBodyLiveExperie
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoLoadActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoTransferActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.englishname.SettingEnglishLandActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.LivePlaybackVideoActivity;
 
@@ -452,12 +454,13 @@ public class LiveVideoEnter {
         LiveAssetsLoadUtil.loadAssertsResource(context, new LoadFileCallBack() {
             @Override
             public void start() {
-
             }
 
             @Override
             public void success() {
-                if(bundle.getInt("pattern") ==8) {
+                boolean isNeed = LiveAppUserInfo.getInstance().isNeedEnglishName();
+                if(bundle.getInt("pattern") ==8 && !isNeed) {
+
                     start1v2PlayBack(context,bundle,where);
                 } else {
                     com.xueersi.parentsmeeting.modules.livevideo.fragment.LivePlaybackVideoActivity.intentTo(context, bundle,

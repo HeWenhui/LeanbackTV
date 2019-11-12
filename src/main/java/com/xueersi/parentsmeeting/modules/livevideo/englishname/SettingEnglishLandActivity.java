@@ -168,7 +168,6 @@ public class SettingEnglishLandActivity extends XesActivity {
         } else {
             com.xueersi.parentsmeeting.modules.livevideo.fragment.LivePlaybackVideoActivity.intentTo
                     (SettingEnglishLandActivity.this, getIntent().getExtras(),
-
                     where, VIDEO_REQUEST);
         }
         finish();

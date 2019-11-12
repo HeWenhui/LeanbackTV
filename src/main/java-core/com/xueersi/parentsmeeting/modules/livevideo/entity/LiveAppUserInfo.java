@@ -9,6 +9,7 @@ import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.englishname.config.EnglishNameConfig;
 
 import java.security.PrivateKey;
@@ -254,5 +255,10 @@ public class LiveAppUserInfo {
 
     public void setEnglishNameAudio(String englishNameAudio) {
         UserBll.getInstance().saveUserNameAudio(englishNameAudio);
+    }
+
+    public boolean isNeedEnglishName(){
+        return mShareDataManager.getBoolean(LiveVideoConfig.LIVE_GOUP_1V2_ENGLISH_CHECK, false,
+                ShareDataManager.SHAREDATA_USER);
     }
 }
