@@ -21,6 +21,8 @@ public interface RTCVideoAction {
 
     void onMediaControllerHide();
 
+    void setReceiveVoice(boolean receiveVoice);
+
     int GOLD_TYPE_QUESTION = 1;
     int GOLD_TYPE_REDPACKAGE = 2;
 }
