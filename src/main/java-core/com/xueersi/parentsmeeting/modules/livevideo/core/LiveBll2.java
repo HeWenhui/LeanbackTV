@@ -1777,6 +1777,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         if(mGetInfo.getRecordStandliveEntity()!=null) {
             entity.videoId = mGetInfo.getRecordStandliveEntity().getVideoId();
         }
+
         mHttpManager.get1V2VirtualStuData(entity, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
