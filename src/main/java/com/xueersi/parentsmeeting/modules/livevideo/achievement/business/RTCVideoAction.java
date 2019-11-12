@@ -21,10 +21,6 @@ public interface RTCVideoAction {
 
     void onMediaControllerHide();
 
-    void startFalseVideo(String url);
-
-    void stopFalseVideo();
-
     int GOLD_TYPE_QUESTION = 1;
     int GOLD_TYPE_REDPACKAGE = 2;
 }
