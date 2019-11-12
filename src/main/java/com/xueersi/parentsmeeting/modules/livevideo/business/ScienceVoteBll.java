@@ -297,21 +297,40 @@ public class ScienceVoteBll extends LiveBaseBll implements NoticeAction, TopicAc
      */
     public void liveLogInteractive(String sno, String table, String logType, String interactionId) {
         if (liveAndBackDebug != null) {
-            StableLogHashMap logHashMap = new StableLogHashMap(logType);
-            logHashMap.addSno(sno).addStable(table);
-            logHashMap.addInteractionId(interactionId);
-            logHashMap.put("", "");
-            liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap);
+            try {
+                StableLogHashMap logHashMap = new StableLogHashMap(logType);
+                logHashMap.addSno(sno).addStable(table);
+                logHashMap.addInteractionId(interactionId);
+                logHashMap.put("liveid", mLiveId);
+                logHashMap.put("courseid", mGetInfo.getStudentLiveInfo().getCourseId());
+                logHashMap.put("gradeid", String.valueOf(mGetInfo.getGrade()));
+                String subjectId = (mGetInfo.getSubjectIds() != null && mGetInfo.getSubjectIds().length > 0) ?
+                        mGetInfo.getSubjectIds()[0] : "";
+                logHashMap.put("subjectid", subjectId);
+                liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
     public void liveLogInteractive(String sno, String table, String logType, String interactionId, String isRight) {
         if (liveAndBackDebug != null) {
-            StableLogHashMap logHashMap = new StableLogHashMap(logType);
-            logHashMap.addSno(sno).addStable(table);
-            logHashMap.addInteractionId(interactionId);
-            logHashMap.put("isRight", isRight);
-            liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap);
+            try {
+                StableLogHashMap logHashMap = new StableLogHashMap(logType);
+                logHashMap.addSno(sno).addStable(table);
+                logHashMap.addInteractionId(interactionId);
+                logHashMap.put("liveid", mLiveId);
+                logHashMap.put("courseid", mGetInfo.getStudentLiveInfo().getCourseId());
+                logHashMap.put("gradeid", String.valueOf(mGetInfo.getGrade()));
+                String subjectId = (mGetInfo.getSubjectIds() != null && mGetInfo.getSubjectIds().length > 0) ?
+                        mGetInfo.getSubjectIds()[0] : "";
+                logHashMap.put("subjectid", subjectId);
+                logHashMap.put("answer", isRight);
+                liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }
