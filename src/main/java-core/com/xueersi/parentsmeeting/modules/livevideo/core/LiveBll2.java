@@ -1763,7 +1763,8 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
 
 
     public void get1V2VirtualStuData(){
-        if(mGetInfo==null || mGetInfo.getPattern()!=8) {
+        if(mGetInfo==null || mGetInfo.getPattern()!=8
+                || (mGetInfo.getRecordStandliveEntity()!=null && mGetInfo.getRecordStandliveEntity().getPartnerType() ==1)) {
             return;
         }
         final LivePostEntity entity = new LivePostEntity();
