@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.event;
 
 
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.GroupClassAnswerResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.AnswerResultStateListener;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultEntity;
@@ -34,6 +35,7 @@ public class ArtsAnswerResultEvent {
     private boolean ispreload;
 
     private  AnswerResultEntity mAnswerResultEntity;
+    private GroupClassAnswerResultEntity mGroupClassAnswerResultEntity;
 
     /** js回调 传回答案 */
     public static final int TYPE_H5_ANSWERRESULT = 1;
@@ -66,12 +68,24 @@ public class ArtsAnswerResultEvent {
         this.mAnswerResultEntity=answerResultEntity;
     }
 
+    public ArtsAnswerResultEvent(GroupClassAnswerResultEntity groupClassAnswerResultEntity) {
+        this.mGroupClassAnswerResultEntity = groupClassAnswerResultEntity;
+    }
+
     public AnswerResultEntity getAnswerResultEntity() {
         return mAnswerResultEntity;
     }
 
     public void setAnswerResultEntity(AnswerResultEntity mAnswerResultEntity) {
         this.mAnswerResultEntity = mAnswerResultEntity;
+    }
+
+    public GroupClassAnswerResultEntity getGroupClassAnswerResultEntity() {
+        return mGroupClassAnswerResultEntity;
+    }
+
+    public void setGroupClassAnswerResultEntity(GroupClassAnswerResultEntity GroupClassAnswerResultEntity) {
+        this.mGroupClassAnswerResultEntity = GroupClassAnswerResultEntity;
     }
 
     public SpeechResultEntity getSpeechResultEntity() {

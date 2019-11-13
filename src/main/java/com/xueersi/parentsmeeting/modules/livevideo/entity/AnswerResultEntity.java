@@ -23,6 +23,11 @@ public class AnswerResultEntity {
     public static final int RESULT_TYPE_NEW_COURSE_WARE = 2;
     //英语1v2语音评测结果页
     public static final int RESULT_TYPE_YINYU_1V2_VOICE_TEST= 3;
+    /** 英语1v2 小组互动 多人模式 */
+    public static final int RESULT_TYPE_GROUP_CLASS_GAME_MULTI = 4;
+    /** 英语1v2 小组互动 单人模式 */
+    public static final int RESULT_TYPE_GROUP_CLASS_GAME_SINGLE = 5;
+
     public int isVoice = 0;
     private String liveId;
     private String stuId;
