@@ -3,20 +3,27 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.TextUtils;
 
 import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.WebChromeClient;
 import com.tencent.smtt.sdk.WebView;
+import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ErrorWebViewClient;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import ren.yale.android.cachewebviewlib.CacheWebResourceResponse;
 import ren.yale.android.cachewebviewlib.CacheWebView;
@@ -45,6 +52,19 @@ public class QuestionWebCache {
         if (startLoad) {
             return;
         }
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
+            String lastStr = ShareDataManager.getInstance().getString(ShareDataConfig.LIVE_QUES_CACHE, "20191110", ShareDataManager.SHAREDATA_USER);
+            String nowStr = dateFormat.format(new Date());
+            logger.d("startCache:last=" + lastStr + ",now=" + nowStr);
+            if (TextUtils.equals(nowStr, lastStr)) {
+                return;
+            }
+            ShareDataManager.getInstance().put(ShareDataConfig.LIVE_QUES_CACHE, "" + dateFormat.format(new Date()), ShareDataManager.SHAREDATA_USER);
+        } catch (Exception e) {
+            ShareDataManager.getInstance().remove(ShareDataManager.SHAREDATA_USER, ShareDataConfig.LIVE_QUES_CACHE);
+            LiveCrashReport.postCatchedException(TAG, e);
+        }
         startLoad = true;
         final Handler handler = LiveMainHandler.getMainHandler();
         final CacheWebView webView = new CacheWebView(context);
@@ -57,6 +77,9 @@ public class QuestionWebCache {
                     startLoad = false;
                     webView.stopLoading();
                     webView.destroy();
+                    StableLogHashMap stableLogHashMap = new StableLogHashMap("loadtimeout");
+                    stableLogHashMap.put("newProgress", "" + newProgress);
+                    UmsAgentManager.umsAgentDebug(context, LiveVideoConfig.LIVE_H5_TEST_PRELOAD, stableLogHashMap.getData());
                 } catch (Exception e) {
                     LiveCrashReport.postCatchedException(TAG, e);
                 }

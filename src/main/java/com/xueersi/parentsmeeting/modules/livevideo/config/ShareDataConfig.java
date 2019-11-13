@@ -23,5 +23,7 @@ public class ShareDataConfig {
     public static String LIVE_TEAMPK_INFO = "live_teampk_info";
 
     public static String LIVE_BETTERME_OPEN = "live_betterme_open";
+    /** 互动题缓存 */
+    public static String LIVE_QUES_CACHE = "live_ques_cache";
 
 }
