@@ -8,8 +8,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.entity;
 public class GroupClassAnswerResultEntity {
     public static final int TYPE_GOLD = 100;
     public static final int TYPE_GOLD_SCORE = 200;
-    public static final int TYPE_HEAD_NAME_GOLD_MULTI = 300;
-    public static final int TYPE_HEAD_NAME_GOLD_SINGLE = 400;
+    public static final int TYPE_ONE_HEAD = 300;
+    public static final int TYPE_TWO_HEAD = 400;
 
     private int type;
 
