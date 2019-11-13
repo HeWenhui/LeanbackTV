@@ -31,7 +31,7 @@ import java.util.zip.ZipException;
 public class ZipExtractorTask extends AsyncTask<Void, Integer, Exception> {
     private final static String TAG = "ZipExtractorTask";
     protected static Logger logger = LoggerFactory.getLogger(TAG);
-    private final File mInput;
+    protected final File mInput;
     private final File mOutput;
     private int mProgress = 0;
     private boolean mReplaceAll;
@@ -333,7 +333,7 @@ public class ZipExtractorTask extends AsyncTask<Void, Integer, Exception> {
                             append(curr+",");
                             if (curr == sig[2]) {
                                 curr = this.archive.read();
-                                append(curr);
+                                append(curr+",");
                                 if (curr == sig[3]) {
                                     found = true;
                                     break;
