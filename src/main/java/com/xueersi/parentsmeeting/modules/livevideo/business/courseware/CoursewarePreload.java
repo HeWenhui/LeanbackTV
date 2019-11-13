@@ -1133,6 +1133,7 @@ public class CoursewarePreload {
             unZipMap.put("status", exception == null ? "true" : "false");
 //                    }
             unZipMap.put("extrainfo", mMorecacheout.getAbsolutePath());
+            unZipMap.put("inputfile", "" + mInput);
             unZipMap.put("sno", "4");
             unZipMap.put("liveid", itemLiveId);
             unZipMap.put("resourcetype", resourcetype);
