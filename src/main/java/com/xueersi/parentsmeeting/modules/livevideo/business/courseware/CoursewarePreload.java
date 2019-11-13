@@ -86,6 +86,7 @@ public class CoursewarePreload {
     private int isBig;
 
     private String newBigUrl;
+
     /**
      * nb 加试实验 预加载资源信息
      **/
@@ -102,10 +103,11 @@ public class CoursewarePreload {
         }
     }
 
-    public void setBig(int big,String url){
+    public void setBig(int big, String url) {
         this.isBig = big;
         this.newBigUrl = url;
     }
+
     public void setmHttpManager(LiveHttpManager mHttpManager) {
         this.mHttpManager = mHttpManager;
     }
@@ -218,12 +220,12 @@ public class CoursewarePreload {
         cdnPos = new AtomicInteger(0);
         if (!TextUtils.isEmpty(liveId)) {
             isPrecise.set(true);
-            if(isBig==1){
-                if(!TextUtils.isEmpty(newBigUrl)){
+            if (isBig == 1) {
+                if (!TextUtils.isEmpty(newBigUrl)) {
                     subjectNum.incrementAndGet();
-                    mHttpManager.getBigLiveCourewareInfo(newBigUrl,liveId, new CoursewareHttpCallBack(false, "biglive", liveId));
+                    mHttpManager.getBigLiveCourewareInfo(newBigUrl, liveId, new CoursewareHttpCallBack(false, "biglive", liveId));
                 }
-            }else {
+            } else {
                 if (0 == mSubject) {//理科
                     logger.i("donwload science");
                     subjectNum.getAndIncrement();
@@ -1113,7 +1115,11 @@ public class CoursewarePreload {
             StableLogHashMap unZipMap = new StableLogHashMap();
             unZipMap.put("logtype", "startUnzip");
             unZipMap.put("preloadid", md5);
-            unZipMap.put("extrainfo", mMorecacheout.getAbsolutePath());
+            if (mInput != null) {
+                unZipMap.put("extrainfo", mInput.getAbsolutePath());
+            } else {
+                unZipMap.put("extrainfo", "null");
+            }
             unZipMap.put("sno", "3");
             unZipMap.put("liveid", itemLiveId);
             unZipMap.put("resourcetype", resourcetype);
