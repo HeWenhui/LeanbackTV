@@ -1304,6 +1304,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         return result;
     }
 
+
     private boolean isTargetWord(ResultEntity resultEntity) {
         boolean result = false;
         try {
