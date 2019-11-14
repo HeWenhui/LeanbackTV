@@ -1566,7 +1566,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
             businessBll.onResume();
         }
 
-        if (isGroupClass() && mGetInfo != null) {
+        if (mGetInfo != null && isGroupClass()) {
             int diffBegin = mGetInfo.getRecordStandliveEntity().getDiffBegin();
             long currentTime = SystemClock.elapsedRealtime();
             diffBegin += Math.round((double) (currentTime - mGetInfo.getCreatTime()) / 1000);
