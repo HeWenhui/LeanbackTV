@@ -486,7 +486,7 @@ public abstract class LiveBackVideoFragmentBase extends Fragment {
     }
 
     public static class LiveVideoFragmentBase extends LiveBackPlayerFragment {
-        LiveBackVideoFragmentBase liveBackVideoFragment;
+        protected LiveBackVideoFragmentBase liveBackVideoFragment;
 
         @Override
         protected void setVideoLoadingLayoutVisibility(int visibility) {
