@@ -106,7 +106,7 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
         VPlayerListenerReg reg = ProxUtil.getProxUtil().get(mContext, VPlayerListenerReg.class);
         if (reg != null) {
             logger.i("停止播放");
-            reg.release();
+            reg.releaseWithViewGone();
         }
     }
 
@@ -116,7 +116,7 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
         VPlayerListenerReg reg = ProxUtil.getProxUtil().get(mContext, VPlayerListenerReg.class);
         if (reg != null) {
             logger.i("开始播放");
-            reg.playVideo();
+            reg.playVideoWithViewVisible();
         }
     }
 

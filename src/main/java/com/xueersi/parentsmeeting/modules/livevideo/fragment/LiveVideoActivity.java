@@ -191,7 +191,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements Activity
             VPlayerListenerReg reg = ProxUtil.getProxUtil().get(mContext, VPlayerListenerReg.class);
             if (reg != null) {
                 logger.i("开始播放");
-                reg.playVideo();
+                reg.playVideoWithViewVisible();
             }
         }
     }
