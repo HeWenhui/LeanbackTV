@@ -338,7 +338,7 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
         VPlayerListenerReg reg = ProxUtil.getProxUtil().get(context, VPlayerListenerReg.class);
         if (reg != null) {
             logger.i("停止播放");
-            reg.release();
+            reg.releaseWithViewGone();
         }
         XueErSiRouter.startModuleForResult((Activity) context, "/aievaluation/intelligent_recognition", XESCODE.ARTS_SEND_QUESTION, bundle);
     }

@@ -137,6 +137,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
      */
     private Boolean isExperience;
     LiveDebugBigClassIml liveAndBackDebugIml;
+    LiveBackActionListener liveBackActionListener;
     public LiveBackBll(Activity activity, VideoLivePlayBackEntity mVideoEntity) {
         super(activity);
         logger.setLogMethod(false);
@@ -798,6 +799,16 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
                     break;
                 }
 
+            }else if (LocalCourseConfig.CATEGORY_GROUP_CLASS_AUDIO_ROLL_CALL_START == videoQuestionEntity.getvCategory()) {
+                //英语1v2
+                if (startTime == playPosition && liveBackActionListener!=null) {
+                        liveBackActionListener.onAction(LocalCourseConfig.CATEGORY_GROUP_CLASS_AUDIO_ROLL_CALL_START );
+                }
+            }else if (LocalCourseConfig.CATEGORY_GROUP_CLASS_AUDIO_ROLL_CALL_END == videoQuestionEntity.getvCategory()) {
+                //英语1v2
+                if (startTime == playPosition && liveBackActionListener!=null) {
+                    liveBackActionListener.onAction(LocalCourseConfig.CATEGORY_GROUP_CLASS_AUDIO_ROLL_CALL_END );
+                }
             }
         }
         if (mQuestionEntity != null) {
@@ -1105,5 +1116,10 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
                 }
             }
         });
+    }
+
+
+    public void setLiveBackActionListener(LiveBackActionListener liveBackActionListener) {
+        this.liveBackActionListener = liveBackActionListener;
     }
 }
