@@ -2848,11 +2848,14 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         memberEntity.setEnglishName(virtuJson.optString("englishName"));
         memberEntity.setIconUrl(virtuJson.optString("avatar"));
         JSONObject senceJson = jsonObject.optJSONObject("scene");
+        JSONObject dataJson = null;
         if(senceJson != null) {
+            dataJson = senceJson.optJSONObject("data");
             memberEntity.setIndex(senceJson.optInt("groupIndex"));
         }
         subGroupEntity.setVirStuInfo(memberEntity);
-        subGroupEntity.setVideoList(jsonObject.optJSONObject("videoList"));
+        subGroupEntity.setVideoJson(jsonObject.optJSONObject("videoList"));
+        subGroupEntity.setDataJson(dataJson);
         return subGroupEntity;
     }
 }
