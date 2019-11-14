@@ -129,8 +129,13 @@ public class LiveVideoBll implements VPlayerListenerReg, ProgressAction {
         mPlayStatistics.remove(vPlayerListener);
     }
 
+    /**
+     * 这里是给不能直接访问livevideoBll的类使用的,会Gone掉VideoView，除非有这个需求，否则慎用.
+     * 切记，调用该方法，必须与playVideoWithViewVisible配对。
+     * 只是单纯释放player的话，使用{@link BasePlayerFragment#release()}方法
+     */
     @Override
-    public void release() {
+    public void releaseWithViewGone() {
         View view = activity.findViewById(R.id.vv_course_video_video);
         if (view != null) {
             view.setVisibility(View.GONE);
@@ -138,8 +143,12 @@ public class LiveVideoBll implements VPlayerListenerReg, ProgressAction {
         stopPlay();
     }
 
+    /**
+     * 播放视频并且恢复VideoView未Visibile。
+     * 与releaseWithViewGone配合使用
+     */
     @Override
-    public void playVideo() {
+    public void playVideoWithViewVisible() {
         if (MediaPlayer.getIsNewIJK()) {
             View view = activity.findViewById(R.id.vv_course_video_video);
             if (view != null) {
@@ -414,7 +423,7 @@ public class LiveVideoBll implements VPlayerListenerReg, ProgressAction {
             isPlay = true;
             if (isGroupClass()) {
                 if (isClassEnd()) {
-                    release();
+                    videoFragment.release();
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
@@ -423,7 +432,7 @@ public class LiveVideoBll implements VPlayerListenerReg, ProgressAction {
                                 mVideoAction.onTeacherNotPresent(false);
                             }
                             //关闭1v2真流
-                            RTCVideoAction rtcVideoAction = ProxUtil.getProxUtil().get(activity,RTCVideoAction.class);
+                            RTCVideoAction rtcVideoAction = ProxUtil.getProxUtil().get(activity, RTCVideoAction.class);
                             if (rtcVideoAction != null) {
                                 rtcVideoAction.close();
                             }
@@ -689,12 +698,12 @@ public class LiveVideoBll implements VPlayerListenerReg, ProgressAction {
                                     mVideoAction.onTeacherNotPresent(false);
                                 }
                                 //关闭1v2真流
-                                RTCVideoAction rtcVideoAction = ProxUtil.getProxUtil().get(activity,RTCVideoAction.class);
+                                RTCVideoAction rtcVideoAction = ProxUtil.getProxUtil().get(activity, RTCVideoAction.class);
                                 if (rtcVideoAction != null) {
                                     rtcVideoAction.close();
                                 }
                                 //关闭红包
-                                RedPackageAction redPackageAction = ProxUtil.getProxUtil().get(activity,RedPackageAction.class);
+                                RedPackageAction redPackageAction = ProxUtil.getProxUtil().get(activity, RedPackageAction.class);
                                 if (redPackageAction != null) {
                                     redPackageAction.onRemoveRedPackage();
                                 }
