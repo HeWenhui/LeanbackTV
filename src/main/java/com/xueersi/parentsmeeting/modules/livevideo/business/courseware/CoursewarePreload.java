@@ -843,7 +843,7 @@ public class CoursewarePreload {
                                     ips,
                                     cdns,
                                     url,
-                                    fileName,
+                                    "",
                                     new AtomicInteger(0),
                                     "",
                                     "2"), "");
@@ -874,7 +874,7 @@ public class CoursewarePreload {
                                     ips,
                                     cdns,
                                     url,
-                                    fileName,
+                                    "",
                                     new AtomicInteger(0),
                                     "3"),
                             "");
