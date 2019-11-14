@@ -1089,9 +1089,9 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         @Override
         public void onHitSentence(ResultEntity resultEntity) {
 
-            if(isVoiceTreasuerBox() && !isTargetWord(resultEntity)){
+          /*  if(isVoiceTreasuerBox() && !isTargetWord(resultEntity)){
                 return;
-            }
+            }*/
             int newSenIndex = resultEntity.getNewSenIdx();
             int score = resultEntity.getScore();
             double speechDuration = resultEntity.getSpeechDuration();
