@@ -13,6 +13,57 @@ public class GroupClassAnswerResultEntity {
 
     private int type;
 
+    private Answer myAnswer;
+    private Answer teamAnswer;
+
+    public static class Answer {
+        int rankNum = 0;
+        int gold = 0;
+        int score = 0;
+        String name;
+        String headPath;
+
+        public int getRankNum() {
+            return rankNum;
+        }
+
+        public void setRankNum(int rankNum) {
+            this.rankNum = rankNum;
+        }
+
+        public int getGold() {
+            return gold;
+        }
+
+        public void setGold(int gold) {
+            this.gold = gold;
+        }
+
+        public int getScore() {
+            return score;
+        }
+
+        public void setScore(int score) {
+            this.score = score;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getHeadPath() {
+            return headPath;
+        }
+
+        public void setHeadPath(String headPath) {
+            this.headPath = headPath;
+        }
+    }
+
     public int getType() {
         return type;
     }
@@ -21,95 +72,19 @@ public class GroupClassAnswerResultEntity {
         this.type = type;
     }
 
-    int rankNum;
-    int gold;
-    int score;
-    String name;
-    String headPath;
-
-    int teamRankNum;
-    int teamGold;
-    int teamScore;
-    String teamName;
-    String teamHeadPath;
-
-    public int getRankNum() {
-        return rankNum;
+    public Answer getMyAnswer() {
+        return myAnswer;
     }
 
-    public void setRankNum(int rankNum) {
-        this.rankNum = rankNum;
+    public void setMyAnswer(Answer myAnswer) {
+        this.myAnswer = myAnswer;
     }
 
-    public int getGold() {
-        return gold;
+    public Answer getTeamAnswer() {
+        return teamAnswer;
     }
 
-    public void setGold(int gold) {
-        this.gold = gold;
-    }
-
-    public int getScore() {
-        return score;
-    }
-
-    public void setScore(int score) {
-        this.score = score;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getHeadPath() {
-        return headPath;
-    }
-
-    public void setHeadPath(String headPath) {
-        this.headPath = headPath;
-    }
-
-    public int getTeamRankNum() {
-        return teamRankNum;
-    }
-
-    public void setTeamRankNum(int teamRankNum) {
-        this.teamRankNum = teamRankNum;
-    }
-
-    public int getTeamGold() {
-        return teamGold;
-    }
-
-    public void setTeamGold(int teamGold) {
-        this.teamGold = teamGold;
-    }
-
-    public int getTeamScore() {
-        return teamScore;
-    }
-
-    public void setTeamScore(int teamScore) {
-        this.teamScore = teamScore;
-    }
-
-    public String getTeamName() {
-        return teamName;
-    }
-
-    public void setTeamName(String teamName) {
-        this.teamName = teamName;
-    }
-
-    public String getTeamHeadPath() {
-        return teamHeadPath;
-    }
-
-    public void setTeamHeadPath(String teamHeadPath) {
-        this.teamHeadPath = teamHeadPath;
+    public void setTeamAnswer(Answer teamAnswer) {
+        this.teamAnswer = teamAnswer;
     }
 }
