@@ -326,6 +326,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                             mLiveAutoNoticeBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
                             mLiveAutoNoticeBll.setSrcType(videoQuestionLiveEntity.courseware_type);
                         }
+                        englishH5CoursewareBll.onH5Courseware(status, videoQuestionLiveEntity);
                     } else {
                         // englishH5Entity.setNewEnglishH5(false);
                         if (englishH5CoursewareBll != null) {
