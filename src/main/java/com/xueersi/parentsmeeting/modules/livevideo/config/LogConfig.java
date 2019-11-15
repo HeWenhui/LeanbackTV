@@ -11,7 +11,7 @@ public class LogConfig {
     /** 解压错误-单个文件错误 */
     public static String LIVE_ZIP_FILE_ERROR = "live_zip_file_error";
     /** 解压错误-最终错误 */
-    public static String LIVE_ZIP_ERROR = "live_zip_error_v2";
+    public static String LIVE_ZIP_ERROR = "live_zip_error_v3";
     /** 直播进程token为空 */
     public static String LIVE_TOKEN_NULL = "live_token_null";
     /** 直播心跳日志 */
