@@ -10,6 +10,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.CloudWorkerThreadPool;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamMate;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.config.PrimaryClassConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.util.AgoraUtils;
 
 public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
     /** 用户进入 */
@@ -285,7 +286,7 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    if (state == PrimaryClassConfig.VIDEO_STATE_1) {
+                    if (AgoraUtils.isPlay(state)) {
                         rl_livevideo_course_item_video_ufo.setVisibility(View.GONE);
                         cl_livevideo_course_item_video.setVisibility(View.VISIBLE);
                         handler.removeCallbacks(videoStateRun);
@@ -305,7 +306,7 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
         public void run() {
             mLogtf.d("videoStateRun:look=" + entity.isLook() + "," + videoStatus);
             if (entity.isLook() && videoStatus) {
-                if (state == PrimaryClassConfig.VIDEO_STATE_1) {
+                if (AgoraUtils.isPlay(state)) {
                     rl_livevideo_course_item_video_ufo.setVisibility(View.GONE);
                     cl_livevideo_course_item_video.setVisibility(View.VISIBLE);
                 } else {
