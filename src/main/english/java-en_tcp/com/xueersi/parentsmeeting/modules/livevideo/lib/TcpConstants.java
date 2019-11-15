@@ -54,6 +54,10 @@ public class TcpConstants {
     /** 消息类型，服务器clean up 恢复现场 */
     public final static int CLEAN_UP_SECN = 17;
 
+    public final static int ROLE_PLAY_TYPE = 200;
+
+    public final static int ROLE_PLAY_OPERATION = 201;
+
     /** 消息类型，what's missing */
     public final static short WHAT_IS_MISSING_TYPE = 13;
     /** 消息类型，客户端发what's missing 数据 */
@@ -76,6 +80,7 @@ public class TcpConstants {
     public final static int GROUP_GAME_SEND = 16;
 
     public static String VOTE_TYPE_DATA = "";
+
     public static boolean isTypeOfCannon(short type) {
         return type == VOICE_CANNO_TYPE || type == WHAT_IS_MISSING_TYPE;
     }
