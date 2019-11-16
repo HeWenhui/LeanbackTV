@@ -50,11 +50,10 @@ public class LiveStandFrameAnim {
     static String TAG = "LiveStandFrameAnim";
     protected static Logger logger = LoggerFactory.getLogger(TAG);
     Activity activity;
-    private final String filePath = "/android_stand_live/" + StandLiveConfig.version + "/frame_anim7.zip";
     /** 下载地址，阿里云 */
-    private final String aliyun = "http://xesftp.oss-cn-beijing.aliyuncs.com" + filePath;
+    private final String aliyun = "https://xeswxapp.oss-cn-beijing.aliyuncs.com/Android/stand_live/frame_anim7.zip";
     /** 下载地址，网校 */
-    private final String xuersi = "http://client.xesimg.com" + filePath;
+    private final String xuersi = "https://wxapp.xesimg.com/Android/stand_live/frame_anim7.zip";
     /** 更新回调 */
     AbstractBusinessDataCallBack callBack;
     /** 解压任务 */
