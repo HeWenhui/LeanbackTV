@@ -605,12 +605,16 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-                NewCourseSec.Test oldTest = tests.get(currentIndex);
                 try {
-                    if (message.has("data")) {
-                        JSONArray userAnswerContent = message.getJSONArray("data");
-                        oldTest.setUserAnswerContent(userAnswerContent);
-                        saveThisQues(currentIndex, userAnswerContent);
+                    if (currentIndex < tests.size()) {
+                        NewCourseSec.Test oldTest = tests.get(currentIndex);
+                        if (message.has("data")) {
+                            JSONArray userAnswerContent = message.getJSONArray("data");
+                            oldTest.setUserAnswerContent(userAnswerContent);
+                            saveThisQues(currentIndex, userAnswerContent);
+                        }
+                    } else {
+                        mLogtf.d("onAnswer:currentIndex=" + currentIndex);
                     }
                 } catch (Exception e) {
                     LiveCrashReport.postCatchedException(new LiveException(TAG, e));
