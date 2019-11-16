@@ -557,6 +557,9 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
 
     private void saveThisQues(int index, JSONArray userAnswerContent) {
         try {
+            if (userAnswerSave == null) {
+                return;
+            }
             String string = userAnswerSave.getString(LiveQueConfig.LIVE_STUDY_REPORT_IMG, "{}", ShareDataManager.SHAREDATA_USER);
             JSONObject jsonObject = getTodayLive(string);
             if (jsonObject != null) {
@@ -604,9 +607,11 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             public void run() {
                 NewCourseSec.Test oldTest = tests.get(currentIndex);
                 try {
-                    JSONArray userAnswerContent = message.getJSONArray("data");
-                    oldTest.setUserAnswerContent(userAnswerContent);
-                    saveThisQues(currentIndex, userAnswerContent);
+                    if (message.has("data")) {
+                        JSONArray userAnswerContent = message.getJSONArray("data");
+                        oldTest.setUserAnswerContent(userAnswerContent);
+                        saveThisQues(currentIndex, userAnswerContent);
+                    }
                 } catch (Exception e) {
                     LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 }
