@@ -42,6 +42,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -284,7 +285,8 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
             if (mLevel == ConsoleMessage.MessageLevel.ERROR || mLevel == ConsoleMessage.MessageLevel.WARNING) {
                 isRequst = true;
             }
-            UmsAgentUtil.webConsoleMessage(mContext, TAG, wvSubjectWeb.getUrl(), consoleMessage, isRequst);
+            File file = QuestionWebCache.onConsoleMessage(mContext, TAG, logger, consoleMessage);
+            UmsAgentUtil.webConsoleMessageFile(mContext, TAG, wvSubjectWeb.getUrl(), consoleMessage, isRequst, file);
             return super.onConsoleMessage(consoleMessage);
         }
 

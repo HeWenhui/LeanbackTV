@@ -469,7 +469,8 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
             if (mLevel == ConsoleMessage.MessageLevel.ERROR || mLevel == ConsoleMessage.MessageLevel.WARNING) {
                 isRequst = true;
             }
-            UmsAgentUtil.webConsoleMessage(mContext, TAG, wvSubjectWeb.getUrl(), consoleMessage, isRequst);
+            File file = QuestionWebCache.onConsoleMessage(mContext, TAG, logger, consoleMessage);
+            UmsAgentUtil.webConsoleMessageFile(mContext, TAG, wvSubjectWeb.getUrl(), consoleMessage, isRequst, file);
             return super.onConsoleMessage(consoleMessage);
         }
 

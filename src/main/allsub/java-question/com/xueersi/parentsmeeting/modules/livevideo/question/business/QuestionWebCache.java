@@ -7,6 +7,7 @@ import android.os.SystemClock;
 import android.text.TextUtils;
 
 import com.airbnb.lottie.L;
+import com.tencent.smtt.export.external.interfaces.ConsoleMessage;
 import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.MimeTypeMap;
 import com.tencent.smtt.sdk.WebChromeClient;
@@ -370,6 +371,24 @@ public class QuestionWebCache {
             }
             File file = new File(mMorecacheout, url);
             return file;
+        } catch (Exception e) {
+            LiveCrashReport.postCatchedException("QuestionWebCache", e);
+        }
+        return null;
+    }
+
+    /** 删除可能有问题的文件 */
+    public static File onConsoleMessage(Context context, String TAG, Logger logger, ConsoleMessage consoleMessage) {
+        try {
+            if (consoleMessage.messageLevel() == ConsoleMessage.MessageLevel.ERROR) {
+                String sourceId = consoleMessage.sourceId();
+                File file = getFile(context, logger, sourceId);
+                if (file != null && file.exists()) {
+                    boolean delete = file.delete();
+                    logger.d("onConsoleMessage:file=" + file + ",delete=" + delete);
+                    return file;
+                }
+            }
         } catch (Exception e) {
             LiveCrashReport.postCatchedException("QuestionWebCache", e);
         }
