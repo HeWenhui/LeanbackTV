@@ -127,7 +127,7 @@ public class QuestionWebCache {
                                     File out;
                                     if (finalName.contains("MathJax")) {
                                         out = new File(mMorecacheout, "MathJax");
-                                        //删除旧文件
+                                        //删除旧文件，MathJax只留一个
                                         File[] fs = out.listFiles();
                                         if (fs != null) {
                                             for (int i = 0; i < fs.length; i++) {
@@ -335,6 +335,7 @@ public class QuestionWebCache {
     public static File getFile(Context context, Logger logger, String url) {
         try {
             File mMorecacheout = LiveCacheFile.geCacheFile(context, "live_h5test_cache");
+            //找类似 https://res12.xesimg.com/live/css 的文件
             String findStr = "com/live/";
             int index = url.indexOf(findStr);
             if (index != -1) {
@@ -344,6 +345,7 @@ public class QuestionWebCache {
                     url = url.substring(0, index);
                 }
             } else {
+                //找类似 https://lib01.xesimg.com/lib/MathJax/2.6 的文件
                 findStr = "com/lib/MathJax/";
                 index = url.indexOf(findStr);
                 if (index != -1) {
@@ -358,6 +360,7 @@ public class QuestionWebCache {
                         File out = new File(mMorecacheout, "MathJax");
                         File[] fs = out.listFiles();
                         String replacement = "MathJax-master";
+                        //找最新的文件。下载只留一个。
                         if (fs != null && fs.length > 0) {
                             replacement = fs[fs.length - 1].getName();
                         }
@@ -366,7 +369,18 @@ public class QuestionWebCache {
                         return null;
                     }
                 } else {
-                    return null;
+                    //找类似 https://lib01.xesimg.com/lib/webLog 的文件
+                    findStr = "com/lib";
+                    index = url.indexOf(findStr);
+                    if (index != -1) {
+                        url = url.substring(index + findStr.length());
+                        index = url.indexOf("?");
+                        if (index != -1) {
+                            url = url.substring(0, index);
+                        }
+                    } else {
+                        return null;
+                    }
                 }
             }
             File file = new File(mMorecacheout, url);
