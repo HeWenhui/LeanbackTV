@@ -307,7 +307,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
         if (mGetInfo.getIsArts() == LiveVideoSAConfig.ART_SEC) {
             QuestionWebCache webCache = new QuestionWebCache(activity);
-            webCache.startCache();
+            webCache.startCacheZip(data.getId());
         }
 //        if (com.xueersi.common.config.AppConfig.DEBUG) {
 //            com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultEntity speechResultEntity = new com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultEntity();

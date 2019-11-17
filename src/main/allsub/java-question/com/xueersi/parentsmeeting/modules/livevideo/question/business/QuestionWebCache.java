@@ -3,13 +3,22 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.SystemClock;
 import android.text.TextUtils;
 
+import com.airbnb.lottie.L;
 import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
+import com.tencent.smtt.sdk.MimeTypeMap;
 import com.tencent.smtt.sdk.WebChromeClient;
 import com.tencent.smtt.sdk.WebView;
+import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
+import com.xueersi.common.http.DownloadCallBack;
+import com.xueersi.common.http.HttpCallBack;
+import com.xueersi.common.http.HttpRequestParams;
+import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -17,17 +26,31 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.http.QuestionParse;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ErrorWebViewClient;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ZipExtractorTask;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import ren.yale.android.cachewebviewlib.CacheWebResourceResponse;
 import ren.yale.android.cachewebviewlib.CacheWebView;
 import ren.yale.android.cachewebviewlib.RequestIntercept;
+import ren.yale.android.cachewebviewlib.utils.MD5Utils;
 
 /**
  * 互动题缓存
@@ -42,9 +65,132 @@ public class QuestionWebCache {
     private LiveThreadPoolExecutor threadPoolExecutor = LiveThreadPoolExecutor.getInstance();
     /** 是不是已经开始加载 */
     private static boolean startLoad = false;
+    private File mMorecacheout;
+    private ThreadPoolExecutor executos;
 
     public QuestionWebCache(Context context) {
         this.context = context;
+    }
+
+    public void startCacheZip(String liveId) {
+        if (startLoad) {
+            return;
+        }
+        startLoad = true;
+        executos = new ThreadPoolExecutor(1, 1,
+                10L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+//        executos.allowCoreThreadTimeOut(true);
+        mMorecacheout = LiveCacheFile.geCacheFile(context, "live_h5test_cache");
+        final LiveHttpManager liveHttpManager = new LiveHttpManager(context);
+        HttpRequestParams httpRequestParams = new HttpRequestParams();
+//        httpRequestParams
+        liveHttpManager.sendPost(LiveVideoConfig.HTTP_HOST + "/" + ShareBusinessConfig.LIVE_SCIENCE + "/LiveCourse/getStaticResource",
+                httpRequestParams, new HttpCallBack() {
+                    @Override
+                    public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                        QuestionParse questionParse = new QuestionParse();
+                        ArrayList<String> list = questionParse.parseQueCache(responseEntity);
+                        final AtomicInteger atomicInteger = new AtomicInteger(0);
+                        for (int i = 0; i < list.size(); i++) {
+                            final String url = list.get(i);
+                            if (!url.startsWith("http")) {
+                                continue;
+                            }
+                            String filename = null;
+                            int index = url.lastIndexOf("/");
+                            if (index != 1) {
+                                filename = url.substring(index + 1);
+                            }
+                            if (filename == null) {
+                                continue;
+                            }
+                            String name = MD5Utils.getMD5(url) + "_" + filename;
+                            final File saveFile = new File(mMorecacheout, name);
+                            if (saveFile.exists()) {
+                                continue;
+                            }
+                            final File saveFileTmp = new File(mMorecacheout, name + ".tmp");
+                            if (saveFileTmp.exists()) {
+                                saveFileTmp.delete();
+                            }
+                            int get = atomicInteger.getAndIncrement();
+                            logger.d("startCache:get=" + get);
+                            final String finalName = name;
+                            final String finalFilename = filename;
+                            liveHttpManager.download(url, saveFileTmp.getPath(), new DownloadCallBack() {
+                                @Override
+                                protected void onDownloadSuccess() {
+                                    int get = atomicInteger.getAndDecrement();
+                                    boolean rename = saveFileTmp.renameTo(saveFile);
+                                    logger.d("startCache:onDownloadSuccess:url=" + url + ",rename=" + rename + ",get=" + get);
+                                    File out;
+                                    if (finalName.contains("MathJax")) {
+                                        out = new File(mMorecacheout, "MathJax");
+                                        //删除旧文件
+                                        File[] fs = out.listFiles();
+                                        if (fs != null) {
+                                            for (int i = 0; i < fs.length; i++) {
+                                                File oldFile = fs[i];
+                                                FileUtils.deleteDir(oldFile);
+                                            }
+                                        }
+                                    } else {
+                                        out = mMorecacheout;
+                                    }
+                                    QueZipExtractorTask zipExtractorTask = new QueZipExtractorTask(saveFile.getPath(), out.getPath(), true);
+                                    zipExtractorTask.executeOnExecutor(executos);
+                                    if (get == 1) {
+                                        zipEnd();
+                                    }
+                                }
+
+                                @Override
+                                protected void onDownloadFailed() {
+                                    int get = atomicInteger.getAndDecrement();
+                                    logger.d("startCache:onDownloadFailed:url=" + url + ",get=" + get);
+                                    if (get == 1) {
+                                        zipEnd();
+                                    }
+                                }
+
+                                private void zipEnd() {
+                                    logger.d("zipEnd:start");
+                                    executos.shutdown();
+                                    new Thread() {
+                                        @Override
+                                        public void run() {
+                                            try {
+                                                executos.awaitTermination(320, TimeUnit.SECONDS);
+                                            } catch (InterruptedException e) {
+                                                e.printStackTrace();
+                                            }
+                                            logger.d("zipEnd:end");
+                                            startLoad = false;
+                                        }
+                                    }.start();
+                                }
+                            });
+                        }
+                        logger.d("startCache:onPmSuccess:list=" + list.size() + ",down=" + atomicInteger.get());
+                        if (atomicInteger.get() == 0) {
+                            startLoad = false;
+                        }
+                    }
+
+                    @Override
+                    public void onPmError(ResponseEntity responseEntity) {
+                        super.onPmError(responseEntity);
+                        logger.d("startCache:onPmError:responseEntity=" + responseEntity.getErrorMsg());
+                        startLoad = false;
+                    }
+
+                    @Override
+                    public void onPmFailure(Throwable error, String msg) {
+                        super.onPmFailure(error, msg);
+                        logger.d("startCache:onPmFailure:msg=" + msg);
+                        startLoad = false;
+                    }
+                });
     }
 
     public void startCache() {
@@ -155,5 +301,102 @@ public class QuestionWebCache {
             webView.destroy();
             logger.d("onPageFinished:s=" + s);
         }
+    }
+
+    static class QueZipExtractorTask extends ZipExtractorTask {
+
+        long before;
+
+        public QueZipExtractorTask(String in, String out, boolean replaceAll) {
+            super(in, out, replaceAll);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            before = SystemClock.elapsedRealtime();
+        }
+
+        @Override
+        protected void onPostExecute(Exception exception) {
+            super.onPostExecute(exception);
+            if (exception == null) {
+                logger.d("onPostExecute:input=" + mInput + ",time=" + (SystemClock.elapsedRealtime() - before));
+            } else {
+                logger.e("onPostExecute:input=" + mInput + ",time=" + (SystemClock.elapsedRealtime() - before), exception);
+            }
+            if (exception != null && mInput != null) {
+                mInput.delete();
+            }
+        }
+    }
+
+    public static File getFile(Context context, Logger logger, String url) {
+        try {
+            File mMorecacheout = LiveCacheFile.geCacheFile(context, "live_h5test_cache");
+            String findStr = "com/live/";
+            int index = url.indexOf(findStr);
+            if (index != -1) {
+                url = url.substring(index + findStr.length());
+                index = url.indexOf("?");
+                if (index != -1) {
+                    url = url.substring(0, index);
+                }
+            } else {
+                findStr = "com/lib/MathJax/";
+                index = url.indexOf(findStr);
+                if (index != -1) {
+                    url = url.substring(index + findStr.length());
+                    index = url.indexOf("?");
+                    if (index != -1) {
+                        url = url.substring(0, index);
+                    }
+                    index = url.indexOf("/");
+                    if (index != -1) {
+                        String version = url.substring(0, index);
+                        File out = new File(mMorecacheout, "MathJax");
+                        File[] fs = out.listFiles();
+                        String replacement = "MathJax-master";
+                        if (fs != null && fs.length > 0) {
+                            replacement = fs[fs.length - 1].getName();
+                        }
+                        url = "MathJax/" + url.replaceFirst(version, replacement);
+                    } else {
+                        return null;
+                    }
+                } else {
+                    return null;
+                }
+            }
+            File file = new File(mMorecacheout, url);
+            return file;
+        } catch (Exception e) {
+            LiveCrashReport.postCatchedException("QuestionWebCache", e);
+        }
+        return null;
+    }
+
+    public static WebResourceResponse shouldInterceptRequest(Context context, Logger logger, String url) {
+        try {
+            File file = getFile(context, logger, url);
+            if (file != null && file.exists()) {
+                try {
+                    FileInputStream inputStream = new FileInputStream(file);
+                    String extension = MimeTypeMap.getFileExtensionFromUrl(url);
+                    String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+                    WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "", inputStream);
+                    HashMap map = new HashMap();
+                    map.put("Access-Control-Allow-Origin", "*");
+                    webResourceResponse.setResponseHeaders(map);
+                    logger.d("shouldInterceptRequest:file=" + file);
+                    return webResourceResponse;
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (Exception e) {
+            LiveCrashReport.postCatchedException("QuestionWebCache", e);
+        }
+        return null;
     }
 }

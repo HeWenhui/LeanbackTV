@@ -107,7 +107,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
         questionBll.setBaseSubjectResultCreat(liveBackSubjectResultCreat);
         if (isArts == LiveVideoSAConfig.ART_SEC) {
             QuestionWebCache webCache = new QuestionWebCache(activity);
-            webCache.startCache();
+            webCache.startCacheZip(liveGetInfo.getId());
             questionBll.setBigQueCreate(new LiveBackBigQueCreate(activity, this));
         }
     }

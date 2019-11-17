@@ -41,6 +41,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionOnSubmit;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionWebCache;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.TeacherClose;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.NewCourseCache;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
@@ -579,9 +580,15 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
                     }
                 }
             } else {
-                WebResourceResponse webResourceResponse = newCourseCache.interceptZhongXueKeJian("" + request.getUrl());
+                String url = "" + request.getUrl();
+                WebResourceResponse webResourceResponse = newCourseCache.interceptZhongXueKeJian(url);
                 if (webResourceResponse != null) {
                     return webResourceResponse;
+                } else {
+                    webResourceResponse = QuestionWebCache.shouldInterceptRequest(mContext, logger, url);
+                    if (webResourceResponse != null) {
+                        return webResourceResponse;
+                    }
                 }
             }
             logger.e("没有本地资源就去网络请求咯咯咯new");

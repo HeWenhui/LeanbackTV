@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Build;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.tencent.smtt.export.external.interfaces.ConsoleMessage;
+import com.tencent.smtt.export.external.interfaces.WebResourceRequest;
+import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.WebChromeClient;
 import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
@@ -31,6 +34,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionOnSubmit;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionWebCache;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.TeacherClose;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ErrorWebViewClient;
@@ -409,6 +413,17 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
                 }
             }
             return true;
+        }
+
+        @Override
+        public WebResourceResponse shouldInterceptRequest(WebView webView, WebResourceRequest request) {
+            String url = request.getUrl().toString();
+            WebResourceResponse webResourceResponse = QuestionWebCache.shouldInterceptRequest(mContext, logger, "" + url);
+            logger.e("shouldInterceptRequestnew:totalurl=" + url + ",resp=" + (webResourceResponse == null));
+            if (webResourceResponse != null) {
+                return webResourceResponse;
+            }
+            return super.shouldInterceptRequest(webView, request);
         }
     }
 
