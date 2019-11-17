@@ -286,7 +286,7 @@ public class NewCourseCache {
     public File onConsoleMessage(WebView view, ConsoleMessage consoleMessage) {
         try {
             File file = getLocalFile(view, consoleMessage.sourceId());
-            if (consoleMessage.messageLevel() == ConsoleMessage.MessageLevel.ERROR) {
+            if (!consoleMessage.sourceId().contains(".html") && consoleMessage.messageLevel() == ConsoleMessage.MessageLevel.ERROR) {
                 if (file != null) {
                     file.delete();
                 }

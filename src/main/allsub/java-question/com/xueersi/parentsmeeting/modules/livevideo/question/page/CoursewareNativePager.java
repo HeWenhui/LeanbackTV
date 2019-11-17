@@ -19,6 +19,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.xueersi.common.base.XrsCrashReport;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
@@ -739,6 +740,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     }
 
     private void onLoadComplete(final String where, final JSONObject message) {
+        XrsCrashReport.d(TAG, "onLoadComplete:where=" + where + ",currentIndex=" + currentIndex);
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -858,6 +860,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         if (isFinish) {
             return;
         }
+        XrsCrashReport.d(TAG, "submitData");
         mLogtf.d(SysLogLable.ShellingCommit, "submitData:loadResult=" + loadResult);
         isFinish = true;
         resultGotByForceSubmit = !loadResult;
@@ -1422,6 +1425,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     rlCourseControl.setVisibility(View.VISIBLE);
                 }
                 isLoadComplete = true;
+                XrsCrashReport.d(TAG, "onProgressChanged:isLoadComplete");
                 preLoad.onStop();
                 try {
                     mLogtf.d(SysLogLable.didFinishLoadWithReuestURL, "onProgressChanged:loadJs=" + loadJs);

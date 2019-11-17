@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.airbnb.lottie.AssertUtil;
+import com.xueersi.common.base.XrsCrashReport;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
@@ -102,6 +103,7 @@ public class WebInstertJs {
                         line = line.substring(0, index + findStr.length()) + "\n" + indexJs + "\n" + line.substring(index + findStr.length());
                     }
                     logToFile.d("httpRequest:insertJs=" + line);
+                    XrsCrashReport.d(TAG,"httpRequest:insertJs=" + line);
                     addJs = true;
                 }
             }
