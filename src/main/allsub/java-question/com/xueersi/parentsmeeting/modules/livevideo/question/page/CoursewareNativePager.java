@@ -76,6 +76,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -363,6 +364,12 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     LiveCrashReport.postCatchedException(new Exception());
                 }
                 return super.onConsoleMessage(consoleMessage);
+            }
+
+            @Override
+            protected File getLocalFile(ConsoleMessage consoleMessage) {
+                File file = newCourseCache.onConsoleMessage(wvSubjectWeb, consoleMessage);
+                return file;
             }
         });
         CourseWebViewClient courseWebViewClient = new CourseWebViewClient();
