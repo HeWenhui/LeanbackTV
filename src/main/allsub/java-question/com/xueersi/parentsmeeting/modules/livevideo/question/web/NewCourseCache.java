@@ -261,7 +261,7 @@ public class NewCourseCache {
                 url2 = url2.substring(0, index2);
             }
             file = new File(mMorecacheout, url2);
-            logger.d("getCourseWareFile:mark=" + mark + ",file=" + file + ",file=" + file.exists());
+            logger.d("getCourseWareFile:mark=" + mark + ",file=" + file + ",file.exists=" + file.exists());
             if (!file.exists()) {
                 return null;
             }
@@ -305,7 +305,7 @@ public class NewCourseCache {
             int index = s.indexOf(coursewarePages);
             if (index != -1) {
                 file = getCourseWarePagesFileName(s, coursewarePages, index);
-                logger.d("shouldInterceptRequest:file=" + file + ",file=" + file.exists());
+                logger.d("shouldInterceptRequest:file=" + file + ",file.exists=" + file.exists());
             } else {
                 index = s.indexOf(mathJax);
                 if (index != -1) {
@@ -528,7 +528,7 @@ public class NewCourseCache {
                     url2 = url2.substring(0, index2);
                 }
                 file = new File(mMorecacheout, url2);
-                logger.d("FutureCourse:Intercept:file=" + file + ",file=" + file.exists());
+                logger.d("FutureCourse:Intercept:file=" + file + ",file.exists=" + file.exists());
                 if (!file.exists()) {
                     return null;
                 }
