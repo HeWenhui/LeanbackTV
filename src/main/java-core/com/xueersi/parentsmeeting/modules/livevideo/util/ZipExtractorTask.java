@@ -30,7 +30,7 @@ import java.util.zip.ZipException;
 
 public class ZipExtractorTask extends AsyncTask<Void, Integer, Exception> {
     private final static String TAG = "ZipExtractorTask";
-    protected static Logger logger = LoggerFactory.getLogger(TAG);
+    protected static Logger logger = LiveLoggerFactory.getLogger(TAG);
     protected final File mInput;
     private final File mOutput;
     private int mProgress = 0;

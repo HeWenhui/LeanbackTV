@@ -391,6 +391,7 @@ public class LiveGetInfo {
      * 扫点信息接口
      **/
     private String getMetadataUrl;
+    private int isFlatfish=1;
 
     public LiveStatus getLiveStatus() {
         return liveStatus;
@@ -1338,6 +1339,14 @@ public class LiveGetInfo {
 
     public void setGetMetadataUrl(String getMetadataUrl) {
         this.getMetadataUrl = getMetadataUrl;
+    }
+
+    public void setIsFlatfish(int isFlatfish) {
+        this.isFlatfish = isFlatfish;
+    }
+
+    public int getIsFlatfish() {
+        return isFlatfish;
     }
 
     public static class MainTeacherInfo {
