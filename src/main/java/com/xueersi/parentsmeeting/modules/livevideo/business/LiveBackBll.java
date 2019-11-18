@@ -459,13 +459,13 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
                 }
                 mCourseHttpResponseParser.parseLiveGetInfo(liveInfo, liveGetInfo, mLiveType, isArts);
             }
-            if (pattern == LiveVideoConfig.LIVE_PATTERN_COMMON) {
-                boolean newCourse = mBaseActivity.getIntent().getBooleanExtra("newCourse", false);
-                if (newCourse || isExperience) {
-                    liveGetInfo.setNewCourse(true);
-                }
-            } else {
-                if (isExperience) {
+            if (isExperience){
+                if (pattern == LiveVideoConfig.LIVE_PATTERN_COMMON || pattern == LiveVideoConfig.LIVE_TYPE_HALFBODY) {
+                    boolean newCourse = mBaseActivity.getIntent().getBooleanExtra("newCourse", false);
+                    if (newCourse) {
+                        liveGetInfo.setNewCourse(true);
+                    }
+                } else {
                     liveGetInfo.setNewCourse(false);
                 }
             }
