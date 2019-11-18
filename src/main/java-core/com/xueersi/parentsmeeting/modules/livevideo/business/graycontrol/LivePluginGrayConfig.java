@@ -35,6 +35,7 @@ public class LivePluginGrayConfig {
     public static final int MOUDLE_FUTURE_COURSEWARE = 59;
     /**视频标记点**/
     public static final int MODULE_VIDEO_MARK = 57;
+
     /**Nb实验（加试&自由实验）*/
     public static final int MODULE_NB_EXPERIMENT = 69;
 
