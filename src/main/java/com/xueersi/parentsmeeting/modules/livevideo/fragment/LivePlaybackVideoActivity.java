@@ -147,7 +147,7 @@ public class LivePlaybackVideoActivity extends LiveBackVideoActivityBase {
             } else {
                 LiveCrashReport.postCatchedException(new Exception("" + bundle));
                 HashMap<String, String> hashMap = new HashMap();
-                hashMap.put("logtype", "videoliveplayback");
+                hashMap.put("logtype", "errorplayback");
                 hashMap.put("where", "" + where);
                 hashMap.put("contextname", "" + context.getClass().getSimpleName());
                 hashMap.put("bundle", "" + bundle);
