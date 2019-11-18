@@ -2482,9 +2482,9 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction,
      *
      * @param requestCallBack
      */
-    public void ScienceVoteCommit(String planId, String classId, String interactionId, String option, String stuIRCId,String stuName,HttpCallBack requestCallBack) {
+    public void ScienceVoteCommit(String planId,int bizId, String classId, String interactionId, String option, String stuIRCId,String stuName,HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
-        params.addBodyParam("bizId", "3");
+        params.addBodyParam("bizId", String.valueOf(bizId));
         params.addBodyParam("planId", planId);
         params.addBodyParam("classId", classId);
         params.addBodyParam("interactionId", interactionId);
