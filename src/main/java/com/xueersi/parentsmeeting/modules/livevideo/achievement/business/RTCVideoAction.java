@@ -23,6 +23,12 @@ public interface RTCVideoAction {
 
     void setReceiveVoice(boolean receiveVoice);
 
+    /** 开启和关闭测评模式 **/
+    void updateAssessmentMode(boolean isOpen);
+
+    /** 收音条音量变化回调 **/
+    void onVolumeUpdate(int volume);
+
     int GOLD_TYPE_QUESTION = 1;
     int GOLD_TYPE_REDPACKAGE = 2;
 }
