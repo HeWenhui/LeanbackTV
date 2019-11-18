@@ -657,7 +657,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         }
         //还原声音
         BasePlayerFragment videoFragment = ProxUtil.getProxUtil().get(activity, BasePlayerFragment.class);
-        if (videoFragment != null) {
+        if (videoFragment != null && !videoFragment.isMuteMode()) {//静音模式下不要次操作
             videoFragment.setVolume(1f, 1f);
         }
     }
