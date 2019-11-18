@@ -76,6 +76,23 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
         } else {
             mLiveBll.removeBusinessBll(this);
         }
+//        if (AppConfig.DEBUG) {
+//            final Random random = new Random();
+//            for (int i = 0; i < 1; i++) {
+//                LiveMainHandler.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        ImageView imageView = new ImageView(activity);
+//                        imageView.setImageResource(R.drawable.bg_livevideo_english_speek_praise);
+//                        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+//                        lp.leftMargin = random.nextInt(1000);
+//                        lp.topMargin = random.nextInt(600);
+//                        getLiveViewAction().addView(imageView, lp);
+//                        cutImage(1, imageView, false, true);
+//                    }
+//                }, i * 20);
+//            }
+//        }
     }
 
     private void initData() {
@@ -203,7 +220,7 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
             if (view != null) {
 //                stringBuilder = new StringBuilder();
 //                atomicBoolean = new AtomicBoolean(false);
-                resultBitmap = LiveCutImage.getViewBitmap(view, stringBuilder, atomicBoolean);
+                resultBitmap = LiveCutImage.getViewBitmap2(view, stringBuilder, atomicBoolean);
             }
         } catch (Exception e) {
             e.printStackTrace();

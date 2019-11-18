@@ -30,8 +30,8 @@ import java.util.zip.ZipException;
 
 public class ZipExtractorTask extends AsyncTask<Void, Integer, Exception> {
     private final static String TAG = "ZipExtractorTask";
-    protected static Logger logger = LoggerFactory.getLogger(TAG);
-    private final File mInput;
+    protected static Logger logger = LiveLoggerFactory.getLogger(TAG);
+    protected final File mInput;
     private final File mOutput;
     private int mProgress = 0;
     private boolean mReplaceAll;
@@ -202,7 +202,11 @@ public class ZipExtractorTask extends AsyncTask<Void, Integer, Exception> {
                 StringBuilder stringBuilder = new StringBuilder();
                 boolean test = zipTest.test(stringBuilder);
                 logHashMap.put("teststatue", "" + test);
-                logHashMap.put("stringBuilder", "" + stringBuilder);
+                if (stringBuilder.length() > 20) {
+                    logHashMap.put("stringBuilder", "" + stringBuilder.substring(0, 20));
+                } else {
+                    logHashMap.put("stringBuilder", "" + stringBuilder);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -282,14 +286,16 @@ public class ZipExtractorTask extends AsyncTask<Void, Integer, Exception> {
 
         protected static final byte[] EOCD_SIG = ZipLong.getBytes(101010256L);
         private RandomAccessFile archive;
+        StringBuilder stringBuilder;
 
         ZipTest(File f) throws IOException {
             this.archive = new RandomAccessFile(f, "r");
         }
 
         public boolean test(StringBuilder stringBuilder) {
+            this.stringBuilder = stringBuilder;
             try {
-                positionAtCentralDirectory(stringBuilder);
+                positionAtCentralDirectory();
                 return true;
             } catch (IOException e) {
                 e.printStackTrace();
@@ -297,7 +303,19 @@ public class ZipExtractorTask extends AsyncTask<Void, Integer, Exception> {
             return false;
         }
 
-        private void positionAtCentralDirectory(StringBuilder stringBuilder) throws IOException {
+        private void append(String str) {
+            if (stringBuilder.length() < 20) {
+                stringBuilder.append(str);
+            }
+        }
+
+        private void append(int str) {
+            if (stringBuilder.length() < 20) {
+                stringBuilder.append(str);
+            }
+        }
+
+        private void positionAtCentralDirectory() throws IOException {
             boolean found = false;
             long off = this.archive.length() - 22L;
             byte[] sig;
@@ -306,16 +324,16 @@ public class ZipExtractorTask extends AsyncTask<Void, Integer, Exception> {
                 sig = EOCD_SIG;
 
                 for (int curr = this.archive.read(); curr != -1; curr = this.archive.read()) {
-                    stringBuilder.append(curr).append(",");
+                    append(curr + ",");
                     if (curr == sig[0]) {
                         curr = this.archive.read();
-                        stringBuilder.append(curr).append(",");
+                        append(curr+",");
                         if (curr == sig[1]) {
                             curr = this.archive.read();
-                            stringBuilder.append(curr).append(",");
+                            append(curr+",");
                             if (curr == sig[2]) {
                                 curr = this.archive.read();
-                                stringBuilder.append(curr);
+                                append(curr+",");
                                 if (curr == sig[3]) {
                                     found = true;
                                     break;

@@ -121,6 +121,8 @@ public class LiveVideoConfig {
     public static String LIVE_ENGLISH_COURSEWARE = "live_h5waretest";
     /** 直播-接麦 */
     public static String LIVE_LINK_MIRCO = "live_selectmic";
+    /** 直播-notice延迟 */
+    public static String LIVE_NOTICE_DELAY = "live_notice_delay";
     /** 直播-H5题库互动题 */
     public static String LIVE_H5_TEST = "live_h5test";
     /** 直播-H5题库互动题-预加载 */
@@ -131,7 +133,7 @@ public class LiveVideoConfig {
     public static String LIVE_H5_EXAM = "live_exam";
     /** 直播-语音评测 */
     public static String LIVE_SPEECH_TEST = "live_speechtest";
-    /** 直播-语音评测-二期 */
+    /** 直播-语音评测-二期 https://wiki.zhiyinlou.com/pages/viewpage.action?pageId=31364898 */
     public static String LIVE_SPEECH_TEST2 = "live_speechtest_2";
     /** 站立直播-语音评测 */
     public static String LIVE_STAND_SPEECH_TEST = "standlive_voiceTest";

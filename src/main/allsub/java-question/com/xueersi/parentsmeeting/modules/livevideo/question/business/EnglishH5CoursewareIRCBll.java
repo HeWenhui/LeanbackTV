@@ -326,6 +326,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                             mLiveAutoNoticeBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
                             mLiveAutoNoticeBll.setSrcType(videoQuestionLiveEntity.courseware_type);
                         }
+                        englishH5CoursewareBll.onH5Courseware(status, videoQuestionLiveEntity);
                     } else {
                         // englishH5Entity.setNewEnglishH5(false);
                         if (englishH5CoursewareBll != null) {
@@ -488,7 +489,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 if (englishH5CoursewareBll != null) {
                     AtomicBoolean openStatus = new AtomicBoolean();
                     VideoQuestionLiveEntity turtorEntity = questionInfo(object, openStatus);
-                    String statusTutor = openStatus.get() + "";
+                    String statusTutor = openStatus.get() ? "on" : "off";
                     if (!openStatus.get()) {
                         englishH5CoursewareBll.setWebViewCloseByTeacher(true);
                     }
@@ -504,7 +505,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                     // 08.07  课件之前的功能添加
                     AtomicBoolean openStatus = new AtomicBoolean();
                     VideoQuestionLiveEntity questionLiveEntity = questionInfo(object, openStatus);
-                    String status = "" + openStatus.get();
+                    String status = openStatus.get() ? "on" : "off";
                     if (!openStatus.get()) {
                         englishH5CoursewareBll.setWebViewCloseByTeacher(true);
                     }
@@ -899,8 +900,8 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
      * @param liveViewAction
      */
     private void handleShowEvenDriveAnim(Context context, LiveGetInfo getInfo, LiveHttpManager liveHttpManager,
-                                    LiveViewAction liveViewAction, EvenDriveAnimRepository.EvenDriveQuestionType questionType,
-                                    String testId) {
+                                         LiveViewAction liveViewAction, EvenDriveAnimRepository.EvenDriveQuestionType questionType,
+                                         String testId) {
         if (animRepo == null) {
             animRepo = new EvenDriveAnimRepository(context, getInfo, liveHttpManager, liveViewAction);
         }
@@ -918,7 +919,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
             }
 
             @Override
-            public void onDatasLoaded(String num,boolean numChange) {
+            public void onDatasLoaded(String num, boolean numChange) {
                 final AllLiveBasePagerInter liveBasePagerInter = mLiveBll.getAllLiveBasePagerIml();
                 if (liveBasePagerInter != null) {
                     liveBasePagerInter.addViewRemoveObserver(new AllLiveBasePagerInter.ViewRemoveObserver() {

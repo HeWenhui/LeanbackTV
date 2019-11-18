@@ -469,7 +469,6 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
                     liveGetInfo.setNewCourse(false);
                 }
             }
-
         } catch (Exception e) {
             logger.e("onCreate", e);
         }

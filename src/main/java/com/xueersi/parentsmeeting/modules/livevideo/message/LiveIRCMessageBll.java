@@ -1333,7 +1333,12 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         if (LiveTopic.MODE_CLASS.endsWith(mode)) {
             isPresent = mMainTeacher != null;
         } else {
-            isPresent = !mCounteacher.isLeave;
+            if (mCounteacher == null) {
+                if (mGetInfo != null) {
+                    mCounteacher = new Teacher(mGetInfo.getTeacherName());
+                }
+            }
+            isPresent = mCounteacher != null && !mCounteacher.isLeave;
         }
         return isPresent;
     }
