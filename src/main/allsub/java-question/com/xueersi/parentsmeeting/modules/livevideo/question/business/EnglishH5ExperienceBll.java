@@ -256,6 +256,12 @@ public class EnglishH5ExperienceBll extends LiveBackBaseBll {
         if (vCategory == LocalCourseConfig.CATEGORY_TUTOR_EVENT_35) {
             videoQuestionLiveEntity.setTUtor(true);
         }
+        if (liveGetInfo.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY){
+            videoQuestionLiveEntity.setLiveType(LiveVideoConfig.ExperiencLiveType.HALF_BODY);
+            videoQuestionLiveEntity.englishH5Entity.setNewEnglishH5(true);
+            String url = buildCourseUrl(videoQuestionLiveEntity, questionEntity);
+            videoQuestionLiveEntity.englishH5Entity.setUrl(url);
+        }
         return videoQuestionLiveEntity;
     }
 
@@ -316,6 +322,43 @@ public class EnglishH5ExperienceBll extends LiveBackBaseBll {
                 .append("&stuClientPath=").append(falseStr)
                 .append("&fontDir=").append(falseStr);
         return sb.toString();
+    }
+
+    /**
+     * 构建体验课 新课件平台 试题加载地址
+     **/
+    private String buildCourseUrl(VideoQuestionLiveEntity videoQuestionLiveEntity, VideoQuestionEntity questionEntity) {
+        if (questionEntity == null) {
+            return "";
+        }
+        StringBuilder stringBuilder = new StringBuilder();
+        String stuId = LiveAppUserInfo.getInstance().getStuId();
+        String classTestId = "";
+        String packageId = "";
+        String packageSource = "";
+        String packageAttr = "";
+        String releasedPageInfos = "";
+        if (!TextUtils.isEmpty(questionEntity.getCourseExtInfo())) {
+            try {
+                JSONObject jsonObject = new JSONObject(questionEntity.getCourseExtInfo());
+                classTestId = jsonObject.optString("ctId");
+                packageAttr = jsonObject.optString("pAttr");
+                packageId = jsonObject.optString("pId");
+                packageSource = jsonObject.optString("pSrc");
+            } catch (Exception e) {
+                e.printStackTrace();
+                LiveCrashReport.postCatchedException(TAG, e);
+            }
+        }
+        String url = TextUtils.isEmpty(mVideoEntity.getHalfBodyH5Url()) ? LiveHttpConfig.URL_HALFBODY_EXPERIENCE_LIVE_H5 : mVideoEntity.getHalfBodyH5Url();
+        stringBuilder.append(url)
+                .append("?stuId=").append(stuId)
+                .append("&liveId=").append(mVideoEntity.getLiveId())
+                .append("&packageSource=").append(packageSource)
+                .append("&packageId=").append(packageId)
+                .append("&termId=").append(mVideoEntity.getChapterId())
+                .append("&releasedPageInfos=").append(questionEntity.getReleasedPageInfos());
+        return stringBuilder.toString();
     }
 
     private String buildCourseH5Url(String testIds) {
