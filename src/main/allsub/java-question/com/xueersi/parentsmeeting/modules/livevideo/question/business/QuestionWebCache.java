@@ -73,7 +73,7 @@ public class QuestionWebCache {
         this.context = context;
     }
 
-    public void startCacheZip(String liveId) {
+    public void startCacheZip(int arts, String liveId) {
         if (startLoad) {
             return;
         }
@@ -84,6 +84,8 @@ public class QuestionWebCache {
         mMorecacheout = LiveCacheFile.geCacheFile(context, "live_h5test_cache");
         final LiveHttpManager liveHttpManager = new LiveHttpManager(context);
         HttpRequestParams httpRequestParams = new HttpRequestParams();
+        httpRequestParams.addBodyParam("arts", "" + arts);
+        httpRequestParams.addBodyParam("liveId", "" + liveId);
 //        httpRequestParams
         liveHttpManager.sendPost(LiveVideoConfig.HTTP_HOST + "/" + ShareBusinessConfig.LIVE_SCIENCE + "/LiveCourse/getStaticResource",
                 httpRequestParams, new HttpCallBack() {
