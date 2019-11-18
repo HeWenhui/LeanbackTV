@@ -135,9 +135,9 @@ public class LiveVideoConfig {
     public static String LIVE_SPEECH_TEST = "live_speechtest";
     /** 直播-语音评测-二期 https://wiki.zhiyinlou.com/pages/viewpage.action?pageId=31364898 */
     public static String LIVE_SPEECH_TEST2 = "live_speechtest_2";
-    /** 站立直播-语音评测 */
+    /** 站立直播-语音评测 https://wiki.zhiyinlou.com/pages/viewpage.action?pageId=31365289 */
     public static String LIVE_STAND_SPEECH_TEST = "standlive_voiceTest";
-    /** 站立直播-roleplay */
+    /** 站立直播-roleplay https://wiki.zhiyinlou.com/pages/viewpage.action?pageId=31365259 */
     public static String LIVE_STAND_ROLEPLAY = "standlive_roleplay";
     /** 直播-NB实验 */
     public static String LIVE_H5_EXPERIMENT = "live_h5experiment";
@@ -151,9 +151,9 @@ public class LiveVideoConfig {
     public static String LIVE_ENGLISH_SPEEK = "live_english_speek";
     /** 直播-h5课件缓存 */
     public static String LIVE_H5_CACHE = "live_h5_cache";
-    /** 直播-语音答题 */
+    /** 直播-语音答题 https://wiki.zhiyinlou.com/pages/viewpage.action?pageId=31365278 */
     public static String LIVE_TEST_VOICE = "live_test_voice";
-    /** 站立直播-语音答题 */
+    /** 站立直播-语音答题 https://wiki.zhiyinlou.com/pages/viewpage.action?pageId=31365257 */
     public static String LIVE_STAND_TEST_VOICE = "standlive_voiceAnswer";
     /** 直播-投票 */
     public static String LIVE_VOTE = "live_vote";
