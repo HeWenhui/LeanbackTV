@@ -185,12 +185,12 @@ public class NewCourseCache {
             ispreload = false;
         }
         logToFile.d("interceptIndexRequest:url=" + url + ",inputStream1=" + (inputStream == null));
-        long before = SystemClock.currentThreadTimeMillis();
+        long before = SystemClock.elapsedRealtime();
         final AtomicBoolean islocal = new AtomicBoolean();
         if (inputStream == null) {
             inputStream = webInstertJs.httpRequest(url, islocal);
         }
-        final long httptime = SystemClock.currentThreadTimeMillis() - before;
+        final long httptime = SystemClock.elapsedRealtime() - before;
         logToFile.d("interceptIndexRequest:url=" + url + ",inputStream2=" + (inputStream == null));
         if (inputStream != null) {
             String extension = android.webkit.MimeTypeMap.getFileExtensionFromUrl(url.toLowerCase());
@@ -291,7 +291,9 @@ public class NewCourseCache {
                     file.delete();
                 }
             }
-            return file;
+            if (file != null && file.exists()) {
+                return file;
+            }
         } catch (Exception e) {
             LiveCrashReport.postCatchedException(TAG, e);
         }
