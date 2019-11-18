@@ -63,17 +63,17 @@ public class LiveCutImage {
         }
     }
 
-    public static Bitmap getViewCapture(View view,StringBuilder stringBuilder,AtomicBoolean creatBitmap) {
+    public static Bitmap getViewCapture(View view, StringBuilder stringBuilder, AtomicBoolean creatBitmap) {
         int width = view.getMeasuredWidth();
         int height = view.getMeasuredHeight();
 
-        if (width<=0 || height<=0) {
+        if (width <= 0 || height <= 0) {
             creatBitmap.set(false);
             return null;
         }
 
         stringBuilder.append(",width=" + width + ",height=" + height);
-        Bitmap bitmap = Bitmap.createBitmap(width,height, Bitmap.Config.ARGB_8888);
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
         view.draw(canvas);
 
@@ -108,6 +108,38 @@ public class LiveCutImage {
         return bmpScreen;
     }
 
+    /**
+     * 截图，截取当前屏幕的图片,由于在子线程调用的。
+     *
+     * @param view
+     * @param stringBuilder
+     * @param creatBitmap
+     * @return
+     */
+    public static Bitmap getViewBitmap2(View view, StringBuilder stringBuilder, AtomicBoolean creatBitmap) {
+        view.setDrawingCacheEnabled(true);
+        view.buildDrawingCache();
+        Bitmap bmpScreen = view.getDrawingCache();
+        if (bmpScreen == null) {
+            int width = view.getWidth();
+            int height = view.getHeight();
+            stringBuilder.append(",width=" + width + ",height=" + height);
+            if (width > 0 && height > 0) {
+                Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+                Canvas canvas = new Canvas(bitmap);
+                view.draw(canvas);
+                bmpScreen = bitmap;
+                creatBitmap.set(true);
+            }
+        } else {
+            Bitmap bitmap = Bitmap.createBitmap(bmpScreen.getWidth(), bmpScreen.getHeight(), Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(bitmap);
+            canvas.drawBitmap(bmpScreen, 0, 0, null);
+            bmpScreen = bitmap;
+            creatBitmap.set(true);
+        }
+        return bmpScreen;
+    }
 
     /**
      * 生成圆形图片

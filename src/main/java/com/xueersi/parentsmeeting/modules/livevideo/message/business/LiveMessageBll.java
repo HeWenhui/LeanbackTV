@@ -605,7 +605,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
 //        }
         //  Loger.d("____join:  "+sender+"___peoplecount:  "+peopleCount);
         if (!users.contains(sender)) {
-            XrsCrashReport.d(TAG, "onJoin:sender=" + sender + ",get=" + peopleCount.get());
+            XrsCrashReport.d(TAG, "onJoin:sender=" + sender + ",get=" + peopleCount.get()+ ",users=" + users.size() + ",this=" + this);
             peopleCount.set(peopleCount.get() + 1, new Exception(sender));
             users.add(sender);
             if (mLiveMessagePager != null) {
@@ -624,7 +624,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
 //        }
         if (users.contains(sourceNick)) {
             boolean remove = users.remove(sourceNick);
-            XrsCrashReport.d(TAG, "onQuit:sourceNick=" + sourceNick + ",get=" + peopleCount.get() + ",remove=" + remove);
+            XrsCrashReport.d(TAG, "onQuit:sourceNick=" + sourceNick + ",get=" + peopleCount.get() + ",remove=" + remove + ",users=" + users.size() + ",this=" + this);
             if (remove) {
                 peopleCount.set(peopleCount.get() - 1, new Exception(sourceNick));
             }

@@ -26,6 +26,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ErrorWebViewClient;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
+import java.io.File;
+
 import static com.xueersi.parentsmeeting.modules.livevideo.config.SysLogLable.xesWebLog;
 
 public class BaseCoursewareNativePager extends LiveBasePager {
@@ -139,7 +141,8 @@ public class BaseCoursewareNativePager extends LiveBasePager {
                 mLogtf.d(xesWebLog, "onConsoleMessage:level=" + consoleMessage.messageLevel() + ",sourceId=" + consoleMessage.sourceId()
                         + ",lineNumber=" + consoleMessage.lineNumber() + ",message=" + consoleMessage.message().replace("xesweblog:", ""));
             }
-            UmsAgentUtil.webConsoleMessage(mContext, TAG, wvSubjectWeb.getUrl(), consoleMessage, isRequst);
+            File localFile = getLocalFile(consoleMessage);
+            UmsAgentUtil.webConsoleMessageFile(mContext, TAG, wvSubjectWeb.getUrl(), consoleMessage, isRequst, localFile);
             if (AppConfig.DEBUG) {
                 mLogtf.debugSave("onConsoleMessage:level=" + consoleMessage.messageLevel() + ",sourceId=" + consoleMessage.sourceId()
                         + ",lineNumber=" + consoleMessage.lineNumber() + ",message=" + consoleMessage.message());
@@ -151,12 +154,16 @@ public class BaseCoursewareNativePager extends LiveBasePager {
         public void onReceivedTitle(WebView view, String title) {
             super.onReceivedTitle(view, title);
             BaseCoursewareNativePager.this.onReceivedTitle(view, title);
-            if(!isSubtraction()) {
+            if (!isSubtraction()) {
                 setSubtraction(true);
                 int count = UmsAgentTrayPreference.getInstance().getInt(XES_LOADING_X5_ERROR_COUNT, 0);
 
                 UmsAgentTrayPreference.getInstance().put(XES_LOADING_X5_ERROR_COUNT, count - 1);
             }
+        }
+
+        protected File getLocalFile(ConsoleMessage consoleMessage) {
+            return null;
         }
     }
 
@@ -182,7 +189,7 @@ public class BaseCoursewareNativePager extends LiveBasePager {
             super.onPageStarted(view, url, favicon);
             BaseCoursewareNativePager.this.onPageStarted(view, url, favicon);
 
-            if(!isAdd()) {
+            if (!isAdd()) {
                 setAdd(true);
                 int count = UmsAgentTrayPreference.getInstance().getInt(XES_LOADING_X5_ERROR_COUNT, 0);
                 UmsAgentTrayPreference.getInstance().put(XES_LOADING_X5_ERROR_COUNT, count + 1);
@@ -242,4 +249,5 @@ public class BaseCoursewareNativePager extends LiveBasePager {
     public void setAdd(boolean add) {
         isAdd = add;
     }
+
 }
