@@ -2001,23 +2001,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         public void run() {
             position++;
             logger.d("onProgressChanged : position = " + position + ", mState = " + mState);
-            if (mState == LiveActivityState.STOPPED) {
-                if (position == 0) {
-                    classBeginInBackground = true;
-                }
-                return;
-            }
             if (mProgressActions != null && mProgressActions.size() > 0) {
-                if (classBeginInBackground) {
-                    for (ProgressAction mProgressAction : mProgressActions) {
-                        try {
-                            mProgressAction.onProgressChanged(0);
-                        } catch (Exception e) {
-                            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
-                        }
-                    }
-                    classBeginInBackground = false;
-                }
                 for (ProgressAction mProgressAction : mProgressActions) {
                     try {
                         mProgressAction.onProgressChanged(position);
@@ -2033,8 +2017,6 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
             this.position = position;
         }
     }
-
-    boolean classBeginInBackground = false;
 
     boolean isGroupClass() {
         return mGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_GROUP_CLASS;
