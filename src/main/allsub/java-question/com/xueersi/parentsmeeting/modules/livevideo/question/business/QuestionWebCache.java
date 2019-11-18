@@ -110,6 +110,22 @@ public class QuestionWebCache {
                             if (saveFile.exists()) {
                                 continue;
                             }
+                            //删除旧文件，MathJax只留一个
+                            if (filename.contains("MathJax")) {
+                                File zipFile = new File(mMorecacheout, "MathJax");
+                                if (zipFile.exists()) {
+                                    FileUtils.deleteDir(zipFile);
+                                }
+                            } else {
+                                int dotindex = filename.indexOf(".");
+                                if (dotindex != -1) {
+                                    String zipName = filename.substring(0, dotindex);
+                                    File zipFile = new File(mMorecacheout, zipName);
+                                    if (zipFile.exists()) {
+                                        FileUtils.deleteDir(zipFile);
+                                    }
+                                }
+                            }
                             final File saveFileTmp = new File(mMorecacheout, name + ".tmp");
                             if (saveFileTmp.exists()) {
                                 saveFileTmp.delete();
@@ -127,14 +143,6 @@ public class QuestionWebCache {
                                     File out;
                                     if (finalName.contains("MathJax")) {
                                         out = new File(mMorecacheout, "MathJax");
-                                        //删除旧文件，MathJax只留一个
-                                        File[] fs = out.listFiles();
-                                        if (fs != null) {
-                                            for (int i = 0; i < fs.length; i++) {
-                                                File oldFile = fs[i];
-                                                FileUtils.deleteDir(oldFile);
-                                            }
-                                        }
                                     } else {
                                         out = mMorecacheout;
                                     }
@@ -370,7 +378,7 @@ public class QuestionWebCache {
                     }
                 } else {
                     //找类似 https://lib01.xesimg.com/lib/webLog 的文件
-                    findStr = "com/lib";
+                    findStr = "com/lib/";
                     index = url.indexOf(findStr);
                     if (index != -1) {
                         url = url.substring(index + findStr.length());
