@@ -18,7 +18,8 @@ public class GroupGameLog {
     }
     /**
      * 根据试题类型 获取埋点日志id
-     *
+     * 定义wiki
+     * https://wiki.zhiyinlou.com/pages/viewpage.action?pageId=31365195
      * @param type
      * @return
      */
