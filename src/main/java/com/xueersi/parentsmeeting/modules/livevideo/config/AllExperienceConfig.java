@@ -33,11 +33,11 @@ public class AllExperienceConfig {
             "com.xueersi.parentsmeeting.modules.livevideo.fragment.se.understand.StandExperienceUnderstandBll",
             "com.xueersi.parentsmeeting.modules.livevideo.fragment.se.examination.StandExperienceEvaluationBll",
             "com.xueersi.parentsmeeting.modules.livevideo.fragment.se.learnfeedback.StandExperienceLearnFeedbackBll",
-//            "com.xueersi.parentsmeeting.modules.livevideo.question.business.StandExperienceEnglishH5PlayBackBll",
-//            "com.xueersi.parentsmeeting.modules.livevideo.question.business.StandExperienceQuestionPlayBackBll",
-            "com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionExperienceBll",
-            "com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5ExperienceBll",
-            "com.xueersi.parentsmeeting.modules.livevideo.question.business.ArtsAnswerResultPlayBackBll",
+            "com.xueersi.parentsmeeting.modules.livevideo.question.business.StandExperienceEnglishH5PlayBackBll",
+            "com.xueersi.parentsmeeting.modules.livevideo.question.business.StandExperienceQuestionPlayBackBll",
+//            "com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionExperienceBll",
+//            "com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5ExperienceBll",
+//            "com.xueersi.parentsmeeting.modules.livevideo.question.business.ArtsAnswerResultPlayBackBll",
 
     };
     private static String[] lecClassPath = {
