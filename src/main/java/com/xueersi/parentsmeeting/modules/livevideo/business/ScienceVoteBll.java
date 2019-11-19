@@ -304,7 +304,18 @@ public class ScienceVoteBll extends LiveBaseBll implements NoticeAction, TopicAc
                 logHashMap.put("liveid", mLiveId);
                 logHashMap.put("courseid", mGetInfo.getStudentLiveInfo().getCourseId());
                 logHashMap.put("gradeid", String.valueOf(mGetInfo.getGrade()));
-                logHashMap.put("subjectid", mGetInfo.getSubject_digits());
+                String subjects = "";
+                if (mGetInfo.getSubjectIds() != null){
+                    String subjectIds[] = mGetInfo.getSubjectIds();
+                    for (int i = 0; i < subjectIds.length; i++) {
+                        subjects += subjectIds[i];
+                        if (i == subjectIds.length-1){
+                            break;
+                        }
+                        subjects +=",";
+                    }
+                }
+                logHashMap.put("subjectid", subjects);
                 liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -321,7 +332,18 @@ public class ScienceVoteBll extends LiveBaseBll implements NoticeAction, TopicAc
                 logHashMap.put("liveid", mLiveId);
                 logHashMap.put("courseid", mGetInfo.getStudentLiveInfo().getCourseId());
                 logHashMap.put("gradeid", String.valueOf(mGetInfo.getGrade()));
-                logHashMap.put("subjectid", mGetInfo.getSubject_digits());
+                String subjects = "";
+                if (mGetInfo.getSubjectIds() != null){
+                    String subjectIds[] = mGetInfo.getSubjectIds();
+                    for (int i = 0; i < subjectIds.length; i++) {
+                        subjects += subjectIds[i];
+                        if (i == subjectIds.length-1){
+                            break;
+                        }
+                        subjects +=",";
+                    }
+                }
+                logHashMap.put("subjectid", subjects);
                 logHashMap.put("answer", isRight);
                 liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap);
             } catch (Exception e) {
