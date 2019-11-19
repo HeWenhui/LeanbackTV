@@ -1248,7 +1248,7 @@ public class CoursewarePreload {
                     isIP = true;
                 }
                 InfoUtils.sendUms(LogConfig.PRE_LOAD_START,
-                        "startPreload",
+                        "endPreload",
                         md5,
                         isIP ? "true" : "false",
                         url,
