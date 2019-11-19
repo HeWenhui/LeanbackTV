@@ -62,7 +62,7 @@ public class ScienceVoteBll extends LiveBaseBll implements NoticeAction, TopicAc
                         if (TextUtils.equals(VOTE_STATE_OPEN, open)) {
                             JSONArray optionsJSONArray = data.optJSONArray("options");
                             showChoice(optionsJSONArray);
-                            liveLogInteractive("1", "1", "receivequickchoice", interactionId);
+                            liveLogInteractive("2", "1", "receivequickchoice", interactionId);
                             for (int i = 0; i < optionsJSONArray.length(); i++) {
                                 JSONObject optionsJSONObject = optionsJSONArray.getJSONObject(i);
                                 if (TextUtils.equals(optionsJSONObject.optString("right"), "1")) {
@@ -189,14 +189,14 @@ public class ScienceVoteBll extends LiveBaseBll implements NoticeAction, TopicAc
                 } else {
                     if (TextUtils.isEmpty(rightAnswer)) {
                         submitSuccess(0);
-                        liveLogInteractive("2", "2", "submitquickchoice", interactionId, "");
+                        liveLogInteractive("3", "2", "submitquickchoice", interactionId, "");
                     } else {
                         if (TextUtils.equals(getUserAnswer(), rightAnswer)) {
                             submitSuccess(1);
-                            liveLogInteractive("2", "2", "submitquickchoice", interactionId, "right");
+                            liveLogInteractive("3", "2", "submitquickchoice", interactionId, "right");
                         } else {
                             submitSuccess(2);
-                            liveLogInteractive("2", "2", "submitquickchoice", interactionId, "wrong");
+                            liveLogInteractive("3", "2", "submitquickchoice", interactionId, "wrong");
                         }
                     }
                 }
@@ -304,9 +304,7 @@ public class ScienceVoteBll extends LiveBaseBll implements NoticeAction, TopicAc
                 logHashMap.put("liveid", mLiveId);
                 logHashMap.put("courseid", mGetInfo.getStudentLiveInfo().getCourseId());
                 logHashMap.put("gradeid", String.valueOf(mGetInfo.getGrade()));
-                String subjectId = (mGetInfo.getSubjectIds() != null && mGetInfo.getSubjectIds().length > 0) ?
-                        mGetInfo.getSubjectIds()[0] : "";
-                logHashMap.put("subjectid", subjectId);
+                logHashMap.put("subjectid", mGetInfo.getSubject_digits());
                 liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -323,9 +321,7 @@ public class ScienceVoteBll extends LiveBaseBll implements NoticeAction, TopicAc
                 logHashMap.put("liveid", mLiveId);
                 logHashMap.put("courseid", mGetInfo.getStudentLiveInfo().getCourseId());
                 logHashMap.put("gradeid", String.valueOf(mGetInfo.getGrade()));
-                String subjectId = (mGetInfo.getSubjectIds() != null && mGetInfo.getSubjectIds().length > 0) ?
-                        mGetInfo.getSubjectIds()[0] : "";
-                logHashMap.put("subjectid", subjectId);
+                logHashMap.put("subjectid", mGetInfo.getSubject_digits());
                 logHashMap.put("answer", isRight);
                 liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap);
             } catch (Exception e) {
