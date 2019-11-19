@@ -22,7 +22,8 @@ public class GroupClassAnswerResultEntity {
         int score = 0;
         String name;
         String headPath;
-
+        /** 完成率 **/
+        int completePercentage;
         public int getRankNum() {
             return rankNum;
         }
@@ -62,6 +63,14 @@ public class GroupClassAnswerResultEntity {
         public void setHeadPath(String headPath) {
             this.headPath = headPath;
         }
+
+        public int getCompletePercentage() {
+            return completePercentage;
+        }
+
+        public void setCompletePercentage(int completePercentage) {
+            this.completePercentage = completePercentage;
+        }
     }
 
     public int getType() {
@@ -87,4 +96,5 @@ public class GroupClassAnswerResultEntity {
     public void setTeamAnswer(Answer teamAnswer) {
         this.teamAnswer = teamAnswer;
     }
+
 }
