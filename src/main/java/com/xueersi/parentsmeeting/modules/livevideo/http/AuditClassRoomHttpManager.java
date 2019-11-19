@@ -6,13 +6,17 @@ import com.xueersi.common.base.BaseHttpBusiness;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
 import com.xueersi.parentsmeeting.modules.livevideo.config.AuditRoomConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
+
+import org.json.JSONObject;
 
 /**
  * 旁听课堂网络请求层
  * Created by hua on 2017-06-30.
  */
 public class AuditClassRoomHttpManager extends BaseHttpBusiness {
-
+    String TAG = "AuditClassRoomHttpManager";
     private int isArts;
 
     public AuditClassRoomHttpManager(Context context, int isArts) {
@@ -24,7 +28,6 @@ public class AuditClassRoomHttpManager extends BaseHttpBusiness {
     /**
      * 旁听课堂数据
      *
-     * @param enstuId
      * @param liveId
      * @param requestCallBack
      */
@@ -32,7 +35,6 @@ public class AuditClassRoomHttpManager extends BaseHttpBusiness {
             requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("liveId", liveId);
-//        params.addBodyParam("enstuId", enstuId);
         params.addBodyParam("stuCouId", stuCouId);
         if (isArts == 1) {
             sendPost(AuditRoomConfig.URL_LIVE_COURSE_LIVE_DETAIL_A, params, requestCallBack);
@@ -49,12 +51,27 @@ public class AuditClassRoomHttpManager extends BaseHttpBusiness {
      * @param liveId
      * @param requestCallBack
      */
-    public void getBigLiveCourseUserScoreDetail(String liveId, String stuCouId, HttpCallBack
+    public void getBigLiveCourseUserScoreDetail(String liveId, String stuCouId, int classId, int teamId, HttpCallBack
             requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("stuCouId", stuCouId);
-        sendPost(AuditRoomConfig.URL_LIVE_COURSE_LIVE_DETAIL_BIG, params, requestCallBack);
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("bizId", LiveVideoConfig.BIGLIVE_BIZID_LIVE);
+            jsonObject.put("stuCouId", Integer.parseInt(stuCouId));
+            jsonObject.put("planId", Integer.parseInt(liveId));
+            jsonObject.put("classId", classId);
+            jsonObject.put("teamId", teamId);
+            jsonObject.put("sourceId", 1);
+            params.setJson(jsonObject.toString());
+//            setDefBusinessParams(params);
+            requestCallBack.url = AuditRoomConfig.URL_LIVE_COURSE_LIVE_DETAIL_BIG;
+            sendJsonPost(requestCallBack.url, params, requestCallBack);
+        } catch (Exception e) {
+            LiveCrashReport.postCatchedException(TAG, e);
+            requestCallBack.onPmFailure(e, e.toString());
+        }
     }
 
     /**

@@ -79,8 +79,8 @@ public class AuditClassRoomBll extends BaseBll {
      * @param auditClassRoomRequestCallBack
      * @param dataLoadEntity
      */
-    public void getBigLiveCourseUserScoreDetail(String liveId, String stuCouId, final AbstractBusinessDataCallBack auditClassRoomRequestCallBack, final DataLoadEntity dataLoadEntity) {
-        mAuditClassRoomHttpManager.getBigLiveCourseUserScoreDetail(liveId, stuCouId, new HttpCallBack(dataLoadEntity) {
+    public void getBigLiveCourseUserScoreDetail(String liveId, String stuCouId, int classId, int teamId, final AbstractBusinessDataCallBack auditClassRoomRequestCallBack, final DataLoadEntity dataLoadEntity) {
+        mAuditClassRoomHttpManager.getBigLiveCourseUserScoreDetail(liveId, stuCouId, classId, teamId, new HttpCallBack(dataLoadEntity) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 AuditClassRoomEntity entity = mAudtiClassRoomHttpResponseParser.parserAuditClassRoomUserScore(responseEntity);

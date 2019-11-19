@@ -365,10 +365,13 @@ public class AuditClassRoomActivity extends XesActivity {
                             .data_is_empty_tip_study_center);
         }
         mAuditClassRoomBll.postDataLoadEvent(mDataLoadEntity.beginLoading());
-        boolean isBigLive = getIntent().getBooleanExtra("isBigLive", false);
-        if(isBigLive){
-            mAuditClassRoomBll.getBigLiveCourseUserScoreDetail(liveId, stuCouId, auditClassRoomRequestCallBack, mDataLoadEntity);
-        }else {
+        Intent intent = getIntent();
+        boolean isBigLive = intent.getBooleanExtra("isBigLive", false);
+        if (isBigLive) {
+            int classId = intent.getIntExtra("classId", -1);
+            int teamId = intent.getIntExtra("teamId", -1);
+            mAuditClassRoomBll.getBigLiveCourseUserScoreDetail(liveId, stuCouId, classId, teamId, auditClassRoomRequestCallBack, mDataLoadEntity);
+        } else {
             mAuditClassRoomBll.getLiveCourseUserScoreDetail(liveId, stuCouId, auditClassRoomRequestCallBack, mDataLoadEntity);
         }
     }
@@ -447,9 +450,14 @@ public class AuditClassRoomActivity extends XesActivity {
                 tvCheckInHour.setText(String.valueOf(hourTime[0]));
                 tvCheckInMinute.setText(String.valueOf(hourTime[1]));
             }
-            char[] secondTime = times[1].toCharArray();
-            tvCheckInSecondEnd.setText(String.valueOf(secondTime[1]));
-            tvCheckInSecond.setText(String.valueOf(secondTime[0]));
+            if (times.length > 1) {
+                char[] secondTime = times[1].toCharArray();
+                tvCheckInSecondEnd.setText(String.valueOf(secondTime[1]));
+                tvCheckInSecond.setText(String.valueOf(secondTime[0]));
+            }else {
+                tvCheckInSecondEnd.setText("0");
+                tvCheckInSecond.setText("0");
+            }
         }
     }
 
