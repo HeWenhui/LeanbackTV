@@ -1,6 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.business.evendrive;
 
-public interface TasksDataSource {
+interface TasksDataSource {
     interface LoadAnimCallBack {
         void onDataNotAvailable(String msg);
 

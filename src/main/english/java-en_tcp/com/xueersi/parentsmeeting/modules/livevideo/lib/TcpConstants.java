@@ -53,9 +53,9 @@ public class TcpConstants {
     public final static int CLEAN_UP_REC = 18;
     /** 消息类型，服务器clean up 恢复现场 */
     public final static int CLEAN_UP_SECN = 17;
-
+    /** roleplay */
     public final static int ROLE_PLAY_TYPE = 200;
-
+    /** roleplay */
     public final static int ROLE_PLAY_OPERATION = 201;
 
     /** 消息类型，what's missing */
