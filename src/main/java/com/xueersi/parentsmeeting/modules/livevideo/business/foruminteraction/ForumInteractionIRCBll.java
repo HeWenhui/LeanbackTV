@@ -220,18 +220,7 @@ public class ForumInteractionIRCBll extends LiveBaseBll implements NoticeAction 
         logHashMap.put("gradeid",""+mGetInfo.getGrade());
         logHashMap.put("courseid",mLiveBll.getCourseId());
         logHashMap.put("userid",userInfo.getStuId());
-        String subjects = "";
-        if (mGetInfo.getSubjectIds() != null){
-            String subjectIds[] = mGetInfo.getSubjectIds();
-            for (int i = 0; i < subjectIds.length; i++) {
-                subjects += subjectIds[i];
-                if (i == subjectIds.length-1){
-                    break;
-                }
-                subjects +=",";
-            }
-        }
-        logHashMap.put("subjectid",subjects);
+        logHashMap.put("subjectid",mGetInfo.getSubject_digits());
         return logHashMap;
     }
 
