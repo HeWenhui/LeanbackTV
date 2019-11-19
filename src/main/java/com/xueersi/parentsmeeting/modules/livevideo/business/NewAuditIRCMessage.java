@@ -35,7 +35,7 @@ import java.util.UUID;
  * @author linyuqiang
  */
 public class NewAuditIRCMessage implements IAuditIRCMessage {
-    private String TAG = "AuditIRCMessage";
+    private String TAG = "NewAuditIRCMessage";
     protected Logger logger = LoggerFactory.getLogger(TAG);
     String eventid = LiveVideoConfig.LIVE_LISTEN;
     private int mConnectCount = 0, mDisconnectCount = 0;
@@ -327,8 +327,12 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
              **/
 
             logger.i("ircsdk onSendPeerMessageResponse");
-            logger.i("ircsdk onSendPeerMessageResponse code" + sendPeerMessageResp.code);
-            logger.i("ircsdk onSendPeerMessageResponse info" + sendPeerMessageResp.info);
+            logger.i("ircsdk onSendPeerMessageResponse code=" + sendPeerMessageResp.code);
+            logger.i("ircsdk onSendPeerMessageResponse info=" + sendPeerMessageResp.info);
+            PMDefs.PsIdEntity toUserInfo = sendPeerMessageResp.toUserInfo;
+            if(toUserInfo!=null){
+                logger.i("ircsdk onSendPeerMessageResponse:toUserInfo=" + toUserInfo.nickname);
+            }
         }
     };
 

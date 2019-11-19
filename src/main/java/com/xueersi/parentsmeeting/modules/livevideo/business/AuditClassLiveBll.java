@@ -669,9 +669,13 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
             channel = mGetInfo.getId() + "-" + studentLiveInfo.getClassId();
         }
         s += ",liveType=" + mLiveType + ",channel=" + channel;
-        String nickname = mGetInfo.getLiveType() + "_"
-                + mGetInfo.getId() + "_" + mGetInfo.getStuId() + "_" + mGetInfo.getStuSex();
-
+        String nickname;
+        if (isBigLive) {
+            nickname = mGetInfo.getIrcNick().replace("s_","");
+        } else {
+            nickname = mGetInfo.getLiveType() + "_"
+                    + mGetInfo.getId() + "_" + mGetInfo.getStuId() + "_" + mGetInfo.getStuSex();
+        }
         mIRCMessage = new NewAuditIRCMessage(mContext, nickname, mGetInfo.getId(), mGetInfo.getStudentLiveInfo().getClassId(), channel);
         ((NewAuditIRCMessage) mIRCMessage).setLiveAndBackDebug(this);
         mIRCMessage.setCallback(mIRCcallback);
