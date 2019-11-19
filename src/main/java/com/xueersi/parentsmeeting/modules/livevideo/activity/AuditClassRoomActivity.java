@@ -365,7 +365,12 @@ public class AuditClassRoomActivity extends XesActivity {
                             .data_is_empty_tip_study_center);
         }
         mAuditClassRoomBll.postDataLoadEvent(mDataLoadEntity.beginLoading());
-        mAuditClassRoomBll.getLiveCourseUserScoreDetail(liveId, stuCouId, auditClassRoomRequestCallBack, mDataLoadEntity);
+        boolean isBigLive = getIntent().getBooleanExtra("isBigLive", false);
+        if(isBigLive){
+            mAuditClassRoomBll.getBigLiveCourseUserScoreDetail(liveId, stuCouId, auditClassRoomRequestCallBack, mDataLoadEntity);
+        }else {
+            mAuditClassRoomBll.getLiveCourseUserScoreDetail(liveId, stuCouId, auditClassRoomRequestCallBack, mDataLoadEntity);
+        }
     }
 
 

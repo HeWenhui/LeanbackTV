@@ -177,7 +177,7 @@ public class LiveVideoEnter {
      * @param context
      * @param vSectionID
      */
-    public static boolean intentToAuditClassActivity(final Activity context, final String stuCouId, final String vSectionID) {
+    public static boolean intentToAuditClassActivity(final Activity context, final String stuCouId, final String vSectionID, final boolean isBigLive) {
 
         //低端机设备检测页拦截
         if (ShareDataManager.getInstance().getBoolean(ShareBusinessConfig
@@ -196,7 +196,7 @@ public class LiveVideoEnter {
 
             @Override
             public void success() {
-                AuditClassLiveActivity.intentTo(context, stuCouId, vSectionID);
+                AuditClassLiveActivity.intentTo(context, stuCouId, vSectionID,isBigLive);
             }
 
             @Override

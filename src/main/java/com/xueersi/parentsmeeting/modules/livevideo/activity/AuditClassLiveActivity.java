@@ -884,6 +884,8 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                         "times=" + times + ",mVSectionID=" + mVSectionID + ",roomClick");
                 Bundle bundle = new Bundle();
                 bundle.putInt("isArts", isArts);
+                boolean isBigLive = getIntent().getBooleanExtra("isBigLive", false);
+                bundle.putBoolean("isBigLive", isBigLive);
                 OtherModulesEnter.intentToAuditClassActivity(AuditClassLiveActivity.this, mVSectionID, stuCouId, bundle);
             }
         });
@@ -1852,9 +1854,10 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
      * @param context
      * @param liveId
      */
-    public static void intentTo(Context context, String stuCouId, String liveId) {
+    public static void intentTo(Context context, String stuCouId, String liveId,boolean isBigLive) {
         Intent intent = new Intent(context, AuditClassLiveActivity.class);
         intent.putExtra("stuCouId", stuCouId);
+        intent.putExtra("isBigLive", isBigLive);
         intent.putExtra("vSectionID", liveId);
         intent.putExtra("type", LiveVideoConfig.LIVE_TYPE_LIVE);
         context.startActivity(intent);

@@ -1027,6 +1027,17 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction,
         sendPost(requestCallBack.url, params, requestCallBack);
     }
 
+    public void getBigStudentLiveInfo(String liveId, HttpCallBack
+            requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+//        params.addBodyParam("enstuId", enstuId);
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("souceId", "1");
+        setDefaultParameter(params);
+        requestCallBack.url = LiveHttpConfig.URL_LIVE_STUDY_INFO;
+        sendPost(requestCallBack.url, params, requestCallBack);
+    }
+
     /**
      * 文理半身直播 旁听数据接口
      *

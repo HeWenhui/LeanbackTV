@@ -44,6 +44,20 @@ public class AuditClassRoomHttpManager extends BaseHttpBusiness {
     }
 
     /**
+     * 旁听课堂数据- 大班
+     *
+     * @param liveId
+     * @param requestCallBack
+     */
+    public void getBigLiveCourseUserScoreDetail(String liveId, String stuCouId, HttpCallBack
+            requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("stuCouId", stuCouId);
+        sendPost(AuditRoomConfig.URL_LIVE_COURSE_LIVE_DETAIL_BIG, params, requestCallBack);
+    }
+
+    /**
      * 是否有旁听课堂数据
      *
      * @param roomId
