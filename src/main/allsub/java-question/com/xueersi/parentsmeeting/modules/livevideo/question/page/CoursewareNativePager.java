@@ -19,7 +19,6 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.xueersi.common.config.AppConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.tencent.smtt.export.external.interfaces.ConsoleMessage;
@@ -41,7 +40,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.SysLogLable;
-import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
@@ -692,10 +690,10 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                             addJs = false;
                             loadJs = false;
                             NewCourseLog.sno3(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), getSubtestid(), test.getPreviewPath(), ispreload, test.getId(), detailInfo.isTUtor(), getProtocal());
-                            if (TextUtils.equals("2", getProtocal())) {
-                                wvSubjectWeb.loadUrl(test.getPreviewPath() + "?cw_platform=android");
-                            } else {
+                            if (TextUtils.isEmpty(getProtocal()) || TextUtils.equals("0", getProtocal()) || TextUtils.equals("1", getProtocal())) {
                                 wvSubjectWeb.loadUrl(test.getPreviewPath());
+                            } else {
+                                wvSubjectWeb.loadUrl(test.getPreviewPath() + "?cw_platform=android");
                             }
                         }
                     }
@@ -1412,7 +1410,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 } catch (Exception e) {
                     LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 }
-                if (!TextUtils.equals("2", getProtocal())) {
+                if (TextUtils.isEmpty(getProtocal())||TextUtils.equals("0", getProtocal())||TextUtils.equals("1", getProtocal())) {
                     mainHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -1486,14 +1484,14 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     setNum(1);
                     currentIndex = 0;
                     int type;
-                    if (TextUtils.equals("2", getProtocal())) {
-                        wvSubjectWeb.loadUrl(test.getPreviewPath() + "?cw_platform=android");
-                        staticWeb.setLoadUrl(test.getPreviewPath() + "?cw_platform=android");
-                        type = newCourseCache.loadCourseWareUrl(test.getPreviewPath() + "?cw_platform=android");
-                    } else {
+                    if (TextUtils.isEmpty(getProtocal()) || TextUtils.equals("0", getProtocal()) || TextUtils.equals("1", getProtocal())) {
                         wvSubjectWeb.loadUrl(test.getPreviewPath());
                         staticWeb.setLoadUrl(test.getPreviewPath());
                         type = newCourseCache.loadCourseWareUrl(test.getPreviewPath());
+                    } else {
+                        wvSubjectWeb.loadUrl(test.getPreviewPath() + "?cw_platform=android");
+                        staticWeb.setLoadUrl(test.getPreviewPath() + "?cw_platform=android");
+                        type = newCourseCache.loadCourseWareUrl(test.getPreviewPath() + "?cw_platform=android");
                     }
 
                     if (type != 0) {
@@ -1887,7 +1885,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         @Override
         public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
             String url = request.getUrl() + "";
-            if (!TextUtils.equals("2", getProtocal())) {
+            if (TextUtils.isEmpty(getProtocal())||TextUtils.equals("0", getProtocal())||TextUtils.equals("1", getProtocal())) {
                 if (url.contains(".html")) {
                     if (!addJs) {
                         addJs = true;

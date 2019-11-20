@@ -420,10 +420,10 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 }
             }
         }), "xesApp");
-        if (TextUtils.equals("2", getProtocal())) {
-            wvSubjectWeb.loadUrl(mGroupGameTestInfosEntity.getTestInfoList().get(0).getPreviewPath()+"?cw_platform=android");
-        }else {
+        if (TextUtils.isEmpty(getProtocal())||TextUtils.equals("0", getProtocal())||TextUtils.equals("1", getProtocal())) {
             wvSubjectWeb.loadUrl(mGroupGameTestInfosEntity.getTestInfoList().get(0).getPreviewPath());
+        }else {
+            wvSubjectWeb.loadUrl(mGroupGameTestInfosEntity.getTestInfoList().get(0).getPreviewPath()+"?cw_platform=android");
         }
     }
 
@@ -466,7 +466,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         @Override
         public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
             String url = request.getUrl() + "";
-            if (!TextUtils.equals("2", getProtocal())) {
+            if (TextUtils.isEmpty(getProtocal())||TextUtils.equals("0", getProtocal())||TextUtils.equals("1", getProtocal())) {
                 if (url.contains(".html")) {
                     if (!addJs) {
                         addJs = true;
