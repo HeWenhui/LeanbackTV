@@ -1045,7 +1045,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                         StableLogHashMap stableLogHashMap = new StableLogHashMap("noticedelay");
                         stableLogHashMap.put("type", "" + mtype);
                         stableLogHashMap.put("vts", "" + seiTimetamp);
-                        stableLogHashMap.put("delayMillis", "" + delayMillis);
+                        stableLogHashMap.put("delaymillis", "" + delayMillis);
                         stableLogHashMap.put("status", "" + (currentSeiTimetamp > 0));
                         liveAndBackDebugIml.umsAgentDebugInter(LiveVideoConfig.LIVE_NOTICE_DELAY, stableLogHashMap.getData());
                         if (delayMillis > 3000) {
