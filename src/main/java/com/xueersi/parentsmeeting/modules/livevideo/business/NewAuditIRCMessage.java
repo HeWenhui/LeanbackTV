@@ -14,6 +14,7 @@ import com.xueersi.lib.framework.utils.JsonUtil;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveEnvironment;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.NewTalkConfEntity;
@@ -63,10 +64,9 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
     long enterTime;
 
     boolean onUserList = false;
-    Context context = ContextManager.getContext();
     ChatClient mChatClient;
     Context mContext;
-    File workSpaceDir = new File(context.getCacheDir(), "irc/workspace");
+    File workSpaceDir;
     private String liveId;
     private String classId;
     private List<String> roomid;
@@ -74,14 +74,14 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
     private boolean isConnected;
     private boolean isFirstLogin = true;
 
-    public NewAuditIRCMessage(Context context, String nickname, String liveId, String classId, String channel) {
+    public NewAuditIRCMessage(LiveEnvironment liveEnvironment, String nickname, String liveId, String classId, String channel) {
         this.mChannel = channel;
         this.mNickname = nickname;
         this.liveId = liveId;
         this.classId = classId;
-        mContext = context;
-        mLogtf = new LogToFile(TAG);
-        mLogtf.clear();
+        mContext = liveEnvironment.getActivity();
+        workSpaceDir = new File(mContext.getCacheDir(), "irc/workspace");
+        mLogtf = liveEnvironment.createLogToFile(TAG);
         mLogtf.d("AuditIRCMessage:channel=" + channel + ",nickname=" + nickname);
         enterTime = System.currentTimeMillis();
     }
@@ -330,7 +330,7 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
             logger.i("ircsdk onSendPeerMessageResponse code=" + sendPeerMessageResp.code);
             logger.i("ircsdk onSendPeerMessageResponse info=" + sendPeerMessageResp.info);
             PMDefs.PsIdEntity toUserInfo = sendPeerMessageResp.toUserInfo;
-            if(toUserInfo!=null){
+            if (toUserInfo != null) {
                 logger.i("ircsdk onSendPeerMessageResponse:toUserInfo=" + toUserInfo.nickname);
             }
         }
@@ -338,6 +338,7 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
 
     private IRoomChatListener mRoomListener = new IRoomChatListener() {
         private List<PMDefs.PsIdEntity> userLists;
+
         /**
          * 本人进入聊天室回调响应
          * @param joinRoomResp
@@ -429,14 +430,14 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
             // 353-聊天室昵称列表 366-聊天室昵称列表结束
             logger.i("ircsdk room user code: " + roomUserList.code);
             logger.i("ircsdk room user list size: " + roomUserList.userList.size());
-            if (PMDefs.ResultCode.Result_RoomUserList == roomUserList.code){
+            if (PMDefs.ResultCode.Result_RoomUserList == roomUserList.code) {
                 if (roomUserList.userList != null && !roomUserList.userList.isEmpty()) {
-                    if (userLists == null){
+                    if (userLists == null) {
                         userLists = new ArrayList<>();
                     }
                     userLists.addAll(roomUserList.userList);
                 }
-            }else if (PMDefs.ResultCode.Result_RoomUserListEnd == roomUserList.code) {
+            } else if (PMDefs.ResultCode.Result_RoomUserListEnd == roomUserList.code) {
                 onUserList = true;
                 String s = "___bug  onUserList:channel=" + roomUserList.roomId + ",users=" + roomUserList.userList.size();
                 if (roomUserList.userList != null && !roomUserList.userList.isEmpty()) {
@@ -473,7 +474,7 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
             logHashMap.put("roomCode", "" + roomTopic.code);
             logHashMap.put("roomTopic", "" + roomTopic.topic);
             liveAndBackDebug.umsAgentDebugSys(eventid, logHashMap.getData());
-            if (PMDefs.ResultCode.Result_RoomTopicEnd == roomTopic.code){
+            if (PMDefs.ResultCode.Result_RoomTopicEnd == roomTopic.code) {
                 return;
             }
             if (mIRCCallback != null) {
@@ -594,9 +595,9 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
         //设置直播信息
         liveInfo = new PMDefs.LiveInfo();
         liveInfo.nickname = "p_" + mNickname;
-        if (LiveAppUserInfo.getInstance().getRealName() != null){
+        if (LiveAppUserInfo.getInstance().getRealName() != null) {
             liveInfo.realname = LiveAppUserInfo.getInstance().getRealName();
-        }else {
+        } else {
             liveInfo.realname = mNickname;
         }
         liveInfo.liveId = liveId;
@@ -632,14 +633,14 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
         logHashMap.put("PsAppClientKey", appkey);
         logHashMap.put("PsImId", psimId);
         logHashMap.put("PsImPwd", psimKey);
-        logHashMap.put("infocode",""+infocode);
-        logHashMap.put("realname",liveInfo.realname);
-        logHashMap.put("nickname",liveInfo.nickname);
-        logHashMap.put("username",liveInfo.username);
-        logHashMap.put("classId",liveInfo.classId);
-        logHashMap.put("businessId",liveInfo.businessId);
-        logHashMap.put("location",liveInfo.location);
-        logHashMap.put("liveId",liveInfo.liveId);
+        logHashMap.put("infocode", "" + infocode);
+        logHashMap.put("realname", liveInfo.realname);
+        logHashMap.put("nickname", liveInfo.nickname);
+        logHashMap.put("username", liveInfo.username);
+        logHashMap.put("classId", liveInfo.classId);
+        logHashMap.put("businessId", liveInfo.businessId);
+        logHashMap.put("location", liveInfo.location);
+        logHashMap.put("liveId", liveInfo.liveId);
         logHashMap.put("workspace", workSpaceDir.getAbsolutePath());
         logHashMap.put("time", "" + System.currentTimeMillis());
         logHashMap.put("userid", LiveAppUserInfo.getInstance().getStuId());
@@ -812,7 +813,7 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
         logMap.put("time", "" + System.currentTimeMillis());
         logMap.put("uid", LiveAppUserInfo.getInstance().getStuId());
         logMap.put("live_id", liveId);
-        logMap.put("channel"  ,mChannel);
+        logMap.put("channel", mChannel);
         return logMap;
     }
 

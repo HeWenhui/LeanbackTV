@@ -449,6 +449,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         auditClassBll = new AuditClassBll(liveEnvironment);
         mLiveBll.setVideoAction(this);
         mLiveBll.setAuditClassAction(auditClassBll);
+        mLiveBll.setLiveEnvironment(liveEnvironment);
         return true;
     }
 
