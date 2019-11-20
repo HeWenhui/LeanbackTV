@@ -37,5 +37,7 @@ public class LivePluginGrayConfig {
     public static final int MODULE_VIDEO_MARK = 57;
     /**Nb实验（加试&自由实验）*/
     public static final int MODULE_NB_EXPERIMENT = 69;
+    /**语音评测**/
+    public static final int MOUDLE_SPEECH_ASSESS = 65;
 
 }
