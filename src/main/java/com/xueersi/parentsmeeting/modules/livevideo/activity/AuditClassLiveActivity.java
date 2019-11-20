@@ -295,6 +295,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
 
             @Override
             public void onOpenSuccess() {
+                xv_livevideo_student.setVisibility(View.VISIBLE);
                 rl_livevideo_student.setVisibility(View.GONE);
                 MediaController2 mMediaController = new MediaController2(AuditClassLiveActivity.this,
                         xv_livevideo_student);
@@ -1172,6 +1173,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         mHandler.post(new Runnable() {
             @Override
             public void run() {
+                xv_livevideo_student.setVisibility(View.GONE);
                 rl_livevideo_student.setVisibility(View.VISIBLE);
                 pb_livevideo_student_load.setVisibility(View.GONE);
                 tv_livevideo_student_load_tip.setVisibility(View.GONE);
