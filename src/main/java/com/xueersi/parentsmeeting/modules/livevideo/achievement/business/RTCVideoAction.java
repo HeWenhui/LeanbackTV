@@ -30,7 +30,7 @@ public interface RTCVideoAction {
     void updateAssessmentMode(boolean isOpen);
 
     /** 收音条音量变化回调 **/
-    void onVolumeUpdate(int volume);
+    void onVolumeUpdate(float volume);
 
     int GOLD_TYPE_QUESTION = 1;
     int GOLD_TYPE_REDPACKAGE = 2;
