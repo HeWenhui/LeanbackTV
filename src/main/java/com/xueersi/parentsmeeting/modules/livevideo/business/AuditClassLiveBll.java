@@ -23,6 +23,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack.Simpl
 import com.xueersi.parentsmeeting.modules.livevideo.config.BigLiveCfg;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveEnvironment;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveLog;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.HalfBodyLiveStudyInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -66,6 +67,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
     private AuditVideoAction mVideoAction;
     private RoomAction mRoomAction;
     private AuditClassAction auditClassAction;
+    private LiveEnvironment liveEnvironment;
     private LiveHttpManager mHttpManager;
     private LiveVideoSAConfig liveVideoSAConfig;
     private LiveHttpResponseParser mHttpResponseParser;
@@ -134,7 +136,6 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
         mHttpManager.addBodyParam("stuCouId", vStuCourseID);
         mHttpResponseParser = new LiveHttpResponseParser(context);
         mLogtf = new LogToFile(context, TAG);
-        mLogtf.clear();
         netWorkType = NetWorkHelper.getNetWorkState(context);
         mLiveTopic.setMode(LiveTopic.MODE_CLASS);
         liveLog = new LiveLog(context, mLiveType, mLiveId, "AC");
@@ -258,6 +259,10 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
 
     public void setAuditClassAction(AuditClassAction auditClassAction) {
         this.auditClassAction = auditClassAction;
+    }
+
+    public void setLiveEnvironment(LiveEnvironment liveEnvironment) {
+        this.liveEnvironment = liveEnvironment;
     }
 
     private final AuditIRCCallback mIRCcallback = new AuditIRCCallback() {
@@ -676,7 +681,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
             nickname = mGetInfo.getLiveType() + "_"
                     + mGetInfo.getId() + "_" + mGetInfo.getStuId() + "_" + mGetInfo.getStuSex();
         }
-        mIRCMessage = new NewAuditIRCMessage(mContext, nickname, mGetInfo.getId(), mGetInfo.getStudentLiveInfo().getClassId(), channel);
+        mIRCMessage = new NewAuditIRCMessage(liveEnvironment, nickname, mGetInfo.getId(), mGetInfo.getStudentLiveInfo().getClassId(), channel);
         ((NewAuditIRCMessage) mIRCMessage).setLiveAndBackDebug(this);
         mIRCMessage.setCallback(mIRCcallback);
         mIRCMessage.create();
