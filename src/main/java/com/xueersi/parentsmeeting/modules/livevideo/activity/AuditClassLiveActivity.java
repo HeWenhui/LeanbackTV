@@ -57,6 +57,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.AuditLiveEnvironment;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
@@ -137,7 +138,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     public int isArts;
     private long resumeTime;
     private LogToFile mLogtf;
-
+    boolean isBigLive;
     public static final String ENTER_ROOM_FROM = "from";
     /** 直播类型 */
     private int liveType;
@@ -185,6 +186,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     static int times = -1;
     LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
     protected LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
+    private AuditLiveEnvironment liveEnvironment;
 
     @Override
     protected boolean onVideoCreate(Bundle savedInstanceState) {
@@ -441,7 +443,10 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         }
         LogToFile.auditClassLiveBll = mLiveBll.getLiveLog();
         mPlayStatistics = mLiveBll.getVideoListener();
-        auditClassBll = new AuditClassBll(this);
+        liveEnvironment = new AuditLiveEnvironment(this);
+        isBigLive = getIntent().getBooleanExtra("isBigLive", false);
+        liveEnvironment.setBigLive(isBigLive);
+        auditClassBll = new AuditClassBll(liveEnvironment);
         mLiveBll.setVideoAction(this);
         mLiveBll.setAuditClassAction(auditClassBll);
         return true;
@@ -840,6 +845,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         isArts = mGetInfo.getIsArts();
         mMediaController.setFileName(getInfo.getName());
         mLiveBll.setHalfBodyLive(isHalfBodyLive());
+        liveEnvironment.setLiveGetInfo(getInfo);
         mHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -847,7 +853,14 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                     return;
                 }
                 mLiveBll.getStudentLiveInfo();
-                mHandler.postDelayed(this, 300000);
+                long delayMillis;
+                //大班直播一分钟
+                if (isBigLive) {
+                    delayMillis = 60000;
+                } else {
+                    delayMillis = 300000;
+                }
+                mHandler.postDelayed(this, delayMillis);
             }
         });
         initBussinessUI();
@@ -884,7 +897,6 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                         "times=" + times + ",mVSectionID=" + mVSectionID + ",roomClick");
                 Bundle bundle = new Bundle();
                 bundle.putInt("isArts", isArts);
-                boolean isBigLive = getIntent().getBooleanExtra("isBigLive", false);
                 bundle.putBoolean("isBigLive", isBigLive);
                 if (isBigLive) {
                     LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
@@ -895,7 +907,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
             }
         });
 
-        auditClassBll = new AuditClassBll(this);
+        auditClassBll = new AuditClassBll(liveEnvironment);
         mLiveBll.setAuditClassAction(auditClassBll);
 
 
