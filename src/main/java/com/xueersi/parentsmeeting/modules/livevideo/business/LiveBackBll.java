@@ -791,7 +791,6 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
 
             } else if (LocalCourseConfig.CATEGORY_GROUP_CLASS == videoQuestionEntity.getvCategory()) {
                 //英语1v2
-                Log.d("wangyongchao", "index="+index);
                 if (startTime <= playPosition && playPosition < endTime) {
                     mQuestionEntity = videoQuestionEntity;
                     hasQuestionShow = true;
