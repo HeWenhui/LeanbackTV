@@ -111,8 +111,11 @@ public class NewCourseCache {
 
     public int loadCourseWareUrl(String url) {
         int type = index(url, coursewarePages);
-        if (type != 1) {
+        if (type == 0) {
             type = index(url, XESlides);
+            if (type == 0) {
+                type = -1;
+            }
         }
         return type;
     }
