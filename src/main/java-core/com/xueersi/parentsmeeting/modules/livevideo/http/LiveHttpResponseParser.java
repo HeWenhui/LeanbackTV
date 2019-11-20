@@ -559,6 +559,12 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 String[] arrSubjIds = strSubjIds.split(",");
                 getInfo.setSubjectIds(arrSubjIds);
             }
+            //理科
+            if (data.has("subjectIds")) {
+                String strSubjIds = data.getString("subjectIds");
+                String[] arrSubjIds = strSubjIds.split(",");
+                getInfo.setSubjectIds(arrSubjIds);
+            }
             //金话筒
             getInfo.setUseGoldMicroPhone(data.optInt("isGoldMicrophone"));
             //超级演讲秀  注意空格
