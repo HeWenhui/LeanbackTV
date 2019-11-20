@@ -25,6 +25,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveEnvironment;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveLog;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveOnLineLogs;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.HalfBodyLiveStudyInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.StudentLiveInfoEntity;
@@ -38,6 +39,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveBusinessResponsePar
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveGetPlayServer;
 import com.xueersi.parentsmeeting.modules.livevideo.video.TeacherIsPresent;
 
@@ -135,20 +137,17 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
         mHttpManager.addBodyParam("courseId", courseId);
         mHttpManager.addBodyParam("stuCouId", vStuCourseID);
         mHttpResponseParser = new LiveHttpResponseParser(context);
-        mLogtf = new LogToFile(context, TAG);
         netWorkType = NetWorkHelper.getNetWorkState(context);
         mLiveTopic.setMode(LiveTopic.MODE_CLASS);
         liveLog = new LiveLog(context, mLiveType, mLiveId, "AC");
+        ProxUtil.getProxUtil().put(mContext, LiveOnLineLogs.class, liveLog);
+        mLogtf = new LogToFile(context, TAG);
         isBigLive = mBaseActivity.getIntent().getBooleanExtra("isBigLive", false);
         if (isBigLive) {
             mHttpManager.addBodyParam("planId", vSectionID);
         } else {
             mHttpManager.addBodyParam("liveId", vSectionID);
         }
-    }
-
-    public LiveLog getLiveLog() {
-        return liveLog;
     }
 
     /**
