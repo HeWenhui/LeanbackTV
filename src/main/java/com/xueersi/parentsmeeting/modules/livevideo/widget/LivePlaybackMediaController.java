@@ -321,7 +321,7 @@ public class LivePlaybackMediaController extends MediaController2 {
                 }
 
             }
-        }else if(LocalCourseConfig.CATEGORY_GROUP_CLASS==videoQuestionEntity.getvCategory()){
+        } else if(LocalCourseConfig.CATEGORY_GROUP_CLASS==videoQuestionEntity.getvCategory()){
             String packageAttr = videoQuestionEntity.getPackageAttr();
             switch (packageAttr) {
                 case "7":
@@ -333,6 +333,12 @@ public class LivePlaybackMediaController extends MediaController2 {
                     break;
 
             }
+        } else if(LocalCourseConfig.CATEGORY_GROUP_CLASS_AUDIO_ROLL_CALL_START==videoQuestionEntity.getvCategory()){
+            textView.setText("打招呼");
+
+        } else if(LocalCourseConfig.CATEGORY_GROUP_CLASS_AUDIO_ROLL_CALL_END==videoQuestionEntity.getvCategory()){
+            textView.setText("下课");
+
         }
         final ImageView ivPlay = (ImageView) contentView.findViewById(R.id.iv_liveplayback_point_play);
         final int insretTime = videoQuestionEntity.getvQuestionInsretTime();
