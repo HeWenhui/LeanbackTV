@@ -328,8 +328,10 @@ public class LivePlaybackMediaController extends MediaController2 {
                     textView.setText("语音评测");
                     break;
                 case "29":
+                    textView.setText("单人上台");
+                    break;
                 case "30":
-                    textView.setText("上台");
+                    textView.setText("双人上台");
                     break;
 
             }
