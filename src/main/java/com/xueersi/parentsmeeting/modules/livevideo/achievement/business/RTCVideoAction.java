@@ -20,6 +20,8 @@ public interface RTCVideoAction {
     /** 更新机器人队友金币 **/
     void updateRobotGold(int gold);
 
+    void startTeamGoldAnimition(int gold, float getX, float getY);
+
     void onMediaControllerShow();
 
     void onMediaControllerHide();
