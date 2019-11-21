@@ -146,6 +146,9 @@ public class LivePlaybackMediaController extends MediaController2 {
             LayoutInflater inflater = activity.getLayoutInflater();
             for (int i = 0; i < lstVideoQuestion.size(); i++) {
                 final VideoQuestionEntity videoQuestionEntity = lstVideoQuestion.get(i);
+                if (LocalCourseConfig.CATEGORY_GROUP_CLASS_VIDEO == videoQuestionEntity.getvCategory()) {
+                    continue;
+                }
                 String key = "";
                 RelativeLayout rlClick = (RelativeLayout) inflater.inflate(R.layout.item_video_ques_point,
                         rlKeyPoints, false);
@@ -224,7 +227,9 @@ public class LivePlaybackMediaController extends MediaController2 {
         final View contentView = activity.getLayoutInflater().inflate(R.layout.pop_liveplayback_point, rlKeytip, false);
         contentView.setTag(videoQuestionEntity);
         TextView textView = (TextView) contentView.findViewById(R.id.tv_liveplayback_point_name);
-        if (LocalCourseConfig.CATEGORY_QUESTION == videoQuestionEntity.getvCategory()) {
+        if (LocalCourseConfig.CATEGORY_GROUP_CLASS_VIDEO == videoQuestionEntity.getvCategory()) {
+            return;
+        }else if (LocalCourseConfig.CATEGORY_QUESTION == videoQuestionEntity.getvCategory()) {
             if (LocalCourseConfig.QUESTION_TYPE_SPEECH.equals(videoQuestionEntity.getvQuestionType())) {
                 textView.setText("语音评测");
             } else {
