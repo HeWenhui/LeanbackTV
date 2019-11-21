@@ -51,7 +51,7 @@ public class AuditLiveEnvironment implements LiveEnvironment {
 
     @Override
     public LiveAndBackDebug getLiveAndBackDebug() {
-        return null;
+        return ProxUtil.getProxUtil().get(activity, LiveAndBackDebug.class);
     }
 
     @Override

@@ -192,8 +192,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     protected boolean onVideoCreate(Bundle savedInstanceState) {
         times++;
         createTime = System.currentTimeMillis();
-        mLogtf = new LogToFile(TAG);
-        mLogtf.clear();
+
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         liveType = getIntent().getIntExtra("type", 0);
         // 设置不可自动横竖屏
@@ -205,7 +204,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
             onUserBackPressed();
             return false;
         }
-        mLogtf.setLiveOnLineLogs(mLiveBll.getLiveLog());
+        mLogtf = new LogToFile(this, TAG);
         initView();
         return true;
     }
@@ -295,6 +294,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
 
             @Override
             public void onOpenSuccess() {
+                xv_livevideo_student.setVisibility(View.VISIBLE);
                 rl_livevideo_student.setVisibility(View.GONE);
                 MediaController2 mMediaController = new MediaController2(AuditClassLiveActivity.this,
                         xv_livevideo_student);
@@ -441,7 +441,6 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
             Toast.makeText(this, "直播类型不支持", Toast.LENGTH_SHORT).show();
             return false;
         }
-        LogToFile.auditClassLiveBll = mLiveBll.getLiveLog();
         mPlayStatistics = mLiveBll.getVideoListener();
         liveEnvironment = new AuditLiveEnvironment(this);
         isBigLive = getIntent().getBooleanExtra("isBigLive", false);
@@ -1172,6 +1171,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         mHandler.post(new Runnable() {
             @Override
             public void run() {
+                xv_livevideo_student.setVisibility(View.GONE);
                 rl_livevideo_student.setVisibility(View.VISIBLE);
                 pb_livevideo_student_load.setVisibility(View.GONE);
                 tv_livevideo_student_load_tip.setVisibility(View.GONE);
@@ -1847,7 +1847,6 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
             public void run() {
                 if (mLiveBll != null) {
                     mLiveBll.onDestroy();
-                    LogToFile.auditClassLiveBll = null;
                 }
                 ProxUtil.getProxUtil().clear(AuditClassLiveActivity.this);
             }
