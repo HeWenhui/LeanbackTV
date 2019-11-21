@@ -15,6 +15,10 @@ public interface RTCVideoAction {
 
     void updateSpread(boolean isSpread);
 
+    void startVideoByInteractionId(String interactionId);
+
+    void stopVideoByInteractionId(String interactionId);
+
     void updateGold(int gold, float x, float y, int type);
 
     /** 更新机器人队友金币 **/
