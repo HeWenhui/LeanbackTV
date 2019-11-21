@@ -36,4 +36,7 @@ public class LiveVideoHttpEnConfig {
     public static String URL_LIVE_GET_BETTER_ME_AND_PK_MIDDLE_PAGE = LiveVideoConfig.APP_ARTS_HTTP_HOST + "/LiveCourse/getBetterMeAndPkMiddlePage";
     /** 英语 获取服务器时间 */
     public static String URL_GET_SERVER_TIME = LiveVideoConfig.APP_ARTS_HTTP_HOST + "/LiveCourse/getServerTime";
+
+    /** 英语1v2 获取学生金币数量 */
+    public static String URL_GET_STU_STAR_AND_GOLD_AMOUNT = LiveVideoConfig.APP_ARTS_HTTP_HOST + "/LiveCourse/getStuStarAndGoldAmount";
 }

@@ -961,6 +961,15 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction 
         sendPost(requestCallBack.url, params, requestCallBack);
     }
 
+    public void getEnglishStuGoldCount(String liveId, HttpCallBack
+            requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("liveId", liveId);
+        setDefaultParameter(params);
+        requestCallBack.url = LiveVideoHttpEnConfig.URL_GET_STU_STAR_AND_GOLD_AMOUNT;
+        sendPost(requestCallBack.url, params, requestCallBack);
+    }
+
     public void setTotalOpeningLength(String courseId, String liveId, String classId, String
             duration, String speakingNum, String speakingLen, HttpCallBack
                                               requestCallBack) {
