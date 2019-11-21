@@ -10,6 +10,14 @@ public class AuditRoomConfig {
     public final static int QUESTION_RIGHT = 1;
     /** 互动题-半对 */
     public final static int QUESTION_HALF_RIGHT = 2;
+
+    /** 互动题-正确 */
+    public final static int QUESTION_BIG_RIGHT = 1;
+    /** 互动题-错误 */
+    public final static int QUESTION_BIG_WRONG = 2;
+    /** 互动题-半对 */
+    public final static int QUESTION_BIG_HALF_RIGHT = 3;
+
     /** 我的排名 */
     public final static int RATE_MY = 1;
     /** 小组排名 */
