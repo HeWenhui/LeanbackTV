@@ -457,6 +457,20 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
                     String[] arrSubjIds = strSubjIds.split(",");
                     liveGetInfo.setSubjectIds(arrSubjIds);
                 }
+                try {
+                    //回放理科日志新增字段
+                    if (liveInfo.has("subjectIds")) {
+                        String strSubjIds = liveInfo.getString("subjectIds");
+                        String[] arrSubjIds = strSubjIds.split(",");
+                        liveGetInfo.setSubjectIds(arrSubjIds);
+                    }
+                    if (liveInfo.has("gradeIds")) {
+                        liveGetInfo.setGrade(Integer.parseInt(liveInfo.optString("gradeIds").split(",")[0]));
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
                 mCourseHttpResponseParser.parseLiveGetInfo(liveInfo, liveGetInfo, mLiveType, isArts);
             }
             if (isExperience) {
