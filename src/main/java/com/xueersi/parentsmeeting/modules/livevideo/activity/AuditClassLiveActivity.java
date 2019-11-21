@@ -1676,9 +1676,11 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                         }
                     }
                     mLogtf.d("onFail:arg2=" + arg2 + ",errorMsg=" + errorMsg + ",isPresent=" + mLiveBll.isPresent());
-                    if(fluentMode.get()){
-                        stopPlay();
-                    }else {
+                    if (fluentMode.get()) {
+                        if (vPlayer != null) {
+                            vPlayer.onDestroy();
+                        }
+                    } else {
                         if (!fluentMode.get() && mLiveBll.isPresent()) {
                             if (liveType != LiveVideoConfig.LIVE_TYPE_LIVE || LiveTopic.MODE_CLASS.endsWith(mGetInfo.getLiveTopic().getMode())) {
                                 tvLoadingHint.setText(mainTeacherLoad);
