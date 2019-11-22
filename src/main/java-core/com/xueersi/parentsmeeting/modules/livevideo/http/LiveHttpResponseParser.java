@@ -12,6 +12,7 @@ import com.xueersi.lib.analytics.umsagent.UmsAgentTrayPreference;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
+import com.xueersi.parentsmeeting.module.videoplayer.media.PsIjkParameter;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.AimRealTimeValEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEnergyBonusEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEntity;
@@ -315,9 +316,11 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             LiveGetInfo getInfo = new LiveGetInfo(liveTopic);
 
             VideoConfigEntity videoConfigEntity = new VideoConfigEntity();
-
-            videoConfigEntity.setDuration(data.optLong("duration"));
-            videoConfigEntity.setWaterMark(data.optLong("waterMark"));
+            //追播参数
+            PsIjkParameter psIjkParameter=videoConfigEntity.getPsIjkParameter();
+            psIjkParameter.setDuration(data.optLong("duration"));
+            psIjkParameter.setMaxWaterMark(data.optLong("waterMark"));
+            psIjkParameter.setMinWaterMark(data.optLong("minWaterMark",psIjkParameter.getMaxWaterMark()));
             getInfo.setVideoConfigEntity(videoConfigEntity);
 //            MediaPlayer.getIsNewIJK() = "1".equals(data.optString("isNewSDK")) && "1".equals(data.optString("isNewIRC"));
 //            MediaPlayer.getIsNewIJK() = true;
