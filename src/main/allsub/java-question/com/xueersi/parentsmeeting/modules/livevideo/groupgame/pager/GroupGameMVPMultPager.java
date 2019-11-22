@@ -392,7 +392,7 @@ public class GroupGameMVPMultPager extends LiveBasePager {
                 Bitmap headBitmap = GlideDrawableUtil.getBitmap(drawable, mLogtf, "startLottieAnimationOne", headurl);
                 Bitmap headBitmap2 = Bitmap.createScaledBitmap(headBitmap, width, height, false);
                 if (headBitmap.getWidth() != width || headBitmap.getHeight() != height) {
-                    headBitmap.recycle();
+                   // headBitmap.recycle();
                 }
                 Bitmap oldBitmap = mLottieAnimationView.updateBitmap(lottieId, headBitmap2);
                 if (oldBitmap != null) {
