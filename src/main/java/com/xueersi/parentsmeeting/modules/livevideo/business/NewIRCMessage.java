@@ -295,7 +295,13 @@ public class NewIRCMessage implements IIRCMessage {
                 target = "PRIVMSG";
                 //旁听
                 if (sender.startsWith("p") || sender.startsWith("pt")) {
-                    String subStr = mNickname.substring(1);
+                    String subStr;
+                    int index = mNickname.indexOf("_");
+                    if (index != -1) {
+                        subStr = mNickname.substring(index);
+                    } else {
+                        subStr = mNickname.substring(1);
+                    }
                     if (sender.endsWith(subStr)) {
                         try {
                             JSONObject studentObj = new JSONObject(message);

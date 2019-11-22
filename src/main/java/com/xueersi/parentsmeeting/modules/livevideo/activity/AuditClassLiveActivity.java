@@ -1138,7 +1138,9 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         mHandler.post(new Runnable() {
             @Override
             public void run() {
+                rl_livevideo_student.setVisibility(View.VISIBLE);
                 if (leave) {
+                    xv_livevideo_student.setVisibility(View.GONE);
 //                    pb_livevideo_student_load.setVisibility(View.INVISIBLE);
 //                    tv_livevideo_student_load_tip.setText(mGetInfo.getStuName() + "同学未在直播间");
                     pb_livevideo_student_load.setVisibility(View.GONE);
@@ -1152,6 +1154,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                         tv_livevideo_student_camera.setText(mGetInfo.getStuName() + "同学\n未在直播间");
                     }
                 } else {
+                    xv_livevideo_student.setVisibility(View.VISIBLE);
                     iv_livevideo_student_camera.setVisibility(View.GONE);
                     tv_livevideo_student_camera.setVisibility(View.GONE);
                     pb_livevideo_student_load.setVisibility(View.VISIBLE);
