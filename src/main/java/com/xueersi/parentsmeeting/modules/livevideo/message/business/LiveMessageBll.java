@@ -31,6 +31,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.message.pager.EvenDriveLiveM
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.HalfBodyArtsLiveMsgPager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.HalfBodyLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.HalfBodyPrimaryLiveMessagePager;
+import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LightLiveMessageLandPager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessageLandPager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessagePortPager;
@@ -415,8 +416,10 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
 // liveMessageLandEntities);
 //            }
             if (liveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {
-                LiveMessagePager liveMessagePager =
-                        new EvenDriveLiveMessagePager(activity, baseLiveMediaControllerBottom, liveMessageLandEntities, liveMessagePortEntities);
+//                LiveMessagePager liveMessagePager =
+//                        new EvenDriveLiveMessagePager(activity, baseLiveMediaControllerBottom, liveMessageLandEntities, liveMessagePortEntities);
+                BaseLiveMessagePager liveMessagePager = new LightLiveMessageLandPager(activity, this,
+                        null, baseLiveMediaControllerBottom, liveMessageLandEntities, liveMessagePortEntities);
                 mLiveMessagePager = liveMessagePager;
             } else {
                 long before = System.currentTimeMillis();
