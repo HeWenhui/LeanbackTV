@@ -38,6 +38,8 @@ public interface RTCVideoAction {
     /** 收音条音量变化回调 **/
     void onVolumeUpdate(int volume);
 
+    void showShortToast(String msg);
+
     int GOLD_TYPE_QUESTION = 1;
     int GOLD_TYPE_REDPACKAGE = 2;
 }
