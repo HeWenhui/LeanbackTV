@@ -43,6 +43,7 @@ public class TcpConstants {
     public final static int VOICE_CANNO_SCENE = 17;
     /** 消息类型，服务器端发送语音炮弹统计数据 */
     public final static int VOICE_CANNO_STATIS = 18;
+
     /** 消息类型，客户端发clean up数据 */
     public final static short CLEAN_UP_TYPE = 9;
     /** 消息类型，服务器端推送投票实时数据 */
@@ -54,9 +55,10 @@ public class TcpConstants {
     /** 消息类型，服务器clean up 恢复现场 */
     public final static int CLEAN_UP_SECN = 17;
     /** roleplay */
-    public final static int ROLE_PLAY_TYPE = 200;
+    public final static short ROLE_PLAY_TYPE = 15;
     /** roleplay */
-    public final static int ROLE_PLAY_OPERATION = 201;
+    public final static int ROLE_PLAY_INTERACTIVE_OPERATION = 2;
+
 
     /** 消息类型，what's missing */
     public final static short WHAT_IS_MISSING_TYPE = 13;
@@ -83,5 +85,12 @@ public class TcpConstants {
 
     public static boolean isTypeOfCannon(short type) {
         return type == VOICE_CANNO_TYPE || type == WHAT_IS_MISSING_TYPE;
+    }
+
+    public interface Body {
+        int ROLE_PLAY_CUSTOM_MESSAGE = 4;
+        int ROLE_PLAY_DZ = 100;
+        int ROLE_PLAY_SELF_READ_END = 110;
+        int ROLE_PLAY_AUDIO_UPLOAD_SUCCESS = 120;
     }
 }
