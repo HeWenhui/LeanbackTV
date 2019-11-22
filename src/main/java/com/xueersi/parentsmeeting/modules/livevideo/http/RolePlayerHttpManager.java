@@ -91,6 +91,26 @@ public class RolePlayerHttpManager extends BaseHttpBusiness {
     }
 
     /**
+     * 文科新课件平台请求试题
+     *
+     * @param liveId
+     * @param stuCouId
+     * @param testId
+     * @param stuId
+     */
+    public void requestNewArtsRolePlayTestInfos(String url,String liveId, String stuCouId, String testId, String stuId, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("stuCouId", stuCouId);
+        params.addBodyParam("stuId", stuId);
+        params.addBodyParam("testId", testId);
+//        if (liveHttpAction != null) {
+//            liveHttpAction.sendPostDefault(url, params, requestCallBack);
+//        } else {
+            sendPost(url, params, requestCallBack);
+//        }
+    }
+    /**
      * 文科新课件平台请求试题-体验课
      *
      * @param liveId
@@ -152,6 +172,29 @@ public class RolePlayerHttpManager extends BaseHttpBusiness {
         params.setWriteAndreadTimeOut(5);
         setDefaultParameter(params);
         sendPost(LiveHttpConfig.URL_ROLEPLAY_NEWARTS_RESULT, params, requestCallBack);
+    }
+
+    /**
+     * 文科新课件平台结果请求
+     *
+     * @param liveId
+     * @param testId
+     * @param roler
+     * @param answer
+     * @param type
+     * @param requestCallBack
+     */
+    public void requestNewArtsResult(String url,String stuCouId, String liveId, String testId, String roler, String answer, int type, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("stuCouId", stuCouId);
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("testId", testId);
+        params.addBodyParam("roler", roler);
+        params.addBodyParam("type", "" + type);
+        params.addBodyParam("data", answer);
+        params.setWriteAndreadTimeOut(5);
+        setDefaultParameter(params);
+        sendPost(url, params, requestCallBack);
     }
 
     /**

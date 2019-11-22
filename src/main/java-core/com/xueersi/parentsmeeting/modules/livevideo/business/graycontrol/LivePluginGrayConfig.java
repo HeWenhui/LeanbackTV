@@ -37,6 +37,6 @@ public class LivePluginGrayConfig {
     public static final int MODULE_VIDEO_MARK = 57;
     /** Nb实验（加试&自由实验） */
     public static final int MODULE_NB_EXPERIMENT = 69;
-
-    public static final int ROLE_PLAY = 64;
+    /**roleplay 多人连麦**/
+    public static final int MODULE_ROLEPLAY = 64;
 }
