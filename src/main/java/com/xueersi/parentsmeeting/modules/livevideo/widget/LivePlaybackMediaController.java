@@ -338,6 +338,15 @@ public class LivePlaybackMediaController extends MediaController2 {
                 case "30":
                     textView.setText("双人上台");
                     break;
+                case "15":
+                    textView.setText("热气球");
+                    break;
+                case "14":
+                    textView.setText("语音炮弹");
+                    break;
+                case "16":
+                    textView.setText("抢水果");
+                    break;
 
             }
         } else if(LocalCourseConfig.CATEGORY_GROUP_CLASS_AUDIO_ROLL_CALL_START==videoQuestionEntity.getvCategory()){
