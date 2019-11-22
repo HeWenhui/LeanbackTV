@@ -51,11 +51,11 @@ public class LiveLogEntity {
 
     public String userid = CommonUtil.getUserIdentifier(XueErSiRunningEnvironment.sAppContext); //用户ID
 
-    public String productname="";  //调取自检模块对应的业务
+    public String productname = "";  //调取自检模块对应的业务
 
-    public String reason="";  //调取原因
+    public String reason = "";  //调取原因
 
-    public String os = DeviceInfo.getOsVersion();   //操作系统
+    public String os = "Android :" + DeviceInfo.getOsVersion();   //操作系统
 
     public String psId;  //磐石ID
 
@@ -69,33 +69,34 @@ public class LiveLogEntity {
 
     public String appVer = AppUtils.getAppVersionName(XueErSiRunningEnvironment.sAppContext);  //app版本
 
-    public String cip=""; //用户出口ip
+    public String cip = ""; //用户出口ip
 
     public float mem = ApmBill.getUseMemory();        //内存使用状况，单位KB
 
     public double cpu = ApmBill.getCPURate();             //CPU使用百分比
 
-    public int net =5;  //网络类型 （无网，4G, wifi,3G,lte)  5:wifi 9:蜂窝
+    public int net = 5;  //网络类型 （无网，4G, wifi,3G,lte)  5:wifi 9:蜂窝
 
-    public String lip=ApmBill.getHostIP(); //本地ip
+    public String lip = ApmBill.getHostIP(); //本地ip
 
     public String appId = "1001906";   //日志Id
 
-    public String agent="android-"+AppUtils.getAppVersionName(XueErSiRunningEnvironment.sAppContext);
+    public String agent = "android-" + AppUtils.getAppVersionName(XueErSiRunningEnvironment.sAppContext);
 
-    public int pri=2;  //日志业务类型
+    public int pri = 2;  //日志业务类型
 
-    public String tid=  MurmurHashBase64.hashUnsigned(System.currentTimeMillis() + Math.random()+
+    public String tid = MurmurHashBase64.hashUnsigned(System.currentTimeMillis() + Math.random() +
             AppBll.getInstance().getAppInfoEntity().getAppUUID()).toBigInteger().toString(16);   //唯一日志Id ，tradeId
 
-    public int serv=2000;
+    public int serv = 2000;
 
     public String dev = DeviceInfo.getDeviceName();
 
     public Pridata pridata;
 
-    public int processId;
+    public String dns;
 
+    public int processId;
 
 
 }
