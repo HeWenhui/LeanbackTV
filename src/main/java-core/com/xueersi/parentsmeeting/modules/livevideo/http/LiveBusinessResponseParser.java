@@ -236,8 +236,8 @@ public class LiveBusinessResponseParser extends HttpResponseParser {
         if (type != LiveVideoConfig.LIVE_TYPE_LIVE) {
             liveTopic.setMode(LiveTopic.MODE_CLASS);
         } else {
-            //整合二期只支持 主讲流
-            liveTopic.setMode(LiveTopic.MODE_CLASS);
+            //解析topic 中的主辅导状态
+            liveTopic.setMode(liveTopicJson.optString("mode",LiveTopic.MODE_CLASS));
         }
         return liveTopic;
     }

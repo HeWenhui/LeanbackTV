@@ -326,4 +326,8 @@ public interface XESCODE {
 
     int FORUM_INTERACTION = 412;
     int FORUM_INTERACTION_PRAISE = 10105;
+
+
+    /**大班整合切换主辅 模式**/
+    int LIVE_BUSINESS_MODE_CHANGE = 102;
 }

@@ -409,7 +409,8 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
             businessBll.onCreate(businessShareParamMap);
             long time = (System.currentTimeMillis() - before);
             if (time > 5) {
-                LiveBllLog.BusinessTime businessTime = new LiveBllLog.BusinessTime(businessBll.getClass().getSimpleName(), time);
+                LiveBllLog.BusinessTime businessTime =
+                        new LiveBllLog.BusinessTime(businessBll.getClass().getSimpleName(), time);
                 businessTimes.add(businessTime);
             }
             before = System.currentTimeMillis();
@@ -782,7 +783,8 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                 businessBll.onLiveInited(getInfo);
                 long time = (System.currentTimeMillis() - before);
                 if (time > 10) {
-                    LiveBllLog.BusinessTime businessTime = new LiveBllLog.BusinessTime(businessBll.getClass().getSimpleName(), time);
+                    LiveBllLog.BusinessTime businessTime =
+                            new LiveBllLog.BusinessTime(businessBll.getClass().getSimpleName(), time);
                     businessTimes.add(businessTime);
                 }
                 before = System.currentTimeMillis();
@@ -849,7 +851,8 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         logger.e("=======>mIRCMessage.create()");
         mLogtf.d(s);
         liveVideoBll.onLiveInit(getInfo, mLiveTopic);
-        mShareDataManager.put(LiveVideoConfig.SP_LIVEVIDEO_CLIENT_LOG, getInfo.getClientLog(), ShareDataManager.SHAREDATA_NOT_CLEAR);
+        mShareDataManager.put(LiveVideoConfig.SP_LIVEVIDEO_CLIENT_LOG, getInfo.getClientLog(),
+                ShareDataManager.SHAREDATA_NOT_CLEAR);
         initExtInfo(getInfo);
     }
 
@@ -1000,7 +1003,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
             try {
                 JSONObject object = new JSONObject(notice);
                 int mtype = object.getInt("type");
-                com.xueersi.lib.log.Loger.e("LiveBll2", "=======>onNotice:" + mtype + ":" + this);
+                com.xueersi.lib.log.Loger.e("LiveBll2", "=======>onNotice:" + mtype + ":" + object.toString());
                 ///////播放器相关/////////
                 switch (mtype) {
                     case XESCODE.MODECHANGE:
@@ -1015,7 +1018,8 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                             boolean isPresent = isPresent(mode);
                             if (mVideoAction != null) {
                                 mVideoAction.onModeChange(mode, isPresent);
-                                mLogtf.d(SysLogLable.switchLiveMode, "onNotice:mode=" + mode + ",isPresent=" + isPresent);
+                                mLogtf.d(SysLogLable.switchLiveMode,
+                                        "onNotice:mode=" + mode + ",isPresent=" + isPresent);
                                 if (!isPresent) {
                                     mVideoAction.onTeacherNotPresent(true);
                                 }
@@ -1062,7 +1066,8 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         }
 
         @Override
-        public void onTopic(String channel, String topicstr, String setBy, long date, boolean changed, String channelId) {
+        public void onTopic(String channel, String topicstr, String setBy, long date, boolean changed,
+                            String channelId) {
             if (lastTopicstr.equals(topicstr)) {
                 mLogtf.i("onTopic(equals):topicstr=" + topicstr);
                 return;
@@ -1200,7 +1205,6 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
      */
     private class BigLiveIRCCallBackImp extends IRCCallBackImp {
 
-
         @Override
         public void onTopic(String channel, String topicstr, String setBy, long date, boolean changed,
                             String channelId) {
@@ -1223,7 +1227,12 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
             try {
                 JSONObject object = new JSONObject(notice);
                 int mtype = object.getInt("type");
-                com.xueersi.lib.log.Loger.e("LiveBll2", "=======>onNotice:" + mtype + ":" + this);
+                com.xueersi.lib.log.Loger.e("LiveBll2", "=======>onNotice:" + mtype + ":" + object.toString());
+
+                if (XESCODE.LIVE_BUSINESS_MODE_CHANGE == mtype) {
+                    String mode = object.getString("mode");
+                    onTeacherMode(mode);
+                }
 
                 List<NoticeAction> noticeActions = mNoticeActionMap.get(mtype);
                 if (noticeActions != null && noticeActions.size() > 0) {
@@ -1256,6 +1265,40 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
             }
         }
 
+        /**
+         * 老师模式变换
+         * @param mode
+         */
+        private void onTeacherMode(String mode) {
+            try {
+                com.xueersi.lib.log.Loger.e("LiveBll2", "=======>onTeacherMode11111:");
+                if (!(mLiveTopic.getMode().equals(mode))) {
+                    com.xueersi.lib.log.Loger.e("LiveBll2", "=======>onTeacherMode2222:");
+                    String oldMode = mLiveTopic.getMode();
+                    mLiveTopic.setMode(mode);
+                    mGetInfo.setMode(mode);
+                    boolean isPresent = isPresent(mode);
+                    if (mVideoAction != null) {
+                        mVideoAction.onModeChange(mode, isPresent);
+                        mLogtf.d(SysLogLable.switchLiveMode, "onNotice:mode=" + mode + ",isPresent=" + isPresent);
+                        if (!isPresent) {
+                            mVideoAction.onTeacherNotPresent(true);
+                        }
+                    }
+                    if (mIRCMessage != null) {
+                        mIRCMessage.modeChange(mLiveTopic.getMode());
+                    }
+                    liveVideoBll.onModeChange(mode, isPresent);
+                    for (int i = 0; i < businessBlls.size(); i++) {
+                        businessBlls.get(i).onModeChange(oldMode, mode, isPresent);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+            }
+        }
+
         public void sendTopic(String channel, String topicstr, String setBy, long date, boolean changed,
                               String channelId) {
             logger.e("======>onTopic:" + topicstr);
@@ -1269,37 +1312,12 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                 JSONObject jsonObject = new JSONObject(jsonTokener);
                 LiveTopic liveTopic = mBigLiveHttpParser.parseBigLiveTopic(mLiveTopic, jsonObject, mLiveType);
                 boolean teacherModeChanged = !mLiveTopic.getMode().equals(liveTopic.getMode());
-                ////直播相关//////
-               /* if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
+                ////主辅导模式变化//////
+                if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
                     //模式切换
-                    if (!(mLiveTopic.getMode().equals(liveTopic.getMode()))) {
-                        String oldMode = mLiveTopic.getMode();
-                        mLiveTopic.setMode(liveTopic.getMode());
-                        // Loger.d("___channel: "+channel+"  mode: "+liveTopic.getMode()+"  topic:  "+topicstr);
-                        mGetInfo.setMode(liveTopic.getMode());
-                        boolean isPresent = isPresent(mLiveTopic.getMode());
-                        if (mVideoAction != null) {
-                            mVideoAction.onModeChange(mLiveTopic.getMode(), isPresent);
-                            mLogtf.d(SysLogLable.switchLiveMode, "onTopic:mode=" + liveTopic.getMode() + ",isPresent" +
-                                    "=" + isPresent);
-                        }
-                        if (mIRCMessage != null) {
-                            mIRCMessage.modeChange(mLiveTopic.getMode());
-                        }
-                        liveVideoBll.onModeChange(mLiveTopic.getMode(), isPresent);
-                        for (int i = 0; i < businessBlls.size(); i++) {
-                            businessBlls.get(i).onModeChange(oldMode, mLiveTopic.getMode(), isPresent);
-                        }
-                    }
-
-                    if (mVideoAction != null) {
-                        if (LiveTopic.MODE_TRANING.equals(mLiveTopic.getMode())) {
-                            if (mGetInfo.getStudentLiveInfo().isExpe()) {
-                                mVideoAction.onTeacherNotPresent(true);
-                            }
-                        }
-                    }
-                }*/
+                    onTeacherMode(liveTopic.getMode());
+                }
+                "".contains("?");
                 //////////////
                 if (teacherModeChanged) {
                     mLiveTopic.setMode(liveTopic.getMode());
@@ -1779,12 +1797,13 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                         mLiveModuleConfigInfo = (LiveModuleConfigInfo) JsonUtil.jsonToObject(jsonString,
                                 LiveModuleConfigInfo.class);
                         mGetInfo.setLiveModuleConfigInfo(mLiveModuleConfigInfo);
-                        String preloadUrl = mGetInfo.getProperties(LivePluginGrayConfig.MOUDLE_FUTURE_COURSEWARE, "preloadUrl");
-                        if(!TextUtils.isEmpty(preloadUrl)){
+                        String preloadUrl = mGetInfo.getProperties(LivePluginGrayConfig.MOUDLE_FUTURE_COURSEWARE,
+                                "preloadUrl");
+                        if (!TextUtils.isEmpty(preloadUrl)) {
                             String liveId = mGetInfo.getId();
                             CoursewarePreload coursewarePreload = new CoursewarePreload(mContext, -1);
                             coursewarePreload.setmHttpManager(mHttpManager);
-                            coursewarePreload.setBig(1,preloadUrl);
+                            coursewarePreload.setBig(1, preloadUrl);
                             coursewarePreload.getCoursewareInfo(liveId);
                         }
                     }
