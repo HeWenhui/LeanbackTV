@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.inputmethodservice.KeyboardView;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.Html;
@@ -24,6 +25,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
@@ -44,6 +46,7 @@ import com.xueersi.common.event.MiniEvent;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.ScreenUtils;
+import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.RegexUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
@@ -96,42 +99,56 @@ import cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout;
  */
 public class LightLiveMessagePortPager extends BaseLiveMessagePager {
     private String TAG = "LiveMessagePortPager";
-    /** 聊天，默认打开 */
+    /**
+     * 聊天，默认打开
+     */
     private CheckBox cbMessageTeacher;
-    /** 聊天，清空数据 */
+    /**
+     * 聊天，清空数据
+     */
     private ImageView ivMessageClean;
-    /** 聊天人数 */
-    private TextView tvMessageCount;
-    /** 聊天消息 */
+    /**
+     * 聊天消息
+     */
     private ListView lvMessage;
     private Button btMessageExpress;
     private CommonAdapter<LiveMessageEntity> messageAdapter;
     private CommonAdapter<LiveMessageEntity> otherMessageAdapter;
     private boolean isTouch = false;
-    /** 聊天字体大小，最多13个汉字 */
+    /**
+     * 聊天字体大小，最多13个汉字
+     */
     private int messageSize = 0;
     private TextView tvMessageDisable;
-    /** 表情布局 */
+    /**
+     * 表情布局
+     */
     private View expressContentView;
-    /** 上次发送消息时间 */
+    /**
+     * 上次发送消息时间
+     */
     private long lastSendMsg;
     private KPSwitchFSPanelLinearLayout switchFSPanelLinearLayout;
     private ImageView ivExpressionCancle;
     private KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener;
-    /** 竖屏的时候，也添加横屏的消息 */
+    /**
+     * 竖屏的时候，也添加横屏的消息
+     */
     private ArrayList<LiveMessageEntity> otherLiveMessageEntities;
-    /** 聊天倒计时标记 */
+    /**
+     * 聊天倒计时标记
+     */
     private String COUNT_TAG_MSG = "msg";
     private Activity liveVideoActivity;
+    private ImageView ivTeacherWeChat;
 
     public LightLiveMessagePortPager(Context context, KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener,
-                                ArrayList<LiveMessageEntity> liveMessageEntities, ArrayList<LiveMessageEntity> otherLiveMessageEntities) {
+                                     ArrayList<LiveMessageEntity> liveMessageEntities, ArrayList<LiveMessageEntity> otherLiveMessageEntities) {
         super(context);
         liveVideoActivity = (Activity) context;
         this.keyboardShowingListener = keyboardShowingListener;
         this.liveMessageEntities = liveMessageEntities;
         this.otherLiveMessageEntities = otherLiveMessageEntities;
-
         initListener();
         initData();
     }
@@ -139,7 +156,6 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
     @Override
     public View initView() {
         mView = View.inflate(mContext, R.layout.page_livevideo_light_message_port, null);
-        tvMessageCount = (TextView) mView.findViewById(R.id.tv_livevideo_message_count);
         lvMessage = (ListView) mView.findViewById(R.id.lv_livevideo_message);
         etMessageContent = (EditText) mView.findViewById(R.id.et_livevideo_message_content);
         tvMessageDisable = (TextView) mView.findViewById(R.id.tv_livevideo_message_disable);
@@ -150,6 +166,7 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
         ivExpressionCancle = (ImageView) mView.findViewById(R.id.iv_livevideo_message_expression_cancle);
         cbMessageTeacher = (CheckBox) mView.findViewById(R.id.cb_livevideo_message_teacher);
         ivMessageClean = (ImageView) mView.findViewById(R.id.iv_livevideo_message_clean);
+        ivTeacherWeChat = mView.findViewById(R.id.iv_livevideo_teacher_wechat);
         return mView;
     }
 
@@ -167,7 +184,7 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEND || (event != null && event.getKeyCode() == KeyEvent
                         .KEYCODE_ENTER)) {
-                    logger.i( "onClick:time=" + (System.currentTimeMillis() - lastSendMsg));
+                    logger.i("onClick:time=" + (System.currentTimeMillis() - lastSendMsg));
                     Editable editable = etMessageContent.getText();
                     String msg = editable.toString();
                     if (!StringUtils.isSpace(msg)) {
@@ -186,6 +203,10 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
                                     etMessageContent.setText("");
                                     addMessage("我", LiveMessageEntity.MESSAGE_MINE, msg, "");
                                     lastSendMsg = System.currentTimeMillis();
+                                    if(actionId == EditorInfo.IME_ACTION_SEND){
+                                        KPSwitchConflictUtil.hidePanelAndKeyboard(switchFSPanelLinearLayout);
+                                        onKeyBoardShow(false);
+                                    }
                                 } else {
                                     XESToastUtils.showToast(mContext, "你已被禁言!");
                                 }
@@ -205,10 +226,17 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
                         }
                     } else {
                         addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, MESSAGE_EMPTY, "");
+
                     }
                     return true;
                 }
                 return false;
+            }
+        });
+        etMessageContent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onKeyBoardShow(true);
             }
         });
         lvMessage.setOnTouchListener(new View.OnTouchListener() {
@@ -227,26 +255,22 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
                 .OnKeyboardShowingListener() {
             @Override
             public void onKeyboardShowing(boolean isShowing) {
-                logger.i( "onKeyboardShowing:isShowing=" + isShowing);
+                logger.i("onKeyboardShowing:isShowing=" + isShowing);
                 if (!isShowing && switchFSPanelLinearLayout.getVisibility() == View.GONE) {
                     onTitleShow(true);
+                    onKeyBoardShow(false);
                 }
                 keyboardShowing = isShowing;
                 keyboardShowingListener.onKeyboardShowing(isShowing);
+                if (isShowing){
+                    btMessageExpress.setBackgroundResource(R.drawable.im_input_biaoqing_icon_normal);
+                }
             }
         });
-        btMessageExpress.setOnClickListener(new View.OnClickListener() {
+        KPSwitchConflictUtil.attach(switchFSPanelLinearLayout, btMessageExpress, etMessageContent, new KPSwitchConflictUtil.SwitchClickListener() {
             @Override
-            public void onClick(View v) {
-                if (switchFSPanelLinearLayout.getVisibility() == View.VISIBLE) {
-                    expressContentView.setVisibility(View.VISIBLE);
-                    isHaveFlowers = false;
-                    return;
-                }
-                expressContentView.setVisibility(View.VISIBLE);
-                isHaveFlowers = false;
-                final boolean switchToPanel = KPSwitchConflictUtil.switchPanelAndKeyboard(switchFSPanelLinearLayout,
-                        etMessageContent);
+            public void onClickSwitch(boolean switchToPanel) {
+                onKeyBoardShow(true);
                 if (switchToPanel) {
                     btMessageExpress.setBackgroundResource(R.drawable.im_input_jianpan_icon_normal);
                     etMessageContent.clearFocus();
@@ -256,7 +280,6 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
                 }
             }
         });
-        KPSwitchConflictUtil.attach(switchFSPanelLinearLayout, etMessageContent);
         ivMessageClean.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -279,7 +302,6 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
                 }
             }
         });
-
 
 
     }
@@ -306,7 +328,7 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
 
                     @Override
                     public int getLayoutResId() {
-                        return R.layout.item_livevideo_message;
+                        return R.layout.item_livevideo_lightlive_message;
                     }
 
                     @Override
@@ -326,60 +348,32 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
                         String sender = entity.getSender();
                         SpannableString spanttt = new SpannableString(sender + ": ");
                         int color;
-                        if (entity.getType() == LiveMessageEntity.MESSAGE_FLOWERS) {
-                            if (entity.isSelf()) {
+                        switch (entity.getType()) {
+                            case LiveMessageEntity.MESSAGE_MINE:
+                            case LiveMessageEntity.MESSAGE_TEACHER:
+                            case LiveMessageEntity.MESSAGE_TIP:
+                            case LiveMessageEntity.MESSAGE_CLASS:
+                                color = nameColors[entity.getType()];
+                                break;
+                            default:
                                 color = nameColors[0];
-                            } else {
-                                color = nameColors[2];
-                            }
-                            CharacterStyle characterStyle = new ForegroundColorSpan(color);
-                            spanttt.setSpan(characterStyle, 0, sender.length() + 1, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-                            tvMessageItem.setText(spanttt);
-                            tvMessageItem.append(flowsTips[entity.getFtype() - 2] + ",献上 ");
-                            int id;
-                            switch (entity.getFtype()) {
-                                case FLOWERS_SMALL:
-                                case FLOWERS_MIDDLE:
-                                case FLOWERS_BIG:
-                                    id = flowsDrawLittleTips[entity.getFtype() - 2];
-                                    break;
-                                default:
-                                    id = R.drawable.ic_app_xueersi_desktop;
-                                    break;
-                            }
-                            SpannableString spannableString = new SpannableString("f");
-                            Bitmap bitmap11 = BitmapFactory.decodeResource(mContext.getResources(), id);
-                            ImageSpan span = new VerticalImageSpan(mContext, Bitmap.createScaledBitmap(bitmap11,
-                                    (int) etMessageContent.getTextSize(), (int) tvMessageItem.getTextSize(), true));
-                            spannableString.setSpan(span, 0, 1, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
-                            tvMessageItem.append(spannableString);
-                        } else {
-                            switch (entity.getType()) {
-                                case LiveMessageEntity.MESSAGE_MINE:
-                                case LiveMessageEntity.MESSAGE_TEACHER:
-                                case LiveMessageEntity.MESSAGE_TIP:
-                                case LiveMessageEntity.MESSAGE_CLASS:
-                                    color = nameColors[entity.getType()];
-                                    break;
-                                default:
-                                    color = nameColors[0];
-                                    break;
-                            }
-                            CharacterStyle characterStyle = new ForegroundColorSpan(color);
-                            spanttt.setSpan(characterStyle, 0, sender.length() + 1, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-                            if (urlclick == 1 && LiveMessageEntity.MESSAGE_TEACHER == entity.getType()) {
-                                tvMessageItem.setAutoLinkMask(Linkify.WEB_URLS);
-                                tvMessageItem.setText(entity.getText());
-                                urlClick(tvMessageItem);
-                                CharSequence text = tvMessageItem.getText();
-                                tvMessageItem.setText(spanttt);
-                                tvMessageItem.append(text);
-                            } else {
-                                tvMessageItem.setAutoLinkMask(0);
-                                tvMessageItem.setText(spanttt);
-                                tvMessageItem.append(entity.getText());
-                            }
+                                break;
                         }
+                        CharacterStyle characterStyle = new ForegroundColorSpan(color);
+                        spanttt.setSpan(characterStyle, 0, sender.length() + 1, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                        if (urlclick == 1 && LiveMessageEntity.MESSAGE_TEACHER == entity.getType()) {
+                            tvMessageItem.setAutoLinkMask(Linkify.WEB_URLS);
+                            tvMessageItem.setText(entity.getText());
+                            urlClick(tvMessageItem);
+                            CharSequence text = tvMessageItem.getText();
+                            tvMessageItem.setText(spanttt);
+                            tvMessageItem.append(text);
+                        } else {
+                            tvMessageItem.setAutoLinkMask(0);
+                            tvMessageItem.setText(spanttt);
+                            tvMessageItem.append(entity.getText());
+                        }
+
                     }
                 };
             }
@@ -405,7 +399,7 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
 
     @Override
     public void countDown(String tag, int time) {
-       if (COUNT_TAG_MSG.equals(tag)) {
+        if (COUNT_TAG_MSG.equals(tag)) {
             if ((int) tvMessageDisable.getTag() == MESSAGE_SEND_DEF) {
                 if (time > 0) {
                     //etMessageContent.setVisibility(View.GONE);
@@ -438,7 +432,9 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
         return cbMessageTeacher.isChecked();
     }
 
-    /** 聊天开始连接 */
+    /**
+     * 聊天开始连接
+     */
     @Override
     public void onStartConnect() {
 
@@ -449,7 +445,9 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
         super.setIsRegister(isRegister);
     }
 
-    /** 聊天连上 */
+    /**
+     * 聊天连上
+     */
     @Override
     public void onConnect() {
         mainHandler.post(new Runnable() {
@@ -460,7 +458,9 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
         });
     }
 
-    /** 聊天进入房间 */
+    /**
+     * 聊天进入房间
+     */
     @Override
     public void onRegister() {
         mainHandler.post(new Runnable() {
@@ -471,7 +471,9 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
         });
     }
 
-    /** 聊天断开 */
+    /**
+     * 聊天断开
+     */
     @Override
     public void onDisconnect() {
         mainHandler.post(new Runnable() {
@@ -485,12 +487,6 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
 
     @Override
     public void onUserList(String channel, final User[] users) {
-        mView.post(new Runnable() {
-            @Override
-            public void run() {
-                tvMessageCount.setText("在线" + peopleCount + "人");
-            }
-        });
     }
 
     @Override
@@ -533,22 +529,10 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
 
     @Override
     public void onJoin(String target, String sender, String login, String hostname) {
-        mView.post(new Runnable() {
-            @Override
-            public void run() {
-                tvMessageCount.setText("在线" + peopleCount + "人");
-            }
-        });
     }
 
     @Override
     public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
-        mView.post(new Runnable() {
-            @Override
-            public void run() {
-                tvMessageCount.setText("在线" + peopleCount + "人");
-            }
-        });
     }
 
     @Override
@@ -557,7 +541,9 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
 
     }
 
-    /** 被禁言 */
+    /**
+     * 被禁言
+     */
     public void onDisable(final boolean disable, final boolean fromNotice) {
         mView.post(new Runnable() {
             @Override
@@ -593,7 +579,9 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
         });
     }
 
-    /** 关闭开启聊天 */
+    /**
+     * 关闭开启聊天
+     */
     @Override
     public void onopenchat(final boolean openchat, final String mode, final boolean fromNotice) {
         mView.post(new Runnable() {
@@ -753,6 +741,40 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
     @Override
     public void onDestroy() {
         super.onDestroy();
+    }
+
+    private void onKeyBoardShow(boolean isShow){
+        if (isShow){
+            if (ivMessageClean.getVisibility() == View.VISIBLE){
+                ivMessageClean.setVisibility(View.GONE);
+                cbMessageTeacher.setVisibility(View.GONE);
+                ivTeacherWeChat.setVisibility(View.GONE);
+                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) btMessageExpress.getLayoutParams();
+                params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                params.removeRule(RelativeLayout.ALIGN_RIGHT);
+                params.rightMargin = SizeUtils.Dp2Px(mContext,16);
+                btMessageExpress.setLayoutParams(params);
+                RelativeLayout.LayoutParams etParams = (RelativeLayout.LayoutParams) etMessageContent.getLayoutParams();
+//            etParams.addRule(RelativeLayout.RIGHT_OF,R.id.bt_livevideo_message_express);
+                etParams.rightMargin = SizeUtils.Dp2Px(mContext,56);
+                etMessageContent.setLayoutParams(etParams);
+            }
+        }else {
+            if (ivMessageClean.getVisibility() == View.GONE) {
+                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) btMessageExpress.getLayoutParams();
+                params.addRule(RelativeLayout.ALIGN_RIGHT, R.id.et_livevideo_message_content);
+                params.removeRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                params.rightMargin = SizeUtils.Dp2Px(mContext, 8);
+                btMessageExpress.setLayoutParams(params);
+                RelativeLayout.LayoutParams etParams = (RelativeLayout.LayoutParams) etMessageContent.getLayoutParams();
+//            etParams.addRule(RelativeLayout.RIGHT_OF,R.id.bt_livevideo_message_express);
+                etParams.rightMargin = SizeUtils.Dp2Px(mContext, 16);
+                etMessageContent.setLayoutParams(etParams);
+                ivMessageClean.setVisibility(View.VISIBLE);
+                cbMessageTeacher.setVisibility(View.VISIBLE);
+                ivTeacherWeChat.setVisibility(View.VISIBLE);
+            }
+        }
     }
 }
 

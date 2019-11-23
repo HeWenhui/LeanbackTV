@@ -21,6 +21,7 @@
             android:id="@id/rl_course_video_first_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+
         <!-- 站立直播为了背景放大不变形，外面加一层 -->
         <FrameLayout
             android:id="@id/fl_course_video_first_content"
@@ -134,9 +135,24 @@
             android:layout_below="@+id/rl_live_video_frag"
             >
         </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_live_room_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/rl_live_video_frag"></LinearLayout>
         <!-- 直播回放 互动题显示的界面位置 -->
         <RelativeLayout
             android:id="@id/rl_course_video_live_question_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:visibility="gone">
+
+        </RelativeLayout>
+        <!-- 竖屏全屏VIEW-->
+        <RelativeLayout
+            android:id="@+id/rl_course_video_live_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
