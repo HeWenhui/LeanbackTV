@@ -1317,7 +1317,6 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                     //模式切换
                     onTeacherMode(liveTopic.getMode());
                 }
-                "".contains("?");
                 //////////////
                 if (teacherModeChanged) {
                     mLiveTopic.setMode(liveTopic.getMode());
