@@ -1,6 +1,8 @@
 package com.xueersi.parentsmeeting.modules.livevideo.http;
 
 
+import android.text.TextUtils;
+
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
 import com.xueersi.common.http.HttpResponseParser;
 import com.xueersi.common.logerhelper.MobAgent;
@@ -237,7 +239,13 @@ public class LiveBusinessResponseParser extends HttpResponseParser {
             liveTopic.setMode(LiveTopic.MODE_CLASS);
         } else {
             //解析topic 中的主辅导状态
-            liveTopic.setMode(liveTopicJson.optString("mode",LiveTopic.MODE_CLASS));
+            String teahcerMode = liveTopicJson.optString("mode","");
+            //topic 中教师模式解析失败，沿用当前教师模式
+            if(TextUtils.isEmpty(teahcerMode)){
+                liveTopic.setMode(oldLiveTopic.getMode());
+            }else{
+                liveTopic.setMode(teahcerMode);
+            }
         }
         return liveTopic;
     }
