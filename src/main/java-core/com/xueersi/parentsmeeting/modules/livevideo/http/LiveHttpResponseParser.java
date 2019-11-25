@@ -2422,6 +2422,104 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         return coursewareInfoEntity;
     }
 
+    public CoursewareInfoEntity parseCoursewareNewInfo(ResponseEntity responseEntity) {
+        logger.i("" + responseEntity.getJsonObject().toString());
+        CoursewareInfoEntity coursewareInfoEntity = new CoursewareInfoEntity();
+
+        try {
+            JSONObject data = (JSONObject) responseEntity.getJsonObject();
+            List<CoursewareInfoEntity.LiveCourseware> liveCoursewares = new ArrayList<>();
+            if (data.has("lists")) {
+                JSONArray liveCoursewareArray = data.getJSONArray("lists");
+                for (int i = 0; i < liveCoursewareArray.length(); i++) {
+                    try {
+                        CoursewareInfoEntity.LiveCourseware liveCourseware = new CoursewareInfoEntity.LiveCourseware();
+                        JSONObject liveJson = liveCoursewareArray.getJSONObject(i);
+                        liveCourseware.setLiveId(liveJson.getString("planId"));
+                        liveCourseware.setStime(liveJson.optLong("stime", System.currentTimeMillis() / 1000));
+                        if (liveJson.has("infos")) {
+                            JSONArray coursewareArray = liveJson.getJSONArray("infos");
+                            List<CoursewareInfoEntity.ItemCoursewareInfo> coursewareInfos = new ArrayList<>();
+                            for (int j = 0; j < coursewareArray.length(); j++) {
+                                JSONObject coursewareJson = coursewareArray.getJSONObject(j);
+                                CoursewareInfoEntity.ItemCoursewareInfo coursewareInfo = new CoursewareInfoEntity.ItemCoursewareInfo();
+                                coursewareInfo.setSourceId(coursewareJson.optString("sourceId"));
+                                coursewareInfo.setPackageId(coursewareJson.optString("packageId"));
+                                coursewareInfo.setPackageSource(coursewareJson.optString("packageSource"));
+                                coursewareInfo.setTemplate(coursewareJson.optInt("isTemplate") == 1);
+                                coursewareInfo.setPageId(coursewareJson.optString("pageId"));
+                                coursewareInfo.setResourceUrl(coursewareJson.optString("resourceUrl"));
+                                coursewareInfo.setTemplateUrl(coursewareJson.optString("templateUrl"));
+                                coursewareInfo.setResourceMd5(coursewareJson.optString("resourceMd5"));
+                                coursewareInfo.setTemplateMd5(coursewareJson.optString("templateMd5"));
+
+                                if (coursewareJson.has("resource")) {
+                                    CoursewareInfoEntity.CourseWareIntelligentEntity intelligentEntity = new CoursewareInfoEntity.CourseWareIntelligentEntity();
+                                    intelligentEntity.setResource(coursewareJson.optString("resource"));
+                                    coursewareInfo.setIntelligentEntity(intelligentEntity);
+                                }
+                                coursewareInfos.add(coursewareInfo);
+                            }
+                            liveCourseware.setCoursewareInfos(coursewareInfos);
+                        }
+                        liveCoursewares.add(liveCourseware);
+                    } catch (Exception e) {
+                        MobAgent.httpResponseParserError(TAG, "parseCoursewareInfo", e.getMessage());
+                    }
+                }
+                coursewareInfoEntity.setCoursewaresList(liveCoursewares);
+            }
+
+            if (data.has("hosts")) {
+                JSONObject hostJson = data.getJSONObject("hosts");
+                if (hostJson.has("cdns")) {
+                    JSONArray cdnsArray = hostJson.getJSONArray("cdns");
+                    List<String> cdns = new ArrayList<>();
+                    for (int i = 0; i < cdnsArray.length(); i++) {
+                        cdns.add(cdnsArray.getString(i));
+                    }
+                    coursewareInfoEntity.setCdns(cdns);
+                }
+                if (hostJson.has("ips")) {
+                    JSONArray cdnsArray = hostJson.getJSONArray("ips");
+                    List<String> ips = new ArrayList<>();
+                    for (int i = 0; i < cdnsArray.length(); i++) {
+                        ips.add(cdnsArray.getString(i));
+                    }
+                    coursewareInfoEntity.setIps(ips);
+                }
+            }
+
+            if (data.has("resources")) {
+                JSONObject resourceArray = data.getJSONObject("resources");
+                List<String> resources = new ArrayList<>();
+                    JSONArray formulasArray = resourceArray.optJSONArray("formulas");
+                    if (formulasArray != null) {
+                        for (int j = 0; j < formulasArray.length(); j++) {
+                            resources.add(formulasArray.getString(j));
+                        }
+                    }
+                    JSONArray fontsArray = resourceArray.optJSONArray("fonts");
+                    if (fontsArray != null) {
+                        for (int k = 0; k < fontsArray.length(); k++) {
+                            resources.add(fontsArray.getString(k));
+                        }
+                    }
+                coursewareInfoEntity.setResources(resources);
+                {
+                    JSONObject nbResource = resourceArray.optJSONObject("nbResource"); // TODO 记得恢复下
+                    parseNBResource(coursewareInfoEntity, nbResource);
+
+                }
+            }
+        } catch (JSONException e) {
+            MobAgent.httpResponseParserError(TAG, "parseCoursewareInfo", e.getMessage());
+            e.printStackTrace();
+        }
+        return coursewareInfoEntity;
+    }
+
+
     private void parseNBResource(CoursewareInfoEntity coursewareInfoEntity, JSONObject nbResource) {
         try {
             if (nbResource != null) {

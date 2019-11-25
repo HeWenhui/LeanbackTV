@@ -17,7 +17,6 @@ import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.LivePluginHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LivePluginRequestParam;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
@@ -35,7 +34,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.DNSUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import com.xueersi.parentsmeeting.modules.livevideo.video.URLDNS;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.xutils.xutils.common.Callback;
 import org.xutils.xutils.common.Callback.CancelledException;
@@ -1192,11 +1190,37 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction,
     }
 
     /**
+     * 预加载资源
+     * @param liveId 直播场次ID
+     * @param sid 当前学生的 ID 【必传】
+     * @param days 向后获取的天数(不传默认值为1)
+     * @param requestCallBack HttpCallBack
+     */
+    public void getAllDownloadSubjectInfo(String liveId, String sid, int days, HttpCallBack requestCallBack) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            map.put("stuId", Long.valueOf(sid));
+            if (!TextUtils.isEmpty(liveId)) {
+                map.put("planId", Long.valueOf(liveId));
+            }
+            if (days > 1) {
+                map.put("days", days);
+            }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+
+        requestCallBack.url = LiveHttpConfig.URL_LIVE_GET_ALL_SUBJECT;
+        sendJsonPost(requestCallBack.url, map, requestCallBack);
+    }
+
+    /**
      * 语文预加载互动题
      *
      * @param liveId
      * @param requestCallBack
      */
+    @Deprecated
     public void getArtsCourewareInfo(String liveId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         if (liveId != null && !"".equals(liveId)) {
@@ -1212,6 +1236,7 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction,
      * @param liveId
      * @param requestCallBack
      */
+    @Deprecated
     public void getEnglishCourewareInfo(String liveId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         if (liveId != null && !"".equals(liveId)) {
@@ -1227,6 +1252,7 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction,
      * @param liveId
      * @param requestCallBack
      */
+    @Deprecated
     public void getScienceCourewareInfo(String liveId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         if (liveId != null && !"".equals(liveId)) {
@@ -1243,6 +1269,7 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction,
      * @param liveId
      * @param requestCallBack
      */
+    @Deprecated
     public void getBigLiveCourewareInfo(String url, String liveId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         if (liveId != null && !"".equals(liveId)) {
