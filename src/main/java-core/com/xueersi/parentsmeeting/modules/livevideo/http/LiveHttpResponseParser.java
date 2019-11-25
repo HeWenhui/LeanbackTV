@@ -314,14 +314,23 @@ public class LiveHttpResponseParser extends HttpResponseParser {
     public LiveGetInfo parseLiveGetInfo(JSONObject data, LiveTopic liveTopic, int liveType, int from) {
         try {
             LiveGetInfo getInfo = new LiveGetInfo(liveTopic);
-
-            VideoConfigEntity videoConfigEntity = new VideoConfigEntity();
-            //追播参数
-            PsIjkParameter psIjkParameter=videoConfigEntity.getPsIjkParameter();
-            psIjkParameter.setDuration(data.optLong("duration"));
-            psIjkParameter.setMaxWaterMark(data.optLong("waterMark"));
-            psIjkParameter.setMinWaterMark(data.optLong("minWaterMark",psIjkParameter.getMaxWaterMark()));
-            getInfo.setVideoConfigEntity(videoConfigEntity);
+            try {
+                VideoConfigEntity videoConfigEntity = new VideoConfigEntity();
+                //追播参数
+                PsIjkParameter psIjkParameter = videoConfigEntity.getPsIjkParameter();
+                if (data.has("maxWaterMark") && data.has("minWaterMark")) {
+                    psIjkParameter.setDuration(data.getLong("duration"));
+                    psIjkParameter.setMaxWaterMark(data.getLong("maxWaterMark"));
+                    psIjkParameter.setMinWaterMark(data.getLong("minWaterMark"));
+                } else {
+                    psIjkParameter.setDuration(data.getLong("duration"));
+                    psIjkParameter.setMaxWaterMark(data.getLong("waterMark"));
+                    psIjkParameter.setMinWaterMark(psIjkParameter.getMaxWaterMark());
+                }
+                getInfo.setVideoConfigEntity(videoConfigEntity);
+            } catch (Exception e) {
+                LiveCrashReport.postCatchedException(TAG, e);
+            }
 //            MediaPlayer.getIsNewIJK() = "1".equals(data.optString("isNewSDK")) && "1".equals(data.optString("isNewIRC"));
 //            MediaPlayer.getIsNewIJK() = true;
             MediaPlayer.setIsNewIJK(true);

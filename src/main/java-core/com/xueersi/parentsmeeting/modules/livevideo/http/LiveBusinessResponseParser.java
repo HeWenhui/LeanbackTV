@@ -8,6 +8,7 @@ import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PsIjkParameter;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoConfigEntity;
@@ -197,21 +198,32 @@ public class LiveBusinessResponseParser extends HttpResponseParser {
                 /**
                  * 解析追播相关参数
                  */
-                if (cfgJsonObj.has("waterMark")) {
-                    VideoConfigEntity videoConfigEntity = new VideoConfigEntity();
-                    //追播参数
-                    PsIjkParameter psIjkParameter=videoConfigEntity.getPsIjkParameter();
-                    psIjkParameter.setDuration(data.optLong("duration"));
-                    psIjkParameter.setMaxWaterMark(data.optLong("waterMark"));
-                    psIjkParameter.setMinWaterMark(data.optLong("minWaterMark",psIjkParameter.getMaxWaterMark()));
-
-                    liveGetInfo.setVideoConfigEntity(videoConfigEntity);
+                try {
+                    if (cfgJsonObj.has("reseeding")) {
+                        VideoConfigEntity videoConfigEntity = new VideoConfigEntity();
+                        //追播参数
+                        PsIjkParameter psIjkParameter = videoConfigEntity.getPsIjkParameter();
+                        JSONObject reseeding = cfgJsonObj.getJSONObject("reseeding");
+                        psIjkParameter.setMaxWaterMark(reseeding.getLong("maxWaterMark"));
+                        psIjkParameter.setMinWaterMark(reseeding.getLong("minWaterMark"));
+                        psIjkParameter.setDuration(reseeding.optLong("duration"));
+                        liveGetInfo.setVideoConfigEntity(videoConfigEntity);
+                    }else if (cfgJsonObj.has("waterMark")) {
+                        VideoConfigEntity videoConfigEntity = new VideoConfigEntity();
+                        //追播参数
+                        PsIjkParameter psIjkParameter = videoConfigEntity.getPsIjkParameter();
+                        psIjkParameter.setMaxWaterMark(cfgJsonObj.getLong("waterMark"));
+                        psIjkParameter.setMinWaterMark(psIjkParameter.getMaxWaterMark());
+                        psIjkParameter.setDuration(cfgJsonObj.getLong("duration"));
+                        liveGetInfo.setVideoConfigEntity(videoConfigEntity);
+                    }
+                }catch (Exception e){
+                    LiveCrashReport.postCatchedException(TAG,e);
                 }
-
             }
 
             JSONObject liveStatusJsonObj = data.optJSONObject("liveStatus");
-            if(liveStatusJsonObj != null){
+            if (liveStatusJsonObj != null) {
                 liveGetInfo.getLiveStatus().setStartClass(liveStatusJsonObj.optBoolean("startClass"));
             }
 
