@@ -110,7 +110,7 @@ public class ExperCourseResultAdapter extends RecyclerView.Adapter {
                 tv_livevideo_bigque_result_your.setTextColor(0Xff6CBF4C);
             } else if (answer.getRight() == PrimaryScienceAnswerResultEntity.PARTIALLY_RIGHT) {
                 iv_livevideo_bigque_result_type.setImageResource(R.drawable.bg_livevideo_expcour_result_part_right);
-                tv_livevideo_bigque_result_your.setTextColor(0XffFF5E50);
+                tv_livevideo_bigque_result_your.setTextColor(0Xff6CBF4C);
             } else {
                 iv_livevideo_bigque_result_type.setImageResource(R.drawable.bg_livevideo_expcour_result_wrong);
                 tv_livevideo_bigque_result_your.setTextColor(0XffFF5E50);

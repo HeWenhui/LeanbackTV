@@ -409,16 +409,7 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
         if (mData != null) {
             if (mData.getAnswerList().size() > 0) {
                 for (int i = 0; i < mData.getAnswerList().size(); i++) {
-                    if (TextUtils.equals(LiveQueConfig.EN_COURSE_TYPE_31, String.valueOf(mData.getAnswerList().get(i).getTestType()))) {
-                        return true;
-                    }
-                    if (TextUtils.equals(LiveQueConfig.EN_COURSE_TYPE_32, String.valueOf(mData.getAnswerList().get(i).getTestType()))) {
-                        return true;
-                    }
                     if (TextUtils.equals(LiveQueConfig.EN_COURSE_TYPE_33, String.valueOf(mData.getAnswerList().get(i).getTestType()))) {
-                        return true;
-                    }
-                    if (TextUtils.equals(LiveQueConfig.EN_COURSE_TYPE_34, String.valueOf(mData.getAnswerList().get(i).getTestType()))) {
                         return true;
                     }
                 }

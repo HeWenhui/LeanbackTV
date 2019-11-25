@@ -28,6 +28,7 @@ import android.widget.TextView;
 
 import com.xueersi.common.base.BaseActivity;
 import com.xueersi.common.base.BaseApplication;
+import com.xueersi.common.base.XrsCrashReport;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.entity.FooterIconEntity;
 import com.xueersi.common.event.AppEvent;
@@ -62,6 +63,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.lang.reflect.ParameterizedType;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /***
@@ -215,14 +217,16 @@ public abstract class LiveBackVideoFragmentBase extends Fragment {
         return mContentView.findViewById(id);
     }
 
-    private void onSelect(Bundle savedInstanceState, String video) {
+    private void onSelect(Bundle savedInstanceState, String video, VideoView baseVideoView) {
         activity.setVolumeControlStream(AudioManager.STREAM_MUSIC);// 设置在该页面音量控制键的音频流为媒体音量
         mCreated = true; // 界面onCreate完毕
-        videoView = (VideoView) mContentView.findViewById(R.id.vv_course_video_video); // 播放器的videoView
+        videoView = mContentView.findViewById(R.id.vv_course_video_video); // 播放器的videoView
         if (videoView == null) {
             videoView = activity.findViewById(R.id.vv_course_video_video);
-            //为了让bugly统计到
-            Log.e(TAG, "onSelect:videoView=null?" + (videoView == null));
+            if (videoView == null) {
+                videoView = baseVideoView;
+                XrsCrashReport.postCatchedException(new Exception());
+            }
         }
         videoView.setVideoLayout(mVideoMode, VP.DEFAULT_ASPECT_RATIO, (int) LiveVideoConfig.VIDEO_WIDTH,
                 (int) LiveVideoConfig.VIDEO_HEIGHT, LiveVideoConfig.VIDEO_RATIO);
@@ -486,14 +490,14 @@ public abstract class LiveBackVideoFragmentBase extends Fragment {
     }
 
     public static class LiveVideoFragmentBase extends LiveBackPlayerFragment {
-        LiveBackVideoFragmentBase liveBackVideoFragment;
+        protected LiveBackVideoFragmentBase liveBackVideoFragment;
 
         @Override
         protected void setVideoLoadingLayoutVisibility(int visibility) {
 
-          if(!liveBackVideoFragment.showBufferingUI(visibility)){
-              super.setVideoLoadingLayoutVisibility(visibility);
-          }
+            if (!liveBackVideoFragment.showBufferingUI(visibility)) {
+                super.setVideoLoadingLayoutVisibility(visibility);
+            }
         }
 
         @Override
@@ -579,10 +583,11 @@ public abstract class LiveBackVideoFragmentBase extends Fragment {
 
     /**
      * 显示视频缓冲中Ui
+     *
      * @param visibility
-     * @return  true 使用自己UI false 使用父类默认ui
+     * @return true 使用自己UI false 使用父类默认ui
      */
-    protected boolean showBufferingUI(int visibility){
+    protected boolean showBufferingUI(int visibility) {
         return false;
     }
 
@@ -594,20 +599,20 @@ public abstract class LiveBackVideoFragmentBase extends Fragment {
     }
 
 
-   public LiveOnVideoCreate videoCreate = new LiveOnVideoCreate();
+    public LiveOnVideoCreate videoCreate = new LiveOnVideoCreate();
 
     class LiveOnVideoCreate implements LiveBackPlayerFragment.OnVideoCreate {
         Bundle savedInstanceState;
 
         @Override
-        public void onVideoCreate() {
+        public void onVideoCreate(final VideoView videoView) {
             video = "ijk";
             logger.d("onActivityCreated:frag=" + ((ViewGroup) mContentView.findViewById(R.id.rl_live_video_frag))
                     .getChildCount());
             LiveMainHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    onSelect(savedInstanceState, video);
+                    onSelect(savedInstanceState, video, videoView);
                 }
             });
         }
@@ -644,7 +649,6 @@ public abstract class LiveBackVideoFragmentBase extends Fragment {
             LiveVideoPoint.initLiveVideoPoint(activity, liveVideoPoint, lp);
         }
     }
-
 
 
     /** 加载视频异常时出现可重新刷新的背景界面 */
@@ -911,7 +915,7 @@ public abstract class LiveBackVideoFragmentBase extends Fragment {
     }
 
     /** 播放异常刷新界面 */
-   public OnClickListener btnRefreshListener = new OnClickListener() {
+    public OnClickListener btnRefreshListener = new OnClickListener() {
 
         @Override
         public void onClick(View v) {
@@ -920,7 +924,7 @@ public abstract class LiveBackVideoFragmentBase extends Fragment {
     };
 
     /** 刷新界面上返回按钮 */
-   public OnClickListener ivRefreshBackListener = new OnClickListener() {
+    public OnClickListener ivRefreshBackListener = new OnClickListener() {
 
         @Override
         public void onClick(View v) {

@@ -66,6 +66,7 @@ public class LiveLog {
             param.processId = Process.myPid();
         }
 
+
         getLoganInstance().wObject(log, 7);
     }
 
