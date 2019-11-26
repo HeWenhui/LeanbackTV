@@ -1261,6 +1261,11 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                 int mtype = object.getInt("type");
                 com.xueersi.lib.log.Loger.e("LiveBll2", "=======>onNotice:" + mtype + ":" + this);
 
+                if (XESCODE.LIVE_BUSINESS_MODE_CHANGE == mtype) {
+                    String mode = object.getString("mode");
+                    onTeacherMode(mode);
+                }
+
                 List<NoticeAction> noticeActions = mNoticeActionMap.get(mtype);
                 if (noticeActions != null && noticeActions.size() > 0) {
                     for (NoticeAction noticeAction : noticeActions) {
@@ -1306,36 +1311,10 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                 LiveTopic liveTopic = mBigLiveHttpParser.parseBigLiveTopic(mLiveTopic, jsonObject, mLiveType);
                 boolean teacherModeChanged = !mLiveTopic.getMode().equals(liveTopic.getMode());
                 ////直播相关//////
-               /* if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
+                if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
                     //模式切换
-                    if (!(mLiveTopic.getMode().equals(liveTopic.getMode()))) {
-                        String oldMode = mLiveTopic.getMode();
-                        mLiveTopic.setMode(liveTopic.getMode());
-                        // Loger.d("___channel: "+channel+"  mode: "+liveTopic.getMode()+"  topic:  "+topicstr);
-                        mGetInfo.setMode(liveTopic.getMode());
-                        boolean isPresent = isPresent(mLiveTopic.getMode());
-                        if (mVideoAction != null) {
-                            mVideoAction.onModeChange(mLiveTopic.getMode(), isPresent);
-                            mLogtf.d(SysLogLable.switchLiveMode, "onTopic:mode=" + liveTopic.getMode() + ",isPresent" +
-                                    "=" + isPresent);
-                        }
-                        if (mIRCMessage != null) {
-                            mIRCMessage.modeChange(mLiveTopic.getMode());
-                        }
-                        liveVideoBll.onModeChange(mLiveTopic.getMode(), isPresent);
-                        for (int i = 0; i < businessBlls.size(); i++) {
-                            businessBlls.get(i).onModeChange(oldMode, mLiveTopic.getMode(), isPresent);
-                        }
-                    }
-
-                    if (mVideoAction != null) {
-                        if (LiveTopic.MODE_TRANING.equals(mLiveTopic.getMode())) {
-                            if (mGetInfo.getStudentLiveInfo().isExpe()) {
-                                mVideoAction.onTeacherNotPresent(true);
-                            }
-                        }
-                    }
-                }*/
+                    onTeacherMode(liveTopic.getMode());
+                }
                 //////////////
                 if (teacherModeChanged) {
                     mLiveTopic.setMode(liveTopic.getMode());
@@ -1367,6 +1346,43 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
             }
         }
     }
+
+
+    /**
+     * 老师模式变换
+     * @param mode
+     */
+    private void onTeacherMode(String mode) {
+        try {
+            com.xueersi.lib.log.Loger.e("LiveBll2", "=======>onTeacherMode11111:");
+            if (!(mLiveTopic.getMode().equals(mode))) {
+                com.xueersi.lib.log.Loger.e("LiveBll2", "=======>onTeacherMode2222:");
+                String oldMode = mLiveTopic.getMode();
+                mLiveTopic.setMode(mode);
+                mGetInfo.setMode(mode);
+                boolean isPresent = isPresent(mode);
+                if (mVideoAction != null) {
+                    mVideoAction.onModeChange(mode, isPresent);
+                    mLogtf.d(SysLogLable.switchLiveMode, "onNotice:mode=" + mode + ",isPresent=" + isPresent);
+                    if (!isPresent) {
+                        mVideoAction.onTeacherNotPresent(true);
+                    }
+                }
+                if (mIRCMessage != null) {
+                    mIRCMessage.modeChange(mLiveTopic.getMode());
+                }
+                liveVideoBll.onModeChange(mode, isPresent);
+                for (int i = 0; i < businessBlls.size(); i++) {
+                    businessBlls.get(i).onModeChange(oldMode, mode, isPresent);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+        }
+    }
+
+
 
 
     /**
