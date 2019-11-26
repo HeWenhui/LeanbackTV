@@ -871,6 +871,14 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
                     index = i;
                     break;
                 }
+            }else if (LocalCourseConfig.CATEGORY_SPEECH_ASSESS == videoQuestionEntity.getvCategory()) {
+                // 大班三期语音评测题
+                if (startTime <= playPosition && playPosition < endTime) {
+                    mQuestionEntity = videoQuestionEntity;
+                    hasQuestionShow = true;
+                    index = i;
+                    break;
+                }
             }
         }
         if (mQuestionEntity != null) {
