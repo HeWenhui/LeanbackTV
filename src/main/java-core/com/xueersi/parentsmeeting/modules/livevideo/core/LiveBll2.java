@@ -1259,7 +1259,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
             try {
                 JSONObject object = new JSONObject(notice);
                 int mtype = object.getInt("type");
-                com.xueersi.lib.log.Loger.e("LiveBll2", "=======>onNotice:" + mtype + ":" + this);
+                com.xueersi.lib.log.Loger.e("LiveBll2", "=======>onNotice:" + mtype + ":" + object.toString());
 
                 if (XESCODE.LIVE_BUSINESS_MODE_CHANGE == mtype) {
                     String mode = object.getString("mode");
