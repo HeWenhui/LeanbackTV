@@ -16,6 +16,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveEnvironment;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpAction;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
@@ -58,6 +59,11 @@ public class LiveBaseBll extends BaseBll implements LiveViewAction {
     protected LiveViewAction liveViewAction;
 
     protected int pluginId = -1;
+    /**
+     * notice 辅导标识
+     **/
+    protected static final String NOTICE_KEY_F = "f";
+
 
     public LiveBaseBll(Activity context, LiveBll2 liveBll) {
         super(context);
@@ -145,6 +151,17 @@ public class LiveBaseBll extends BaseBll implements LiveViewAction {
             return null;
         }
     }
+
+
+
+    /**
+     * 是否是辅导态
+     * @return
+     */
+    protected boolean isInTraningMode() {
+        return  LiveTopic.MODE_TRANING.equals(mLiveBll.getMode());
+    }
+
 
 
     /**
