@@ -1,85 +1,50 @@
 package com.xueersi.parentsmeeting.modules.livevideo.message.pager;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.inputmethodservice.KeyboardView;
-import android.os.Handler;
 import android.text.Editable;
-import android.text.Html;
-import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
-import android.text.style.ImageSpan;
 import android.text.util.Linkify;
 import android.util.TypedValue;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.xueersi.common.base.AbstractBusinessDataCallBack;
-import com.xueersi.common.event.MiniEvent;
-import com.xueersi.common.http.HttpCallBack;
-import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.RegexUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
-import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.item.FlowerPortItem;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.item.MoreChoiceItem;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.FlowerEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.pager.TeacherWechatDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
-import com.xueersi.parentsmeeting.modules.livevideo.message.business.UserGoldTotal;
 import com.xueersi.parentsmeeting.modules.livevideo.message.config.LiveMessageConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionStatic;
-import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.VerticalImageSpan;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 import com.xueersi.ui.adapter.CommonAdapter;
-import com.xueersi.ui.dataload.DataErrorManager;
-import com.xueersi.ui.dataload.PageDataLoadEntity;
-import com.xueersi.ui.widget.button.CompoundButtonGroup;
 
-import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import cn.dreamtobe.kpswitch.util.KPSwitchConflictUtil;
 import cn.dreamtobe.kpswitch.util.KeyboardUtil;
@@ -141,6 +106,11 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
     private String COUNT_TAG_MSG = "msg";
     private Activity liveVideoActivity;
     private ImageView ivTeacherWeChat;
+    private TeacherWechatDialog wechatDialog;
+    private String mTeacherName;
+    private String mTeacherWechat;
+    private String mTeacherHeadImg;
+    private String mQrcodeImg;
 
     public LightLiveMessagePortPager(Context context, KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener,
                                      ArrayList<LiveMessageEntity> liveMessageEntities, ArrayList<LiveMessageEntity> otherLiveMessageEntities) {
@@ -300,6 +270,18 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
                 } else {
                     XESToastUtils.showToast(mContext, "接收全部消息");
                 }
+            }
+        });
+
+        ivTeacherWeChat.setOnClickListener(new View.OnClickListener() {
+
+
+            @Override
+            public void onClick(View v) {
+                //测试代码
+                wechatDialog = new TeacherWechatDialog(mContext,mBaseApplication,TeacherWechatDialog.TYPE_WITH_HEAD);
+                wechatDialog.setTeacherHead("").setTeacherName("张三").setTeacherWechat("55555555").setQrcode("");
+                wechatDialog.showDialog();
             }
         });
 
@@ -740,6 +722,9 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
 
     @Override
     public void onDestroy() {
+        if (wechatDialog != null && wechatDialog.isDialogShow()){
+            wechatDialog.cancelDialog();
+        }
         super.onDestroy();
     }
 

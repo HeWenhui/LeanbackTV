@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.business.lightlive;
+package com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.bll;
 
 import android.app.Activity;
 import android.view.View;
@@ -65,7 +65,7 @@ public class RoomInfoIRCMessageBll extends LiveBaseBll implements MessageAction 
                 params.width = RelativeLayout.LayoutParams.MATCH_PARENT;
                 params.height = SizeUtils.Dp2Px(mContext,38);
                 lightLiveRoomInfoPager.getRootView().setLayoutParams(params);
-                lightLiveRoomInfoPager.setTvNotice("hahhahhhhhhhhhhhhhhhhhhhhhhh");
+//                lightLiveRoomInfoPager.setTvNotice("hahhahhhhhhhhhhhhhhhhhhhhhhh");
             }
         }else {
             bottomLayout.setVisibility(View.GONE);

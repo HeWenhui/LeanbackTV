@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_livevideo_lightlive_wechat"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/shape_lightlive_wechat_bg">
+
+    <ImageView
+        android:id="@+id/iv_livevideo_lightlive_wechat_close"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:padding="16dp"
+        android:src="@drawable/livevideo_lightlive_circle_close" />
+
+    <TextView
+        android:id="@+id/tv_livevideo_lightlive_wechat_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:text="老师微信"
+        android:textColor="@color/COLOR_212831"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tv_livevideo_lightlive_wechat_subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_livevideo_lightlive_wechat_title"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="28dp"
+        android:text="添加班主任微信号，领取课程资料"
+        android:textColor="@color/COLOR_212831"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+
+    <RelativeLayout
+        android:id="@+id/rl_livevideo_lightlive_wechat_head"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_livevideo_lightlive_wechat_subtitle"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="24dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/iv_lightlive_teacher_headimg"
+            android:layout_width="46dp"
+            android:layout_height="48dp" />
+
+        <TextView
+            android:id="@+id/tv_lightlive_wechat_teacher"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/iv_lightlive_teacher_headimg"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="4dp"
+            android:layout_toRightOf="@+id/iv_lightlive_teacher_headimg"
+            android:text="班主任:"
+            android:textColor="@color/COLOR_212831"
+            android:textSize="14dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_lightlive_wechat_teacher_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/iv_lightlive_teacher_headimg"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="4dp"
+            android:layout_toRightOf="@+id/tv_lightlive_wechat_teacher"
+            android:textColor="@color/COLOR_212831"
+            android:textSize="14dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_lightlive_wechat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_lightlive_wechat_teacher"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="4dp"
+            android:layout_toRightOf="@+id/iv_lightlive_teacher_headimg"
+            android:text="微信:"
+            android:textColor="@color/COLOR_212831"
+            android:textSize="14dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_lightlive_wechat_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_lightlive_wechat_teacher"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="4dp"
+            android:layout_toRightOf="@+id/tv_lightlive_wechat"
+            android:textColor="@color/COLOR_212831"
+            android:textSize="14dp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_livevideo_lightlive_wechat_qrcode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_livevideo_lightlive_wechat_subtitle"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="24dp"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/iv_livevideo_lightlive_wechat_qrcode"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_gravity="center_horizontal" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="28dp"
+            android:text="方式一: 截屏扫码入群"
+            android:textColor="@color/COLOR_212831"
+            android:textSize="14sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="12dp"
+            android:text="方式二: 复制微信号加老师微信，等待入群"
+            android:textColor="@color/COLOR_212831"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+
+    <Button
+        android:id="@+id/bt_livevideo_lightlive_wechat_copy"
+        style="@style/text_font14_ffffff_style"
+        android:layout_width="148dp"
+        android:layout_height="40dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="28dp"
+        android:background="@drawable/shape_radius_20_solid_ff5e50"
+        android:text="复制微信号"
+        android:textStyle="bold" />
+
+
+</RelativeLayout>

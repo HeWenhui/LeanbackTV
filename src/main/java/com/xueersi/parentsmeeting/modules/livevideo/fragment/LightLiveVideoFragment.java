@@ -12,6 +12,7 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.support.odps.udf.CodecCheck;
 import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.lib.framework.utils.ScreenUtils;
@@ -26,7 +27,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewActionIml;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIml;
-import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.RoomInfoIRCMessageBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.bll.DiscountCouponBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.bll.RoomInfoIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
@@ -199,6 +201,7 @@ public class LightLiveVideoFragment  extends LiveFragmentBase implements Activit
         ProxUtil.getProxUtil().put(activity, BaseLiveMediaControllerBottom.class, liveMediaControllerBottom);
         mLiveBll.addBusinessBll(new LiveIRCMessageBll(activity,mLiveBll));
         mLiveBll.addBusinessBll(new RoomInfoIRCMessageBll(activity,mLiveBll));
+        mLiveBll.addBusinessBll(new DiscountCouponBll(activity,mLiveBll));
 //        ArrayList<BllConfigEntity> bllConfigEntities = AllBllConfig.getLiveBusinessLec();
 //        for (int i = 0; i < bllConfigEntities.size(); i++) {
 //            String className = "";
@@ -361,6 +364,8 @@ public class LightLiveVideoFragment  extends LiveFragmentBase implements Activit
         long before = System.currentTimeMillis();
         if (mIsLand.get()) {
             if (group != rlContent) {
+                RelativeLayout contentLayout = mContentView.findViewById(R.id.rl_course_video_live_content);
+                contentLayout.removeAllViews();
                 //设置控制
                 ViewGroup controllerContent = (ViewGroup) mContentView.findViewById(R.id.rl_course_video_live_controller_content);
                 controllerContent.removeAllViews();
