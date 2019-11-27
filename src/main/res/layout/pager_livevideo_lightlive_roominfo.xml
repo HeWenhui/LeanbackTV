@@ -38,6 +38,11 @@
         android:layout_toRightOf="@+id/v_livevideo_message_gap"
         android:singleLine="true"
         android:visibility="gone"
+        android:ellipsize="marquee"
+        android:maxLines="1"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:focusableInTouchMode="true"
+        android:focusable="true"
         />
 
     <ImageView

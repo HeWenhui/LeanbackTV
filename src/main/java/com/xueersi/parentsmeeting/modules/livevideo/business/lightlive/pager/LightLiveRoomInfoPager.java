@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.page;
+package com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.pager;
 
 import android.content.Context;
 import android.view.View;
@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 
 /**
  * @ProjectName: xueersiwangxiao
@@ -78,6 +79,9 @@ public class LightLiveRoomInfoPager extends LiveBasePager {
                 }
                 ivClose.setVisibility(View.VISIBLE);
                 tvNotice.setVisibility(View.VISIBLE);
+                tvNotice.setFocusable(true);
+                tvNotice.setClickable(true);
+                tvNotice.setSelected(true);
                 tvNotice.setText(message);
             }
         });

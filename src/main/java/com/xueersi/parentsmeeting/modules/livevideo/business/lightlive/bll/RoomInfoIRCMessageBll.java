@@ -16,7 +16,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.MessageAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
-import com.xueersi.parentsmeeting.modules.livevideo.page.LightLiveRoomInfoPager;
+import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.pager.LightLiveRoomInfoPager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -65,7 +65,7 @@ public class RoomInfoIRCMessageBll extends LiveBaseBll implements MessageAction 
                 params.width = RelativeLayout.LayoutParams.MATCH_PARENT;
                 params.height = SizeUtils.Dp2Px(mContext,38);
                 lightLiveRoomInfoPager.getRootView().setLayoutParams(params);
-//                lightLiveRoomInfoPager.setTvNotice("hahhahhhhhhhhhhhhhhhhhhhhhhh");
+//                lightLiveRoomInfoPager.setTvNotice("hahhahhhhhhhhhhhhhhhhhhhhhhdddddddddddddddh5648");
             }
         }else {
             infoLayout.setVisibility(View.GONE);

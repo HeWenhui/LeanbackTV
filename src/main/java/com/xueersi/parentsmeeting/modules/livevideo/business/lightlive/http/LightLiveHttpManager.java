@@ -4,7 +4,6 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.LightLiveRoomInfoPager;
 
 import java.util.HashMap;
 import java.util.Map;

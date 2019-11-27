@@ -16,11 +16,6 @@
             android:id="@id/rl_live_video_frag"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-        <!-- 站立直播为了背景放大不变形，辅导模式要换回来 -->
-        <RelativeLayout
-            android:id="@id/rl_course_video_first_content"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
 
         <!-- 站立直播为了背景放大不变形，外面加一层 -->
         <FrameLayout
@@ -102,24 +97,34 @@
 
         </FrameLayout>
 
-
-        <com.xueersi.parentsmeeting.modules.livevideo.widget.VideoLoadingImgView
-            android:id="@id/rl_live_halfbody_video_loading"
-            android:layout_width="138dp"
-            android:layout_height="31dp"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="123dp"
-            android:scaleType="centerCrop"
-            android:visibility="gone" />
-
-        <!--当前老师状态-->
-        <ImageView
-            android:id="@id/iv_live_halfbody_teacher_state"
-            android:layout_width="172dp"
-            android:layout_height="60dp"
-            android:visibility="invisible"
+        <!--大班整合最新loading-->
+        <LinearLayout
+            android:id="@id/ll_lightlive_video_loading_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            />
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <com.xueersi.parentsmeeting.modules.livevideo.widget.VideoLoadingImgView
+                android:id="@id/vl_lightlive_video_loading"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/animlst_app_loading" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="11dp"
+                android:layout_gravity="center_horizontal"
+                android:text="加载中..."
+                android:textColor="@color/COLOR_CCFFFFFF"
+                android:textSize="14dp" />
+
+        </LinearLayout>
+
 
         <!-- LiveMediaController界面位置 -->
         <RelativeLayout

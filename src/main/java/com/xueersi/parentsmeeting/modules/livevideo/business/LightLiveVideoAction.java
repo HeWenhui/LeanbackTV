@@ -16,7 +16,6 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
@@ -45,7 +44,7 @@ public class LightLiveVideoAction extends LiveVideoAction {
     protected String mode = LiveTopic.MODE_TRANING;
     private static final String TAG = "HalfBodyLiveVideoAction";
 
-    private RelativeLayout rlFirstBackgroundContent;
+//    private RelativeLayout rlFirstBackgroundContent;
     private FrameLayout flFirstBackgroundContent;
 
     /**
@@ -69,15 +68,17 @@ public class LightLiveVideoAction extends LiveVideoAction {
      */
     private VideoLoadingImgView ivVodeoLoading;
     protected AtomicBoolean mIsLand = new AtomicBoolean(false);
+    private final LinearLayout llLoding;
 
     public LightLiveVideoAction(Activity activity, LiveBll2 mLiveBll, RelativeLayout mContentView, String mode) {
         super(activity, mLiveBll, mContentView);
         this.mode = mode;
         flFirstBackgroundContent = mContentView.findViewById(R.id.fl_course_video_first_content);
-        rlFirstBackgroundContent = mContentView.findViewById(R.id.rl_course_video_first_content);
+//        rlFirstBackgroundContent = mContentView.findViewById(R.id.rl_course_video_first_content);
         ll_course_video_loading = mContentView.findViewById(R.id.ll_course_video_loading);
         iv_course_video_loading_bg = mContentView.findViewById(R.id.iv_course_video_loading_bg);
-        ivVodeoLoading = mContentView.findViewById(R.id.rl_live_halfbody_video_loading);
+        ivVodeoLoading = mContentView.findViewById(R.id.vl_lightlive_video_loading);
+        llLoding = mContentView.findViewById(R.id.ll_lightlive_video_loading_container);
     }
 
     public void setmIsLand(AtomicBoolean mIsLand) {
@@ -99,25 +100,25 @@ public class LightLiveVideoAction extends LiveVideoAction {
     /**
      * 初始化 loading 资源
      */
-    private void initLoadingView() {
-        if (ivVodeoLoading != null) {
-            if (mGetInfo != null && mGetInfo.getUseSkin() == HalfBodyLiveConfig.SKIN_TYPE_CH) {
-                //语文loading 居中显示
-                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) ivVodeoLoading.getLayoutParams();
-                params.topMargin = 0;
-                params.addRule(RelativeLayout.CENTER_IN_PARENT);
-                LayoutParamsUtil.setViewLayoutParams(ivVodeoLoading, params);
-                ivVodeoLoading.setImageResource(R.drawable.anim_live_video_loading_arts);
-            } else {
-                ivVodeoLoading.setImageResource(R.drawable.anim_live_video_loading);
-            }
-        }
-    }
+//    private void initLoadingView() {
+//        if (ivVodeoLoading != null) {
+//            if (mGetInfo != null && mGetInfo.getUseSkin() == HalfBodyLiveConfig.SKIN_TYPE_CH) {
+//                //语文loading 居中显示
+//                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) ivVodeoLoading.getLayoutParams();
+//                params.topMargin = 0;
+//                params.addRule(RelativeLayout.CENTER_IN_PARENT);
+//                LayoutParamsUtil.setViewLayoutParams(ivVodeoLoading, params);
+//                ivVodeoLoading.setImageResource(R.drawable.anim_live_video_loading_arts);
+//            } else {
+//                ivVodeoLoading.setImageResource(R.drawable.anim_live_video_loading);
+//            }
+//        }
+//    }
 
     @Override
     public void onLiveInit(LiveGetInfo getInfo) {
         super.onLiveInit(getInfo);
-        initLoadingView();
+//        initLoadingView();
     }
 
     /**
@@ -177,7 +178,7 @@ public class LightLiveVideoAction extends LiveVideoAction {
         tvLoadingHint.setVisibility(View.INVISIBLE);
         ll_course_video_loading.setVisibility(View.VISIBLE);
         iv_course_video_loading_bg.setVisibility(View.INVISIBLE);
-        mContentView.findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.INVISIBLE);
+
         // logger.e( "=======>showMainTeacherUI:");
     }
 
@@ -197,6 +198,7 @@ public class LightLiveVideoAction extends LiveVideoAction {
             ivTeacherNotpresent.setVisibility(View.GONE);
             //showVedioLoading(visible);
             if (ivVodeoLoading != null) {
+                llLoding.setVisibility(View.GONE);
                 ivVodeoLoading.setVisibility(View.INVISIBLE);
             }
         }
@@ -215,6 +217,7 @@ public class LightLiveVideoAction extends LiveVideoAction {
                     ivTeacherNotpresent.setVisibility(View.GONE);
                 } else {
                     if (ivVodeoLoading != null) {
+                        llLoding.setVisibility(View.GONE);
                         ivVodeoLoading.setVisibility(View.INVISIBLE);
                     }
                     ivTeacherNotpresent.setVisibility(View.VISIBLE);
@@ -284,7 +287,7 @@ public class LightLiveVideoAction extends LiveVideoAction {
      * @return
      */
     private int getNoTeacherBg() {
-        return R.drawable.livevideo_lightlive_not_start_bg;
+        return R.drawable.livevideo_lightlive_no_teacher;
     }
 
 
@@ -307,13 +310,7 @@ public class LightLiveVideoAction extends LiveVideoAction {
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    if (bufferView == null) {
-                        bufferView = mContentView.findViewById(R.id.probar_course_video_loading_tip_progress);
-                    }
-                    //避免和buffer 的loading动画 冲突
-                    if (bufferView != null && bufferView.getVisibility() == View.VISIBLE) {
-                        return;
-                    }
+                    llLoding.setVisibility(visible);
                     ivVodeoLoading.setVisibility(visible);
                     if (View.VISIBLE == visible) {
                         ivTeacherNotpresent.setBackground(ResourcesCompat.getDrawable(activity.getResources(),

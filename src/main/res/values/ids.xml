@@ -1481,5 +1481,9 @@
     <item name="lv_lightlive_busi_red_pack_red" type="id" />
     <item name="lv_lightlive_busi_red_pack_red_res" type="id" />
     <item name="iv_lightlive_busi_red_pack_close" type="id" />
+    <!-- 轻直播-->
+    <item name="ll_lightlive_video_loading_container" type="id" />
+    <item name="vl_lightlive_video_loading" type="id" />
+
 
 </resources>
