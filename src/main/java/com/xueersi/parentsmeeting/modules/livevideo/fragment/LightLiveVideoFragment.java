@@ -69,6 +69,7 @@ public class LightLiveVideoFragment  extends LiveFragmentBase implements Activit
     /** onPause状态不暂停视频 */
     PauseNotStopVideoIml pauseNotStopVideoIml;
     boolean firstInitView = false;
+    private RelativeLayout contentLayout;
 
     public LightLiveVideoFragment(){
         mLayoutVideo = R.layout.activity_video_live_lightlive;
@@ -239,6 +240,7 @@ public class LightLiveVideoFragment  extends LiveFragmentBase implements Activit
         bottomContent.setVisibility(View.VISIBLE);
         otherContent = mContentView.findViewById(R.id.ll_course_video_live_other_content);
         otherContent.setVisibility(View.VISIBLE);
+        contentLayout = mContentView.findViewById(R.id.rl_course_video_live_content);
         liveViewAction = new LiveViewActionIml(activity, mContentView, bottomContent);
         logger.e("========>:initView:" + bottomContent);
         // 预加载布局中退出事件
@@ -364,8 +366,6 @@ public class LightLiveVideoFragment  extends LiveFragmentBase implements Activit
         long before = System.currentTimeMillis();
         if (mIsLand.get()) {
             if (group != rlContent) {
-                RelativeLayout contentLayout = mContentView.findViewById(R.id.rl_course_video_live_content);
-                contentLayout.removeAllViews();
                 //设置控制
                 ViewGroup controllerContent = (ViewGroup) mContentView.findViewById(R.id.rl_course_video_live_controller_content);
                 controllerContent.removeAllViews();
@@ -393,7 +393,10 @@ public class LightLiveVideoFragment  extends LiveFragmentBase implements Activit
                 }
 //                setMediaControllerBottomParam();
                 // 换位置
+                contentLayout.removeAllViews();
                 group.removeView(bottomContent);
+                group.removeView(contentLayout);
+                contentLayout.setBackground(activity.getResources().getDrawable(R.color.COLOR_00000000));
                 ((ViewGroup)otherContent.getParent()).removeView(otherContent);
                 otherContent.setVisibility(View.INVISIBLE);
                 RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
@@ -451,11 +454,13 @@ public class LightLiveVideoFragment  extends LiveFragmentBase implements Activit
                 // 换位置
                 group.removeView(bottomContent);
                 group.removeView(otherContent);
+                group.removeView(contentLayout);
+                bottomContent.removeAllViews();
+                otherContent.removeAllViews();
+                contentLayout.removeAllViews();
                 RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
                         .MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                 lp.addRule(RelativeLayout.BELOW, R.id.rl_course_video_content);
-                bottomContent.removeAllViews();
-                otherContent.removeAllViews();
                 content.addView(otherContent, lp);
                 otherContent.setVisibility(View.VISIBLE);
                 RelativeLayout.LayoutParams lp2 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
@@ -463,6 +468,10 @@ public class LightLiveVideoFragment  extends LiveFragmentBase implements Activit
                 lp2.addRule(RelativeLayout.BELOW, R.id.ll_course_video_live_other_content);
                 lp2.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
                 content.addView(bottomContent,lp2);
+                RelativeLayout.LayoutParams lp3 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
+                        .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+                contentLayout.setBackground(activity.getResources().getDrawable(R.color.COLOR_00000000));
+                content.addView(contentLayout,lp3);
                 logger.d("changeLandAndPort:time3=" + (System.currentTimeMillis() - before));
                 before = System.currentTimeMillis();
                 List<LiveBaseBll> businessBlls = mLiveBll.getBusinessBlls();

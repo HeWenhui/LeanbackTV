@@ -3,7 +3,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="55dp"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:clickable="true"
+    android:id="@+id/rl_iv_livevideo_lightlive_coupon"
+    >
     <ImageView
         android:id="@+id/iv_livevideo_lightlive_coupon_title"
         android:layout_width="wrap_content"
@@ -12,18 +15,19 @@
         android:layout_marginLeft="16dp"
         android:src="@drawable/livevideo_lightlive_coupon_title"
         />
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_livevideo_lightlive_coupon_data"
+    <LinearLayout
+        android:id="@+id/ll_livevideo_lightlive_coupon_data"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:gravity="center_vertical"
         android:layout_centerVertical="true"
         android:layout_toRightOf="@+id/iv_livevideo_lightlive_coupon_title"
         android:layout_toLeftOf="@+id/iv_livevideo_lightlive_coupon_more"
         android:layout_marginRight="12dp"
         android:layout_marginLeft="12dp"
         >
-    </android.support.v7.widget.RecyclerView>
+    </LinearLayout>
 
     <ImageView
         android:id="@+id/iv_livevideo_lightlive_coupon_more"

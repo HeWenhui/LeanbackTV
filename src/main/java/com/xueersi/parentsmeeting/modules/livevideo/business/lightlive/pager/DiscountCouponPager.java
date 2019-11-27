@@ -3,13 +3,19 @@ package com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.pager;
 import android.app.Activity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xueersi.common.base.BasePager;
+import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.entity.CouponEntity;
 
 import java.util.List;
 
@@ -28,10 +34,11 @@ import java.util.List;
 public class DiscountCouponPager extends BasePager {
 
 
-    private RecyclerView rvCoupon;
+    private LinearLayout llCoupon;
     private ImageView ivMore;
-    private List<String> mData;
+    private List<CouponEntity> mData;
     private MoreCouponClickListener listener;
+    private RelativeLayout rlCoupon;
 
     public DiscountCouponPager(Activity activity) {
         super(activity);
@@ -41,66 +48,48 @@ public class DiscountCouponPager extends BasePager {
     @Override
     public View initView() {
         mView = View.inflate(mContext, R.layout.page_lightlive_discount_coupon, null);
-        rvCoupon = mView.findViewById(R.id.rv_livevideo_lightlive_coupon_data);
+        rlCoupon = mView.findViewById(R.id.rl_iv_livevideo_lightlive_coupon);
+        llCoupon = mView.findViewById(R.id.ll_livevideo_lightlive_coupon_data);
         ivMore = mView.findViewById(R.id.iv_livevideo_lightlive_coupon_more);
-        rvCoupon.setLayoutManager(new LinearLayoutManager(mContext,LinearLayoutManager.HORIZONTAL,false));
         mView.setVisibility(View.GONE);
+        initListener();
         return mView;
     }
 
     @Override
     public void initData() {
-        rvCoupon.setAdapter(new CouponAdapter(mData));
+        for (int i = 0; i < mData.size(); i++) {
+            if (i > 2) {
+                break;
+            }
+            CouponEntity entity = mData.get(i);
+            String tag = entity.getTitle();
+            if (TextUtils.isEmpty(tag)) continue;
+            TextView textView = new TextView(mContext);
+            textView.setBackgroundResource(R.drawable.livevideo_lightlive_coupon_small_bg);
+            textView.setTextColor(mContext.getResources().getColor(R.color.COLOR_FF5E50));
+            textView.setTextSize(10);
+//            textView.setPadding(SizeUtils.Dp2Px(mContext, 6), 0, SizeUtils.Dp2Px(mContext, 6), 0);
+            textView.setGravity(Gravity.CENTER);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams
+                    .WRAP_CONTENT);
+            layoutParams.setMargins(SizeUtils.Dp2Px(mContext, 4), 0, SizeUtils.Dp2Px(mContext, 4), 0);
+            textView.setLayoutParams(layoutParams);
+            textView.setText(tag);
+            llCoupon.addView(textView);
+        }
     }
 
 
-    public void setData(List<String> data) {
+    public void setData(List<CouponEntity> data) {
         this.mData = data;
         initData();
         mView.setVisibility(View.VISIBLE);
     }
 
-    private class CouponAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-
-        private List<String> mData;
-
-        public CouponAdapter(List<String> mData) {
-            this.mData = mData;
-        }
-
-        @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new CouponHolder(View.inflate(parent.getContext(), R.layout.item_livevideo_lightlive_coupon_small, null));
-        }
-
-        @Override
-        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-            ((CouponHolder) holder).bindData(mData.get(position));
-        }
-
-        @Override
-        public int getItemCount() {
-            return mData == null ? 0 : mData.size();
-        }
-    }
-
-    private class CouponHolder extends RecyclerView.ViewHolder {
-
-        TextView tvData;
-
-        public CouponHolder(View itemView) {
-            super(itemView);
-            tvData = itemView.findViewById(R.id.tv_livevideo_lightlive_coupon_small);
-        }
-
-        public void bindData(String data) {
-            tvData.setText(data);
-        }
-    }
-
     @Override
     public void initListener() {
-        ivMore.setOnClickListener(new View.OnClickListener() {
+        rlCoupon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 listener.onClick();
@@ -108,11 +97,11 @@ public class DiscountCouponPager extends BasePager {
         });
     }
 
-    public void setMoreClickListener(MoreCouponClickListener listener){
+    public void setMoreClickListener(MoreCouponClickListener listener) {
         this.listener = listener;
     }
 
-    public interface MoreCouponClickListener{
+    public interface MoreCouponClickListener {
         void onClick();
     }
 }

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="104dp"
+        android:background="@drawable/livevideo_lightlive_coupon_detail_img"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="110dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_livevideo_lightlive_coupon_detail_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:includeFontPadding="false"
+                android:textSize="32sp"
+                android:textStyle="bold"
+                tools:text="50" />
+
+            <TextView
+                android:id="@+id/tv_livevideo_lightlive_coupon_detail_limit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:includeFontPadding="false"
+                tools:text="满1000元可用" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_livevideo_lightlive_coupon_detail_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:includeFontPadding="false"
+                android:lineSpacingExtra="4dp"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:textColor="@color/COLOR_212831"
+                android:textSize="12sp"
+                tools:text="优惠券名称优惠券名称优惠券名称优惠券名称，超出2行…" />
+
+            <TextView
+                android:id="@+id/tv_livevideo_lightlive_coupon_detail_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:includeFontPadding="false"
+                android:textColor="@color/COLOR_ADB4BE"
+                android:textSize="10sp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                tools:text="2019.1.1—2019.9.30" />
+
+
+        </LinearLayout>
+
+
+        <RelativeLayout
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="12dp">
+
+            <TextView
+                android:id="@+id/tv_livevideo_lightlive_coupon_detail_get"
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:layout_centerVertical="true"
+                android:background="@drawable/shape_corners_16_solid_ff5e50"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                tools:text="立即领取" />
+
+            <TextView
+                android:id="@+id/tv_livevideo_lightlive_coupon_detail_got"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_livevideo_lightlive_coupon_detail_get"
+                android:layout_marginTop="4dp"
+                android:gravity="center"
+                android:textColor="@color/COLOR_FF5E50"
+                android:textSize="10sp"
+                tools:text="已获取1张" />
+
+
+            <ImageView
+                android:id="@+id/tv_livevideo_lightlive_coupon_detail_finish"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="12dp"
+                android:src="@drawable/livevideo_lightlive_coupon_got" />
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+</LinearLayout>
