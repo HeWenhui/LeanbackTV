@@ -823,8 +823,6 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
             //TODO:
             int i = 1;
             for (RolePlayerEntity.RolePlayerMessage message : mRolePlayerEntity.getLstRolePlayerMessage()) {
-
-
                 if (message.getRolePlayer().isSelfRole()) {
                     JSONObject objAn = new JSONObject();
                     objAn.put("sentenceNum", i);
