@@ -93,6 +93,7 @@ public class NewCourseCache {
         }
         header = new HashMap();
         header.put("Access-Control-Allow-Origin", "*");
+        add(new FutureCourse());
     }
 
     public void add(InterceptRequest interceptRequest) {

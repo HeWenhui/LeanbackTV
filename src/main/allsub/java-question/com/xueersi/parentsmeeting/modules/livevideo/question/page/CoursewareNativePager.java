@@ -1374,7 +1374,6 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                             detailInfo.setArtType(test.getTestType());
                         }
                     }
-                    newCourseCache.add(newCourseCache.new FutureCourse());
                     showControl();
                     if (quesJson != null) {
                         for (int i = 0; i < tests.size(); i++) {
