@@ -561,6 +561,10 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                     }
                 }
             });
+            if (mGetInfo != null) {
+                mHandler.removeCallbacks(studentLiveInfoRunnable);
+                mHandler.post(studentLiveInfoRunnable);
+            }
         }
     }
 
@@ -846,25 +850,27 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         mMediaController.setFileName(getInfo.getName());
         mLiveBll.setHalfBodyLive(isHalfBodyLive());
         liveEnvironment.setLiveGetInfo(getInfo);
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (isFinishing()) {
-                    return;
-                }
-                mLiveBll.getStudentLiveInfo();
-                long delayMillis;
-                //大班直播一分钟
-                if (isBigLive) {
-                    delayMillis = 60000;
-                } else {
-                    delayMillis = 300000;
-                }
-                mHandler.postDelayed(this, delayMillis);
-            }
-        });
+        mHandler.post(studentLiveInfoRunnable);
         initBussinessUI();
     }
+
+    private Runnable studentLiveInfoRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (isFinishing()) {
+                return;
+            }
+            mLiveBll.getStudentLiveInfo();
+            long delayMillis;
+            //大班直播一分钟
+            if (isBigLive) {
+                delayMillis = 60000;
+            } else {
+                delayMillis = 300000;
+            }
+            mHandler.postDelayed(this, delayMillis);
+        }
+    };
 
     private void initBussinessUI() {
         if (isHalfBodyLive()) {
