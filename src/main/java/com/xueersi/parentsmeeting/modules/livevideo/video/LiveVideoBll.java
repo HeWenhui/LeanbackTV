@@ -431,6 +431,7 @@ public class LiveVideoBll implements VPlayerListenerReg, ProgressAction {
                             if (mVideoAction != null) {
                                 mVideoAction.onTeacherNotPresent(false);
                             }
+                            mLogtf.d("[zhangyuansun] onOpenSuccess: close RTCVideoPager");
                             //关闭1v2真流
                             RTCVideoAction rtcVideoAction = ProxUtil.getProxUtil().get(activity, RTCVideoAction.class);
                             if (rtcVideoAction != null) {
@@ -697,6 +698,7 @@ public class LiveVideoBll implements VPlayerListenerReg, ProgressAction {
                                 if (mVideoAction != null) {
                                     mVideoAction.onTeacherNotPresent(false);
                                 }
+                                mLogtf.d("[zhangyuansun] PLAY_COMPLETE: close RTCVideoPager");
                                 //关闭1v2真流
                                 RTCVideoAction rtcVideoAction = ProxUtil.getProxUtil().get(activity, RTCVideoAction.class);
                                 if (rtcVideoAction != null) {
