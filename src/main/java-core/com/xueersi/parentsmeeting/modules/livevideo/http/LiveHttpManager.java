@@ -57,14 +57,14 @@ import okhttp3.Response;
 /**
  * 直播网络访问类
  */
-public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction, LiveHttpDelayAction {
+public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction,LiveHttpDelayAction{
     String TAG = "LiveHttpManager";
     private final Logger logger = LoggerFactory.getLogger(TAG);
     HashMap<String, String> defaultKey = new HashMap<>();
-    /** header 参数 **/
-    HashMap<String, String> defaultHeaderParams = new HashMap<>();
-    /** 大班整合 公共参数 **/
-    HashMap<String, Object> defaultBusinessParams = new HashMap<>();
+    /**header 参数**/
+    HashMap<String,String> defaultHeaderParams = new HashMap<>();
+    /**大班整合 公共参数**/
+    HashMap<String,Object> defaultBusinessParams = new HashMap<>();
 
 
     LiveVideoSAConfig.Inner liveVideoSAConfigInner;
@@ -318,21 +318,21 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction,
     /**
      * 大班整合直播间-直播信息接口
      *
-     * @param planId            场次id
-     * @param bizId             直播类型：1 直播,2:讲座
-     * @param stuCould          学生课程id
-     * @param acceptPlanVersion
+     * @param planId  场次id
+     * @param bizId 直播类型：1 直播,2:讲座
+     * @param stuCould 学生课程id
+     * @param  acceptPlanVersion
      */
-    public void bigLiveEnter(int planId, int bizId, int stuCould, int acceptPlanVersion, HttpCallBack requestCallBack) {
+    public void bigLiveEnter(int planId, int bizId, int stuCould, int acceptPlanVersion,HttpCallBack requestCallBack){
 
         BigLiveEnterParam param = new BigLiveEnterParam();
         param.setBizId(bizId);
         param.setPlanId(planId);
         param.setAcceptPlanVersion(acceptPlanVersion);
-        if (stuCould > 0) {
+        if(stuCould > 0){
             param.setStuCouId(stuCould);
         }
-        sendJsonPost(LiveIntegratedCfg.LIVE_ENTER, param, requestCallBack);
+        sendJsonPost(LiveIntegratedCfg.LIVE_ENTER,param,requestCallBack);
     }
 
 
@@ -2295,9 +2295,9 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction,
     /**
      * app摄像头开启状态
      *
-     * @param liveId 场次id
-     * @param stuId  学生id
-     * @param testId 互动题所属题目Id
+     * @param liveId       场次id
+     * @param stuId        学生id
+     * @param testId       互动题所属题目Id
      */
     public void sendSuperSpeakerCameraStatus(String liveId, String stuId, String testId, HttpCallBack httpCallBack) {
         HttpRequestParams params = new HttpRequestParams();
@@ -2392,9 +2392,9 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction,
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("plan_id", liveId);
         params.addBodyParam("course_id", courseId);
-        // params.addBodyParam("isPlayBack", isPlayBack);
+       // params.addBodyParam("isPlayBack", isPlayBack);
         sendPost(LiveHttpConfig.URL_COURSE_EVALUATE, params, httpCallBack);
-        // baseSendPostNoBusinessJson(LiveHttpConfig.URL_COURSE_EVALUATE, params, httpCallBack);
+       // baseSendPostNoBusinessJson(LiveHttpConfig.URL_COURSE_EVALUATE, params, httpCallBack);
     }
 
 
@@ -2417,7 +2417,7 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction,
      *
      * @param requestCallBack
      */
-    public void getStuSegment(HttpCallBack requestCallBack) {
+    public void getStuSegment( HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         setDefaultParameter(params);
         sendPost(LiveVideoHttpEnConfig.URL_LIVE_GET_STU_SEGMENT, params, requestCallBack);
@@ -2506,9 +2506,9 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction,
      *
      * @param requestCallBack
      */
-    public void ScienceVoteCommit(String planId, String classId, String interactionId, String option, String stuIRCId, String stuName, HttpCallBack requestCallBack) {
+    public void ScienceVoteCommit(String planId,int bizId, String classId, String interactionId, String option, String stuIRCId,String stuName,HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
-        params.addBodyParam("bizId", "3");
+        params.addBodyParam("bizId", String.valueOf(bizId));
         params.addBodyParam("planId", planId);
         params.addBodyParam("classId", classId);
         params.addBodyParam("interactionId", interactionId);

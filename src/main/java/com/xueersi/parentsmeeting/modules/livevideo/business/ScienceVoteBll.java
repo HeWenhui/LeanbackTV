@@ -63,7 +63,7 @@ public class ScienceVoteBll extends LiveBaseBll implements NoticeAction, TopicAc
                         if (TextUtils.equals(VOTE_STATE_OPEN, open)) {
                             JSONArray optionsJSONArray = data.optJSONArray("options");
                             showChoice(optionsJSONArray);
-                            liveLogInteractive("1", "1", "receivequickchoice", interactionId);
+                            liveLogInteractive("2", "1", "receivequickchoice", interactionId);
                             for (int i = 0; i < optionsJSONArray.length(); i++) {
                                 JSONObject optionsJSONObject = optionsJSONArray.getJSONObject(i);
                                 if (TextUtils.equals(optionsJSONObject.optString("right"), "1")) {
@@ -181,7 +181,7 @@ public class ScienceVoteBll extends LiveBaseBll implements NoticeAction, TopicAc
     }
 
     private void submitResult() {
-        getHttpManager().ScienceVoteCommit(mLiveId, mGetInfo.getStudentLiveInfo().getClassId(), interactionId, getUserAnswer(), mLiveBll.getNickname(), mGetInfo.getStuName(), new HttpCallBack(true) {
+        getHttpManager().ScienceVoteCommit(mLiveId, mGetInfo.getLiveType(), mGetInfo.getStudentLiveInfo().getClassId(), interactionId, getUserAnswer(), mLiveBll.getNickname(), mGetInfo.getStuName(), new HttpCallBack(true) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 logger.d("ScienceVoteCommit:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
@@ -192,14 +192,14 @@ public class ScienceVoteBll extends LiveBaseBll implements NoticeAction, TopicAc
                 } else {
                     if (TextUtils.isEmpty(rightAnswer)) {
                         submitSuccess(0);
-                        liveLogInteractive("2", "2", "submitquickchoice", interactionId, "");
+                        liveLogInteractive("3", "2", "submitquickchoice", interactionId, "");
                     } else {
                         if (TextUtils.equals(getUserAnswer(), rightAnswer)) {
                             submitSuccess(1);
-                            liveLogInteractive("2", "2", "submitquickchoice", interactionId, "right");
+                            liveLogInteractive("3", "2", "submitquickchoice", interactionId, "right");
                         } else {
                             submitSuccess(2);
-                            liveLogInteractive("2", "2", "submitquickchoice", interactionId, "wrong");
+                            liveLogInteractive("3", "2", "submitquickchoice", interactionId, "wrong");
                         }
                     }
                 }
@@ -300,21 +300,58 @@ public class ScienceVoteBll extends LiveBaseBll implements NoticeAction, TopicAc
      */
     public void liveLogInteractive(String sno, String table, String logType, String interactionId) {
         if (liveAndBackDebug != null) {
-            StableLogHashMap logHashMap = new StableLogHashMap(logType);
-            logHashMap.addSno(sno).addStable(table);
-            logHashMap.addInteractionId(interactionId);
-            logHashMap.put("", "");
-            liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap);
+            try {
+                StableLogHashMap logHashMap = new StableLogHashMap(logType);
+                logHashMap.addSno(sno).addStable(table);
+                logHashMap.addInteractionId(interactionId);
+                logHashMap.put("liveid", mLiveId);
+                logHashMap.put("courseid", mGetInfo.getStudentLiveInfo().getCourseId());
+                logHashMap.put("gradeid", String.valueOf(mGetInfo.getGrade()));
+                String subjects = "";
+                if (mGetInfo.getSubjectIds() != null){
+                    String subjectIds[] = mGetInfo.getSubjectIds();
+                    for (int i = 0; i < subjectIds.length; i++) {
+                        subjects += subjectIds[i];
+                        if (i == subjectIds.length-1){
+                            break;
+                        }
+                        subjects +=",";
+                    }
+                }
+                logHashMap.put("subjectid", subjects);
+                liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
     public void liveLogInteractive(String sno, String table, String logType, String interactionId, String isRight) {
         if (liveAndBackDebug != null) {
-            StableLogHashMap logHashMap = new StableLogHashMap(logType);
-            logHashMap.addSno(sno).addStable(table);
-            logHashMap.addInteractionId(interactionId);
-            logHashMap.put("isRight", isRight);
-            liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap);
+            try {
+                StableLogHashMap logHashMap = new StableLogHashMap(logType);
+                logHashMap.addSno(sno).addStable(table);
+                logHashMap.addInteractionId(interactionId);
+                logHashMap.put("liveid", mLiveId);
+                logHashMap.put("courseid", mGetInfo.getStudentLiveInfo().getCourseId());
+                logHashMap.put("gradeid", String.valueOf(mGetInfo.getGrade()));
+                String subjects = "";
+                if (mGetInfo.getSubjectIds() != null){
+                    String subjectIds[] = mGetInfo.getSubjectIds();
+                    for (int i = 0; i < subjectIds.length; i++) {
+                        subjects += subjectIds[i];
+                        if (i == subjectIds.length-1){
+                            break;
+                        }
+                        subjects +=",";
+                    }
+                }
+                logHashMap.put("subjectid", subjects);
+                logHashMap.put("answer", isRight);
+                liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }

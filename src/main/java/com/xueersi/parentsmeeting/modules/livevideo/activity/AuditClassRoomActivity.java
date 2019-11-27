@@ -61,6 +61,7 @@ public class AuditClassRoomActivity extends XesActivity {
      * 旁听课堂业务类
      */
     AuditClassRoomBll mAuditClassRoomBll;
+    private boolean isBigLive;
     /**
      * 数据加载
      */
@@ -366,7 +367,7 @@ public class AuditClassRoomActivity extends XesActivity {
         }
         mAuditClassRoomBll.postDataLoadEvent(mDataLoadEntity.beginLoading());
         Intent intent = getIntent();
-        boolean isBigLive = intent.getBooleanExtra("isBigLive", false);
+        isBigLive = intent.getBooleanExtra("isBigLive", false);
         if (isBigLive) {
             int classId = intent.getIntExtra("classId", -1);
             int teamId = intent.getIntExtra("teamId", -1);
@@ -563,7 +564,7 @@ public class AuditClassRoomActivity extends XesActivity {
             llQuestionDetailList.setVisibility(View.VISIBLE);
             hasData = true;
             if (mQuestionRateDetailAdapter == null) {
-                mQuestionRateDetailAdapter = new QuestionRateDetailAdapter(mContext, lstUserScore);
+                mQuestionRateDetailAdapter = new QuestionRateDetailAdapter(mContext, lstUserScore,isBigLive);
                 gvQuestionDetail.setAdapter(mQuestionRateDetailAdapter);
             } else {
                 mQuestionRateDetailAdapter.notifyDataSetChanged();

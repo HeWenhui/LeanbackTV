@@ -1089,9 +1089,9 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         @Override
         public void onHitSentence(ResultEntity resultEntity) {
 
-            if(isVoiceTreasuerBox() && !isTargetWord(resultEntity)){
+          /*  if(isVoiceTreasuerBox() && !isTargetWord(resultEntity)){
                 return;
-            }
+            }*/
             int newSenIndex = resultEntity.getNewSenIdx();
             int score = resultEntity.getScore();
             double speechDuration = resultEntity.getSpeechDuration();
@@ -1303,6 +1303,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         boolean result = detailInfo!= null && LiveQueConfig.EN_COURSE_TYPE_VOICE_TREASURE_BOX.equals(detailInfo.type);
         return result;
     }
+
 
     private boolean isTargetWord(ResultEntity resultEntity) {
         boolean result = false;

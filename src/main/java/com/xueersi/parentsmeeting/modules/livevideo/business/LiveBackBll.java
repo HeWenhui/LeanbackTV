@@ -457,15 +457,29 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
                     String[] arrSubjIds = strSubjIds.split(",");
                     liveGetInfo.setSubjectIds(arrSubjIds);
                 }
+                try {
+                    //回放理科日志新增字段
+                    if (liveInfo.has("subjectIds")) {
+                        String strSubjIds = liveInfo.getString("subjectIds");
+                        String[] arrSubjIds = strSubjIds.split(",");
+                        liveGetInfo.setSubjectIds(arrSubjIds);
+                    }
+                    if (liveInfo.has("gradeIds")) {
+                        liveGetInfo.setGrade(Integer.parseInt(liveInfo.optString("gradeIds").split(",")[0]));
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
                 mCourseHttpResponseParser.parseLiveGetInfo(liveInfo, liveGetInfo, mLiveType, isArts);
             }
-            if (pattern == LiveVideoConfig.LIVE_PATTERN_COMMON) {
-                boolean newCourse = mBaseActivity.getIntent().getBooleanExtra("newCourse", false);
-                if (newCourse || isExperience) {
-                    liveGetInfo.setNewCourse(true);
-                }
-            } else {
-                if (isExperience) {
+            if (isExperience){
+                if (pattern == LiveVideoConfig.LIVE_PATTERN_COMMON || pattern == LiveVideoConfig.LIVE_TYPE_HALFBODY) {
+                    boolean newCourse = mBaseActivity.getIntent().getBooleanExtra("newCourse", false);
+                    if (newCourse) {
+                        liveGetInfo.setNewCourse(true);
+                    }
+                } else {
                     liveGetInfo.setNewCourse(false);
                 }
             }
@@ -849,8 +863,24 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
                     index = i;
                     break;
                 }
+            }else if(LocalCourseConfig.CATEGORY_NB_EXPERIMENT == videoQuestionEntity.getvCategory()){
+                //大班nb 实验
+                if (startTime <= playPosition && playPosition < endTime) {
+                    mQuestionEntity = videoQuestionEntity;
+                    hasQuestionShow = true;
+                    index = i;
+                    break;
+                }
             } else if (LocalCourseConfig.CATEGORY_SCIENCE_VOTE == videoQuestionEntity.getvCategory()) {
                 // 小学理科投票新
+                if (startTime <= playPosition && playPosition < endTime) {
+                    mQuestionEntity = videoQuestionEntity;
+                    hasQuestionShow = true;
+                    index = i;
+                    break;
+                }
+            }else if (LocalCourseConfig.CATEGORY_SPEECH_ASSESS == videoQuestionEntity.getvCategory()) {
+                // 大班三期语音评测题
                 if (startTime <= playPosition && playPosition < endTime) {
                     mQuestionEntity = videoQuestionEntity;
                     hasQuestionShow = true;

@@ -69,11 +69,20 @@ public class QuestionExperienceBll extends LiveBackBaseBll {
         WrapQuestionSwitch wrapQuestionSwitch = new WrapQuestionSwitch(activity, questionBll.new
                 LiveQuestionSwitchImpl());
         questionBll.setBaseVoiceAnswerCreat(new LiveBackVoiceAnswerCreat(wrapQuestionSwitch, questionBll, liveGetInfo));
-        //语音评测
-        LiveBackSpeechCreat liveBackSpeechCreat = new LiveBackSpeechCreat(questionBll);
-        liveBackSpeechCreat.setSpeechEvalAction(new WrapSpeechEvalAction(activity));
-        liveBackSpeechCreat.setIsExperience(liveBackBll.getExperience());
-        questionBll.setBaseSpeechCreat(liveBackSpeechCreat);
+        if (liveGetInfo.getPattern() == 2){
+            //语音评测
+            LiveBackStandSpeechCreat liveBackStandSpeechCreat = new LiveBackStandSpeechCreat(liveBackBll,
+                    questionBll);
+            liveBackStandSpeechCreat.setIsExperience(liveBackBll.getExperience());
+            liveBackStandSpeechCreat.setSpeechEvalAction(new WrapSpeechEvalAction(activity));
+            questionBll.setBaseSpeechCreat(liveBackStandSpeechCreat);
+        } else {
+            //语音评测
+            LiveBackSpeechCreat liveBackSpeechCreat = new LiveBackSpeechCreat(questionBll);
+            liveBackSpeechCreat.setSpeechEvalAction(new WrapSpeechEvalAction(activity));
+            liveBackSpeechCreat.setIsExperience(liveBackBll.getExperience());
+            questionBll.setBaseSpeechCreat(liveBackSpeechCreat);
+        }
         //测试卷
         LiveBackExamQuestionCreat liveBackExamQuestionCreat = new LiveBackExamQuestionCreat();
         liveBackExamQuestionCreat.setLiveGetInfo(liveGetInfo);

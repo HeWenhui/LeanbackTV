@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.xueersi.lib.framework.utils.NetWorkHelper;
@@ -126,16 +127,17 @@ public class LiveGetPlayServer {
                     channelname = CNANNEL_PREFIX + mGetInfo.getLiveType() + "_" + mGetInfo.getId();
                 }
             }
-                mGetInfo.setChannelname(channelname);
+            mGetInfo.setChannelname(channelname);
+
         } else {
-            if (mGetInfo.ePlanInfo == null) {
-                mGetInfo.setChannelname(CNANNEL_PREFIX + mGetInfo.getLiveType() + "_" + mGetInfo.getId() + "_"
-                        + mGetInfo.getTeacherId());
-            } else {
-                //大班整合 视频channel 由接口带回
-                if(!StringUtils.isEmpty(mGetInfo.getCounselorTeacherVideo())){
-                    mGetInfo.setChannelname(mGetInfo.getCounselorTeacherVideo());
-                }else{
+            //大班整合 辅导流id 由接口带回 无需拼接
+            if(!TextUtils.isEmpty(mGetInfo.getCounselorTeacherVideo())){
+                mGetInfo.setChannelname(mGetInfo.getCounselorTeacherVideo());
+            }else{
+                if (mGetInfo.ePlanInfo == null) {
+                    mGetInfo.setChannelname(CNANNEL_PREFIX + mGetInfo.getLiveType() + "_" + mGetInfo.getId() + "_"
+                            + mGetInfo.getTeacherId());
+                } else {
                     mGetInfo.setChannelname(CNANNEL_PREFIX + mGetInfo.getLiveType() + "_" + mGetInfo.ePlanInfo.ePlanId + "_"+ mGetInfo.ePlanInfo.eTeacherId);
                 }
             }

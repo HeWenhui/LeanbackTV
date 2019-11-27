@@ -87,7 +87,7 @@ public class ScienceVotePlayBackBll extends LiveBackBaseBll {
             if (TextUtils.equals(VOTE_STATE_OPEN, open)) {
                 JSONArray optionsJSONArray = data.optJSONArray("options");
                 showChoice(optionsJSONArray);
-                liveLogInteractive("1", "1", "receivequickchoice", interactionId);
+                liveLogInteractive("2", "1", "receivequickchoice", interactionId);
                 for (int i = 0; i < optionsJSONArray.length(); i++) {
                     JSONObject optionsJSONObject = optionsJSONArray.getJSONObject(i);
                     if (TextUtils.equals(optionsJSONObject.optString("right"), "1")) {
@@ -134,7 +134,7 @@ public class ScienceVotePlayBackBll extends LiveBackBaseBll {
     }
 
     private void submitResult() {
-        getmHttpManager().ScienceVoteCommit(liveId, liveGetInfo.getStudentLiveInfo().getClassId(), interactionId, getUserAnswer(), nickname, liveGetInfo.getStuName(), new HttpCallBack(true) {
+        getmHttpManager().ScienceVoteCommit(liveId, liveGetInfo.getLiveType(), liveGetInfo.getStudentLiveInfo().getClassId(), interactionId, getUserAnswer(), nickname, liveGetInfo.getStuName(), new HttpCallBack(true) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 logger.d("ScienceVoteCommit:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
@@ -144,14 +144,14 @@ public class ScienceVotePlayBackBll extends LiveBackBaseBll {
                 } else {
                     if (TextUtils.isEmpty(rightAnswer)) {
                         submitSuccess(0);
-                        liveLogInteractive("2", "2", "submitquickchoice", interactionId, "");
+                        liveLogInteractive("3", "2", "submitquickchoice", interactionId, "");
                     } else {
                         if (TextUtils.equals(getUserAnswer(), rightAnswer)) {
                             submitSuccess(1);
-                            liveLogInteractive("2", "2", "submitquickchoice", interactionId, "right");
+                            liveLogInteractive("3", "2", "submitquickchoice", interactionId, "right");
                         } else {
                             submitSuccess(2);
-                            liveLogInteractive("2", "2", "submitquickchoice", interactionId, "wrong");
+                            liveLogInteractive("3", "2", "submitquickchoice", interactionId, "wrong");
                         }
                     }
                 }
@@ -242,21 +242,58 @@ public class ScienceVotePlayBackBll extends LiveBackBaseBll {
      */
     public void liveLogInteractive(String sno, String table, String logType, String interactionId) {
         if (contextLiveAndBackDebug != null) {
-            StableLogHashMap logHashMap = new StableLogHashMap(logType);
-            logHashMap.addSno(sno).addStable(table);
-            logHashMap.addInteractionId(interactionId);
-            logHashMap.put("", "");
-            contextLiveAndBackDebug.umsAgentDebugInter(eventId, logHashMap);
+            try {
+                StableLogHashMap logHashMap = new StableLogHashMap(logType);
+                logHashMap.addSno(sno).addStable(table);
+                logHashMap.addInteractionId(interactionId);
+                logHashMap.put("liveid", liveId);
+                logHashMap.put("courseid", liveGetInfo.getStudentLiveInfo().getCourseId());
+                logHashMap.put("gradeid", String.valueOf(liveGetInfo.getGrade()));
+                String subjects = "";
+                if (liveGetInfo.getSubjectIds() != null){
+                    String subjectIds[] = liveGetInfo.getSubjectIds();
+                    for (int i = 0; i < subjectIds.length; i++) {
+                        subjects += subjectIds[i];
+                        if (i == subjectIds.length-1){
+                            break;
+                        }
+                        subjects +=",";
+                    }
+                }
+                logHashMap.put("subjectid", subjects);
+                contextLiveAndBackDebug.umsAgentDebugInter(eventId, logHashMap);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
     public void liveLogInteractive(String sno, String table, String logType, String interactionId, String isRight) {
         if (contextLiveAndBackDebug != null) {
-            StableLogHashMap logHashMap = new StableLogHashMap(logType);
-            logHashMap.addSno(sno).addStable(table);
-            logHashMap.addInteractionId(interactionId);
-            logHashMap.put("isRight", isRight);
-            contextLiveAndBackDebug.umsAgentDebugInter(eventId, logHashMap);
+            try {
+                StableLogHashMap logHashMap = new StableLogHashMap(logType);
+                logHashMap.addSno(sno).addStable(table);
+                logHashMap.addInteractionId(interactionId);
+                logHashMap.put("liveid", liveId);
+                logHashMap.put("courseid", liveGetInfo.getStudentLiveInfo().getCourseId());
+                logHashMap.put("gradeid", String.valueOf(liveGetInfo.getGrade()));
+                String subjects = "";
+                if (liveGetInfo.getSubjectIds() != null){
+                    String subjectIds[] = liveGetInfo.getSubjectIds();
+                    for (int i = 0; i < subjectIds.length; i++) {
+                        subjects += subjectIds[i];
+                        if (i == subjectIds.length-1){
+                            break;
+                        }
+                        subjects +=",";
+                    }
+                }
+                logHashMap.put("subjectid", subjects);
+                logHashMap.put("answer", isRight);
+                contextLiveAndBackDebug.umsAgentDebugInter(eventId, logHashMap);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }
