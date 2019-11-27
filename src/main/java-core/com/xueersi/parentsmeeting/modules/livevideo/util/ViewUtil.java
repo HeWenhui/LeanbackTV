@@ -39,4 +39,10 @@ public class ViewUtil {
             textView.setText(text);
         }
     }
+
+    public static void setViewVisibility(View v, int visibility) {
+        if (v != null && v.getVisibility() != visibility) {
+            v.setVisibility(visibility);
+        }
+    }
 }
