@@ -353,7 +353,7 @@ public class LivePlaybackMediaController extends MediaController2 {
             textView.setText("打招呼");
 
         } else if(LocalCourseConfig.CATEGORY_GROUP_CLASS_AUDIO_ROLL_CALL_END==videoQuestionEntity.getvCategory()){
-            textView.setText("下课");
+            textView.setText("再见");
 
         }
         final ImageView ivPlay = (ImageView) contentView.findViewById(R.id.iv_liveplayback_point_play);

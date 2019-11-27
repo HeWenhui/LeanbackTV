@@ -12,6 +12,7 @@ public class GroupClassAnswerResultEntity {
     public static final int TYPE_TWO_HEAD = 400;
 
     private int type;
+    private int interactType;
 
     private Answer myAnswer;
     private Answer teamAnswer;
@@ -79,6 +80,14 @@ public class GroupClassAnswerResultEntity {
 
     public void setType(int type) {
         this.type = type;
+    }
+
+    public int getInteractType() {
+        return interactType;
+    }
+
+    public void setInteractType(int interactType) {
+        this.interactType = interactType;
     }
 
     public Answer getMyAnswer() {
