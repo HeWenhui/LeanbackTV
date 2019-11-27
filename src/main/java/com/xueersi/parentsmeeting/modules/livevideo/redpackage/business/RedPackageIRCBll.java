@@ -10,6 +10,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateA
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PScienceRedPackageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.bll.LightLiveRedPackageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
@@ -56,6 +57,9 @@ public class RedPackageIRCBll extends LiveBaseBll implements NoticeAction {
         } else if (redPackageAction instanceof RedPackageBll) {
             RedPackageBll redPackageBll = (RedPackageBll) redPackageAction;
             redPackageBll.initView(mRootView, getLiveViewAction());
+        } else if (redPackageAction instanceof LightLiveRedPackageBll){
+            LightLiveRedPackageBll redPackageBll = (LightLiveRedPackageBll) redPackageAction;
+            redPackageBll.initView(mRootView, mContentView,mIsLand);
         }
     }
 
@@ -106,7 +110,18 @@ public class RedPackageIRCBll extends LiveBaseBll implements NoticeAction {
                     }
                 });
                 redPackageAction = redPackageBll;
-            } else {
+            } else if (LiveVideoConfig.isLightLive )  {
+                LightLiveRedPackageBll redPackageBll = new LightLiveRedPackageBll(activity,getInfo);
+                redPackageBll.setVSectionID(mLiveId);
+                redPackageBll.initView(mRootView, mContentView,mIsLand);
+                redPackageBll.setReceiveGold(new RedPackageAction.ReceiveGold() {
+                    @Override
+                    public void sendReceiveGold(int operateId, String liveId, AbstractBusinessDataCallBack callBack) {
+                        RedPackageIRCBll.this.sendReceiveGold(operateId, liveId, callBack);
+                    }
+                });
+                redPackageAction = redPackageBll;
+            }else {
                 RedPackageBll redPackageBll = new RedPackageBll(activity, mGetInfo, true);
                 redPackageBll.setVSectionID(mLiveId);
                 redPackageBll.initView(mRootView, getLiveViewAction());

@@ -1472,4 +1472,14 @@
     <item name="ll_pager_live_teacher_feedback_submit_sucess" type="id" />
     <item name="layout_livevideo_small_english_block_chinese" type="id" />
     <item name="iv_livevideo_small_english_block_chinese_background" type="id" />
+    <!-- 轻直播红包 -->
+    <item name="iv_lightlive_busi_red_pack_add" type="id" />
+    <item name="ll_lightlive_busi_red_pack_gold" type="id" />
+    <item name="iv_lightlive_busi_red_pack_mei" type="id" />
+    <item name="lv_lightlive_busi_red_pack_blast" type="id" />
+    <item name="lv_lightlive_busi_red_pack_light" type="id" />
+    <item name="lv_lightlive_busi_red_pack_red" type="id" />
+    <item name="lv_lightlive_busi_red_pack_red_res" type="id" />
+    <item name="iv_lightlive_busi_red_pack_close" type="id" />
+
 </resources>

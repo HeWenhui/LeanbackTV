@@ -58,6 +58,7 @@ public class DiscountCouponPager extends BasePager {
 
     @Override
     public void initData() {
+        llCoupon.removeAllViews();
         for (int i = 0; i < mData.size(); i++) {
             if (i > 2) {
                 break;

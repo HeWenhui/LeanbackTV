@@ -102,7 +102,7 @@ public class DiscountCouponBll extends LiveBaseBll {
         if(!mIsLand.get()){
             bottomLayout.setVisibility(View.VISIBLE);
             contentLayout.setVisibility(View.VISIBLE);
-            contentLayout.removeAllViews();
+//            contentLayout.removeAllViews();
             isDetailShow = false;
         }else {
             if (bottomLayout != null){

@@ -13,7 +13,8 @@
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:layout_marginLeft="16dp"
-        android:visibility="gone"/>
+        android:text="在线0人"
+        android:visibility="visible"/>
 
     <View
         android:id="@+id/v_livevideo_message_gap"

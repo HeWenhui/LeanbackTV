@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.http;
 
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LightLiveRoomInfoPager;
 
@@ -36,7 +37,7 @@ public class LightLiveHttpManager {
         String url = "";
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("liveId", liveId);
-        liveHttpManager.sendPost(url, params, httpCallBack);
+        liveHttpManager.sendPost(LiveHttpConfig.URL_LIGHTLIVE_COUPON, params, httpCallBack);
     }
 
     /**
@@ -45,10 +46,9 @@ public class LightLiveHttpManager {
      * @param httpCallBack
      */
     public void getCouponGet(String couponId, HttpCallBack httpCallBack) {
-        String url = "";
         Map<String, String> paramMap = new HashMap<>();
         paramMap.put("couponId", couponId);
-        liveHttpManager.sendJsonPost(url, paramMap, httpCallBack);
+        liveHttpManager.sendJsonPost(LiveHttpConfig.URL_LIGHTLIVE_GET_COUPON, paramMap, httpCallBack);
     }
 
 

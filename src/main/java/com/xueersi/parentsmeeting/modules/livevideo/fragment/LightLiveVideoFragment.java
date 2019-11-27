@@ -36,6 +36,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
+import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
@@ -203,6 +204,7 @@ public class LightLiveVideoFragment  extends LiveFragmentBase implements Activit
         mLiveBll.addBusinessBll(new LiveIRCMessageBll(activity,mLiveBll));
         mLiveBll.addBusinessBll(new RoomInfoIRCMessageBll(activity,mLiveBll));
         mLiveBll.addBusinessBll(new DiscountCouponBll(activity,mLiveBll));
+        mLiveBll.addBusinessBll(new RedPackageIRCBll(activity,mLiveBll));
 //        ArrayList<BllConfigEntity> bllConfigEntities = AllBllConfig.getLiveBusinessLec();
 //        for (int i = 0; i < bllConfigEntities.size(); i++) {
 //            String className = "";

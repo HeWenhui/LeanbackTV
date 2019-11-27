@@ -36,7 +36,7 @@ import java.util.List;
  */
 public class RoomInfoIRCMessageBll extends LiveBaseBll implements MessageAction {
 
-    private LinearLayout bottomLayout;
+    private LinearLayout infoLayout;
     private LightLiveRoomInfoPager lightLiveRoomInfoPager;
     private int num;
     private List<String> users = new ArrayList<>();
@@ -55,12 +55,12 @@ public class RoomInfoIRCMessageBll extends LiveBaseBll implements MessageAction 
 
     @Override
     public void initView() {
-        bottomLayout = mContentView.findViewById(R.id.ll_live_room_info);
+        infoLayout = mContentView.findViewById(R.id.ll_live_room_info);
         if(!mIsLand.get()){
             if (lightLiveRoomInfoPager != null){
-                bottomLayout.removeAllViews();
-                bottomLayout.setVisibility(View.VISIBLE);
-                bottomLayout.addView(lightLiveRoomInfoPager.getRootView());
+                infoLayout.removeAllViews();
+                infoLayout.setVisibility(View.VISIBLE);
+                infoLayout.addView(lightLiveRoomInfoPager.getRootView());
                 ViewGroup.LayoutParams params = lightLiveRoomInfoPager.getRootView().getLayoutParams();
                 params.width = RelativeLayout.LayoutParams.MATCH_PARENT;
                 params.height = SizeUtils.Dp2Px(mContext,38);
@@ -68,7 +68,7 @@ public class RoomInfoIRCMessageBll extends LiveBaseBll implements MessageAction 
 //                lightLiveRoomInfoPager.setTvNotice("hahhahhhhhhhhhhhhhhhhhhhhhhh");
             }
         }else {
-            bottomLayout.setVisibility(View.GONE);
+            infoLayout.setVisibility(View.GONE);
         }
     }
 
