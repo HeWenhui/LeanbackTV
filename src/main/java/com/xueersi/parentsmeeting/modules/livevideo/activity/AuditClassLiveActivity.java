@@ -57,6 +57,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.AuditLiveEnvironment;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
@@ -137,7 +138,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     public int isArts;
     private long resumeTime;
     private LogToFile mLogtf;
-
+    boolean isBigLive;
     public static final String ENTER_ROOM_FROM = "from";
     /** 直播类型 */
     private int liveType;
@@ -185,13 +186,13 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     static int times = -1;
     LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
     protected LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
+    private AuditLiveEnvironment liveEnvironment;
 
     @Override
     protected boolean onVideoCreate(Bundle savedInstanceState) {
         times++;
         createTime = System.currentTimeMillis();
-        mLogtf = new LogToFile(TAG);
-        mLogtf.clear();
+
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         liveType = getIntent().getIntExtra("type", 0);
         // 设置不可自动横竖屏
@@ -203,7 +204,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
             onUserBackPressed();
             return false;
         }
-        mLogtf.setLiveOnLineLogs(mLiveBll.getLiveLog());
+        mLogtf = new LogToFile(this, TAG);
         initView();
         return true;
     }
@@ -293,6 +294,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
 
             @Override
             public void onOpenSuccess() {
+                xv_livevideo_student.setVisibility(View.VISIBLE);
                 rl_livevideo_student.setVisibility(View.GONE);
                 MediaController2 mMediaController = new MediaController2(AuditClassLiveActivity.this,
                         xv_livevideo_student);
@@ -439,11 +441,14 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
             Toast.makeText(this, "直播类型不支持", Toast.LENGTH_SHORT).show();
             return false;
         }
-        LogToFile.auditClassLiveBll = mLiveBll.getLiveLog();
         mPlayStatistics = mLiveBll.getVideoListener();
-        auditClassBll = new AuditClassBll(this);
+        liveEnvironment = new AuditLiveEnvironment(this);
+        isBigLive = getIntent().getBooleanExtra("isBigLive", false);
+        liveEnvironment.setBigLive(isBigLive);
+        auditClassBll = new AuditClassBll(liveEnvironment);
         mLiveBll.setVideoAction(this);
         mLiveBll.setAuditClassAction(auditClassBll);
+        mLiveBll.setLiveEnvironment(liveEnvironment);
         return true;
     }
 
@@ -840,6 +845,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         isArts = mGetInfo.getIsArts();
         mMediaController.setFileName(getInfo.getName());
         mLiveBll.setHalfBodyLive(isHalfBodyLive());
+        liveEnvironment.setLiveGetInfo(getInfo);
         mHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -847,7 +853,14 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                     return;
                 }
                 mLiveBll.getStudentLiveInfo();
-                mHandler.postDelayed(this, 300000);
+                long delayMillis;
+                //大班直播一分钟
+                if (isBigLive) {
+                    delayMillis = 60000;
+                } else {
+                    delayMillis = 300000;
+                }
+                mHandler.postDelayed(this, delayMillis);
             }
         });
         initBussinessUI();
@@ -884,11 +897,17 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                         "times=" + times + ",mVSectionID=" + mVSectionID + ",roomClick");
                 Bundle bundle = new Bundle();
                 bundle.putInt("isArts", isArts);
+                bundle.putBoolean("isBigLive", isBigLive);
+                if (isBigLive) {
+                    LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
+                    bundle.putInt("classId", Integer.parseInt(studentLiveInfo.getClassId()));
+                    bundle.putInt("teamId", Integer.parseInt(studentLiveInfo.getTeamId()));
+                }
                 OtherModulesEnter.intentToAuditClassActivity(AuditClassLiveActivity.this, mVSectionID, stuCouId, bundle);
             }
         });
 
-        auditClassBll = new AuditClassBll(this);
+        auditClassBll = new AuditClassBll(liveEnvironment);
         mLiveBll.setAuditClassAction(auditClassBll);
 
 
@@ -1119,7 +1138,9 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         mHandler.post(new Runnable() {
             @Override
             public void run() {
+                rl_livevideo_student.setVisibility(View.VISIBLE);
                 if (leave) {
+                    xv_livevideo_student.setVisibility(View.GONE);
 //                    pb_livevideo_student_load.setVisibility(View.INVISIBLE);
 //                    tv_livevideo_student_load_tip.setText(mGetInfo.getStuName() + "同学未在直播间");
                     pb_livevideo_student_load.setVisibility(View.GONE);
@@ -1133,6 +1154,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                         tv_livevideo_student_camera.setText(mGetInfo.getStuName() + "同学\n未在直播间");
                     }
                 } else {
+                    xv_livevideo_student.setVisibility(View.VISIBLE);
                     iv_livevideo_student_camera.setVisibility(View.GONE);
                     tv_livevideo_student_camera.setVisibility(View.GONE);
                     pb_livevideo_student_load.setVisibility(View.VISIBLE);
@@ -1152,6 +1174,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         mHandler.post(new Runnable() {
             @Override
             public void run() {
+                xv_livevideo_student.setVisibility(View.GONE);
                 rl_livevideo_student.setVisibility(View.VISIBLE);
                 pb_livevideo_student_load.setVisibility(View.GONE);
                 tv_livevideo_student_load_tip.setVisibility(View.GONE);
@@ -1656,11 +1679,17 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                         }
                     }
                     mLogtf.d("onFail:arg2=" + arg2 + ",errorMsg=" + errorMsg + ",isPresent=" + mLiveBll.isPresent());
-                    if (mLiveBll.isPresent()) {
-                        if (liveType != LiveVideoConfig.LIVE_TYPE_LIVE || LiveTopic.MODE_CLASS.endsWith(mGetInfo.getLiveTopic().getMode())) {
-                            tvLoadingHint.setText(mainTeacherLoad);
-                        } else {
-                            tvLoadingHint.setText(coachTeacherLoad);
+                    if (fluentMode.get()) {
+                        if (vPlayer != null) {
+                            vPlayer.onDestroy();
+                        }
+                    } else {
+                        if (!fluentMode.get() && mLiveBll.isPresent()) {
+                            if (liveType != LiveVideoConfig.LIVE_TYPE_LIVE || LiveTopic.MODE_CLASS.endsWith(mGetInfo.getLiveTopic().getMode())) {
+                                tvLoadingHint.setText(mainTeacherLoad);
+                            } else {
+                                tvLoadingHint.setText(coachTeacherLoad);
+                            }
                         }
                     }
                     RoomStatusEntity status = mGetInfo.getLiveTopic().getMainRoomstatus();
@@ -1827,7 +1856,6 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
             public void run() {
                 if (mLiveBll != null) {
                     mLiveBll.onDestroy();
-                    LogToFile.auditClassLiveBll = null;
                 }
                 ProxUtil.getProxUtil().clear(AuditClassLiveActivity.this);
             }
@@ -1852,9 +1880,10 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
      * @param context
      * @param liveId
      */
-    public static void intentTo(Context context, String stuCouId, String liveId) {
+    public static void intentTo(Context context, String stuCouId, String liveId, boolean isBigLive) {
         Intent intent = new Intent(context, AuditClassLiveActivity.class);
         intent.putExtra("stuCouId", stuCouId);
+        intent.putExtra("isBigLive", isBigLive);
         intent.putExtra("vSectionID", liveId);
         intent.putExtra("type", LiveVideoConfig.LIVE_TYPE_LIVE);
         context.startActivity(intent);

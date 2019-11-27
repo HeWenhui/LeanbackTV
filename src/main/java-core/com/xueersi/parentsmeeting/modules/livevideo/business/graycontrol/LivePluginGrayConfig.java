@@ -39,4 +39,8 @@ public class LivePluginGrayConfig {
     public static final int MODULE_NB_EXPERIMENT = 69;
     /**roleplay 多人连麦**/
     public static final int MODULE_ROLEPLAY = 64;
+    /**语音评测**/
+    public static final int MOUDLE_SPEECH_ASSESS = 65;
+    /**轻互动聊天面板**/
+    public static final int MODULE_FORUM_INTERACTION = 68;
 }

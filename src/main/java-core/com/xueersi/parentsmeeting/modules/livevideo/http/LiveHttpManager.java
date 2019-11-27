@@ -26,6 +26,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoChConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoHttpEnConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.BigLiveEnterParam;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeBll;
@@ -1025,6 +1026,29 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction,
         setDefaultParameter(params);
         requestCallBack.url = liveVideoSAConfigInner.URL_LIVE_STUDY_INFO;
         sendPost(requestCallBack.url, params, requestCallBack);
+    }
+
+    public void getBigStudentLiveInfo(String mStuCouId, String liveId, String classId, String teamId, HttpCallBack
+            requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        JSONObject jsonObject = new JSONObject();
+        setDefaultHeaderParams(params);
+        try {
+            jsonObject.put("bizId", LiveVideoConfig.BIGLIVE_BIZID_LIVE);
+            jsonObject.put("stuCouId", Integer.parseInt(mStuCouId));
+            jsonObject.put("planId", Integer.parseInt(liveId));
+            jsonObject.put("classId", Integer.parseInt(classId));
+            jsonObject.put("teamId", Integer.parseInt(teamId));
+            jsonObject.put("sourceId", 1);
+            params.setJson(jsonObject.toString());
+            setDefBusinessParams(params);
+            requestCallBack.url = LiveHttpConfig.URL_LIVE_STUDY_INFO;
+            sendJsonPost(requestCallBack.url, params, requestCallBack);
+        } catch (Exception e) {
+            LiveCrashReport.postCatchedException(TAG, e);
+            requestCallBack.onPmFailure(e, e.toString());
+        }
+
     }
 
     /**
@@ -2482,9 +2506,9 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction,
      *
      * @param requestCallBack
      */
-    public void ScienceVoteCommit(String planId, String classId, String interactionId, String option, String stuIRCId,String stuName,HttpCallBack requestCallBack) {
+    public void ScienceVoteCommit(String planId,int bizId, String classId, String interactionId, String option, String stuIRCId,String stuName,HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
-        params.addBodyParam("bizId", "3");
+        params.addBodyParam("bizId", String.valueOf(bizId));
         params.addBodyParam("planId", planId);
         params.addBodyParam("classId", classId);
         params.addBodyParam("interactionId", interactionId);

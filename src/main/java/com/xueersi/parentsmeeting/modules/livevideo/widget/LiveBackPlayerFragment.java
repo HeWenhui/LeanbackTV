@@ -54,7 +54,7 @@ public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoV
      * 在VideoFragment的onActivityCreated创建完成以后
      */
     public interface OnVideoCreate {
-        void onVideoCreate();
+        void onVideoCreate(VideoView videoView);
     }
 
     public void setOnVideoCreate(OnVideoCreate onVideoCreate) {
@@ -106,7 +106,7 @@ public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoV
         logger.d("onActivityCreated:Parent=" + videoView.getParent());
         if (videoView.getParent() != null) {
             if (onVideoCreate != null) {
-                onVideoCreate.onVideoCreate();
+                onVideoCreate.onVideoCreate(videoView);
             }
         } else {
             final long before = System.currentTimeMillis();
@@ -117,7 +117,7 @@ public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoV
                     stableLogHashMap.put("time", "" + (System.currentTimeMillis() - before));
                     UmsAgentManager.umsAgentDebug(activity, "LiveBackPlayerFragment_onActivityCreated", stableLogHashMap.getData());
                     if (onVideoCreate != null) {
-                        onVideoCreate.onVideoCreate();
+                        onVideoCreate.onVideoCreate(videoView);
                     }
                 }
 

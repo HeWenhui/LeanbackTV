@@ -2,7 +2,10 @@ package com.xueersi.parentsmeeting.modules.livevideo.liveLog;
 
 
 import android.content.Context;
+import android.os.Process;
+import android.util.Log;
 
+import com.alibaba.fastjson.JSON;
 import com.hwl.bury.xrsbury.BuryPublicParam;
 import com.hwl.log.LogConfig;
 import com.hwl.log.xrsLog.UpdateParamInterface;
@@ -397,8 +400,60 @@ public class LiveLogBill {
                 if (LiveLogBill.param != null) {
                     log.liveid = LiveLogBill.param.liveid;
                 }
-                log.processId=android.os.Process.myPid();
+                log.processId= Process.myPid();
                 log.reason=type+"";
+                if (myUserInfoEntity == null) {
+                    myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+                }
+                if (myUserInfoEntity != null) {
+                    log.psId = myUserInfoEntity.getPsimId();
+                }
+
+                if ("wifi".equals(DeviceInfo.getNetworkTypeWIFI2G3G())) {
+                    log.net = 5;
+                } else {
+                    log.net = 9;
+                }
+                List<String> domainList = mLiveRemoteConfigInfo.liveRemoteDomainConfigInfo;
+                Pridata pridata = new Pridata();
+                pridata.ping = new HashMap<>();
+                Map<String, String> pingMap = new HashMap<>();
+                if (!ListUtil.isEmpty(domainList)) {
+                    for (int i = 0; i < domainList.size(); i++) {
+                        PingInfo info = NetUtil.ping(domainList.get(i));
+                        pridata.ping.put(domainList.get(i), info);
+                        pingMap.put(domainList.get(i), info.ip);
+                    }
+                    log.pridata = pridata;
+                    pridata.dnsinfo = pingMap;
+                }
+
+                String s = JSON.toJSONString(log);
+                LiveMonitorDebug.dLog(s);
+
+               LiveLog.log(log);
+               //LiveLog.sendLog();
+                LiveMonitorSender.send(s);
+                isRunning = false;
+
+            }
+        }.start();
+
+    }
+
+    public void sendStuckLog() {
+//        livebaseLog(3);
+
+        new Thread() {
+            @Override
+            public void run() {
+                LiveLogEntity log = new LiveLogEntity();
+                log.pri = 3;
+                if (LiveLogBill.param != null) {
+                    log.liveid = LiveLogBill.param.liveid;
+                }
+                log.processId = Process.myPid();
+                log.reason = "3";
                 if (myUserInfoEntity == null) {
                     myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
                 }
@@ -424,12 +479,14 @@ public class LiveLogBill {
                     log.pridata = pridata;
                     pridata.dnsinfo = pingMap;
                 }
-                LiveLog.log(log);
-                LiveLog.sendLog();
-                isRunning = false;
 
+                String s = JSON.toJSONString(log);
+                LiveMonitorDebug.dLog(s);
+                //LiveLog.sendLog();
+                LiveLog.log(log);
+                LiveMonitorSender.send(s);
+                Log.d("testttttttttttttttt", "log: ");
             }
         }.start();
-
     }
 }

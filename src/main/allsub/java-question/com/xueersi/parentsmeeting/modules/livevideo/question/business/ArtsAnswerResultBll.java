@@ -355,7 +355,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
         post(new Runnable() {
             @Override
             public void run() {
-                if (event.isExper()) {
+                if (event.isExper() && mGetInfo.getPattern() != LiveVideoConfig.LIVE_PATTERN_2) {
                     addPagerExper(event);
                 } else {
                     if (mGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_2) {

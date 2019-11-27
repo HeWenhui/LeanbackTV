@@ -420,10 +420,10 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 }
             }
         }), "xesApp");
-        if (TextUtils.equals("2", getProtocal())) {
-            wvSubjectWeb.loadUrl(mGroupGameTestInfosEntity.getTestInfoList().get(0).getPreviewPath()+"?cw_platform=android");
-        }else {
+        if (TextUtils.isEmpty(getProtocal())||TextUtils.equals("0", getProtocal())||TextUtils.equals("1", getProtocal())) {
             wvSubjectWeb.loadUrl(mGroupGameTestInfosEntity.getTestInfoList().get(0).getPreviewPath());
+        }else {
+            wvSubjectWeb.loadUrl(mGroupGameTestInfosEntity.getTestInfoList().get(0).getPreviewPath()+"?cw_platform=android");
         }
     }
 
@@ -466,7 +466,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         @Override
         public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
             String url = request.getUrl() + "";
-            if (!TextUtils.equals("2", getProtocal())) {
+            if (TextUtils.isEmpty(getProtocal())||TextUtils.equals("0", getProtocal())||TextUtils.equals("1", getProtocal())) {
                 if (url.contains(".html")) {
                     if (!addJs) {
                         addJs = true;
@@ -1089,9 +1089,9 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         @Override
         public void onHitSentence(ResultEntity resultEntity) {
 
-            if(isVoiceTreasuerBox() && !isTargetWord(resultEntity)){
+          /*  if(isVoiceTreasuerBox() && !isTargetWord(resultEntity)){
                 return;
-            }
+            }*/
             int newSenIndex = resultEntity.getNewSenIdx();
             int score = resultEntity.getScore();
             double speechDuration = resultEntity.getSpeechDuration();
@@ -1303,6 +1303,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         boolean result = detailInfo!= null && LiveQueConfig.EN_COURSE_TYPE_VOICE_TREASURE_BOX.equals(detailInfo.type);
         return result;
     }
+
 
     private boolean isTargetWord(ResultEntity resultEntity) {
         boolean result = false;

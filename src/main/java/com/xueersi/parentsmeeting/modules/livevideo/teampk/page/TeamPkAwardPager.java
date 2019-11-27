@@ -639,14 +639,15 @@ public class TeamPkAwardPager extends TeamPkBasePager {
                     }
 
                     @Override
-                    public void onFailure(Call call, IOException e) {
-                        super.onFailure(call, e);
+                    public void onPmFailure(Throwable error, String msg) {
+                        super.onPmFailure(error, msg);
                         lottieAnimationView.setClickable(true);
                         if (teamPKBll != null) {
                             TeamPkLog.openTreasureBox(teamPKBll.getLiveAndBackDebug(), "", nonce, false);
                         }
                         showToast("获取宝箱数据失败");
                     }
+
 
                     @Override
                     public void onPmError(ResponseEntity responseEntity) {
