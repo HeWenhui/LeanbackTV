@@ -40,6 +40,8 @@ public interface RTCVideoAction {
 
     void showShortToast(String msg);
 
+    void setSession(int gold);
+
     int GOLD_TYPE_QUESTION = 1;
     int GOLD_TYPE_REDPACKAGE = 2;
 }
