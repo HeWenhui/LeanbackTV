@@ -319,7 +319,7 @@ public class AuditClassRoomActivity extends XesActivity {
             sp = new SpannableString("暂无" + "\n" + fixText);
         } else {
             sp = new SpannableString(text + "\n" + fixText);
-            sp.setSpan(new AbsoluteSizeSpan(25, true), 1, numberText.length() + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            sp.setSpan(new AbsoluteSizeSpan(22, true), 1, numberText.length() + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         int whiteColor = getResources().getColor(R.color.white);
         sp.setSpan(new ForegroundColorSpan(whiteColor), 0, sp.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -344,7 +344,7 @@ public class AuditClassRoomActivity extends XesActivity {
             int numberColor = getResources().getColor(R.color.COLOR_FF903D);
             numberSpan.setSpan(new ForegroundColorSpan(numberColor), 0, numberText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             SpannableString endSpan = new SpannableString("名");
-            endSpan.setSpan(new ForegroundColorSpan(textColor), 0, firstSpan.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            endSpan.setSpan(new ForegroundColorSpan(textColor), 25, firstSpan.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             sb.append(firstSpan).append(numberSpan).append(endSpan).append("\n" + fixText);
             tv.setText(sb);
         }
