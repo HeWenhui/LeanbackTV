@@ -103,6 +103,7 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
                     questionEntity.setPackageId(questionJson.optInt("packageId"));
                     questionEntity.setCourseWareId(questionJson.optInt("courseWareId"));
                     questionEntity.setPackageAttr(questionJson.optString("packageAttr"));
+                    questionEntity.setInteractType(questionJson.optInt("interactType"));
 
                     questionEntity.setSrcType(questionJson.optString("srcType"));
                     questionEntity.setQuestionNum(questionJson.optInt("num", 1));
