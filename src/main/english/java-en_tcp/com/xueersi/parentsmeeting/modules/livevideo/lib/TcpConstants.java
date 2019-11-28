@@ -83,7 +83,7 @@ public class TcpConstants {
         return type == VOICE_CANNO_TYPE || type == WHAT_IS_MISSING_TYPE;
     }
 
-    /** 业务类型，1v2小组互动 业务类型 */
+    /** 业务类型，1v2小组互动 业务类型 https://wiki.zhiyinlou.com/pages/viewpage.action?pageId=31030181 */
     public final static short TYPE_GROUP_CLASS_GAME = 14;
     /** 操作类型，1v2小组互动 操作类型 */
     public final static int OP_GROUP_CLASS_GAME_DATA= 18;
