@@ -245,7 +245,7 @@ public class LiveVideoConfig {
     /** 小学语文换肤 */
     public static Boolean isSmallChinese = false;
     /** 轻直播*/
-    public static Boolean isLightLive = true;
+    public static Boolean isLightLive = false;
     /** 一题多发的直播回放的标识 */
     public static Boolean isMulLiveBack = false;
     /** 年级阶段的标识 */

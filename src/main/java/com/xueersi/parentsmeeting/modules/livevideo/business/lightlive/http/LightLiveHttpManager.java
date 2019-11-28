@@ -33,7 +33,6 @@ public class LightLiveHttpManager {
      * @param httpCallBack
      */
     public void getCouponList(String liveId, HttpCallBack httpCallBack) {
-        String url = "";
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("liveId", liveId);
         liveHttpManager.sendPost(LiveHttpConfig.URL_LIGHTLIVE_COUPON, params, httpCallBack);
@@ -45,9 +44,11 @@ public class LightLiveHttpManager {
      * @param httpCallBack
      */
     public void getCouponGet(String couponId, HttpCallBack httpCallBack) {
-        Map<String, String> paramMap = new HashMap<>();
-        paramMap.put("couponId", couponId);
-        liveHttpManager.sendJsonPost(LiveHttpConfig.URL_LIGHTLIVE_GET_COUPON, paramMap, httpCallBack);
+//        String url = "http://10.90.71.143:8080/mockjsdata/44/LiveLecture/stuReceiveCoupon";
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("couponId", couponId);
+//        LiveHttpConfig.URL_LIGHTLIVE_GET_COUPON,
+        liveHttpManager.sendPost(LiveHttpConfig.URL_LIGHTLIVE_GET_COUPON, params, httpCallBack);
     }
 
     public void getCourseList(String liveId, HttpCallBack httpCallBack){

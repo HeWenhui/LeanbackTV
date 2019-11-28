@@ -55,29 +55,29 @@ public class RecommendCourseBll extends LiveBaseBll {
         mDetailPager = new RecommendCourseDetailPager(context);
         mHttpManager = new LightLiveHttpManager(getHttpManager());
         mHttpResponseParser = new LightLiveHttpResponseParser();
-        for (int i = 0; i < 10; i++) {
-            CourseEntity entity = new CourseEntity();
-            entity.setCourseName(i+"世界冠军王鹰豪-魔方课开课了"+i);
-            entity.setCourseID("787897");
-            entity.setChapterCount("2");
-            entity.setClassID("444"+i);
-            entity.setCoursePrice(500);
-            entity.setCourseOrignPrice(1000);
-            entity.setDeadTime("2019.12.2");
-            entity.setCourseDifficulity(i+1);
-            entity.setIsFull("0");
-            entity.setGroupon(false);
-            entity.setSubjectName("语文");
-            entity.setSecondTitle("清华大学");
-            entity.setLiveShowTime("三期：2月9日-2月12日 每天 13:00-14:00 · 共45讲");
-            entity.setRemainPeople(""+30+i);
-            ArrayList<CourseTeacherEntity> teacherEntities = new ArrayList<>();
-            CourseTeacherEntity entity1 = new CourseTeacherEntity("张三" + i);
-            entity1.setTeacherHint("dd");
-            teacherEntities.add(entity1);
-            entity.setLstMainTeacher(teacherEntities);
-            courseEntities.add(entity);
-        }
+//        for (int i = 0; i < 10; i++) {
+//            CourseEntity entity = new CourseEntity();
+//            entity.setCourseName(i+"世界冠军王鹰豪-魔方课开课了"+i);
+//            entity.setCourseID("787897");
+//            entity.setChapterCount("2");
+//            entity.setClassID("444"+i);
+//            entity.setCoursePrice(500);
+//            entity.setCourseOrignPrice(1000);
+//            entity.setDeadTime("2019.12.2");
+//            entity.setCourseDifficulity(i+1);
+//            entity.setIsFull("0");
+//            entity.setGroupon(false);
+//            entity.setSubjectName("语文");
+//            entity.setSecondTitle("清华大学");
+//            entity.setLiveShowTime("三期：2月9日-2月12日 每天 13:00-14:00 · 共45讲");
+//            entity.setRemainPeople(""+30+i);
+//            ArrayList<CourseTeacherEntity> teacherEntities = new ArrayList<>();
+//            CourseTeacherEntity entity1 = new CourseTeacherEntity("张三" + i);
+//            entity1.setTeacherHint("dd");
+//            teacherEntities.add(entity1);
+//            entity.setLstMainTeacher(teacherEntities);
+//            courseEntities.add(entity);
+//        }
     }
 
     @Override

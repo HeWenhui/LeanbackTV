@@ -395,6 +395,8 @@ public class LiveGetInfo {
 
     /** 轻直播公告*/
     private String gentlyNotice;
+    /** 是否是轻直播 0否 1是*/
+    private boolean isGently;
 
     public String getGentlyNotice() {
         return gentlyNotice;
@@ -402,6 +404,14 @@ public class LiveGetInfo {
 
     public void setGentlyNotice(String gentlyNotice) {
         this.gentlyNotice = gentlyNotice;
+    }
+
+    public boolean isGently() {
+        return isGently;
+    }
+
+    public void setIsGently(boolean isGently) {
+        this.isGently = isGently;
     }
 
     public LiveStatus getLiveStatus() {

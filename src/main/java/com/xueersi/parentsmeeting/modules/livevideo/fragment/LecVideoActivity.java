@@ -13,14 +13,12 @@ import android.util.Log;
 
 public class LecVideoActivity extends LiveVideoActivity {
     LectureLiveVideoFragment lectureLiveVideoFragment;
-    LiveVideoFragmentBase videoFragmentBase;
+
 
     @Override
     protected LiveVideoFragmentBase getFragment() {
         lectureLiveVideoFragment = new LectureLiveVideoFragment();
-        videoFragmentBase = new LightLiveVideoFragment();
-        return videoFragmentBase;
-//        return lectureLiveVideoFragment;
+        return lectureLiveVideoFragment;
     }
 
     /**
@@ -37,7 +35,7 @@ public class LecVideoActivity extends LiveVideoActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-//        lectureLiveVideoFragment.onNewIntent(intent);
+        lectureLiveVideoFragment.onNewIntent(intent);
     }
 
 

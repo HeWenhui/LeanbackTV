@@ -587,7 +587,10 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             evenDriveInfo.setIsOpenStimulation(data.optInt("isOpenStimulation"));
             getInfo.setEvenDriveInfo(evenDriveInfo);
             getInfo.setIsFlatfish(data.optInt("isFlatfish", 0));
+            /** 轻直播公告*/
             getInfo.setGentlyNotice(data.optString("gentlyNotice"));
+            /** 是否是轻直播 0否 1是*/
+            getInfo.setIsGently(data.optInt("isGently",0) == 1 ? true:false);
             return getInfo;
         } catch (JSONException e) {
             logger.e("parseLiveGetInfo", e);

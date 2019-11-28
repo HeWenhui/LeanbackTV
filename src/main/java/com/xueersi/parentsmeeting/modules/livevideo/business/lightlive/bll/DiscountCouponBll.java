@@ -63,18 +63,18 @@ public class DiscountCouponBll extends LiveBaseBll {
         mHttpResponseParser = new LightLiveHttpResponseParser();
         couponEntities = new ArrayList<>();
         //测试环境
-        for (int i = 0; i < 10; i++) {
-            CouponEntity e1 = new CouponEntity();
-            e1.setFaceText(i+10+"");
-            e1.setMoneyIcon("￥");
-            e1.setName("高二行知奖学金（限寒春课程使用）");
-            e1.setStatus(i%3);
-            e1.setReduceText("满1000可用");
-            e1.setValidDate("2019.10.1--2019.12.1");
-            e1.setButtonText("立即领取");
-            e1.setTitle("满1000减100");
-            couponEntities.add(e1);
-        }
+//        for (int i = 0; i < 10; i++) {
+//            CouponEntity e1 = new CouponEntity();
+//            e1.setFaceText(i+10+"");
+//            e1.setMoneyIcon("￥");
+//            e1.setName("高二行知奖学金（限寒春课程使用）");
+//            e1.setStatus(i%3);
+//            e1.setReduceText("满1000可用");
+//            e1.setValidDate("2019.10.1--2019.12.1");
+//            e1.setButtonText("立即领取");
+//            e1.setTitle("满1000减100");
+//            couponEntities.add(e1);
+//        }
     }
 
     @Override
@@ -178,10 +178,8 @@ public class DiscountCouponBll extends LiveBaseBll {
         mHttpManager.getCouponList(liveId, new HttpCallBack() {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                String title = null;
                 if (responseEntity != null) {
                     JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-                    title = jsonObject.optString("title");
                 }
                 couponEntities = mHttpResponseParser.parserCouponList(responseEntity);
                 discountCouponPager.setData(couponEntities);

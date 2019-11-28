@@ -1,17 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.entity;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.text.Html;
-import android.text.Spanned;
-import android.text.TextUtils;
-
-import com.google.gson.annotations.Expose;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @ProjectName: xueersiwangxiao

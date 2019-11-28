@@ -41,6 +41,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.dispatcher.DispatcherConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LivePlayBackMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveBusinessResponseParser;
@@ -266,7 +267,14 @@ public class LiveVideoLoadActivity extends BaseActivity {
                         }
                         String stuId = LiveAppUserInfo.getInstance().getStuId();
                         getInfos.put(liveType + "-" + stuId + "-" + vSectionID, mGetInfo);
-                        com.xueersi.parentsmeeting.modules.livevideo.fragment.LecVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+                        mGetInfo.setIsGently(true);// 测试代码
+                        if(!mGetInfo.isGently()){
+                            com.xueersi.parentsmeeting.modules.livevideo.fragment.LecVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+                        }else {
+                            LiveVideoConfig.isLightLive = true;
+                            com.xueersi.parentsmeeting.modules.livevideo.fragment.LightLiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+                        }
+
                         finish();
                     }
 

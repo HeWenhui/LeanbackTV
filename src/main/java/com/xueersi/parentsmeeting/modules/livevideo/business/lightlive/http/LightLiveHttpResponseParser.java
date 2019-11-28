@@ -47,8 +47,8 @@ public class LightLiveHttpResponseParser extends HttpResponseParser {
             couponListEntity.setGetedText(listObj.optString("userNum"));
             couponListEntity.setValidDate(listObj.optString("validDate"));
 
-            couponListEntity.setTitle(listObj.optString("title"));
-            couponListEntity.setReduceText(listObj.optString("reduceText"));
+            couponListEntity.setTitle(listObj.optString("title","满1000减100"));
+            couponListEntity.setReduceText(listObj.optString("reduceText","满1000可用"));
             couponListEntity.setStatus(listObj.optInt("status"));
 
             couponListEntities.add(couponListEntity);
