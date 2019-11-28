@@ -15,7 +15,7 @@ public interface RTCVideoAction {
 
     void updateSpread(boolean isSpread);
 
-    void startVideoByInteractionId(String interactionId);
+    void startVideoByInteractionId(String interactionId,int beginTime);
 
     void stopVideoByInteractionId(String interactionId);
 
