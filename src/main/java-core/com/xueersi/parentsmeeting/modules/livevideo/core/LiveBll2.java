@@ -1784,7 +1784,16 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
 
                 SubGroupEntity entity1 = mHttpResponseParser.parse1V2VirtualStuData(responseEntity);
                 if(entity1!=null) {
+                    SubGroupEntity catchEnttity = mGetInfo.getSubGroupEntity();
+                    if(catchEnttity != null) {
+                        entity1.setGroupList(catchEnttity.getGroupList());
+                        entity1.setGroupId(catchEnttity.getGroupId());
+                        if(!TextUtils.isEmpty(catchEnttity.getToken())) {
+                            entity1.setToken(catchEnttity.getToken());
+                        }
+                    }
                     mGetInfo.setSubGroupEntity(entity1);
+
                 }
             }
         });
