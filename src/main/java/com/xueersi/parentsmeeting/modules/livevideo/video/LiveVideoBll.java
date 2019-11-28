@@ -927,7 +927,7 @@ public class LiveVideoBll implements VPlayerListenerReg, ProgressAction {
 
     private boolean isClassEnd() {
         int duration = (int) vPlayer.getDuration() / 1000;
-        logger.d("isGroupClassEnd(): duration = " + duration + ", positon = " + positon);
-        return duration < positon;
+        mLogtf.d("isGroupClassEnd(): duration = " + duration + ", positon = " + positon);
+        return (duration > 0 && duration < positon);
     }
 }
