@@ -92,10 +92,7 @@ public class LiveHttpConfig {
      * TODO 待定？
      * 2019年11月22日 课件预加载加载地址
      */
-//    public static String URL_LIVE_GET_ALL_SUBJECT = "https://studentlive.xueersi.com/v1/student/classroom/preLoad/courseware/";
-//    public static String URL_LIVE_GET_ALL_SUBJECT = "http://studentlive.xueersi.com/v1/student/classroom/preLoad/courseware/";
-    public static String URL_LIVE_GET_ALL_SUBJECT = "http://studentlive.xueersi.com/v1/student/classroom/preload/courseware";
-//    public static String URL_LIVE_GET_ALL_SUBJECT = "http://10.90.101.199:19001/v1/student/classroom/preload/courseware";
+    public static String URL_LIVE_GET_ALL_SUBJECT = LiveIntegratedCfg.HTTP_HOST + "/v1/student/classroom/preload/courseware";
 
 
     public static final String URL_GOLD_MICROPHONE_TO_AI = LiveVideoConfig.HTTP_PRIMARY_CHINESE_HOST + "/LiveCourse/isGoldMicrophoneToAi";
