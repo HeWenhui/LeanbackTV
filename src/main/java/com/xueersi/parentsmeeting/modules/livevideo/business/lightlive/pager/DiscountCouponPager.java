@@ -84,8 +84,13 @@ public class DiscountCouponPager extends BasePager {
 
     public void setData(List<CouponEntity> data) {
         this.mData = data;
-        initData();
-        mView.setVisibility(View.VISIBLE);
+        if (!data.isEmpty()){
+            initData();
+            mView.setVisibility(View.VISIBLE);
+        }else {
+            mView.setVisibility(View.GONE);
+        }
+
     }
 
     @Override

@@ -28,4 +28,8 @@
         <item>警察叔叔还有30秒到达战场，请注意敏感词汇。</item>
         <item>富强民主文明和谐自由平等公正法治……</item>
     </string-array>
+    <string name="exclusive_tea_type_teaching">授课</string>
+    <string name="coache_tea_type">辅导</string>
+    <string name="exclusive_tea_type">专属老师</string>
+    <string name="text_str_dot">&#160;·&#160;</string>
 </resources>

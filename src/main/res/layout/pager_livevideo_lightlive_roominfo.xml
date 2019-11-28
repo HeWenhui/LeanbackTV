@@ -38,6 +38,7 @@
         android:layout_toRightOf="@+id/v_livevideo_message_gap"
         android:singleLine="true"
         android:visibility="gone"
+        android:maxEms="30"
         android:ellipsize="marquee"
         android:maxLines="1"
         android:marqueeRepeatLimit="marquee_forever"

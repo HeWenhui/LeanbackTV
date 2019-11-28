@@ -393,6 +393,17 @@ public class LiveGetInfo {
     private String getMetadataUrl;
     private int isFlatfish=1;
 
+    /** 轻直播公告*/
+    private String gentlyNotice;
+
+    public String getGentlyNotice() {
+        return gentlyNotice;
+    }
+
+    public void setGentlyNotice(String gentlyNotice) {
+        this.gentlyNotice = gentlyNotice;
+    }
+
     public LiveStatus getLiveStatus() {
         return liveStatus;
     }

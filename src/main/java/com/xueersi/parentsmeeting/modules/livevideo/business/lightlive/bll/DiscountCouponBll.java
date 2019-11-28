@@ -1,13 +1,16 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.bll;
 
 import android.app.Activity;
+import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.xueersi.common.business.AppBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.common.util.LoginEnter;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -19,7 +22,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.pager.Dis
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.pager.DiscountCouponPager;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.Teacher;
 
 import org.json.JSONObject;
 
@@ -41,7 +43,7 @@ import java.util.List;
 public class DiscountCouponBll extends LiveBaseBll {
 
     /** 竖屏下视频和聊天中间布局*/
-    private LinearLayout bottomLayout;
+    private LinearLayout middleLayout;
     /** 全屏布局*/
     private RelativeLayout contentLayout;
     private DiscountCouponPager discountCouponPager;
@@ -51,6 +53,7 @@ public class DiscountCouponBll extends LiveBaseBll {
     private LightLiveHttpManager mHttpManager;
     private LightLiveHttpResponseParser mHttpResponseParser;
     private boolean isNewData;
+    private String liveId;
 
     public DiscountCouponBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -59,6 +62,7 @@ public class DiscountCouponBll extends LiveBaseBll {
         mHttpManager = new LightLiveHttpManager(getHttpManager());
         mHttpResponseParser = new LightLiveHttpResponseParser();
         couponEntities = new ArrayList<>();
+        //测试环境
         for (int i = 0; i < 10; i++) {
             CouponEntity e1 = new CouponEntity();
             e1.setFaceText(i+10+"");
@@ -76,37 +80,28 @@ public class DiscountCouponBll extends LiveBaseBll {
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
-        mHttpManager.getCouponList(getInfo.getId(), new HttpCallBack() {
-            @Override
-            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                String title = null;
-                if (responseEntity != null) {
-                    JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-                    title = jsonObject.optString("title");
-                }
-                couponEntities = mHttpResponseParser.parserCouponList(responseEntity);
-            }
-        });
+        liveId = getInfo.getId();
+        getCouponList(true);
     }
 
     @Override
     public void initView() {
-        bottomLayout = mContentView.findViewById(R.id.ll_course_video_live_other_content);
+        middleLayout = mContentView.findViewById(R.id.ll_course_video_live_other_content);
         contentLayout = mContentView.findViewById(R.id.rl_course_video_live_content);
-        if (discountCouponPager != null && discountCouponPager.getRootView() != null && bottomLayout != discountCouponPager.getRootView().getParent()){
-            bottomLayout.addView(discountCouponPager.getRootView(),0);
+        if (discountCouponPager != null && discountCouponPager.getRootView() != null && middleLayout != discountCouponPager.getRootView().getParent()){
+            middleLayout.addView(discountCouponPager.getRootView(),0);
             ViewGroup.LayoutParams params = discountCouponPager.getRootView().getLayoutParams();
             params.width = ViewGroup.LayoutParams.MATCH_PARENT;
             params.height = SizeUtils.Dp2Px(mContext,55);
         }
         if(!mIsLand.get()){
-            bottomLayout.setVisibility(View.VISIBLE);
+            middleLayout.setVisibility(View.VISIBLE);
             contentLayout.setVisibility(View.VISIBLE);
 //            contentLayout.removeAllViews();
             isDetailShow = false;
         }else {
-            if (bottomLayout != null){
-                bottomLayout.setVisibility(View.GONE);
+            if (middleLayout != null){
+                middleLayout.setVisibility(View.GONE);
             }
             if (contentLayout != null){
                 contentLayout.setVisibility(View.GONE);
@@ -146,30 +141,74 @@ public class DiscountCouponBll extends LiveBaseBll {
         detailPager.setCouponClickListener(new DiscountCouponDetailPager.GetCouponClickListener() {
             @Override
             public void onClick(String couponId) {
-                mHttpManager.getCouponGet(couponId, new HttpCallBack() {
-                    @Override
-                    public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                if (AppBll.getInstance().isAlreadyLogin()){
+                    mHttpManager.getCouponGet(couponId, new HttpCallBack() {
+                        @Override
+                        public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
 
-                        JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-                        if (jsonObject != null) {
-                            String toast = jsonObject.optString("tip");
-                            XESToastUtils.showToast(toast);
+                            JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+                            if (jsonObject != null) {
+                                String toast = jsonObject.optString("tip");
+                                XESToastUtils.showToast(toast);
+                            }
+                            getCouponList(false);
+                        }
+
+                        @Override
+                        public void onPmFailure(Throwable error, String msg) {
+                            super.onPmFailure(error, msg);
+                            XESToastUtils.showToast(msg);
+                        }
+
+                        @Override
+                        public void onPmError(ResponseEntity responseEntity) {
+                            super.onPmError(responseEntity);
+                            XESToastUtils.showToast(responseEntity.getErrorMsg());
+                        }
+                    });
+                } else {
+                    LoginEnter.openLogin(mContext,false,new Bundle());
+                }
+            }
+        });
+    }
+
+    private void getCouponList(final boolean isClear){
+
+        mHttpManager.getCouponList(liveId, new HttpCallBack() {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                String title = null;
+                if (responseEntity != null) {
+                    JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+                    title = jsonObject.optString("title");
+                }
+                couponEntities = mHttpResponseParser.parserCouponList(responseEntity);
+                discountCouponPager.setData(couponEntities);
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                super.onPmFailure(error, msg);
+                if(isClear){
+                    for (int i = 0; i < middleLayout.getChildCount(); i++) {
+                        if (middleLayout.getChildAt(i) == discountCouponPager.getRootView()){
+                            middleLayout.removeView(discountCouponPager.getRootView());
                         }
                     }
+                }
+            }
 
-                    @Override
-                    public void onPmFailure(Throwable error, String msg) {
-                        super.onPmFailure(error, msg);
-                        XESToastUtils.showToast(msg);
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                super.onPmError(responseEntity);
+                if(isClear){
+                    for (int i = 0; i < middleLayout.getChildCount(); i++) {
+                        if (middleLayout.getChildAt(i) == discountCouponPager.getRootView()){
+                            middleLayout.removeView(discountCouponPager.getRootView());
+                        }
                     }
-
-                    @Override
-                    public void onPmError(ResponseEntity responseEntity) {
-                        super.onPmError(responseEntity);
-                        XESToastUtils.showToast(responseEntity.getErrorMsg());
-                    }
-                });
-
+                }
             }
         });
     }

@@ -28,6 +28,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewActionIml;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIml;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.bll.DiscountCouponBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.bll.RecommendCourseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.bll.RoomInfoIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
@@ -75,6 +76,7 @@ public class LightLiveVideoFragment  extends LiveFragmentBase implements Activit
     public LightLiveVideoFragment(){
         mLayoutVideo = R.layout.activity_video_live_lightlive;
     }
+
     @Override
     protected boolean onVideoCreate(Bundle savedInstanceState) {
         boolean onVideoCreate = super.onVideoCreate(savedInstanceState);
@@ -205,6 +207,7 @@ public class LightLiveVideoFragment  extends LiveFragmentBase implements Activit
         mLiveBll.addBusinessBll(new RoomInfoIRCMessageBll(activity,mLiveBll));
         mLiveBll.addBusinessBll(new DiscountCouponBll(activity,mLiveBll));
         mLiveBll.addBusinessBll(new RedPackageIRCBll(activity,mLiveBll));
+        mLiveBll.addBusinessBll(new RecommendCourseBll(activity,mLiveBll));
 //        ArrayList<BllConfigEntity> bllConfigEntities = AllBllConfig.getLiveBusinessLec();
 //        for (int i = 0; i < bllConfigEntities.size(); i++) {
 //            String className = "";

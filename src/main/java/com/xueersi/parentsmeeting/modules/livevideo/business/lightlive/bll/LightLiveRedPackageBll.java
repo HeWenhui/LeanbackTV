@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.bll;
 
 import android.app.Activity;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.content.ContextCompat;
@@ -13,6 +14,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.common.business.AppBll;
+import com.xueersi.common.util.LoginEnter;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
@@ -121,8 +124,8 @@ public class LightLiveRedPackageBll implements RedPackageAction, Handler.Callbac
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT);
 //            params.addRule(RelativeLayout.ALIGN_TOP,R.id.rl_live_video_frag);
-            params.topMargin =  llOtherContent.getTop();
-            contentLayout.addView(rlRedpacketContent,params);
+            params.topMargin = llOtherContent.getTop();
+            contentLayout.addView(rlRedpacketContent, params);
         } else {
             bottomContent.addView(rlRedpacketContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT));
@@ -137,37 +140,41 @@ public class LightLiveRedPackageBll implements RedPackageAction, Handler.Callbac
         rlRedpacketContent.removeAllViews();
         View view = null;
         RelativeLayout.LayoutParams params = null;
-        //小英
-        if (LiveVideoConfig.isLightLive) {
+
 //            if (lightLiveRedPackageView != null) {
 //                rlRedpacketContent.removeView(lightLiveRedPackageView.getRootView());
 //            }
-            lightLiveRedPackageView = new LightLiveRedPackageView(activity,  operateId);
-            lightLiveRedPackageView.setOnPagerClose(new LiveBasePager.OnPagerClose() {
-                @Override
-                public void onClose(LiveBasePager basePager) {
-                    if (lightLiveRedPackageView == basePager) {
-                        rlRedpacketContent.removeView(basePager.getRootView());
-                        lightLiveRedPackageView = null;
-                    }
+        lightLiveRedPackageView = new LightLiveRedPackageView(activity, operateId);
+        lightLiveRedPackageView.setOnPagerClose(new LiveBasePager.OnPagerClose() {
+            @Override
+            public void onClose(LiveBasePager basePager) {
+                if (lightLiveRedPackageView == basePager) {
+                    rlRedpacketContent.removeView(basePager.getRootView());
+                    lightLiveRedPackageView = null;
                 }
-            });
-            lightLiveRedPackageView.setReceiveGold(new com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.mvp.ReceiveGold() {
-                @Override
-                public void sendReceiveGold(int operateId, OnRedPackageSend onRedPackageSend) {
+            }
+        });
+        lightLiveRedPackageView.setReceiveGold(new com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.mvp.ReceiveGold() {
+            @Override
+            public void sendReceiveGold(int operateId, OnRedPackageSend onRedPackageSend) {
+                if (AppBll.getInstance().isAlreadyLogin()){
                     LightLiveRedPackageBll.this.sendReceiveGold(operateId, mVSectionID);
+                }else {
+                    LoginEnter.openLogin(activity,false,new Bundle());
                 }
-            });
-            view = lightLiveRedPackageView.getRootView();
-            params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout
-                    .LayoutParams.MATCH_PARENT);
-        }
-        if(!mIsLand.get()){
+
+            }
+        });
+        view = lightLiveRedPackageView.getRootView();
+        params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout
+                .LayoutParams.MATCH_PARENT);
+
+        if (!mIsLand.get()) {
             //修正显示
             LinearLayout llOtherContent = mContentView.findViewById(R.id.ll_course_video_live_other_content);
-            RelativeLayout.LayoutParams rlParams = (RelativeLayout.LayoutParams)rlRedpacketContent.getLayoutParams();
+            RelativeLayout.LayoutParams rlParams = (RelativeLayout.LayoutParams) rlRedpacketContent.getLayoutParams();
 //            params.addRule(RelativeLayout.ALIGN_TOP,R.id.rl_live_video_frag);
-            rlParams.topMargin =  llOtherContent.getTop();
+            rlParams.topMargin = llOtherContent.getTop();
             rlRedpacketContent.setLayoutParams(rlParams);
         }
         rlRedpacketContent.addView(view, params);

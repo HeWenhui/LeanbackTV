@@ -111,6 +111,7 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
     private String mTeacherWechat;
     private String mTeacherHeadImg;
     private String mQrcodeImg;
+    private TextView tvTeacherWeChat;
 
     public LightLiveMessagePortPager(Context context, KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener,
                                      ArrayList<LiveMessageEntity> liveMessageEntities, ArrayList<LiveMessageEntity> otherLiveMessageEntities) {
@@ -137,6 +138,7 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
         cbMessageTeacher = (CheckBox) mView.findViewById(R.id.cb_livevideo_message_teacher);
         ivMessageClean = (ImageView) mView.findViewById(R.id.iv_livevideo_message_clean);
         ivTeacherWeChat = mView.findViewById(R.id.iv_livevideo_teacher_wechat);
+        tvTeacherWeChat = mView.findViewById(R.id.tv_livevideo_teacher_wechat);
         return mView;
     }
 
@@ -274,7 +276,6 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
         });
 
         ivTeacherWeChat.setOnClickListener(new View.OnClickListener() {
-
 
             @Override
             public void onClick(View v) {

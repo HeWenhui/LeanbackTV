@@ -587,6 +587,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             evenDriveInfo.setIsOpenStimulation(data.optInt("isOpenStimulation"));
             getInfo.setEvenDriveInfo(evenDriveInfo);
             getInfo.setIsFlatfish(data.optInt("isFlatfish", 0));
+            getInfo.setGentlyNotice(data.optString("gentlyNotice"));
             return getInfo;
         } catch (JSONException e) {
             logger.e("parseLiveGetInfo", e);

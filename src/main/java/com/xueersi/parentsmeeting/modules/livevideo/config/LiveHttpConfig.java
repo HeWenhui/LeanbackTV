@@ -259,6 +259,8 @@ public class LiveHttpConfig {
     public final static String URL_LIGHTLIVE_COUPON= LiveVideoConfig.HTTP_HOST + "/LiveLecture/getCouponList";
     /** 轻直播领取优惠券*/
     public final static String URL_LIGHTLIVE_GET_COUPON= LiveVideoConfig.HTTP_HOST + "/LiveLecture/stuReceiveCoupon";
+    /** 轻直播领取优惠券*/
+    public final static String URL_LIGHTLIVE_GET_COURSE= LiveVideoConfig.HTTP_HOST + "/LiveLecture/getCourseList";
     /** 直播辅导献花 */
     @Deprecated
     public final static String URL_LIVE_TUTORIAL_PRAISE_TEACHER = LiveVideoConfig.HTTP_HOST +

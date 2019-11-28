@@ -42,6 +42,8 @@ public class RoomInfoIRCMessageBll extends LiveBaseBll implements MessageAction 
     private List<String> users = new ArrayList<>();
     /** 讨论人数 */
     protected XesAtomicInteger peopleCount = new XesAtomicInteger(0);
+    /** 公告*/
+    private String mNotice;
 
     public RoomInfoIRCMessageBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -51,6 +53,7 @@ public class RoomInfoIRCMessageBll extends LiveBaseBll implements MessageAction 
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
+        mNotice = getInfo.getGentlyNotice();
     }
 
     @Override
@@ -65,7 +68,7 @@ public class RoomInfoIRCMessageBll extends LiveBaseBll implements MessageAction 
                 params.width = RelativeLayout.LayoutParams.MATCH_PARENT;
                 params.height = SizeUtils.Dp2Px(mContext,38);
                 lightLiveRoomInfoPager.getRootView().setLayoutParams(params);
-//                lightLiveRoomInfoPager.setTvNotice("hahhahhhhhhhhhhhhhhhhhhhhhhdddddddddddddddh5648");
+                lightLiveRoomInfoPager.setTvNotice(mNotice);
             }
         }else {
             infoLayout.setVisibility(View.GONE);

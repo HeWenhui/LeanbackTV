@@ -7,6 +7,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xueersi.lib.framework.utils.SizeUtils;
+import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 
@@ -24,10 +25,11 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
  */
 public class LightLiveRoomInfoPager extends LiveBasePager {
 
-    TextView tvCount;
-    TextView tvNotice;
-    ImageView ivClose;
-    View vGap;
+    private TextView tvCount;
+    private TextView tvNotice;
+    private ImageView ivClose;
+    private View vGap;
+    private boolean hasClose;
     public LightLiveRoomInfoPager(Context context) {
         super(context);
     }
@@ -51,6 +53,7 @@ public class LightLiveRoomInfoPager extends LiveBasePager {
                 tvNotice.setVisibility(View.GONE);
                 vGap.setVisibility(View.GONE);
                 ivClose.setVisibility(View.GONE);
+                hasClose = true;
             }
         });
     }
@@ -72,17 +75,15 @@ public class LightLiveRoomInfoPager extends LiveBasePager {
         post(new Runnable() {
             @Override
             public void run() {
-                if (tvCount.getVisibility() == View.GONE){
-                    vGap.setVisibility(View.INVISIBLE);
-                }else {
-                    vGap.setVisibility(View.VISIBLE);
+                if (!StringUtils.isEmpty(message) && !hasClose){
+                    ivClose.setVisibility(View.VISIBLE);
+                    tvNotice.setVisibility(View.VISIBLE);
+                    tvNotice.setFocusable(true);
+                    tvNotice.setClickable(true);
+                    tvNotice.setSelected(true);
+                    tvNotice.setText(message);
                 }
-                ivClose.setVisibility(View.VISIBLE);
-                tvNotice.setVisibility(View.VISIBLE);
-                tvNotice.setFocusable(true);
-                tvNotice.setClickable(true);
-                tvNotice.setSelected(true);
-                tvNotice.setText(message);
+
             }
         });
     }

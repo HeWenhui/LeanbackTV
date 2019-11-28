@@ -50,5 +50,11 @@ public class LightLiveHttpManager {
         liveHttpManager.sendJsonPost(LiveHttpConfig.URL_LIGHTLIVE_GET_COUPON, paramMap, httpCallBack);
     }
 
+    public void getCourseList(String liveId, HttpCallBack httpCallBack){
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("liveId", liveId);
+        liveHttpManager.sendPost(LiveHttpConfig.URL_LIGHTLIVE_GET_COURSE, params, httpCallBack);
+    }
+
 
 }
