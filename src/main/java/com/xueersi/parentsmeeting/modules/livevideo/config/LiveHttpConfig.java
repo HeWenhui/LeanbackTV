@@ -311,4 +311,3 @@ public class LiveHttpConfig {
     public static int HTTP_ERROR_FAIL = 2;
     public static int HTTP_ERROR_NULL = 3;
 }
-

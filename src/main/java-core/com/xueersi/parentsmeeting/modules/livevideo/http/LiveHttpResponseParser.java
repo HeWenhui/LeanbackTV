@@ -561,7 +561,6 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             }
             //理科
             if (data.has("subjectIds")) {
-                String strSubjIds = data.getString("subject_ids");
                 String strSubjIds = data.getString("subjectIds");
                 String[] arrSubjIds = strSubjIds.split(",");
                 getInfo.setSubjectIds(arrSubjIds);
@@ -2835,4 +2834,3 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         return null;
     }
 }
-

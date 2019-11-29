@@ -17,6 +17,7 @@ import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.LivePluginHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LivePluginRequestParam;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
@@ -34,6 +35,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.DNSUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import com.xueersi.parentsmeeting.modules.livevideo.video.URLDNS;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.xutils.xutils.common.Callback;
 import org.xutils.xutils.common.Callback.CancelledException;
@@ -100,24 +102,24 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction,
      * @param httpRequestParams
      */
     private void setDefBusinessParams(HttpRequestParams httpRequestParams) {
-        if(!android.text.TextUtils.isEmpty(httpRequestParams.getJson())){
-            if(defaultBusinessParams != null && defaultBusinessParams.size() > 0){
-                try {
+          if(!android.text.TextUtils.isEmpty(httpRequestParams.getJson())){
+              if(defaultBusinessParams != null && defaultBusinessParams.size() > 0){
+                  try {
                     JSONObject jsonObject = new JSONObject(httpRequestParams.getJson());
-                    for (String key : defaultBusinessParams.keySet()) {
-                        //不顶掉已经有的参数，比如战队pk teamId
-                        if(jsonObject.has(key)){
-                            continue;
-                        }
-                        Object value = defaultBusinessParams.get(key);
-                        jsonObject.put(key,value);
-                    }
-                    httpRequestParams.setJson(jsonObject.toString());
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-            }
-        }
+                      for (String key : defaultBusinessParams.keySet()) {
+                          //不顶掉已经有的参数，比如战队pk teamId
+                          if(jsonObject.has(key)){
+                              continue;
+                          }
+                          Object value = defaultBusinessParams.get(key);
+                          jsonObject.put(key,value);
+                      }
+                      httpRequestParams.setJson(jsonObject.toString());
+                  }catch (Exception e){
+                      e.printStackTrace();
+                  }
+              }
+          }
     }
 
 
@@ -2390,9 +2392,9 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction,
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("plan_id", liveId);
         params.addBodyParam("course_id", courseId);
-        // params.addBodyParam("isPlayBack", isPlayBack);
+       // params.addBodyParam("isPlayBack", isPlayBack);
         sendPost(LiveHttpConfig.URL_COURSE_EVALUATE, params, httpCallBack);
-        // baseSendPostNoBusinessJson(LiveHttpConfig.URL_COURSE_EVALUATE, params, httpCallBack);
+       // baseSendPostNoBusinessJson(LiveHttpConfig.URL_COURSE_EVALUATE, params, httpCallBack);
     }
 
 
