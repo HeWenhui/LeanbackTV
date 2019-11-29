@@ -6,6 +6,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEnti
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuSegmentEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LiveModuleConfigInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LivePlugin;
+import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.entity.LPWeChatEntity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -398,6 +399,8 @@ public class LiveGetInfo {
     /** 是否是轻直播 0否 1是*/
     private boolean isGently;
 
+    private LPWeChatEntity lpWeChatEntity;
+
     public String getGentlyNotice() {
         return gentlyNotice;
     }
@@ -412,6 +415,14 @@ public class LiveGetInfo {
 
     public void setIsGently(boolean isGently) {
         this.isGently = isGently;
+    }
+
+    public LPWeChatEntity getLpWeChatEntity() {
+        return lpWeChatEntity;
+    }
+
+    public void setLpWeChatEntity(LPWeChatEntity lpWeChatEntity) {
+        this.lpWeChatEntity = lpWeChatEntity;
     }
 
     public LiveStatus getLiveStatus() {

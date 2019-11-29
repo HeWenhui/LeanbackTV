@@ -16,6 +16,7 @@ import android.widget.RelativeLayout;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.util.LoginEnter;
+import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
@@ -24,6 +25,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
+import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.mvp.ReceiveGold;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.pager.LightLiveRedPackageView;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
@@ -34,6 +36,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPacka
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.entity.RedPackageEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.pager.SmallChineseRedPackagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.pager.SmallEnglishRedPackagePager;
+import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.mvp.ReceiveGold.OnRedPackageSend;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -52,6 +55,15 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @Version: 1.0
  */
 public class LightLiveRedPackageBll implements RedPackageAction, Handler.Callback {
+
+    /**
+     * 重复领取
+     */
+    public static int CODE_60410 = 60410;
+    /**
+     * 领取订单创建失败
+     */
+    public static int CODE_60411 = 60411;
     private Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     private static final String TAG = "RedPackageBll";
     private WeakHandler mVPlayVideoControlHandler = new WeakHandler(this);
@@ -157,10 +169,10 @@ public class LightLiveRedPackageBll implements RedPackageAction, Handler.Callbac
         lightLiveRedPackageView.setReceiveGold(new com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.mvp.ReceiveGold() {
             @Override
             public void sendReceiveGold(int operateId, OnRedPackageSend onRedPackageSend) {
-                if (AppBll.getInstance().isAlreadyLogin()){
-                    LightLiveRedPackageBll.this.sendReceiveGold(operateId, mVSectionID);
-                }else {
-                    LoginEnter.openLogin(activity,false,new Bundle());
+                if (AppBll.getInstance().isAlreadyLogin()) {
+                    LightLiveRedPackageBll.this.sendReceiveGold(operateId, mVSectionID, onRedPackageSend);
+                } else {
+                    LoginEnter.openLogin(activity, false, new Bundle());
                 }
 
             }
@@ -183,12 +195,14 @@ public class LightLiveRedPackageBll implements RedPackageAction, Handler.Callbac
         activity.getWindow().getDecorView().invalidate();
     }
 
-    private void sendReceiveGold(final int operateId, String sectionID) {
+    private void sendReceiveGold(final int operateId, String sectionID, final OnRedPackageSend onRedPackageSend) {
         receiveGold.sendReceiveGold(operateId, sectionID, new AbstractBusinessDataCallBack() {
             @Override
             public void onDataSucess(Object... objData) {
                 VideoResultEntity entity = (VideoResultEntity) objData[0];
                 // 广播 领取红包成功事件
+                int gold = entity.getGoldNum();
+                onRedPackageSend.onReceiveGold(gold);
                 EventBus.getDefault().post(new RedPackageEvent(mVSectionID, entity.getGoldNum(),
                         operateId + "", RedPackageEvent.STATE_CODE_SUCCESS));
             }
@@ -196,10 +210,25 @@ public class LightLiveRedPackageBll implements RedPackageAction, Handler.Callbac
             @Override
             public void onDataFail(int errStatus, String failMsg) {
                 super.onDataFail(errStatus, failMsg);
-                if (errStatus == 0) {
-                    onGetPackageFailure(operateId);
+                XESToastUtils.showToastAtCenter("红包领取失败，请重试");
+                onRedPackageSend.onReceiveFail();
+
+            }
+
+            @Override
+            public void onDataFail(int errStatus, String failMsg, int code) {
+                super.onDataFail(errStatus, failMsg, code);
+                if (CODE_60411 == code) {
+                    XESToastUtils.showToastAtCenter("" + failMsg);
+                    onRedPackageSend.onReceiveError(errStatus, failMsg, code);
+                } else if (CODE_60410 == code) {
+                    onRedPackageSend.onHaveReceiveGold();
                 } else {
-                    onGetPackageError(operateId);
+                    XESToastUtils.showToastAtCenter("" + failMsg);
+                    if (lightLiveRedPackageView != null) {
+                        rlRedpacketContent.removeView(lightLiveRedPackageView.getRootView());
+                        lightLiveRedPackageView = null;
+                    }
                 }
             }
         });

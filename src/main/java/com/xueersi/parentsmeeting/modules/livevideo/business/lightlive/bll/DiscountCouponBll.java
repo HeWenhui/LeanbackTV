@@ -142,14 +142,14 @@ public class DiscountCouponBll extends LiveBaseBll {
             @Override
             public void onClick(String couponId) {
                 if (AppBll.getInstance().isAlreadyLogin()){
-                    mHttpManager.getCouponGet(couponId, new HttpCallBack() {
+                    mHttpManager.getCouponGet(couponId, new HttpCallBack(false) {
                         @Override
                         public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
 
                             JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
                             if (jsonObject != null) {
                                 String toast = jsonObject.optString("tip");
-                                XESToastUtils.showToast(toast);
+                                XESToastUtils.showToastAtCenter(toast);
                             }
                             getCouponList(false);
                         }
@@ -175,7 +175,7 @@ public class DiscountCouponBll extends LiveBaseBll {
 
     private void getCouponList(final boolean isClear){
 
-        mHttpManager.getCouponList(liveId, new HttpCallBack() {
+        mHttpManager.getCouponList(liveId, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 if (responseEntity != null) {

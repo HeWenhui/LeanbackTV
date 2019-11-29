@@ -12,7 +12,7 @@
         android:layout_alignTop="@+id/iv_lightlive_recommend_img"
         android:layout_toRightOf="@+id/iv_lightlive_recommend_img"
         android:textStyle="bold"
-        android:text="3门精选课程"
+        android:text="3门推荐课程"
         android:drawableLeft="@drawable/livevideo_lightlive_recommend_img"
         android:drawablePadding="3dp"
         android:layout_marginTop="12dp"

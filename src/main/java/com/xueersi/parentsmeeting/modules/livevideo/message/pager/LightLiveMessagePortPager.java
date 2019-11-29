@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.message.pager;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
 import android.text.Editable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -24,6 +25,8 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.xueersi.common.http.HttpCallBack;
+import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
@@ -32,10 +35,16 @@ import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.entity.LPWeChatEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.http.LightLiveHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.http.LightLiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.pager.TeacherWechatDialog;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
 import com.xueersi.parentsmeeting.modules.livevideo.message.config.LiveMessageConfig;
 import com.xueersi.ui.adapter.AdapterItemInterface;
@@ -112,6 +121,9 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
     private String mTeacherHeadImg;
     private String mQrcodeImg;
     private TextView tvTeacherWeChat;
+    /** 联系老师实体*/
+    private LPWeChatEntity weChatEntity;
+    boolean isShowWeChat;
 
     public LightLiveMessagePortPager(Context context, KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener,
                                      ArrayList<LiveMessageEntity> liveMessageEntities, ArrayList<LiveMessageEntity> otherLiveMessageEntities) {
@@ -143,6 +155,29 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
     }
 
     @Override
+    public void setGetInfo(LiveGetInfo getInfo) {
+        super.setGetInfo(getInfo);
+        if (getInfo != null && getInfo.getLpWeChatEntity() != null){
+            weChatEntity = getInfo.getLpWeChatEntity();
+           if (getInfo.getLpWeChatEntity().getTipType() == LPWeChatEntity.WECHAT_GROUP){
+                isShowWeChat = true;
+                ivTeacherWeChat.setVisibility(View.VISIBLE);
+                tvTeacherWeChat.setVisibility(View.VISIBLE);
+                tvTeacherWeChat.setText("班级群");
+            }else if (getInfo.getLpWeChatEntity().getTipType() == LPWeChatEntity.TEACHER_WECHAT){
+                isShowWeChat = true;
+                ivTeacherWeChat.setVisibility(View.VISIBLE);
+                tvTeacherWeChat.setVisibility(View.VISIBLE);
+            }else {
+                isShowWeChat = false;
+                ivTeacherWeChat.setVisibility(View.GONE);
+                tvTeacherWeChat.setVisibility(View.GONE);
+            }
+        }
+
+    }
+
+    @Override
     public void initListener() {
 
         tvMessageDisable.setOnClickListener(new View.OnClickListener() {
@@ -169,7 +204,12 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
                         }
                         if (ircState.openchat()) {
                             if (System.currentTimeMillis() - lastSendMsg > SEND_MSG_INTERVAL) {
-                                boolean send = ircState.sendMessage(msg, "");
+
+                                String name = LiveAppUserInfo.getInstance().getName();
+                                if (name == null || name.isEmpty()){
+                                    name = getInfo.getStuName();
+                                }
+                                boolean send = ircState.sendMessage(msg, name);
                                 if (send) {
                                     startCountDown(COUNT_TAG_MSG, (int) (SEND_MSG_INTERVAL / 1000));
                                     etMessageContent.setText("");
@@ -280,9 +320,9 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
             @Override
             public void onClick(View v) {
                 //测试代码
-                wechatDialog = new TeacherWechatDialog(mContext,mBaseApplication,TeacherWechatDialog.TYPE_WITH_HEAD);
-                wechatDialog.setTeacherHead("").setTeacherName("张三").setTeacherWechat("55555555").setQrcode("");
-                wechatDialog.showDialog();
+                if (weChatEntity != null){
+                    showWeChatDialog();
+                }
             }
         });
 
@@ -292,6 +332,9 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
     @Override
     public void initData() {
         super.initData();
+        Resources resources = mContext.getResources();
+        nameColors = new int[]{resources.getColor(R.color.COLOR_FF5E50), resources.getColor(R.color.COLOR_FF5E50),
+                resources.getColor(R.color.COLOR_666666), resources.getColor(R.color.COLOR_FE9B43)};
         ivExpressionCancle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -301,6 +344,7 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
                 etMessageContent.onKeyDown(KeyEvent.KEYCODE_DEL, event);
             }
         });
+
         showExpressionView(true);
         messageSize = (int) (ScreenUtils.getScreenDensity() * 15);
         messageAdapter = new CommonAdapter<LiveMessageEntity>(liveMessageEntities) {
@@ -354,7 +398,14 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
                         } else {
                             tvMessageItem.setAutoLinkMask(0);
                             tvMessageItem.setText(spanttt);
-                            tvMessageItem.append(entity.getText());
+                            if (LiveMessageEntity.MESSAGE_MINE == entity.getType()){
+                                SpannableString meSpan = new SpannableString(entity.getText());
+                                CharacterStyle meStyle = new ForegroundColorSpan(color);
+                                meSpan.setSpan(meStyle, 0, entity.getText().length() , Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                                tvMessageItem.append(meSpan);
+                            }else {
+                                tvMessageItem.append(entity.getText());
+                            }
                         }
 
                     }
@@ -729,12 +780,23 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
         super.onDestroy();
     }
 
+    public void setWeChatEntity(LPWeChatEntity weChatEntity) {
+        this.weChatEntity = weChatEntity;
+    }
+
+    private void showWeChatDialog(){
+        wechatDialog = new TeacherWechatDialog(mContext,mBaseApplication,weChatEntity.getTipType());
+        wechatDialog.setTeacherHead(weChatEntity.getTeacherImg()).setTeacherName(weChatEntity.getTeacherName())
+                .setTeacherWechat(weChatEntity.getTeacherWx()).setQrcode(weChatEntity.getTipInfo());
+        wechatDialog.showDialog();
+    }
     private void onKeyBoardShow(boolean isShow){
         if (isShow){
             if (ivMessageClean.getVisibility() == View.VISIBLE){
                 ivMessageClean.setVisibility(View.GONE);
                 cbMessageTeacher.setVisibility(View.GONE);
                 ivTeacherWeChat.setVisibility(View.GONE);
+                tvTeacherWeChat.setVisibility(View.GONE);
                 RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) btMessageExpress.getLayoutParams();
                 params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
                 params.removeRule(RelativeLayout.ALIGN_RIGHT);
@@ -758,7 +820,11 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
                 etMessageContent.setLayoutParams(etParams);
                 ivMessageClean.setVisibility(View.VISIBLE);
                 cbMessageTeacher.setVisibility(View.VISIBLE);
-                ivTeacherWeChat.setVisibility(View.VISIBLE);
+                if (isShowWeChat){
+                    ivTeacherWeChat.setVisibility(View.VISIBLE);
+                    tvTeacherWeChat.setVisibility(View.VISIBLE);
+                }
+
             }
         }
     }

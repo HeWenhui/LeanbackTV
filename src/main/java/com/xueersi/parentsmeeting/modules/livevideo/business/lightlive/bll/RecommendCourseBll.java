@@ -139,9 +139,10 @@ public class RecommendCourseBll extends LiveBaseBll {
         });
     }
     private void getCourseList(){
-        mHttpManager.getCourseList(mGetInfo.getId(), new HttpCallBack() {
+        mHttpManager.getCourseList(mGetInfo.getId(), new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                courseEntities = mHttpResponseParser.parserCourseList(responseEntity);
                 mCoursePager.setData(courseEntities);
             }
         });

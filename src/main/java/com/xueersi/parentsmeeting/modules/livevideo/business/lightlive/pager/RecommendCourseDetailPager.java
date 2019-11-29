@@ -114,7 +114,7 @@ public class RecommendCourseDetailPager extends BasePager {
                     //跳转到商城的订单详情页面
                     Bundle bundle = new Bundle();
                     bundle.putString("vCourseId", mData.get(position).getCourseID());
-                    bundle.putString("classId", mData.get(position).getClassID());
+//                    bundle.putString("classId", mData.get(position).getClassID());
                     //采用ARouter来跳转
                     XueErSiRouter.startModule(mContext, "/xesmallCourseDetail/xrsmodule", bundle);
                 }
@@ -227,7 +227,7 @@ public class RecommendCourseDetailPager extends BasePager {
         private void setCourseName() {
             //设置名称和学科，学期
             SpannableStringBuilder stringBuilder = new SpannableStringBuilder();
-            if (entity.getPromotionEntity() != null && entity.getPromotionEntity().isPreSale()) {
+            if (entity.isPreSale()) {
 //            Drawable preSale = BusinessUtils.createDrawable("预售", getColor(R.color.COLOR_FF5E50), getColor(R.color.COLOR_FFFFFF));
                 Drawable preSale = DrawUtil.create("预售", R.color.COLOR_FF5E50, R.color.COLOR_FFFFFF);
                 VericalImageSpan imgSpan = new VericalImageSpan(preSale);
@@ -236,7 +236,7 @@ public class RecommendCourseDetailPager extends BasePager {
                 stringBuilder.append(spannableString);
             }
 
-            if (entity.getPromotionEntity() != null && entity.getPromotionEntity().isGroupOn()) {
+            if (entity.isGroupOn()) {
 //            Drawable groupon = BusinessUtils.createDrawable("拼团", getColor(R.color.COLOR_FF5E50), getColor(R.color.COLOR_FFFFFF));
                 Drawable groupon = DrawUtil.create("拼团", R.color.COLOR_FF5E50, R.color.COLOR_FFFFFF);
                 VericalImageSpan span = new VericalImageSpan(groupon);

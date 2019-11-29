@@ -57,7 +57,8 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="16dp"
-            android:src="@drawable/livevideo_lightlive_teacher_wechat" />
+            android:src="@drawable/livevideo_lightlive_teacher_wechat"
+            android:visibility="gone"/>
         <TextView
             android:id="@+id/tv_livevideo_teacher_wechat"
             android:layout_width="52dp"
@@ -69,6 +70,7 @@
             style="@style/text_font10_ffffff_style"
             android:gravity="center"
             android:text="联系老师"
+            android:visibility="gone"
             />
 
 

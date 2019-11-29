@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.widget.MarqueeView;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 
 /**
@@ -76,6 +77,7 @@ public class LightLiveRoomInfoPager extends LiveBasePager {
             @Override
             public void run() {
                 if (!StringUtils.isEmpty(message) && !hasClose){
+                    vGap.setVisibility(View.VISIBLE);
                     ivClose.setVisibility(View.VISIBLE);
                     tvNotice.setVisibility(View.VISIBLE);
                     tvNotice.setFocusable(true);

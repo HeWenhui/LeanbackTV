@@ -41,6 +41,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePage
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
@@ -258,7 +259,7 @@ public class LightLiveMessageLandPager extends BaseLiveMessagePager {
      * @return
      */
     protected int getLayoutId() {
-        return R.layout.page_livevideo_message_halfbody_arts;
+        return R.layout.page_livevideo_message_halfbody_lightlive;
     }
 
 
@@ -525,7 +526,7 @@ public class LightLiveMessageLandPager extends BaseLiveMessagePager {
         int width = (int) (screenWidth *0.45f);
         params.height = height;
         params.width = width;
-        params.bottomMargin = (int) (screenHeight *0.054f);
+        params.bottomMargin = (int) (screenHeight *0.14f);
         liveMsgReclView.setLayoutParams(params);
 
         liveMsgReclView.addItemDecoration(new RecyclerView.ItemDecoration() {
@@ -624,7 +625,11 @@ public class LightLiveMessageLandPager extends BaseLiveMessagePager {
                 String msg = words.get(position);
                 if (ircState.openchat()) {
                     if (System.currentTimeMillis() - lastSendMsg > SEND_MSG_INTERVAL) {
-                        boolean send = ircState.sendMessage(msg, "");
+                        String name = LiveAppUserInfo.getInstance().getName();
+                        if (name == null || name.isEmpty()){
+                            name = getInfo.getStuName();
+                        }
+                        boolean send = ircState.sendMessage(msg, name);
                         if (send) {
                             etMessageContent.setText("");
                             addMessage("我", LiveMessageEntity.MESSAGE_MINE, msg, "");

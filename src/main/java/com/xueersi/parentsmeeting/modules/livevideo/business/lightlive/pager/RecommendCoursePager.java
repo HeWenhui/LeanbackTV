@@ -49,7 +49,7 @@ public class RecommendCoursePager extends BasePager {
 
     @Override
     public void initData() {
-        tvCount.setText(courseEntities.size()+"门精选课程");
+        tvCount.setText(courseEntities.size()+"门推荐课程");
         for (CourseEntity entity : courseEntities) {
             vfCourses.addView(new RecommendCourseItem(mContext,entity).getRootView());
         }

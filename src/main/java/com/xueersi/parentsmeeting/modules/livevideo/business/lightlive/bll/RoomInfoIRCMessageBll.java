@@ -53,7 +53,13 @@ public class RoomInfoIRCMessageBll extends LiveBaseBll implements MessageAction 
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
-        mNotice = getInfo.getGentlyNotice();
+        if (!getInfo.getGentlyNotice().isEmpty()){
+            mNotice = "公告: " + getInfo.getGentlyNotice();
+            if(lightLiveRoomInfoPager != null){
+                lightLiveRoomInfoPager.setTvNotice(mNotice);
+            }
+        }
+
     }
 
     @Override

@@ -47,11 +47,6 @@ public class CourseTeacherEntity {
     private String teacherHint;
 
     /**
-     * 老师是否选中
-     */
-    private boolean isSelected;
-
-    /**
      * 老师所教课程ID
      */
     private String courseId;
@@ -127,13 +122,6 @@ public class CourseTeacherEntity {
         this.description = description;
     }
 
-    public boolean isSelected() {
-        return isSelected;
-    }
-
-    public void setSelected(boolean selected) {
-        isSelected = selected;
-    }
 
     public String getCourseId() {
         return courseId;

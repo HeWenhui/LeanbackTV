@@ -267,7 +267,6 @@ public class LiveVideoLoadActivity extends BaseActivity {
                         }
                         String stuId = LiveAppUserInfo.getInstance().getStuId();
                         getInfos.put(liveType + "-" + stuId + "-" + vSectionID, mGetInfo);
-                        mGetInfo.setIsGently(true);// 测试代码
                         if(!mGetInfo.isGently()){
                             com.xueersi.parentsmeeting.modules.livevideo.fragment.LecVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
                         }else {

@@ -57,5 +57,11 @@ public class LightLiveHttpManager {
         liveHttpManager.sendPost(LiveHttpConfig.URL_LIGHTLIVE_GET_COURSE, params, httpCallBack);
     }
 
+    public void getWechatInfo(String liveId ,HttpCallBack httpCallBack){
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("lectureId", liveId);
+        liveHttpManager.sendPost(LiveHttpConfig.URL_LIGHTLIVE_GET_WECHAT, params, httpCallBack);
+    }
+
 
 }

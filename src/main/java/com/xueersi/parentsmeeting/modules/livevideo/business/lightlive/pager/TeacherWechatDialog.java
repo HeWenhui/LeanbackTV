@@ -44,8 +44,8 @@ import com.xueersi.ui.dialog.BaseDialog;
  */
 public class TeacherWechatDialog extends BaseAlertDialog {
 
-    public final static int TYPE_WITH_HEAD = 0;
-    public final static int TYPE_WITH_QRCODE = 1;
+    public final static int TYPE_WITH_HEAD = 3;
+    public final static int TYPE_WITH_QRCODE = 2;
     private ImageView ivClose;
     private TextView tvTitle;
     private TextView tvSubTitle;

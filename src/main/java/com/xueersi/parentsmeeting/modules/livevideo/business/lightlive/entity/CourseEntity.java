@@ -19,6 +19,9 @@ public class CourseEntity  {
      * 专属辅导老师
      */
     public static final int EXCTEACHERCOURSE = 1;
+    public static final int TYPE_PROMOTION_PRE_SALE = 12;
+    public static final int TYPE_PROMOTION_GROUPON = 8;
+    public static final int TYPE_PROMOTION_UNIT_BUY = 3;
     /**
      * 1206新加subjectName
      */
@@ -101,7 +104,7 @@ public class CourseEntity  {
      */
     private int excTeacherCourse;
 
-    private PromotionEntity promotionEntity;
+    private int type;
     /**
      * subjectName 6.0新增课程属性
      */
@@ -341,121 +344,29 @@ public class CourseEntity  {
         this.subjectID = subjectID;
     }
 
-    public boolean isGroupon() {
-        return isGroupon;
+//    public boolean isGroupon() {
+//        return isGroupon;
+//    }
+//
+//    public void setGroupon(boolean groupon) {
+//        isGroupon = groupon;
+//    }
+
+    public int getType() {
+        return type;
     }
 
-    public void setGroupon(boolean groupon) {
-        isGroupon = groupon;
+    public void setType(int type) {
+        this.type = type;
     }
 
-    public PromotionEntity getPromotionEntity() {
-        return promotionEntity;
+    public boolean isPreSale() {
+        return type == TYPE_PROMOTION_PRE_SALE;
     }
 
-    public void setPromotionEntity(PromotionEntity promotionEntity) {
-        this.promotionEntity = promotionEntity;
+    public boolean isGroupOn() {
+        return type == TYPE_PROMOTION_GROUPON;
     }
-    public static class PromotionEntity  {
-
-        public static final int TYPE_PROMOTION_PRE_SALE = 12;
-        public static final int TYPE_PROMOTION_GROUPON = 8;
-        public static final int TYPE_PROMOTION_UNIT_BUY = 3;
-
-        int type;
-        int id;
-
-        int subtype; // 两种促销并存时第二种促销ID，拼团联报并存时返回 3:联报
-
-        int price;
-        String desc;
-
-        int deposit;
-        String expandPrice;
-
-        int priceOff;
-
-        public int getDeposit() {
-            return deposit;
-        }
-
-        public void setDeposit(int deposit) {
-            this.deposit = deposit;
-        }
-
-        public String getExpandPrice() {
-            return expandPrice;
-        }
-
-        public void setExpandPrice(String expandPrice) {
-            this.expandPrice = expandPrice;
-        }
-
-        public int getType() {
-            return type;
-        }
-
-        public void setType(int type) {
-            this.type = type;
-        }
-
-        public int getSubtype() {
-            return subtype;
-        }
-
-        public void setSubtype(int subtype) {
-            this.subtype = subtype;
-        }
-
-        public int getId() {
-            return id;
-        }
-
-        public void setId(int id) {
-            this.id = id;
-        }
-
-        public int getPrice() {
-            return price;
-        }
-
-        public void setPrice(int price) {
-            this.price = price;
-        }
-
-        public String getDesc() {
-            return desc;
-        }
-
-        public void setDesc(String desc) {
-            this.desc = desc;
-        }
-
-        public boolean isPreSale() {
-            return type == TYPE_PROMOTION_PRE_SALE;
-        }
-
-        public boolean isGroupOn() {
-            return type == TYPE_PROMOTION_GROUPON;
-        }
-
-        public boolean isUnitBuy() {
-            return type == TYPE_PROMOTION_UNIT_BUY || (isGroupOn() && subtype == 3);
-        }
-
-        public int getPriceOff() {
-            return priceOff;
-        }
-
-        public void setPriceOff(int priceOff) {
-            this.priceOff = priceOff;
-        }
-
-        public PromotionEntity() {
-        }
-
-    }
-
 
 }
 

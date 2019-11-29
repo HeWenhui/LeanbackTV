@@ -63,8 +63,9 @@ public class RecommendCourseItem extends BasePager {
     @Override
     public void initData() {
         tvTitle.setText(mCourseEntity.getCourseName());
-        tvName.setText("授课: " + mCourseEntity.getLstMainTeacher().get(0).getTeacherName());
-        headImg = mCourseEntity.getLstMainTeacher().get(0).getTeacherImg();
+//        tvName.setText("授课: " + mCourseEntity.getLstMainTeacher().get(0).getTeacherName());
+        tvName.setText("授课: test");
+//        headImg = mCourseEntity.getLstMainTeacher().get(0).getTeacherImg();
         int defaultHeadImg = R.drawable.bg_main_default_head_image;
         if (TextUtils.isEmpty(headImg)) {
             // 如果图片URL为空则直接加载默认图片，因为图片加载框架对空字符串的路径加载会加载到其它图片上，故这样解决
@@ -84,7 +85,7 @@ public class RecommendCourseItem extends BasePager {
             //跳转到商城的订单详情页面
             Bundle bundle = new Bundle();
             bundle.putString("vCourseId", mCourseEntity.getCourseID());
-            bundle.putString("classId", mCourseEntity.getClassID());
+//            bundle.putString("classId", mCourseEntity.getClassID());
             //采用ARouter来跳转
             XueErSiRouter.startModule(mContext, "/xesmallCourseDetail/xrsmodule", bundle);
             }

@@ -125,14 +125,17 @@ public class LightLiveRedPackageView extends LiveBasePager implements IRedPackag
             public boolean onPreDraw() {
                 lvBusiRedPackRed.getViewTreeObserver().removeOnPreDrawListener(this);
 //                mHandler.postDelayed(runnable, 10000);
-                int scale = ScreenUtils.getScreenWidth() / 759;
-                int width = 315 * scale;
+//                int scale = ScreenUtils.getScreenWidth() / 759;
+//                int width = 315 * scale;
                 RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) ivBusiRedPackClose.getLayoutParams();
-                params.leftMargin = (ScreenUtils.getScreenWidth() + width) / 2;
+//                params.leftMargin = (ScreenUtils.getScreenWidth() + width) / 2;
+                params.addRule(RelativeLayout.ALIGN_TOP,R.id.lv_lightlive_busi_red_pack_red);
+                params.addRule(RelativeLayout.ALIGN_RIGHT,R.id.lv_lightlive_busi_red_pack_red);
+//                params.rightMargin = SizeUtils.Dp2Px(mContext,-7);
                 LayoutParamsUtil.setViewLayoutParams(ivBusiRedPackClose, params);
                 return false;
             }
-        });
+            });
     }
 
     @Override
@@ -150,7 +153,7 @@ public class LightLiveRedPackageView extends LiveBasePager implements IRedPackag
         });
     }
 
-    private View.OnClickListener onClickListener = new View.OnClickListener() {
+    View.OnClickListener onClickListener = new View.OnClickListener() {
 
         @Override
         public void onClick(View v) {
@@ -262,6 +265,22 @@ public class LightLiveRedPackageView extends LiveBasePager implements IRedPackag
                 lvBusiRedPackRed.setVisibility(View.GONE);
             }
         }, 40);
+        lvBusiRedPackRedResult.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                lvBusiRedPackRedResult.getViewTreeObserver().removeOnPreDrawListener(this);
+//                mHandler.postDelayed(runnable, 10000);
+//                int scale = ScreenUtils.getScreenWidth() / 759;
+//                int width = 315 * scale;
+                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) ivBusiRedPackClose.getLayoutParams();
+//                params.leftMargin = (ScreenUtils.getScreenWidth() + width) / 2;
+                params.addRule(RelativeLayout.ALIGN_TOP,R.id.lv_lightlive_busi_red_pack_red_res);
+                params.addRule(RelativeLayout.ALIGN_RIGHT,R.id.lv_lightlive_busi_red_pack_red_res);
+//                params.rightMargin = SizeUtils.Dp2Px(mContext,-7);
+                LayoutParamsUtil.setViewLayoutParams(ivBusiRedPackClose, params);
+                return false;
+            }
+        });
         lvBusiRedPackRedResult.setVisibility(View.VISIBLE);
         String resPath = dir + "images";
         String jsonPath = dir + "data.json";
