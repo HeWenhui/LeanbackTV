@@ -31,14 +31,14 @@ public class LightLiveHttpResponseParser extends HttpResponseParser {
     public List<CouponEntity> parserCouponList(ResponseEntity responseEntity) {
         if (responseEntity == null) return null;
 
-        JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+        JSONArray jsonObject = (JSONArray) responseEntity.getJsonObject();
         if (jsonObject == null) return null;
 
-        JSONArray couponList = jsonObject.optJSONArray("list");
+//        JSONArray couponList = jsonObject.optJSONArray("list");
+        JSONArray couponList = jsonObject;
         if (couponList == null || couponList.length() == 0) {
             return null;
         }
-
         List<CouponEntity> couponListEntities = new ArrayList<>();
         for (int i = 0; i < couponList.length(); i++) {
             JSONObject listObj = couponList.optJSONObject(i);
@@ -53,7 +53,7 @@ public class LightLiveHttpResponseParser extends HttpResponseParser {
 
             couponListEntity.setTitle(listObj.optString("title"));
             couponListEntity.setReduceText(listObj.optString("reduceText"));
-            couponListEntity.setStatus(listObj.optInt("status"));
+            couponListEntity.setStatus(listObj.optInt("Status"));
 
             couponListEntities.add(couponListEntity);
         }
@@ -86,6 +86,9 @@ public class LightLiveHttpResponseParser extends HttpResponseParser {
                 courseEntity.setSecondTitle(listObj.optString("secondTitle"));
                 courseEntity.setCourseName(listObj.optString("courseName"));
                 courseEntity.setLiveShowTime(listObj.optString("schooltimeName"));
+                if(listObj.has("teacherInfo")){
+//                    JSONObject mainObject = listObj.optJSONObject("teacherInfo");
+                }
                 entities.add(courseEntity);
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -95,16 +98,4 @@ public class LightLiveHttpResponseParser extends HttpResponseParser {
         return entities;
     }
 
-    public LPWeChatEntity parserWeChat(ResponseEntity responseEntity) {
-        LPWeChatEntity entity = new LPWeChatEntity();
-        JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-        entity.setId(jsonObject.optInt("id"));
-        entity.setTipType(jsonObject.optInt("tipInfo"));
-        entity.setTipInfo(jsonObject.optString("tipInfo"));
-        entity.setExistWx(jsonObject.optInt("existWx"));
-        entity.setTeacherWx(jsonObject.optString("teaWx"));
-        entity.setTeacherName(jsonObject.optString("teaName"));
-        entity.setTeacherImg(jsonObject.optString("teaImg"));
-        return entity;
-    }
 }

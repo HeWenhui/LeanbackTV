@@ -143,7 +143,7 @@ public class DiscountCouponDetailPager extends BasePager {
         }
 
         public void bindData(CouponEntity data) {
-            String moneyIcon = data.getMoneyIcon();
+            String moneyIcon = data.getMoneyIcon().equals("1")? "¥":"";
             String faceText = data.getFaceText();
             if (!TextUtils.isEmpty(faceText)) {
                 if (TextUtils.isEmpty(moneyIcon)) {
@@ -200,7 +200,7 @@ public class DiscountCouponDetailPager extends BasePager {
     }
 
     public void setCouponClickListener(GetCouponClickListener couponListener){
-
+        adapter.setCouponClickListener(couponListener);
     }
 
     public interface CloseClickListener{

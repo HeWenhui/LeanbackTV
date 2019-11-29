@@ -178,9 +178,7 @@ public class DiscountCouponBll extends LiveBaseBll {
         mHttpManager.getCouponList(liveId, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                if (responseEntity != null) {
-                    JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-                }
+
                 couponEntities = mHttpResponseParser.parserCouponList(responseEntity);
                 discountCouponPager.setData(couponEntities);
             }
