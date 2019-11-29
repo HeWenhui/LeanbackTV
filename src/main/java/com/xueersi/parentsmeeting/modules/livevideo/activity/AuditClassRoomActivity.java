@@ -344,11 +344,7 @@ public class AuditClassRoomActivity extends XesActivity {
             int numberColor = getResources().getColor(R.color.COLOR_FF903D);
             numberSpan.setSpan(new ForegroundColorSpan(numberColor), 0, numberText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             SpannableString endSpan = new SpannableString("名");
-            if (firstSpan.length() >= 25) {
-                endSpan.setSpan(new ForegroundColorSpan(textColor), 25, firstSpan.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            }else {
-                endSpan.setSpan(new ForegroundColorSpan(textColor), 0, firstSpan.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            }
+            endSpan.setSpan(new ForegroundColorSpan(textColor), 0, firstSpan.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             sb.append(firstSpan).append(numberSpan).append(endSpan).append("\n" + fixText);
             tv.setText(sb);
         }
