@@ -143,7 +143,7 @@ public class DiscountCouponDetailPager extends BasePager {
         }
 
         public void bindData(CouponEntity data) {
-            String moneyIcon = data.getMoneyIcon().equals("1")? "¥":"";
+            String moneyIcon = data.getMoneyIcon();
             String faceText = data.getFaceText();
             if (!TextUtils.isEmpty(faceText)) {
                 if (TextUtils.isEmpty(moneyIcon)) {

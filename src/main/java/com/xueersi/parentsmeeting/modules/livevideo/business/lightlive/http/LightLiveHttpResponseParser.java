@@ -32,11 +32,11 @@ public class LightLiveHttpResponseParser extends HttpResponseParser {
     public List<CouponEntity> parserCouponList(ResponseEntity responseEntity) {
         if (responseEntity == null) return null;
 
-        JSONArray jsonObject = (JSONArray) responseEntity.getJsonObject();
+        JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
         if (jsonObject == null) return null;
 
-//        JSONArray couponList = jsonObject.optJSONArray("list");
-        JSONArray couponList = jsonObject;
+        JSONArray couponList = jsonObject.optJSONArray("list");
+//        JSONArray couponList = jsonObject;
         if (couponList == null || couponList.length() == 0) {
             return null;
         }
@@ -44,19 +44,21 @@ public class LightLiveHttpResponseParser extends HttpResponseParser {
         for (int i = 0; i < couponList.length(); i++) {
             JSONObject listObj = couponList.optJSONObject(i);
             if (listObj == null) continue;
-            CouponEntity couponListEntity = new CouponEntity();
-            couponListEntity.setFaceText(listObj.optString("faceValue"));
-            couponListEntity.setId(listObj.optInt("id"));
-            couponListEntity.setName(listObj.optString("name"));
-            couponListEntity.setMoneyIcon(listObj.optString("reduceType"));
-            couponListEntity.setGetedText(listObj.optString("userNum"));
-            couponListEntity.setValidDate(listObj.optString("validDate"));
+            CouponEntity couponEntity = new CouponEntity();
+            couponEntity.setTitle(listObj.optString("reduceTextForDetail"));
+            couponEntity.setContent(listObj.optString("content"));
 
-            couponListEntity.setTitle(listObj.optString("title"));
-            couponListEntity.setReduceText(listObj.optString("reduceText"));
-            couponListEntity.setStatus(listObj.optInt("Status"));
+            couponEntity.setId(listObj.optInt("id"));
+            couponEntity.setMoneyIcon(listObj.optString("moneyIcon"));
+            couponEntity.setFaceText(listObj.optString("faceText"));
+            couponEntity.setReduceText(listObj.optString("reduceText"));
+            couponEntity.setName(listObj.optString("name"));
+            couponEntity.setValidDate(listObj.optString("validDate"));
+            couponEntity.setButtonText(listObj.optString("buttonText"));
+            couponEntity.setGetedText(listObj.optString("getedText"));
+            couponEntity.setStatus(listObj.optInt("status"));
 
-            couponListEntities.add(couponListEntity);
+            couponListEntities.add(couponEntity);
         }
         return couponListEntities;
 

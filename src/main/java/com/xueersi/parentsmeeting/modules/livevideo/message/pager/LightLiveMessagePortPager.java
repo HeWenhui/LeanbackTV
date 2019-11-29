@@ -164,7 +164,7 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
                 ivTeacherWeChat.setVisibility(View.VISIBLE);
                 tvTeacherWeChat.setVisibility(View.VISIBLE);
                 tvTeacherWeChat.setText("班级群");
-            }else if (getInfo.getLpWeChatEntity().getTipType() == LPWeChatEntity.TEACHER_WECHAT){
+            }else if (getInfo.getLpWeChatEntity().getTipType() == LPWeChatEntity.TEACHER_WECHAT && getInfo.getLpWeChatEntity().getExistWx() == 1){
                 isShowWeChat = true;
                 ivTeacherWeChat.setVisibility(View.VISIBLE);
                 tvTeacherWeChat.setVisibility(View.VISIBLE);
