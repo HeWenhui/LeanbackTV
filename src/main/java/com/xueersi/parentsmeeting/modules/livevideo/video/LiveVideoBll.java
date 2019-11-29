@@ -134,7 +134,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
         View view = activity.findViewById(R.id.vv_course_video_video);
         if (view != null) {
             Map<String,String> map = new HashMap<>();
-            map.put("videovideo","gone");
+            map.put("videoview","gone");
             UmsAgentManager.umsAgentDebug(activity,"livevideo_videoview",map);
             view.setVisibility(View.GONE);
         }
@@ -147,7 +147,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
             View view = activity.findViewById(R.id.vv_course_video_video);
             if (view != null) {
                 Map<String,String> map = new HashMap<>();
-                map.put("videovideo","visible");
+                map.put("videoview","visible");
                 UmsAgentManager.umsAgentDebug(activity,"livevideo_videoview",map);
                 view.setVisibility(View.VISIBLE);
             }
