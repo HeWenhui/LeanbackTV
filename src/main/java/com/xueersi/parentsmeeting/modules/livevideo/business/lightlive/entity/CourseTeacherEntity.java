@@ -79,6 +79,9 @@ public class CourseTeacherEntity {
     //专属老师
     private int excTeacherCourse;
 
+    public CourseTeacherEntity() {
+    }
+
     public CourseTeacherEntity(String teacherName) {
         this.teacherName = teacherName;
     }
@@ -100,6 +103,10 @@ public class CourseTeacherEntity {
      */
     public String getTeacherImg() {
         return teacherImg;
+    }
+
+    public void setTeacherImg(String teacherImg) {
+        this.teacherImg = teacherImg;
     }
 
     /**

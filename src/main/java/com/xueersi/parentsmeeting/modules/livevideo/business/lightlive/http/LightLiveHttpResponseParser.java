@@ -4,6 +4,7 @@ import com.xueersi.common.http.HttpResponseParser;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.entity.CouponEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.entity.CourseEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.entity.CourseTeacherEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.entity.LPWeChatEntity;
 
 import org.json.JSONArray;
@@ -87,7 +88,16 @@ public class LightLiveHttpResponseParser extends HttpResponseParser {
                 courseEntity.setCourseName(listObj.optString("courseName"));
                 courseEntity.setLiveShowTime(listObj.optString("schooltimeName"));
                 if(listObj.has("teacherInfo")){
-//                    JSONObject mainObject = listObj.optJSONObject("teacherInfo");
+                    JSONArray mainArray = listObj.optJSONArray("teacherInfo");
+                    ArrayList<CourseTeacherEntity> mainTeacherEntities = new ArrayList<>();
+                    for (int j = 0; j < mainArray.length(); j++) {
+                        JSONObject mainObject =  mainArray.optJSONObject(j);
+                        CourseTeacherEntity entity = new CourseTeacherEntity();
+                        entity.setTeacherName(mainObject.optString("teacher_name"));
+                        entity.setTeacherImg(mainObject.optString("avatar"));
+                        mainTeacherEntities.add(entity);
+                    }
+                    courseEntity.setLstMainTeacher(mainTeacherEntities);
                 }
                 entities.add(courseEntity);
             } catch (JSONException e) {

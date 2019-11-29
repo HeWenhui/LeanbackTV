@@ -143,7 +143,7 @@ public class TeacherWechatDialog extends BaseAlertDialog {
                 ClipData mClipData = ClipData.newPlainText("Label", mWechat);
 
                 cm.setPrimaryClip(mClipData);
-                XESToastUtils.showToast("复制成功");
+                XESToastUtils.showToast("您已复制老师微信号，快去添加吧");
             }
         });
     }

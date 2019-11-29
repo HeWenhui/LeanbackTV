@@ -63,9 +63,9 @@ public class RecommendCourseItem extends BasePager {
     @Override
     public void initData() {
         tvTitle.setText(mCourseEntity.getCourseName());
-//        tvName.setText("授课: " + mCourseEntity.getLstMainTeacher().get(0).getTeacherName());
-        tvName.setText("授课: test");
-//        headImg = mCourseEntity.getLstMainTeacher().get(0).getTeacherImg();
+        tvName.setText("授课: " + mCourseEntity.getLstMainTeacher().get(0).getTeacherName());
+//        tvName.setText("授课: test");
+        headImg = mCourseEntity.getLstMainTeacher().get(0).getTeacherImg();
         int defaultHeadImg = R.drawable.bg_main_default_head_image;
         if (TextUtils.isEmpty(headImg)) {
             // 如果图片URL为空则直接加载默认图片，因为图片加载框架对空字符串的路径加载会加载到其它图片上，故这样解决

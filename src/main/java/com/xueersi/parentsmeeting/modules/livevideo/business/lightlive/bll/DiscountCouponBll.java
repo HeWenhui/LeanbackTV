@@ -157,13 +157,13 @@ public class DiscountCouponBll extends LiveBaseBll {
                         @Override
                         public void onPmFailure(Throwable error, String msg) {
                             super.onPmFailure(error, msg);
-                            XESToastUtils.showToast(msg);
+                            XESToastUtils.showToastAtCenter(msg);
                         }
 
                         @Override
                         public void onPmError(ResponseEntity responseEntity) {
                             super.onPmError(responseEntity);
-                            XESToastUtils.showToast(responseEntity.getErrorMsg());
+                            XESToastUtils.showToastAtCenter(responseEntity.getErrorMsg());
                         }
                     });
                 } else {
