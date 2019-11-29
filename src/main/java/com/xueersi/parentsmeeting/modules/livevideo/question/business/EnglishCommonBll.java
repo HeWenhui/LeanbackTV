@@ -4,7 +4,7 @@ import android.app.Activity;
 
 import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
-import com.xueersi.common.business.AppBll;
+import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.english.http.EnglishHttpManager;
@@ -74,6 +74,7 @@ public class EnglishCommonBll extends LiveBaseBll {
                             @Override
                             public void run() {
                                 if (tcpDispatch != null) {
+                                    Loger.i("RoleplayConstant", "send1 tyep=" + type + " operation=" + operation + " bodystr=" + bodyStr);
                                     tcpDispatch.send(type, operation, bodyStr);
                                 }
                             }
@@ -90,6 +91,7 @@ public class EnglishCommonBll extends LiveBaseBll {
                             @Override
                             public void run() {
                                 if (tcpDispatch != null) {
+                                    Loger.i("RoleplayConstant", "send2 tyep=" + type + " operation=" + operation + " bodystr=" + bodyStr);
                                     tcpDispatch.send(type, operation, bodyStr, sendCallBack);
                                 }
                             }
