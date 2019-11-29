@@ -107,7 +107,7 @@ public class RedPackagePlayBackBll extends LiveBackBaseBll {
                 });
                 redPackageAction = redPackageStandBll;
             } else if (pattern == LiveVideoConfig.LIVE_PATTERN_GROUP_CLASS) {
-                String showName = LiveAppUserInfo.getInstance().getStandShowName();
+                String showName = LiveAppUserInfo.getInstance().getEnglishNameProcess();
                 String headUrl = LiveAppUserInfo.getInstance().getHeadImg();
                 RedPackageStandBll redPackageStandBll;
                 redPackageStandBll = new RedPackageStandBll(activity, false, liveBackBll);
