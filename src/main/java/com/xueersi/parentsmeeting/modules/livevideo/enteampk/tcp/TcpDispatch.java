@@ -2,10 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.enteampk.tcp;
 
 import android.content.Context;
 import android.os.Handler;
-import android.os.Looper;
 
-import com.xueersi.lib.framework.are.ContextManager;
-import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.component.cloud.XesCloudUploadBusiness;
 import com.xueersi.component.cloud.config.CloudDir;
@@ -14,9 +11,12 @@ import com.xueersi.component.cloud.entity.CloudUploadEntity;
 import com.xueersi.component.cloud.entity.XesCloudResult;
 import com.xueersi.component.cloud.listener.XesStsUploadListener;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.framework.are.ContextManager;
+import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.lib.GroupGameTcp;
@@ -173,6 +173,7 @@ public class TcpDispatch {
                 short type = TcpConstants.LOGIN_TYPE;
                 int operation = TcpConstants.LOGIN_OPERATION_SEND;
                 groupGameTcp.send(type, operation, bodyStr);
+                Loger.i("RoleplayConstant", "tcp success");
             } catch (Exception e) {
                 LiveCrashReport.postCatchedException(new LiveException(TAG, e));
             }
@@ -183,11 +184,15 @@ public class TcpDispatch {
 
         @Override
         public void onReceiveMeg(short type, int operation, String msg) {
+            Loger.i("RoleplayConstant", "onReceiveMeg:type=" + type + ",operation=" + operation + ",msg=" + msg);
             logger.d("onReceiveMeg:type=" + type + ",operation=" + operation + ",msg=" + msg);
             if (type == TcpConstants.LOGIN_TYPE) {
                 if (operation == TcpConstants.LOGIN_OPERATION_REC) {
 
                 }
+            }
+            if (type == TcpConstants.VOICE_CANNO_SEND) {
+
             }
             List<TcpMessageAction> tcpMessageActions = mMessageActionMap.get((Short) type);
             if (tcpMessageActions != null) {
@@ -214,6 +219,7 @@ public class TcpDispatch {
 
         @Override
         public void onDisconnect(InetSocketAddress inetSocketAddress, Object obj, GroupGameTcp oldGroupGameTcp) {
+            Loger.i("RoleplayConstant", "tcp disconnect");
             oldGroupGameTcp.stop("onDisconnect:isStop=" + isStop);
             StableLogHashMap logHashMap = new StableLogHashMap(TcpLog.logTypeDisconnect);
             logHashMap.put("live_id", "" + live_id);
