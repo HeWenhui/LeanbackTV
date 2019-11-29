@@ -100,24 +100,24 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction,
      * @param httpRequestParams
      */
     private void setDefBusinessParams(HttpRequestParams httpRequestParams) {
-          if(!android.text.TextUtils.isEmpty(httpRequestParams.getJson())){
-              if(defaultBusinessParams != null && defaultBusinessParams.size() > 0){
-                  try {
+        if(!android.text.TextUtils.isEmpty(httpRequestParams.getJson())){
+            if(defaultBusinessParams != null && defaultBusinessParams.size() > 0){
+                try {
                     JSONObject jsonObject = new JSONObject(httpRequestParams.getJson());
-                      for (String key : defaultBusinessParams.keySet()) {
-                          //不顶掉已经有的参数，比如战队pk teamId
-                          if(jsonObject.has(key)){
-                              continue;
-                          }
-                          Object value = defaultBusinessParams.get(key);
-                          jsonObject.put(key,value);
-                      }
-                      httpRequestParams.setJson(jsonObject.toString());
-                  }catch (Exception e){
-                      e.printStackTrace();
-                  }
-              }
-          }
+                    for (String key : defaultBusinessParams.keySet()) {
+                        //不顶掉已经有的参数，比如战队pk teamId
+                        if(jsonObject.has(key)){
+                            continue;
+                        }
+                        Object value = defaultBusinessParams.get(key);
+                        jsonObject.put(key,value);
+                    }
+                    httpRequestParams.setJson(jsonObject.toString());
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
 
@@ -1190,37 +1190,11 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction,
     }
 
     /**
-     * 预加载资源
-     * @param liveId 直播场次ID
-     * @param sid 当前学生的 ID 【必传】
-     * @param days 向后获取的天数(不传默认值为1)
-     * @param requestCallBack HttpCallBack
-     */
-    public void getAllDownloadSubjectInfo(String liveId, String sid, int days, HttpCallBack requestCallBack) {
-        Map<String, Object> map = new HashMap<>();
-        try {
-            map.put("stuId", Long.valueOf(sid));
-            if (!TextUtils.isEmpty(liveId)) {
-                map.put("planId", Long.valueOf(liveId));
-            }
-            if (days > 1) {
-                map.put("days", days);
-            }
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-        }
-
-        requestCallBack.url = LiveHttpConfig.URL_LIVE_GET_ALL_SUBJECT;
-        sendJsonPost(requestCallBack.url, map, requestCallBack);
-    }
-
-    /**
      * 语文预加载互动题
      *
      * @param liveId
      * @param requestCallBack
      */
-    @Deprecated
     public void getArtsCourewareInfo(String liveId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         if (liveId != null && !"".equals(liveId)) {
@@ -1236,7 +1210,6 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction,
      * @param liveId
      * @param requestCallBack
      */
-    @Deprecated
     public void getEnglishCourewareInfo(String liveId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         if (liveId != null && !"".equals(liveId)) {
@@ -1252,7 +1225,6 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction,
      * @param liveId
      * @param requestCallBack
      */
-    @Deprecated
     public void getScienceCourewareInfo(String liveId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         if (liveId != null && !"".equals(liveId)) {
@@ -1269,7 +1241,6 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction,
      * @param liveId
      * @param requestCallBack
      */
-    @Deprecated
     public void getBigLiveCourewareInfo(String url, String liveId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         if (liveId != null && !"".equals(liveId)) {
@@ -2419,9 +2390,9 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction,
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("plan_id", liveId);
         params.addBodyParam("course_id", courseId);
-       // params.addBodyParam("isPlayBack", isPlayBack);
+        // params.addBodyParam("isPlayBack", isPlayBack);
         sendPost(LiveHttpConfig.URL_COURSE_EVALUATE, params, httpCallBack);
-       // baseSendPostNoBusinessJson(LiveHttpConfig.URL_COURSE_EVALUATE, params, httpCallBack);
+        // baseSendPostNoBusinessJson(LiveHttpConfig.URL_COURSE_EVALUATE, params, httpCallBack);
     }
 
 

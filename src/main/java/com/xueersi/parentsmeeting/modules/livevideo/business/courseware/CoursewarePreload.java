@@ -22,7 +22,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.CoursewareInfoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppBll;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
@@ -37,7 +36,6 @@ import org.xutils.xutils.common.util.MD5;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -72,7 +70,6 @@ public class CoursewarePreload {
     public static String mPublicCacheoutName = "publicRes";
     public static String FZY3JW_TTF = "FZY3JW.ttf";
 
-    @Deprecated
     List<CoursewareInfoEntity> courseWareInfos = new CopyOnWriteArrayList<>();
     public static final String NB_EXPERIMENT = "NBExperiment";
 //    public static int mDownloadThreadCount = 1;
@@ -89,6 +86,7 @@ public class CoursewarePreload {
     private int isBig;
 
     private String newBigUrl;
+
     /**
      * nb 加试实验 预加载资源信息
      **/
@@ -105,10 +103,11 @@ public class CoursewarePreload {
         }
     }
 
-    public void setBig(int big,String url){
+    public void setBig(int big, String url) {
         this.isBig = big;
         this.newBigUrl = url;
     }
+
     public void setmHttpManager(LiveHttpManager mHttpManager) {
         this.mHttpManager = mHttpManager;
     }
@@ -118,7 +117,7 @@ public class CoursewarePreload {
      */
     AtomicBoolean isPrecise = new AtomicBoolean(false);
 
-    AtomicInteger cdnPos, ipLength, cdnLength;
+    AtomicInteger ipPos, cdnPos, ipLength, cdnLength;
 
     /**
      * 删除旧的Dir
@@ -137,7 +136,7 @@ public class CoursewarePreload {
                         File[] files = file.listFiles();
                         if (files == null) return;
                         for (File itemFile : files) {
-                            //文件夹是日期格式并且不是今天才删除 TODO 小于今天的下载，大于等于不删除。
+                            //文件夹是日期格式并且不是今天才删除
                             if (!itemFile.getName().equals(today) && !itemFile.getName().equals(mPublicCacheoutName) && isCoursewareDir(itemFile.getName())) {
                                 if (!itemFile.isDirectory()) {
                                     itemFile.delete();
@@ -214,29 +213,47 @@ public class CoursewarePreload {
 
         deleteOldDirAsync(cacheFile, today);
 
+        //根据传liveid来判断 不为空或者不是""则为直播进入下载资源，否则为学习中心进入下载资源
+        ipPos = new AtomicInteger(0);
         ipLength = new AtomicInteger();
         cdnLength = new AtomicInteger();
         cdnPos = new AtomicInteger(0);
-
-        downLoadAllResources(liveId);
-    }
-
-    /**
-     * 下载所有的资源
-     * @param liveId 直播场次ID
-     */
-    private void downLoadAllResources(String liveId) {
-
-        if(!TextUtils.isEmpty(liveId)){
+        if (!TextUtils.isEmpty(liveId)) {
             isPrecise.set(true);
+            if (isBig == 1) {
+                if (!TextUtils.isEmpty(newBigUrl)) {
+                    subjectNum.incrementAndGet();
+                    mHttpManager.getBigLiveCourewareInfo(newBigUrl, liveId, new CoursewareHttpCallBack(false, "biglive", liveId));
+                }
+            } else {
+                if (0 == mSubject) {//理科
+                    logger.i("donwload science");
+                    subjectNum.getAndIncrement();
+                    mHttpManager.getScienceCourewareInfo(liveId, new CoursewareHttpCallBack(false, "science", liveId));
+                } else if (1 == mSubject) {//英语
+                    logger.i("download english");
+                    subjectNum.getAndIncrement();
+                    mHttpManager.getEnglishCourewareInfo(liveId, new CoursewareHttpCallBack(false, "english", liveId));
+                } else if (2 == mSubject) {//语文
+                    logger.i("download chs");
+                    subjectNum.getAndIncrement();
+                    mHttpManager.getArtsCourewareInfo(liveId, new CoursewareHttpCallBack(false, "chs", liveId));
+                }
+            }
+        } else {//下载当天所有课件资源
+            logger.i("donwload all subjects");
+            subjectNum.getAndIncrement();
+            mHttpManager.getScienceCourewareInfo("", new CoursewareHttpCallBack(false, "science", ""));
+            subjectNum.getAndIncrement();
+            mHttpManager.getEnglishCourewareInfo("", new CoursewareHttpCallBack(false, "english", ""));
+            subjectNum.getAndIncrement();
+            mHttpManager.getArtsCourewareInfo("", new CoursewareHttpCallBack(false, "chs", ""));
+//            mHttpManager.getArtsCourewareInfo("", new CoursewareHttpCallBack(false, "chs", ""));
+//            if (AppConfig.DEBUG) {
+//                subjectNum.getAndIncrement();
+//                mHttpManager.getTestIntelligentRecognitionInfo(new CoursewareHttpCallBack(false, "intelligent_recg"));
+//            }
         }
-
-        String sid = LiveAppUserInfo.getInstance().getStuId();
-        logger.i("Download new all subject info " +
-                "uid=" + sid +
-                ", liveId=" + liveId);
-        mHttpManager.getAllDownloadSubjectInfo(liveId, sid, 1,
-                new CoursewareHttpCallBack(false, "all", liveId));
     }
 
 
@@ -254,31 +271,15 @@ public class CoursewarePreload {
 
         @Override
         public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-            logger.d(arts + " pmSuccess");
-
-            CoursewareInfoEntity coursewareInfoEntity = liveHttpResponseParser.parseCoursewareNewInfo(responseEntity);
-            if (coursewareInfoEntity == null)
-                return;
-
+            CoursewareInfoEntity coursewareInfoEntity = liveHttpResponseParser.parseCoursewareInfo(responseEntity);
             logger.i(responseEntity.getJsonObject().toString());
-            LiveAppBll.getInstance().registerAppEvent(CoursewarePreload.this);
-
-            List<CoursewareInfoEntity.NbCoursewareInfo>  allNBResourcesLists = new ArrayList<>();
-            allNBResourcesLists.addAll(coursewareInfoEntity.getAddExperiments());
-            allNBResourcesLists.addAll(coursewareInfoEntity.getFreeExperiments());
-
-//          2019年11月25日 使用新的数据格式下载数据
-            execDownLoad(coursewareInfoEntity.getCoursewaresList(), coursewareInfoEntity.getCdns(),
-                    coursewareInfoEntity.getIps(), coursewareInfoEntity.getResources(), allNBResourcesLists);
-
-            statisticalXESDownloadData(coursewareInfoEntity);
-        }
-
-        /**
-         * 统计学而思的下载数据
-         * @param coursewareInfoEntity CoursewareInfoEntity
-         */
-        private void statisticalXESDownloadData(CoursewareInfoEntity coursewareInfoEntity) {
+            courseWareInfos.add(coursewareInfoEntity);
+            logger.i(arts + " pmSuccess");
+            // 加试实验 只从理科资源预加载接口返回
+//            if ("science".equals(arts) && coursewareInfoEntity != null) {
+//                mNbCoursewareInfo = coursewareInfoEntity.getNbCoursewareInfo();
+//            }
+            boolean perform = performDownLoad();
             try {
                 StableLogHashMap hashMap = new StableLogHashMap();
                 hashMap.put("logtype", "onPmSuccess");
@@ -289,7 +290,7 @@ public class CoursewarePreload {
                 }
                 hashMap.put("arts", "" + arts);
                 hashMap.put("subjectnum", "" + subjectNum.get());
-                hashMap.put("perform", "true"); // 新版数据，默认都是 true
+                hashMap.put("perform", "" + perform);
                 hashMap.put("liveId", "" + liveId);
                 hashMap.put("ip", IpAddressUtil.USER_IP);
                 UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID,
@@ -302,18 +303,43 @@ public class CoursewarePreload {
         @Override
         public void onPmFailure(Throwable error, String msg) {
             super.onPmFailure(error, msg);
-            logger.e("paFailure" + arts + ", error: " + error.getMessage() + ", msg=" + msg);
+            subjectNum.getAndDecrement();
+            logger.i("paFailure" + arts);
+            performDownLoad();
         }
 
         @Override
         public void onPmError(ResponseEntity responseEntity) {
             super.onPmError(responseEntity);
+            subjectNum.getAndDecrement();
+            performDownLoad();
             if (responseEntity != null) {
-                logger.e("onPmError:" + arts + " " + responseEntity.getJsonObject() + "  " + responseEntity.getErrorMsg());
+                logger.i("onPmError:" + arts + " " + responseEntity.getJsonObject() + "  " + responseEntity.getErrorMsg());
+//                if (responseEntity.getJsonObject() != null) {
+//                    logger.i("onPmError:" + responseEntity.getJsonObject().toString());
+//                }
             }
         }
     }
 
+    private boolean performDownLoad() {
+        logger.i("performDownLoad:size=" + courseWareInfos.size() + " " + subjectNum.get());
+        if (courseWareInfos.size() == subjectNum.get()) {
+            logger.i("perform download ");
+            LiveAppBll.getInstance().registerAppEvent(CoursewarePreload.this);
+//            storageLiveId();
+            execDownLoad(
+                    sortArrays(),
+                    mergeList(courseWareInfos, 1),
+                    mergeList(courseWareInfos, 2),
+                    mergeList(courseWareInfos, 3));
+
+//            List<CoursewareInfoEntity.NbCoursewareInfo> ansList = InfoUtils.mergeNbList(courseWareInfos);
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     private void execDownLoadNb(final List<CoursewareInfoEntity.NbCoursewareInfo> list, final List<String> cdns, final List<String> allIPS) {
         executos.execute(new Runnable() {
@@ -327,9 +353,66 @@ public class CoursewarePreload {
         });
     }
 
+    private List<String> mergeList(List<CoursewareInfoEntity> coursewareInfoEntities, int type) {
+        List<String> ansList = new LinkedList<>();
+//        HashSet<String> ansSet = new HashSet<>();
+        for (CoursewareInfoEntity coursewareInfoEntity : coursewareInfoEntities) {
+            if (type == 1) {
+                ansList = appendList(ansList, coursewareInfoEntity.getCdns());
+            } else if (type == 2) {
+                ansList = appendList(ansList, coursewareInfoEntity.getIps());
+            } else if (type == 3) {
+                ansList = appendList(ansList, coursewareInfoEntity.getResources());
+            }
+        }
+        return ansList;
+    }
+
+    /**
+     * 对数组进行排序
+     *
+     * @return
+     */
+    private List<CoursewareInfoEntity.LiveCourseware> sortArrays() {
+        List<CoursewareInfoEntity.LiveCourseware> liveCoursewares = new LinkedList<>();
+
+        for (CoursewareInfoEntity coursewareInfoEntity : courseWareInfos) {
+            liveCoursewares.addAll(coursewareInfoEntity.getCoursewaresList());
+        }
+        Collections.sort(liveCoursewares, new Comparator<CoursewareInfoEntity.LiveCourseware>() {
+            @Override
+            public int compare(CoursewareInfoEntity.LiveCourseware liveCourseware, CoursewareInfoEntity.LiveCourseware t1) {
+                if (liveCourseware.getStime() < t1.getStime()) {
+                    return 1;
+                } else {
+                    return -1;
+                }
+            }
+        });
+        return liveCoursewares;
+    }
+
+//    private List<CoursewareInfoEntity.ItemCoursewareInfo> mergeList(List<CoursewareInfoEntity.LiveCourseware> coursewares) {
+//        List<CoursewareInfoEntity.ItemCoursewareInfo> itemCourseware = new LinkedList<>();
+//        for (CoursewareInfoEntity.LiveCourseware liveCourseware : coursewares) {
+//            itemCourseware.addAll(liveCourseware.getCoursewareInfos());
+//        }
+//        return itemCourseware;
+//    }
+
+    private List<String> appendList(List<String> totalList, List<String> list) {
+        if (totalList != null && list != null) {
+            for (String item : list) {
+                if (!totalList.contains(item)) {
+                    totalList.add(item);
+                }
+            }
+        }
+        return totalList;
+    }
+
     private void execDownLoad(List<CoursewareInfoEntity.LiveCourseware> liveCoursewares,
-                              List<String> cdns, List<String> ips, List<String> resources,
-                              List<CoursewareInfoEntity.NbCoursewareInfo> allNBResourcesLists) {
+                              List<String> cdns, List<String> ips, List<String> resources) {
         //直播资源列表
         //cdns列表
         if (cdns == null || cdns.size() == 0) {
@@ -346,8 +429,13 @@ public class CoursewarePreload {
         downloadResources(resources, cdns, newIPs);
         exeDownLoadCourseware(liveCoursewares, cdns, newIPs);
 
+        execDownLoadNb(InfoUtils.mergeNbList(courseWareInfos), cdns, newIPs);
         //下载Nb 预加载资源
-        execDownLoadNb(allNBResourcesLists, cdns, newIPs);
+//        if (mNbCoursewareInfo != null) {
+//            downLoadNbResource(mNbCoursewareInfo, cdns, newIPs);
+//        }
+
+
     }
 
     private String getFileName(String url) {
@@ -755,7 +843,7 @@ public class CoursewarePreload {
                                     ips,
                                     cdns,
                                     url,
-                                    fileName,
+                                    "",
                                     new AtomicInteger(0),
                                     "",
                                     "2"), "");
@@ -786,7 +874,7 @@ public class CoursewarePreload {
                                     ips,
                                     cdns,
                                     url,
-                                    fileName,
+                                    "",
                                     new AtomicInteger(0),
                                     "3"),
                             "");
@@ -1027,7 +1115,11 @@ public class CoursewarePreload {
             StableLogHashMap unZipMap = new StableLogHashMap();
             unZipMap.put("logtype", "startUnzip");
             unZipMap.put("preloadid", md5);
-            unZipMap.put("extrainfo", mMorecacheout.getAbsolutePath());
+            if (mInput != null) {
+                unZipMap.put("extrainfo", mInput.getAbsolutePath());
+            } else {
+                unZipMap.put("extrainfo", "null");
+            }
             unZipMap.put("sno", "3");
             unZipMap.put("liveid", itemLiveId);
             unZipMap.put("resourcetype", resourcetype);
@@ -1157,6 +1249,7 @@ public class CoursewarePreload {
                 }
                 InfoUtils.sendUms(LogConfig.PRE_LOAD_START,
                         "startPreload",
+                        "endPreload",
                         md5,
                         isIP ? "true" : "false",
                         url,
@@ -1300,3 +1393,4 @@ public class CoursewarePreload {
     }
 
 }
+
