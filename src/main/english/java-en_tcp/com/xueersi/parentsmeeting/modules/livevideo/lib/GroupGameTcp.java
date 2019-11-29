@@ -19,6 +19,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
+import java.util.UUID;
 
 /**
  * 小组互动的tcp
@@ -233,6 +234,8 @@ public class GroupGameTcp {
                 seq++;
                 log.d("WriteThread:send:seq=" + seq);
                 b.putLong(System.currentTimeMillis());
+                String uuid = UUID.randomUUID().toString();
+                b.put(uuid.getBytes());
                 if (bodyStr.length() > 0) {
                     b.put(bodyStr.getBytes());
                 }

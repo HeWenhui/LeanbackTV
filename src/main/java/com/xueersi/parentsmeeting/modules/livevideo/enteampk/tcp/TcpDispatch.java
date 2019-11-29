@@ -158,6 +158,7 @@ public class TcpDispatch {
         @Override
         public void onConnect(GroupGameTcp oldGroupGameTcp) {
             try {
+                Loger.i("RoleplayConstant", "tcp success1");
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("uid", stuId);
                 jsonObject.put("role", 1);
@@ -173,7 +174,7 @@ public class TcpDispatch {
                 short type = TcpConstants.LOGIN_TYPE;
                 int operation = TcpConstants.LOGIN_OPERATION_SEND;
                 groupGameTcp.send(type, operation, bodyStr);
-                Loger.i("RoleplayConstant", "tcp success");
+                Loger.i("RoleplayConstant", "tcp success1");
             } catch (Exception e) {
                 LiveCrashReport.postCatchedException(new LiveException(TAG, e));
             }

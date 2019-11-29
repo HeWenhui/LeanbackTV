@@ -8,13 +8,14 @@ public class TcpConstants {
     private static short PackSize = 4;
     private static short HeaderSize = 2;
     private static short VerSize = 2;
-    public static short ver = 2;
+    public static short ver = 3;
     private static short TypeSize = 2;
     private static short OperationSize = 4;
     private static short SeqIDSize = 4;
     /** 头里面时间戳长度 */
     private static short timestamp = 8;
-    static short header = (short) (PackSize + HeaderSize + VerSize + TypeSize + OperationSize + SeqIDSize + timestamp);
+    private static short uuid = 36;
+    static short header = (short) (PackSize + HeaderSize + VerSize + TypeSize + OperationSize + SeqIDSize + timestamp + uuid);
     /** 消息类型，回执 */
     public final static short REPLAY_TYPE = 0;
     /** 消息类型，回执 */
