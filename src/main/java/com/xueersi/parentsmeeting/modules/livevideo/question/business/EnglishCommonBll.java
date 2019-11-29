@@ -68,13 +68,14 @@ public class EnglishCommonBll extends LiveBaseBll {
                 @Override
                 public void send(final short type, final int operation, final String bodyStr) {
                     if (tcpDispatch != null) {
+                        Loger.i("RoleplayConstant", "send1 tyep=" + type + " operation=" + operation + " bodystr=" + bodyStr);
                         tcpDispatch.send(type, operation, bodyStr);
                     } else {
                         tcpRun.add(new TcpRunnable("send1") {
                             @Override
                             public void run() {
                                 if (tcpDispatch != null) {
-                                    Loger.i("RoleplayConstant", "send1 tyep=" + type + " operation=" + operation + " bodystr=" + bodyStr);
+                                    Loger.i("RoleplayConstant", "send2 tyep=" + type + " operation=" + operation + " bodystr=" + bodyStr);
                                     tcpDispatch.send(type, operation, bodyStr);
                                 }
                             }
@@ -85,13 +86,14 @@ public class EnglishCommonBll extends LiveBaseBll {
                 @Override
                 public void send(final short type, final int operation, final String bodyStr, final SendCallBack sendCallBack) {
                     if (tcpDispatch != null) {
+                        Loger.i("RoleplayConstant", "send3 tyep=" + type + " operation=" + operation + " bodystr=" + bodyStr);
                         tcpDispatch.send(type, operation, bodyStr, sendCallBack);
                     } else {
                         tcpRun.add(new TcpRunnable("send2") {
                             @Override
                             public void run() {
                                 if (tcpDispatch != null) {
-                                    Loger.i("RoleplayConstant", "send2 tyep=" + type + " operation=" + operation + " bodystr=" + bodyStr);
+                                    Loger.i("RoleplayConstant", "send4 tyep=" + type + " operation=" + operation + " bodystr=" + bodyStr);
                                     tcpDispatch.send(type, operation, bodyStr, sendCallBack);
                                 }
                             }
