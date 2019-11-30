@@ -2840,6 +2840,10 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         if(jsonObject==null) {
             return null;
         }
+        return parse1v2VirtualStuDataJson(jsonObject);
+    }
+
+    public SubGroupEntity parse1v2VirtualStuDataJson(JSONObject jsonObject){
         SubGroupEntity subGroupEntity = new SubGroupEntity();
         JSONObject virtuJson = jsonObject.optJSONObject("virStuInfo");
         SubMemberEntity memberEntity = new SubMemberEntity();

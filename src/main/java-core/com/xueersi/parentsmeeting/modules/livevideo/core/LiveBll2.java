@@ -40,6 +40,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LivePlugin;
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LivePluginRequestParam;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveActivityState;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveCoreConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
@@ -1782,7 +1783,10 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
 
+                mShareDataManager.put(LiveCoreConfig.SP_LIVE_GROUP_CLASS_VIRTUAL_INFO+ mGetInfo.getId(), responseEntity.getJsonObject().toString(), mShareDataManager.SHAREDATA_USER);
+
                 SubGroupEntity entity1 = mHttpResponseParser.parse1V2VirtualStuData(responseEntity);
+
                 if(entity1!=null) {
                     SubGroupEntity catchEnttity = mGetInfo.getSubGroupEntity();
                     if(catchEnttity != null) {
