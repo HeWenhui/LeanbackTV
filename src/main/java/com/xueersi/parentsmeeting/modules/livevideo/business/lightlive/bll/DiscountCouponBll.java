@@ -88,6 +88,9 @@ public class DiscountCouponBll extends LiveBaseBll {
     public void initView() {
         middleLayout = mContentView.findViewById(R.id.ll_course_video_live_other_content);
         contentLayout = mContentView.findViewById(R.id.rl_course_video_live_content);
+        if (contentLayout != null){
+            contentLayout.setClickable(false);
+        }
         if (discountCouponPager != null && discountCouponPager.getRootView() != null && middleLayout != discountCouponPager.getRootView().getParent()){
             middleLayout.addView(discountCouponPager.getRootView(),0);
             ViewGroup.LayoutParams params = discountCouponPager.getRootView().getLayoutParams();
@@ -123,6 +126,7 @@ public class DiscountCouponBll extends LiveBaseBll {
                     params.height = SizeUtils.Dp2Px(mContext,476);
                     detailPager.getRootView().setLayoutParams(params);
                     contentLayout.setBackground(mContext.getResources().getDrawable(R.color.COLOR_80000000));
+                    contentLayout.setClickable(true);
                     detailPager.updataView(couponEntities);
                 }
                 isDetailShow = true;
@@ -134,6 +138,7 @@ public class DiscountCouponBll extends LiveBaseBll {
             public void onClick() {
                 contentLayout.removeView(detailPager.getRootView());
                 contentLayout.setBackground(mContext.getResources().getDrawable(R.color.COLOR_00000000));
+                contentLayout.setClickable(false);
                 isDetailShow = false;
             }
         });

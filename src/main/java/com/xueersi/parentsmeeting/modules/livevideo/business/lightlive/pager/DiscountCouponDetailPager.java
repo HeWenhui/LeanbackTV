@@ -8,6 +8,7 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.RelativeSizeSpan;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -101,7 +102,7 @@ public class DiscountCouponDetailPager extends BasePager {
 
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new CouponDetatilHolder(View.inflate(parent.getContext(), R.layout.item_livevideo_lightlive_discount_coupon_detail, null));
+            return new CouponDetatilHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_livevideo_lightlive_discount_coupon_detail, parent,false));
         }
 
         @Override

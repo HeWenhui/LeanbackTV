@@ -113,7 +113,7 @@ public class RecommendCourseDetailPager extends BasePager {
                 public void onClick(View v) {
                     //跳转到商城的订单详情页面
                     Bundle bundle = new Bundle();
-                    bundle.putString("vCourseId", mData.get(position).getCourseID());
+                    bundle.putString("vCourseId", mData.get(position).getCourseId());
 //                    bundle.putString("classId", mData.get(position).getClassID());
                     //采用ARouter来跳转
                     XueErSiRouter.startModule(mContext, "/xesmallCourseDetail/xrsmodule", bundle);
@@ -244,14 +244,18 @@ public class RecommendCourseDetailPager extends BasePager {
                 spannableString.setSpan(span, 0, 3, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 stringBuilder.append(spannableString);
             }
-
-            if (!TextUtils.isEmpty(entity.getSubjectName())) {
+            if (entity.getSubJects() != null && entity.getSubJects().size() > 0){
+                for (int i = 0; i < entity.getSubJects().size(); i++) {
+                    String name = entity.getSubJects().get(i).getName();
+                    if (!TextUtils.isEmpty(name)) {
 //            Drawable subjectDrawable = BusinessUtils.createDrawable(entity.getSubjectName(), getColor(R.color.COLOR_5E617C), getColor(R.color.COLOR_FFFFFF));
-                Drawable subjectDrawable = DrawUtil.create(entity.getSubjectName(), R.color.COLOR_5E617C, R.color.COLOR_FFFFFF);
-                VericalImageSpan imgSpan = new VericalImageSpan(subjectDrawable);
-                SpannableString spannableString = new SpannableString("xk ");
-                spannableString.setSpan(imgSpan, 0, 2, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                stringBuilder.append(spannableString);
+                        Drawable subjectDrawable = DrawUtil.create(name, R.color.COLOR_5E617C, R.color.COLOR_FFFFFF);
+                        VericalImageSpan imgSpan = new VericalImageSpan(subjectDrawable);
+                        SpannableString spannableString = new SpannableString("xk ");
+                        spannableString.setSpan(imgSpan, 0, 2, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        stringBuilder.append(spannableString);
+                    }
+                }
             }
 
             if (!TextUtils.isEmpty(entity.getCourseName())) {
@@ -368,7 +372,7 @@ public class RecommendCourseDetailPager extends BasePager {
                 tvTutorTeacherName.setText(teacherName);
                 if (entity.isExcTeacherCourse()) {
                     tvTutorTeacherDesc.setText("全程陪伴");
-                } else if (!TextUtils.isEmpty(entity.getRemainPeople()) && !"0".equals(entity.getRemainPeople())) {
+                } else if (!TextUtils.isEmpty(entity.getRemainPeople()) && !"0".equals(entity.getRemainPeople()) && entity.getRemainPeople().length() < 6) {
                     // 剩余名额
                     tvTutorTeacherDesc.setText(courseMallTeacherEntity.getTeacherHint() + " 余" + entity.getRemainPeople() + "个名额");
                 } else {

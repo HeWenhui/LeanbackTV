@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.entity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @ProjectName: xueersiwangxiao
@@ -29,7 +30,7 @@ public class CourseEntity  {
     /**
      * 课程ID
      */
-    protected String courseID;
+    protected String courseId;
     /**
      * 组ID
      */
@@ -98,6 +99,8 @@ public class CourseEntity  {
 
     private boolean isGroupon;
 
+    private List<SubJect> subJects;
+
     /**
      * 辅导老师类型 1：专属老师
      * 是否专属老师课程
@@ -105,6 +108,8 @@ public class CourseEntity  {
     private int excTeacherCourse;
 
     private int type;
+
+    private int showCounselorTeacher;//	int	是否展示辅导老师
     /**
      * subjectName 6.0新增课程属性
      */
@@ -170,15 +175,15 @@ public class CourseEntity  {
     /**
      * 课程ID
      */
-    public String getCourseID() {
-        return courseID;
+    public String getCourseId() {
+        return courseId;
     }
 
     /**
      * 课程ID
      */
-    public void setCourseID(String courseID) {
-        this.courseID = courseID;
+    public void setCourseId(String courseId) {
+        this.courseId = courseId;
     }
 
 
@@ -368,5 +373,42 @@ public class CourseEntity  {
         return type == TYPE_PROMOTION_GROUPON;
     }
 
+    public int getShowCounselorTeacher() {
+        return showCounselorTeacher;
+    }
+
+    public void setShowCounselorTeacher(int showCounselorTeacher) {
+        this.showCounselorTeacher = showCounselorTeacher;
+    }
+
+    public List<SubJect> getSubJects() {
+        return subJects;
+    }
+
+    public void setSubJects(List<SubJect> subJects) {
+        this.subJects = subJects;
+    }
+
+    public static class SubJect{
+
+        String id;
+        String name;
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+    }
 }
 

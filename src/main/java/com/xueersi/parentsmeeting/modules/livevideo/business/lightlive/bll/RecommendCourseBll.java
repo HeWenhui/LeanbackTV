@@ -58,7 +58,7 @@ public class RecommendCourseBll extends LiveBaseBll {
 //        for (int i = 0; i < 10; i++) {
 //            CourseEntity entity = new CourseEntity();
 //            entity.setCourseName(i+"世界冠军王鹰豪-魔方课开课了"+i);
-//            entity.setCourseID("787897");
+//            entity.setCourseId("787897");
 //            entity.setChapterCount("2");
 //            entity.setClassID("444"+i);
 //            entity.setCoursePrice(500);
@@ -90,6 +90,9 @@ public class RecommendCourseBll extends LiveBaseBll {
     public void initView() {
         middleLayout = mContentView.findViewById(R.id.ll_course_video_live_other_content);
         contentLayout = mContentView.findViewById(R.id.rl_course_video_live_content);
+        if (contentLayout != null){
+            contentLayout.setClickable(false);
+        }
         if (mCoursePager != null && mCoursePager.getRootView() != null && middleLayout != mCoursePager.getRootView().getParent()){
             middleLayout.addView(mCoursePager.getRootView(),middleLayout.getChildCount());
             ViewGroup.LayoutParams params = mCoursePager.getRootView().getLayoutParams();
@@ -124,6 +127,7 @@ public class RecommendCourseBll extends LiveBaseBll {
                     params.height = SizeUtils.Dp2Px(mContext,476);
                     mDetailPager.getRootView().setLayoutParams(params);
                     contentLayout.setBackground(mContext.getResources().getDrawable(R.color.COLOR_80000000));
+                    contentLayout.setClickable(true);
                     mDetailPager.updataView(courseEntities);
                 }
                 isDetailShow = true;
@@ -134,6 +138,7 @@ public class RecommendCourseBll extends LiveBaseBll {
             public void onClick() {
                 contentLayout.removeView(mDetailPager.getRootView());
                 contentLayout.setBackground(mContext.getResources().getDrawable(R.color.COLOR_00000000));
+                contentLayout.setClickable(false);
                 isDetailShow = false;
             }
         });

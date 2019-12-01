@@ -14,7 +14,7 @@ import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.entity.CourseEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LivePlayBackMessageEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.entity.CourseTeacherEntity;
 
 /**
  * @ProjectName: xueersiwangxiao
@@ -63,7 +63,21 @@ public class RecommendCourseItem extends BasePager {
     @Override
     public void initData() {
         tvTitle.setText(mCourseEntity.getCourseName());
-        tvName.setText("授课: " + mCourseEntity.getLstMainTeacher().get(0).getTeacherName());
+        String type = "";
+        if (mCourseEntity.getLstMainTeacher() != null && !mCourseEntity.getLstMainTeacher().isEmpty()){
+            CourseTeacherEntity entity = mCourseEntity.getLstMainTeacher().get(0);
+            type =   "授课: " + entity.getTeacherName();
+            if(mCourseEntity.getLstMainTeacher().size() > 1){
+                type += "等";
+            }
+        } else if (mCourseEntity.getLstForeignTeacher() != null && !mCourseEntity.getLstForeignTeacher().isEmpty()){
+            CourseTeacherEntity entity = mCourseEntity.getLstForeignTeacher().get(0);
+            type = "授课: " + entity.getTeacherName();
+            if(mCourseEntity.getLstForeignTeacher().size() > 1){
+                type += "等";
+            }
+        }
+        tvName.setText(type);
 //        tvName.setText("授课: test");
         headImg = mCourseEntity.getLstMainTeacher().get(0).getTeacherImg();
         int defaultHeadImg = R.drawable.bg_main_default_head_image;
@@ -84,7 +98,7 @@ public class RecommendCourseItem extends BasePager {
             public void onClick(View v) {
             //跳转到商城的订单详情页面
             Bundle bundle = new Bundle();
-            bundle.putString("vCourseId", mCourseEntity.getCourseID());
+            bundle.putString("vCourseId", mCourseEntity.getCourseId());
 //            bundle.putString("classId", mCourseEntity.getClassID());
             //采用ARouter来跳转
             XueErSiRouter.startModule(mContext, "/xesmallCourseDetail/xrsmodule", bundle);
