@@ -28,6 +28,7 @@
         android:layout_marginTop="12dp"
         android:layout_marginRight="26dp"
         android:drawablePadding="2dp"
+        style="@style/text_font12_212831_style"
         android:drawableRight="@drawable/livevideo_arrow_right_gray"
         />
     <ViewFlipper
