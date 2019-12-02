@@ -2,7 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
 import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.CallSuper;
 import android.view.View;
 import android.view.ViewGroup;
@@ -98,7 +97,7 @@ public class LiveBaseBll extends BaseBll implements LiveViewAction {
         contextLiveAndBackDebug = ProxUtil.getProxUtil().get(context, LiveAndBackDebug.class);
         this.mLiveId = liveId;
         this.mLiveType = liveType;
-        mLogtf = new LogToFile(context,TAG);
+        mLogtf = new LogToFile(context, TAG);
     }
 
     /**
@@ -122,14 +121,18 @@ public class LiveBaseBll extends BaseBll implements LiveViewAction {
     }
 
 
-    public View getContentView(){
+    public View getContentView() {
         return mRootView;
     }
+
     /**
      * 获取网络请求对象
      */
     protected final LiveHttpAction getLiveHttpAction() {
-        LiveHttpAction liveHttpAction = mLiveBll.getLiveHttpAction();
+        LiveHttpAction liveHttpAction = null;
+        if (mLiveBll != null) {
+            liveHttpAction = mLiveBll.getLiveHttpAction();
+        }
         return liveHttpAction;
     }
 
@@ -153,15 +156,14 @@ public class LiveBaseBll extends BaseBll implements LiveViewAction {
     }
 
 
-
     /**
      * 是否是辅导态
+     *
      * @return
      */
     protected boolean isInTraningMode() {
-        return  LiveTopic.MODE_TRANING.equals(mLiveBll.getMode());
+        return LiveTopic.MODE_TRANING.equals(mLiveBll != null ? mLiveBll.getMode() : "");
     }
-
 
 
     /**
