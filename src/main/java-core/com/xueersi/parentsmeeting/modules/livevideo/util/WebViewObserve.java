@@ -38,6 +38,8 @@ public class WebViewObserve {
         try {
             StableLogHashMap logHashMap = new StableLogHashMap("loadurl");
             logHashMap.put("url", url);
+            //是不是x5浏览器
+            logHashMap.put("isx5", webView.getX5WebViewExtension() != null ? "true" : "false");
             logHashMap.getData().putAll(common);
             UmsAgentManager.umsAgentDebug(ContextManager.getContext(), enentId, logHashMap.getData());
         } catch (Exception e) {
