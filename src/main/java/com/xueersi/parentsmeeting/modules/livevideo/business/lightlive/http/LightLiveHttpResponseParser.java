@@ -90,8 +90,8 @@ public class LightLiveHttpResponseParser extends HttpResponseParser {
                                 continue;
                             }
                             CourseEntity.SubJect attributeEntity = new CourseEntity.SubJect();
-                            attributeEntity.setId(jsonObject.optString("id"));
-                            attributeEntity.setName(jsonObject.optString("name"));
+                            attributeEntity.setId(subject.optString("id"));
+                            attributeEntity.setName(subject.optString("name"));
                             subjects.add(attributeEntity);
                         }
                         itemEntity.setSubJects(subjects);
