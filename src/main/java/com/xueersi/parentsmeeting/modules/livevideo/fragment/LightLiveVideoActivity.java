@@ -42,7 +42,7 @@ public class LightLiveVideoActivity extends LiveVideoActivity {
      */
     public static void intentTo(Activity context, Bundle bundle) {
         Intent intent = new Intent(context, LightLiveVideoActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
         intent.putExtras(bundle);
         context.startActivity(intent);
     }
