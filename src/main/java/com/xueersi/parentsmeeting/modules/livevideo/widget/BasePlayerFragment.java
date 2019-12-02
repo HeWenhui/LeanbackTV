@@ -987,6 +987,9 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
             if (wrapListener != null) {
                 wrapListener.onPlaying(currentPosition, duration);
             }
+            if (activity != null) {
+                VideoPlayDebugUtils.umsIfVideoViewIsNotVisible(activity, activity.findViewById(R.id.vv_course_video_video));
+            }
         }
 
         /** 播放出现错误 */
