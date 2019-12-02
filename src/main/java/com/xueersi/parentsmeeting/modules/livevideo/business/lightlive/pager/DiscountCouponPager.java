@@ -60,7 +60,7 @@ public class DiscountCouponPager extends BasePager {
     public void initData() {
         llCoupon.removeAllViews();
         for (int i = 0; i < mData.size(); i++) {
-            if (i > 2) {
+            if (i > 1) {
                 break;
             }
             CouponEntity entity = mData.get(i);
@@ -84,7 +84,7 @@ public class DiscountCouponPager extends BasePager {
 
     public void setData(List<CouponEntity> data) {
         this.mData = data;
-        if (!data.isEmpty()){
+        if (data!= null &&!data.isEmpty()){
             initData();
             mView.setVisibility(View.VISIBLE);
         }else {

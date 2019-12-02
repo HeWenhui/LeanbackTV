@@ -35,7 +35,7 @@
         android:layout_marginLeft="8dp"
         android:layout_toRightOf="@+id/v_livevideo_message_gap"
         android:singleLine="true"
-        android:visibility="visible"
+        android:visibility="gone"
         android:maxEms="15"
         android:ellipsize="marquee"
         android:maxLines="1"

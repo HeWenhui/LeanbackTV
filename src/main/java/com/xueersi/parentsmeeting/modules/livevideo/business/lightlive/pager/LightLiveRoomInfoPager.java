@@ -65,9 +65,9 @@ public class LightLiveRoomInfoPager extends LiveBasePager {
             public void run() {
                 tvCount.setVisibility(View.VISIBLE);
                 tvCount.setText(count);
-                if (tvNotice.getVisibility() == View.VISIBLE){
-                    vGap.setVisibility(View.VISIBLE);
-                }
+//                if (tvNotice.getVisibility() == View.VISIBLE){
+//                    vGap.setVisibility(View.VISIBLE);
+//                }
             }
         });
     }

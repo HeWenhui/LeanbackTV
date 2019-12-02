@@ -61,7 +61,7 @@ public class RecommendCoursePager extends BasePager {
 
     public void setData(List<CourseEntity> courseEntities){
         this.courseEntities = courseEntities;
-        if (!courseEntities.isEmpty()){
+        if (courseEntities != null && !courseEntities.isEmpty()){
             initData();
             mView.setVisibility(View.VISIBLE);
         }else {
