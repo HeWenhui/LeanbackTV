@@ -71,6 +71,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.web.OnHttpCode;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.StaticWeb;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.WebInstertJs;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.NewCourseLog;
+import com.xueersi.parentsmeeting.modules.livevideo.util.WebViewObserve;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
@@ -348,7 +349,9 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         String testid = "";
         try {
             testid = NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts);
-            mLogtf.addCommon("testid", "" + NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts));
+            mLogtf.addCommon("testid", "" + testid);
+            WebViewObserve.getInstance().put("liveId", liveId);
+            WebViewObserve.getInstance().put("testid", testid);
         } catch (Exception e) {
             LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
