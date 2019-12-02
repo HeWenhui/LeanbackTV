@@ -49,6 +49,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessage
 import com.xueersi.parentsmeeting.modules.livevideo.message.config.LiveMessageConfig;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 import com.xueersi.ui.adapter.CommonAdapter;
+import com.xueersi.ui.dialog.ConfirmAlertDialog;
+import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -124,6 +126,7 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
     /** 联系老师实体*/
     private LPWeChatEntity weChatEntity;
     boolean isShowWeChat;
+    private VerifyCancelAlertDialog cleanMessageDialog;
 
     public LightLiveMessagePortPager(Context context, KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener,
                                      ArrayList<LiveMessageEntity> liveMessageEntities, ArrayList<LiveMessageEntity> otherLiveMessageEntities) {
@@ -295,13 +298,8 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
         ivMessageClean.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                XESToastUtils.showToast(mContext, "清屏成功！");
-                liveMessageEntities.clear();
-                otherLiveMessageEntities.clear();
-                messageAdapter.notifyDataSetChanged();
-                if (otherMessageAdapter != null) {
-                    otherMessageAdapter.notifyDataSetChanged();
-                }
+//                ConfirmAlertDialog
+                cleanMessage();
             }
         });
         cbMessageTeacher.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -728,6 +726,13 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
         });
     }
 
+    /**
+     * 暂不使用
+     * @param id
+     * @param sender
+     * @param type
+     * @param ftype
+     */
     public void addFlowers(final String id, final String sender, final int type, final int ftype) {
         mView.post(new Runnable() {
             @Override
@@ -777,6 +782,9 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
         if (wechatDialog != null && wechatDialog.isDialogShow()){
             wechatDialog.cancelDialog();
         }
+        if (cleanMessageDialog != null && cleanMessageDialog.isDialogShow()){
+            cleanMessageDialog.cancelDialog();
+        }
         super.onDestroy();
     }
 
@@ -784,12 +792,20 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
         this.weChatEntity = weChatEntity;
     }
 
+    /**
+     * 显示联系老师弹窗
+     */
     private void showWeChatDialog(){
         wechatDialog = new TeacherWechatDialog(mContext,mBaseApplication,weChatEntity.getTipType());
         wechatDialog.setTeacherHead(weChatEntity.getTeacherImg()).setTeacherName(weChatEntity.getTeacherName())
                 .setTeacherWechat(weChatEntity.getTeacherWx()).setQrcode(weChatEntity.getTipInfo());
         wechatDialog.showDialog();
     }
+
+    /**
+     * 键盘弹出收回改变UI
+     * @param isShow
+     */
     private void onKeyBoardShow(boolean isShow){
         if (isShow){
             if (ivMessageClean.getVisibility() == View.VISIBLE){
@@ -827,6 +843,26 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
 
             }
         }
+    }
+
+    private void cleanMessage(){
+        if (cleanMessageDialog == null){
+            cleanMessageDialog = new VerifyCancelAlertDialog(mContext,mBaseApplication,false,VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
+            cleanMessageDialog.initInfo("需要清空当前所有聊天消息吗？");
+            cleanMessageDialog.setVerifyBtnListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    XESToastUtils.showToast(mContext, "清屏成功！");
+                    liveMessageEntities.clear();
+                    otherLiveMessageEntities.clear();
+                    messageAdapter.notifyDataSetChanged();
+                    if (otherMessageAdapter != null) {
+                        otherMessageAdapter.notifyDataSetChanged();
+                    }
+                }
+            });
+        }
+        cleanMessageDialog.showDialog();
     }
 }
 
