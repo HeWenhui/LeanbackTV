@@ -149,8 +149,10 @@ public class LightLiveHttpResponseParser extends HttpResponseParser {
                         if (counselor != null) {
                             ArrayList<CourseTeacherEntity> courseTeacher = new ArrayList<>();
                             CourseTeacherEntity teacherEntity = getTeacherEntity(counselor);
-                            courseTeacher.add(teacherEntity);
-                            itemEntity.setLstCoachTeacher(courseTeacher);
+                            if (teacherEntity != null){
+                                courseTeacher.add(teacherEntity);
+                                itemEntity.setLstCoachTeacher(courseTeacher);
+                            }
                         }
                     }
 
@@ -263,9 +265,12 @@ public class LightLiveHttpResponseParser extends HttpResponseParser {
             return null;
         }
         CourseTeacherEntity teacherEntity = new CourseTeacherEntity();
-//        teacherEntity.setId(jsonObject.optString("id"));
+        teacherEntity.setTeacherId(jsonObject.optString("id"));
         teacherEntity.setTeacherName(jsonObject.optString("name"));
         teacherEntity.setTeacherHint(jsonObject.optString("typeName"));
+        if (teacherEntity.getTeacherId() == null && teacherEntity.getTeacherName() == null && teacherEntity.getTeacherHint() == null){
+            return null;
+        }
         ArrayList<String> strings = new ArrayList<>();
         JSONArray avatars = jsonObject.optJSONArray("avatars");
         if (avatars != null && avatars.length() > 0) {
@@ -273,7 +278,9 @@ public class LightLiveHttpResponseParser extends HttpResponseParser {
                 strings.add(avatars.optString(j));
             }
         }
-        teacherEntity.setTeacherImg(strings.get(0));
+        if (!strings.isEmpty()){
+            teacherEntity.setTeacherImg(strings.get(0));
+        }
         return teacherEntity;
     }
 }

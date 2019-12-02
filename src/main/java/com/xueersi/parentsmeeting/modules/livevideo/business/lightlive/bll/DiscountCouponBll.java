@@ -186,6 +186,7 @@ public class DiscountCouponBll extends LiveBaseBll {
 
                 couponEntities = mHttpResponseParser.parserCouponList(responseEntity);
                 discountCouponPager.setData(couponEntities);
+                detailPager.updataView(couponEntities);
             }
 
             @Override
