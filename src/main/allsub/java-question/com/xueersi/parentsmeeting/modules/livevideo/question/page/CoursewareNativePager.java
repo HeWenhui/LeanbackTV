@@ -1035,6 +1035,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     ArtsAnswerResultEvent artsAnswerResultEvent = new ArtsAnswerResultEvent(jsonObject1 + "", ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT);
                     artsAnswerResultEvent.setDetailInfo(detailInfo);
                     artsAnswerResultEvent.setIspreload(ispreload);
+                    artsAnswerResultEvent.setInteractType(baseVideoQuestionEntity.getInteractType());
                     if (TextUtils.equals(LiveQueConfig.EN_COURSE_TYPE_21, detailInfo.getArtType())) {
                         if (isPlayBack) {
                             ViewGroup group = (ViewGroup) mView.getParent();

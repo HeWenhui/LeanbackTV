@@ -201,6 +201,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                 videoQuestionLiveEntity.setvEndTime(questionEntity.getvEndTime());
                 videoQuestionLiveEntity.assess_ref = questionEntity.getAssess_ref();
                 videoQuestionLiveEntity.roles = questionEntity.getRoles();
+                videoQuestionLiveEntity.setInteractType(questionEntity.getInteractType());
 //                int isArts = liveBackBll.getIsArts();
 //                if (isArts == 0 && mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
 //                    String[] ss = videoQuestionLiveEntity.id.split("-");

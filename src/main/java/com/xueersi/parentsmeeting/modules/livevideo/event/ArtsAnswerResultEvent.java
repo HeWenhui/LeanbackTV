@@ -58,6 +58,9 @@ public class ArtsAnswerResultEvent {
      * @param dataStr 结果数据   type 为1时  dataStr 为答案原始数据  type为2时  为试题id
      * @param type    答题结果类型
      */
+
+    /** 英语1v2 语音点名反馈字段 */
+    private int interactType;
     public ArtsAnswerResultEvent(String dataStr, int type) {
         this.dataStr = dataStr;
         this.mType = type;
@@ -188,5 +191,13 @@ public class ArtsAnswerResultEvent {
                 "dataStr='" + dataStr + '\'' +
                 ", mType=" + mType +
                 '}';
+    }
+
+    public int getInteractType() {
+        return interactType;
+    }
+
+    public void setInteractType(int interactType) {
+        this.interactType = interactType;
     }
 }

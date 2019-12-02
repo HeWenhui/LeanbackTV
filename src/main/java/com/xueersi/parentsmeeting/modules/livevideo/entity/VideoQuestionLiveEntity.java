@@ -92,6 +92,9 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
     /** 辅导态 */
     private boolean isTUtor = false;
 
+    /** 英语1v2 语音点名反馈字段 */
+    private int interactType;
+
     public String getTestsProtocal() {
         return testsProtocal;
     }
@@ -313,5 +316,13 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
 
     public void setTUtor(boolean TUtor) {
         isTUtor = TUtor;
+    }
+
+    public int getInteractType() {
+        return interactType;
+    }
+
+    public void setInteractType(int interactType) {
+        this.interactType = interactType;
     }
 }

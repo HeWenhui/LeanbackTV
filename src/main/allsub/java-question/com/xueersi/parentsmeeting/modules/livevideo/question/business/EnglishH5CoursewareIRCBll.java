@@ -537,6 +537,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                         videoQuestionLiveEntity.type = object.optString("questiontype");
                         videoQuestionLiveEntity.voiceType = object.optString("ptype");
                     }
+                    videoQuestionLiveEntity.setInteractType(object.optInt("interactType",0));
                 } else {
                     if (mAnswerRankBll != null) {
                         mAnswerRankBll.setNonce(object.optString("nonce"));

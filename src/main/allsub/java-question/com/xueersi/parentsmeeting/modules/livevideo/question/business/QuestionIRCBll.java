@@ -658,6 +658,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 String isVoice = object.optString("isVoice");
                 videoQuestionLiveEntity.setIsVoice(isVoice);
                 videoQuestionLiveEntity.setTestsProtocal(object.optString("testsProtocal"));
+                videoQuestionLiveEntity.setInteractType(object.optInt("interactType", 0));
                 //构建 H5 url
                 if ("5".equals(videoQuestionLiveEntity.type) || "6".equals(videoQuestionLiveEntity.type)) {
                     videoQuestionLiveEntity.setUrl(buildRolePlayUrl(getIdStr(object.optJSONArray("id")), videoQuestionLiveEntity.type));

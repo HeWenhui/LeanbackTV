@@ -46,17 +46,8 @@ public class AnswerResultEntity {
     private long createTime;
     /** 答题结果对应的试题类型 */
     private int type;
-
-    //得分
-    private int score;
-
-    public int getScore() {
-        return score;
-    }
-
-    public void setScore(int score) {
-        this.score = score;
-    }
+    /** 英语1v2 语音点名反馈字段 */
+    private int interactType;
 
     public int getType() {
         return type;
@@ -315,4 +306,11 @@ public class AnswerResultEntity {
         return answerResultEntity;
     }
 
+    public int getInteractType() {
+        return interactType;
+    }
+
+    public void setInteractType(int interactType) {
+        this.interactType = interactType;
+    }
 }

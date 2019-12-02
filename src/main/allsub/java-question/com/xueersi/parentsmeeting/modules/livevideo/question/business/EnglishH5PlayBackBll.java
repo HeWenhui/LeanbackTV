@@ -460,6 +460,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
         videoQuestionLiveEntity.setvQuestionInsretTime(questionEntity.getvQuestionInsretTime());
         videoQuestionLiveEntity.setvEndTime(questionEntity.getvEndTime());
         videoQuestionLiveEntity.setAnswerDay(questionEntity.getAnswerDay());
+        videoQuestionLiveEntity.setInteractType(questionEntity.getInteractType());
         return videoQuestionLiveEntity;
     }
 
