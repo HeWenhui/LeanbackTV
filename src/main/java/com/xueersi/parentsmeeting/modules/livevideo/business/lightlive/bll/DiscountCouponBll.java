@@ -185,14 +185,18 @@ public class DiscountCouponBll extends LiveBaseBll {
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
 
                 couponEntities = mHttpResponseParser.parserCouponList(responseEntity);
-                discountCouponPager.setData(couponEntities);
-                detailPager.updataView(couponEntities);
+                if (discountCouponPager != null){
+                    discountCouponPager.setData(couponEntities);
+                }
+                if (detailPager != null){
+                    detailPager.updataView(couponEntities);
+                }
             }
 
             @Override
             public void onPmFailure(Throwable error, String msg) {
                 super.onPmFailure(error, msg);
-                if(isClear){
+                if(isClear && middleLayout != null){
                     for (int i = 0; i < middleLayout.getChildCount(); i++) {
                         if (middleLayout.getChildAt(i) == discountCouponPager.getRootView()){
                             middleLayout.removeView(discountCouponPager.getRootView());
@@ -204,7 +208,7 @@ public class DiscountCouponBll extends LiveBaseBll {
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 super.onPmError(responseEntity);
-                if(isClear){
+                if(isClear && middleLayout != null){
                     for (int i = 0; i < middleLayout.getChildCount(); i++) {
                         if (middleLayout.getChildAt(i) == discountCouponPager.getRootView()){
                             middleLayout.removeView(discountCouponPager.getRootView());

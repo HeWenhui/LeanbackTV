@@ -577,14 +577,14 @@ public class LightLiveMessageLandPager extends BaseLiveMessagePager {
     @Override
     public void setGetInfo(LiveGetInfo getInfo) {
         super.setGetInfo(getInfo);
-        if (getInfo != null) {
-            liveThreadPoolExecutor.execute(new Runnable() {
-                @Override
-                public void run() {
-                    OtherModulesEnter.requestGoldTotal(mContext);
-                }
-            });
-        }
+//        if (getInfo != null) {
+//            liveThreadPoolExecutor.execute(new Runnable() {
+//                @Override
+//                public void run() {
+//                    OtherModulesEnter.requestGoldTotal(mContext);
+//                }
+//            });
+//        }
     }
 
     /**
