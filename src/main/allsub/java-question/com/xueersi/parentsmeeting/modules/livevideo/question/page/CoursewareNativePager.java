@@ -19,6 +19,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.xueersi.common.base.XrsCrashReport;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
@@ -70,12 +71,14 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.web.OnHttpCode;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.StaticWeb;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.WebInstertJs;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.NewCourseLog;
+import com.xueersi.parentsmeeting.modules.livevideo.util.WebViewObserve;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -346,7 +349,9 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         String testid = "";
         try {
             testid = NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts);
-            mLogtf.addCommon("testid", "" + NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts));
+            mLogtf.addCommon("testid", "" + testid);
+            WebViewObserve.getInstance().put("liveId", liveId);
+            WebViewObserve.getInstance().put("testid", testid);
         } catch (Exception e) {
             LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
@@ -363,6 +368,12 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     LiveCrashReport.postCatchedException(new Exception());
                 }
                 return super.onConsoleMessage(consoleMessage);
+            }
+
+            @Override
+            protected File getLocalFile(ConsoleMessage consoleMessage) {
+                File file = newCourseCache.onConsoleMessage(wvSubjectWeb, consoleMessage);
+                return file;
             }
         });
         CourseWebViewClient courseWebViewClient = new CourseWebViewClient();
@@ -557,6 +568,9 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
 
     private void saveThisQues(int index, JSONArray userAnswerContent) {
         try {
+            if (userAnswerSave == null) {
+                return;
+            }
             String string = userAnswerSave.getString(LiveQueConfig.LIVE_STUDY_REPORT_IMG, "{}", ShareDataManager.SHAREDATA_USER);
             JSONObject jsonObject = getTodayLive(string);
             if (jsonObject != null) {
@@ -602,11 +616,17 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-                NewCourseSec.Test oldTest = tests.get(currentIndex);
                 try {
-                    JSONArray userAnswerContent = message.getJSONArray("data");
-                    oldTest.setUserAnswerContent(userAnswerContent);
-                    saveThisQues(currentIndex, userAnswerContent);
+                    if (currentIndex < tests.size()) {
+                        NewCourseSec.Test oldTest = tests.get(currentIndex);
+                        if (message.has("data")) {
+                            JSONArray userAnswerContent = message.getJSONArray("data");
+                            oldTest.setUserAnswerContent(userAnswerContent);
+                            saveThisQues(currentIndex, userAnswerContent);
+                        }
+                    } else {
+                        mLogtf.d("onAnswer:currentIndex=" + currentIndex);
+                    }
                 } catch (Exception e) {
                     LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 }
@@ -723,6 +743,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     }
 
     private void onLoadComplete(final String where, final JSONObject message) {
+        XrsCrashReport.d(TAG, "onLoadComplete:where=" + where + ",currentIndex=" + currentIndex);
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -842,6 +863,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         if (isFinish) {
             return;
         }
+        XrsCrashReport.d(TAG, "submitData");
         mLogtf.d(SysLogLable.ShellingCommit, "submitData:loadResult=" + loadResult);
         isFinish = true;
         resultGotByForceSubmit = !loadResult;
@@ -1406,6 +1428,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     rlCourseControl.setVisibility(View.VISIBLE);
                 }
                 isLoadComplete = true;
+                XrsCrashReport.d(TAG, "onProgressChanged:isLoadComplete");
                 preLoad.onStop();
                 try {
                     mLogtf.d(SysLogLable.didFinishLoadWithReuestURL, "onProgressChanged:loadJs=" + loadJs);
