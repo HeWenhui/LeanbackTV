@@ -641,122 +641,133 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         });
     }
 
-    private RTCEngine.IRtcEngineEventListener listener = new RTCEngine.IRtcEngineEventListener() {
-        @Override
-        public void remotefirstVideoRecvWithUid(int uid) {
-            BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + uid);
-            mLogtf.d("remotefirstVideoRecvWithUid:uid=" + uid + ",item=" + (basePrimaryTeamItem == null));
-            if (basePrimaryTeamItem != null) {
-                doRenderRemoteUi(uid, basePrimaryTeamItem);
-            } else {
-                //后进入用户，暂存视频布局
-                SurfaceView surfaceV = RtcEngine.CreateRendererView(mContext);
-                surfaceV.setZOrderOnTop(true);
-                surfaceV.setZOrderMediaOverlay(true);
-                surfaceViewHashMap.put("" + uid, surfaceV);
-            }
-        }
+    private RTCEngine.IRtcEngineEventListener listener;
 
-        @Override
-        public void remoteUserJoinWitnUid(int uid) {
-            BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + uid);
-            if (basePrimaryTeamItem != null) {
-                basePrimaryTeamItem.didOfflineOfUid("remoteUserJoinWitnUid", true);
-            } else {
-                //后进入用户，不在本地，请求接口
-                userOnLineStat.put("" + uid, true);
-                mLogtf.d("remoteUserJoinWitnUid:uid=" + uid);
-                primaryClassInter.getMyTeamInfo();
-            }
-        }
-
-        @Override
-        public void didOfflineOfUid(int uid) {
-            surfaceViewHashMap.remove("" + uid);
-            userVoiceStat.remove("" + uid);
-            BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + uid);
-            if (basePrimaryTeamItem != null) {
-                basePrimaryTeamItem.didOfflineOfUid("didOfflineOfUid", false);
-            } else {
-                userOnLineStat.remove("" + uid);
-            }
-        }
-
-        @Override
-        public void didAudioMuted(int uid, boolean muted) {
-
-        }
-
-        @Override
-        public void didVideoMuted(int uid, boolean muted) {
-
-        }
-
-        @Override
-        public void didOccurError(RTCEngine.RTCEngineErrorCode code) {
-            BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + stuid);
-            mLogtf.d("didOccurError:code=" + code + ",item=" + (basePrimaryTeamItem == null));
-            if (basePrimaryTeamItem instanceof PrimaryTeamMyItem) {
-                PrimaryTeamMyItem myItem = (PrimaryTeamMyItem) basePrimaryTeamItem;
-                myItem.didOccurError(code);
-            }
-        }
-
-        @Override
-        public void onConnectionLost() {
-
-        }
-
-        @Override
-        public void localUserJoindWithUid(int uid) {
-            if (stuid == uid) {
+    {
+        listener = new RTCEngine.IRtcEngineEventListener() {
+            @Override
+            public void remotefirstVideoRecvWithUid(int uid) {
                 BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + uid);
+                mLogtf.d("remotefirstVideoRecvWithUid:uid=" + uid + ",item=" + (basePrimaryTeamItem == null));
                 if (basePrimaryTeamItem != null) {
-                    preview(basePrimaryTeamItem);
-                    basePrimaryTeamItem.didOfflineOfUid("localUserJoindWithUid", true);
+                    doRenderRemoteUi(uid, basePrimaryTeamItem);
+                } else {
+                    //后进入用户，暂存视频布局
+                    SurfaceView surfaceV = RtcEngine.CreateRendererView(mContext);
+                    surfaceV.setZOrderOnTop(true);
+                    surfaceV.setZOrderMediaOverlay(true);
+                    surfaceViewHashMap.put("" + uid, surfaceV);
                 }
             }
-        }
 
-        @Override
-        public void reportAudioVolumeOfSpeaker(int uid, int volume) {
-            BasePrimaryTeamItem basePrimaryTeamItem;
-            if (0 == uid) {
-                basePrimaryTeamItem = courseGroupItemHashMap.get("" + stuid);
-            } else {
-                basePrimaryTeamItem = courseGroupItemHashMap.get("" + uid);
+            @Override
+            public void remoteUserJoinWitnUid(int uid) {
+                BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + uid);
+                if (basePrimaryTeamItem != null) {
+                    basePrimaryTeamItem.didOfflineOfUid("remoteUserJoinWitnUid", true);
+                } else {
+                    //后进入用户，不在本地，请求接口
+                    userOnLineStat.put("" + uid, true);
+                    mLogtf.d("remoteUserJoinWitnUid:uid=" + uid);
+                    primaryClassInter.getMyTeamInfo();
+                }
             }
-            if (basePrimaryTeamItem != null) {
-                basePrimaryTeamItem.reportAudioVolumeOfSpeaker(volume);
+
+            @Override
+            public void didOfflineOfUid(int uid) {
+                surfaceViewHashMap.remove("" + uid);
+                userVoiceStat.remove("" + uid);
+                BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + uid);
+                if (basePrimaryTeamItem != null) {
+                    basePrimaryTeamItem.didOfflineOfUid("didOfflineOfUid", false);
+                } else {
+                    userOnLineStat.remove("" + uid);
+                }
             }
-        }
 
-        @Override
-        public void remotefirstAudioRecvWithUid(int uid) {
-            userVoiceStat.put("" + uid, true);
-            BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + uid);
-            mLogtf.d("remotefirstAudioRecvWithUid:uid=" + uid + ",item=" + (basePrimaryTeamItem == null));
-            if (basePrimaryTeamItem instanceof BasePrimaryTeamPeopleItem) {
-                BasePrimaryTeamPeopleItem peopleItem = (BasePrimaryTeamPeopleItem) basePrimaryTeamItem;
-                peopleItem.remotefirstAudioRecvWithUid(uid);
+            @Override
+            public void didAudioMuted(int uid, boolean muted) {
+
             }
-        }
 
-        @Override
-        public void onRemoteVideoStateChanged(int uid, int state) {
-            BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + uid);
-            mLogtf.d("onRemoteVideoStateChanged:uid=" + uid + ",state=" + state + ",item=" + (basePrimaryTeamItem == null));
-            if (basePrimaryTeamItem instanceof PrimaryTeamOtherItem) {
-                PrimaryTeamOtherItem otherItem = (PrimaryTeamOtherItem) basePrimaryTeamItem;
-                otherItem.onRemoteVideoStateChanged(uid, state);
+            @Override
+            public void didVideoMuted(int uid, boolean muted) {
+
             }
-        }
 
-        @Override
-        public void onOnceLastMileQuality(RTCEngine.RTC_LASTMILE_QUALITY lastmileQuality) {
+            @Override
+            public void reportRtcStats(RTCEngine.ReportRtcStats stats) {
 
-        }
-    };
+            }
+
+            @Override
+            public void didOccurError(RTCEngine.RTCEngineErrorCode code) {
+                BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + stuid);
+                mLogtf.d("didOccurError:code=" + code + ",item=" + (basePrimaryTeamItem == null));
+                if (basePrimaryTeamItem instanceof PrimaryTeamMyItem) {
+                    PrimaryTeamMyItem myItem = (PrimaryTeamMyItem) basePrimaryTeamItem;
+                    myItem.didOccurError(code);
+                }
+            }
+
+            @Override
+            public void onConnectionLost() {
+
+            }
+
+            @Override
+            public void localUserJoindWithUid(int uid) {
+                if (stuid == uid) {
+                    BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + uid);
+                    if (basePrimaryTeamItem != null) {
+                        preview(basePrimaryTeamItem);
+                        basePrimaryTeamItem.didOfflineOfUid("localUserJoindWithUid", true);
+                    }
+                }
+            }
+
+            @Override
+            public void reportAudioVolumeOfSpeaker(int uid, int volume) {
+                BasePrimaryTeamItem basePrimaryTeamItem;
+                if (0 == uid) {
+                    basePrimaryTeamItem = courseGroupItemHashMap.get("" + stuid);
+                } else {
+                    basePrimaryTeamItem = courseGroupItemHashMap.get("" + uid);
+                }
+                if (basePrimaryTeamItem != null) {
+                    basePrimaryTeamItem.reportAudioVolumeOfSpeaker(volume);
+                }
+            }
+
+            @Override
+            public void remotefirstAudioRecvWithUid(int uid) {
+                userVoiceStat.put("" + uid, true);
+                BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + uid);
+                mLogtf.d("remotefirstAudioRecvWithUid:uid=" + uid + ",item=" + (basePrimaryTeamItem == null));
+                if (basePrimaryTeamItem instanceof BasePrimaryTeamPeopleItem) {
+                    BasePrimaryTeamPeopleItem peopleItem = (BasePrimaryTeamPeopleItem) basePrimaryTeamItem;
+                    peopleItem.remotefirstAudioRecvWithUid(uid);
+                }
+            }
+
+            @Override
+            public void onRemoteVideoStateChanged(int uid, int state) {
+                BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + uid);
+                mLogtf.d("onRemoteVideoStateChanged:uid=" + uid + ",state=" + state + ",item=" + (basePrimaryTeamItem == null));
+                if (basePrimaryTeamItem instanceof PrimaryTeamOtherItem) {
+                    PrimaryTeamOtherItem otherItem = (PrimaryTeamOtherItem) basePrimaryTeamItem;
+                    otherItem.onRemoteVideoStateChanged(uid, state);
+                }
+            }
+
+            @Override
+            public void onOnceLastMileQuality(RTCEngine.RTC_LASTMILE_QUALITY lastmileQuality) {
+
+            }
+
+
+        };
+    }
 
     private void preview(final BasePrimaryTeamItem courseGroupItem) {
         mainHandler.post(new Runnable() {

@@ -155,6 +155,7 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction,
     public void sendJsonPost(final String url, final Object paramObject, HttpCallBack httpCallBack) {
         HttpRequestParams httpRequestParams = new HttpRequestParams();
         httpRequestParams.setJson(JsonUtil.toJson(paramObject));
+        Loger.i("RoleplayConstant","请求参数："+JsonUtil.toJson(paramObject));
         sendJsonPostDefault(url,httpRequestParams,httpCallBack);
     }
 

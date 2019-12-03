@@ -76,8 +76,8 @@ public class MyEngineEventHandler {
         }
 
         @Override
-        public void onRemoteVideoStateChanged(int uid, int state) {
-            super.onRemoteVideoStateChanged(uid, state);
+        public void onRemoteVideoStateChanged(int uid, int state, int reason, int elapsed) {
+            super.onRemoteVideoStateChanged(uid, state,reason,elapsed);
             logger.d("onRemoteVideoStateChanged:uid=" + uid + ",state=" + state);
             Iterator<AGEventHandler> it = mEventHandlerList.keySet().iterator();
             while (it.hasNext()) {
