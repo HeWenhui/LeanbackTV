@@ -560,6 +560,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                     getInfo.getSubjectIds()[0] : "";
             mHttpManager.addHeaderParams("switch-subject", subjectId);
             mHttpManager.addHeaderParams("bizId", mLiveType + "");
+            mHttpManager.addHeaderParams("planId",getInfo.getId());
             mHttpManager.addHeaderParams("SESSIONID", AppBll.getInstance().getLiveSessionId());
             //Log.e("ckTrac","====>LiveBll2_initBigLiveRoom:"+ AppBll.getInstance().getLiveSessionId());
             String classId = getInfo.getStudentLiveInfo() != null ? getInfo.getStudentLiveInfo().getClassId() : "0";

@@ -524,6 +524,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
             mHttpManager.addHeaderParams("switch-grade", liveGetInfo.getGrade() + "");
             String subjectId = (liveGetInfo.getSubjectIds() != null && liveGetInfo.getSubjectIds().length > 0) ? liveGetInfo.getSubjectIds()[0] : "";
             mHttpManager.addHeaderParams("switch-subject", subjectId);
+            mHttpManager.addHeaderParams("planId",liveGetInfo.getId());
             mHttpManager.addHeaderParams("bizId", mLiveType + "");
             String calssId = (liveGetInfo.getStudentLiveInfo() != null) ? liveGetInfo.getStudentLiveInfo().getClassId() : "0";
             String stuCouId = TextUtils.isEmpty(liveGetInfo.getStuCouId()) ? "" : liveGetInfo.getStuCouId();

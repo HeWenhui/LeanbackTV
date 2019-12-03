@@ -607,6 +607,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
                 String subjectId = (mGetInfo.getSubjectIds() != null && mGetInfo.getSubjectIds().length > 0) ?
                         mGetInfo.getSubjectIds()[0] : "";
                 mHttpManager.addHeaderParams("switch-subject", subjectId);
+                mHttpManager.addHeaderParams("planId", mGetInfo.getId());
                 mHttpManager.addHeaderParams("bizId", mLiveType + "");
                 mHttpManager.addHeaderParams("SESSIONID", AppBll.getInstance().getLiveSessionId());
                 //Log.e("ckTrac","====>LiveBll2_initBigLiveRoom:"+ AppBll.getInstance().getLiveSessionId());
