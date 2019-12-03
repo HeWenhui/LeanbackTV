@@ -458,10 +458,10 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             }
         } else {
             if (mRoomAction != null) {
-//                    if (sender.startsWith(LiveBll.TEACHER_PREFIX) || sender.startsWith(COUNTTEACHER_PREFIX)) {
-//                        //老师不计算在内
-//                        return;
-//                    }
+                if (sender.startsWith("p")) {
+                    //旁听不计算在内
+                    return;
+                }
                 boolean isMyTeam = isMyTeam(sender);
                 if (isMyTeam || isSeniorOfHighSchool()) {
                     mRoomAction.onJoin(target, sender, login, hostname);
@@ -490,11 +490,10 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             }
         } else {
             if (mRoomAction != null) {
-//                    if (sourceNick.startsWith(LiveBll.TEACHER_PREFIX) || sourceNick.startsWith(LiveBll
-// .COUNTTEACHER_PREFIX)) {
-//                        //老师不计算在内
-//                        return;
-//                    }
+                if (sourceNick.startsWith("p")) {
+                    //旁听不计算在内
+                    return;
+                }
                 boolean isMyTeam = isMyTeam(sourceNick);
                 if (isMyTeam || isSeniorOfHighSchool()) {
                     mRoomAction.onQuit(sourceNick, sourceLogin, sourceHostname, reason);

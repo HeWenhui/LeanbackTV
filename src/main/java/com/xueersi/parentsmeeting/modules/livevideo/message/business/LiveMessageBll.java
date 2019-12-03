@@ -527,10 +527,9 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
 
     @Override
     public void onUserList(String channel, User[] users) {
+        this.users.clear();
         for (User user : users) {
-            if (!this.users.contains(user.getNick())) {
-                this.users.add(user.getNick());
-            }
+            this.users.add(user.getNick());
         }
         XrsCrashReport.d(TAG, "onUserList:users=" + users.length + ",new=" + this.users.size());
         logToFile.d("onUserList:users=" + users.length + ",new=" + this.users.size());
