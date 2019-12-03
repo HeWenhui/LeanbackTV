@@ -116,7 +116,6 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
      */
     private String COUNT_TAG_MSG = "msg";
     private Activity liveVideoActivity;
-    private ImageView ivTeacherWeChat;
     private TeacherWechatDialog wechatDialog;
     private String mTeacherName;
     private String mTeacherWechat;
@@ -152,7 +151,6 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
         ivExpressionCancle = (ImageView) mView.findViewById(R.id.iv_livevideo_message_expression_cancle);
         cbMessageTeacher = (CheckBox) mView.findViewById(R.id.cb_livevideo_message_teacher);
         ivMessageClean = (ImageView) mView.findViewById(R.id.iv_livevideo_message_clean);
-        ivTeacherWeChat = mView.findViewById(R.id.iv_livevideo_teacher_wechat);
         tvTeacherWeChat = mView.findViewById(R.id.tv_livevideo_teacher_wechat);
         return mView;
     }
@@ -164,16 +162,13 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
             weChatEntity = getInfo.getLpWeChatEntity();
            if (getInfo.getLpWeChatEntity().getTipType() == LPWeChatEntity.WECHAT_GROUP){
                 isShowWeChat = true;
-                ivTeacherWeChat.setVisibility(View.VISIBLE);
                 tvTeacherWeChat.setVisibility(View.VISIBLE);
                 tvTeacherWeChat.setText("加班级群");
             }else if (getInfo.getLpWeChatEntity().getTipType() == LPWeChatEntity.TEACHER_WECHAT && getInfo.getLpWeChatEntity().getExistWx() == 1){
                 isShowWeChat = true;
-                ivTeacherWeChat.setVisibility(View.VISIBLE);
                 tvTeacherWeChat.setVisibility(View.VISIBLE);
             }else {
                 isShowWeChat = false;
-                ivTeacherWeChat.setVisibility(View.GONE);
                 tvTeacherWeChat.setVisibility(View.GONE);
             }
         }
@@ -313,7 +308,7 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
             }
         });
 
-        ivTeacherWeChat.setOnClickListener(new View.OnClickListener() {
+        tvTeacherWeChat.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -811,7 +806,6 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
             if (ivMessageClean.getVisibility() == View.VISIBLE){
                 ivMessageClean.setVisibility(View.GONE);
                 cbMessageTeacher.setVisibility(View.GONE);
-                ivTeacherWeChat.setVisibility(View.GONE);
                 tvTeacherWeChat.setVisibility(View.GONE);
                 RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) btMessageExpress.getLayoutParams();
                 params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
@@ -837,7 +831,6 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
                 ivMessageClean.setVisibility(View.VISIBLE);
                 cbMessageTeacher.setVisibility(View.VISIBLE);
                 if (isShowWeChat){
-                    ivTeacherWeChat.setVisibility(View.VISIBLE);
                     tvTeacherWeChat.setVisibility(View.VISIBLE);
                 }
 

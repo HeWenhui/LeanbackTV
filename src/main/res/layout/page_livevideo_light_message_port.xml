@@ -50,26 +50,19 @@
             android:layout_toRightOf="@id/iv_livevideo_message_clean"
             android:button="@drawable/selector_livevideo_lightlive_message_lock" />
 
-        <ImageView
-            android:id="@+id/iv_livevideo_teacher_wechat"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="16dp"
-            android:src="@drawable/livevideo_lightlive_teacher_wechat"
-            android:visibility="gone"/>
+
         <TextView
             android:id="@+id/tv_livevideo_teacher_wechat"
-            android:layout_width="52dp"
-            android:layout_height="wrap_content"
-            android:layout_alignRight="@+id/iv_livevideo_teacher_wechat"
-            android:layout_alignTop="@+id/iv_livevideo_teacher_wechat"
-            android:layout_alignBottom="@+id/iv_livevideo_teacher_wechat"
-            android:layout_marginRight="2dp"
+            android:layout_width="74dp"
+            android:layout_height="24dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="16dp"
+            android:layout_centerVertical="true"
             style="@style/text_font10_ffffff_style"
             android:gravity="center"
             android:text="联系老师"
+            android:paddingLeft="20dp"
+            android:background="@drawable/livevideo_lightlive_teacher_wechat"
             android:visibility="gone"
             />
 
@@ -81,7 +74,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:layout_toLeftOf="@id/iv_livevideo_teacher_wechat"
+            android:layout_toLeftOf="@id/tv_livevideo_teacher_wechat"
             android:layout_toRightOf="@id/cb_livevideo_message_teacher"
             android:background="@drawable/shape_corners_20_adb4be"
             android:hint="请输入文字..."
@@ -109,7 +102,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:layout_toLeftOf="@id/iv_livevideo_teacher_wechat"
+            android:layout_toLeftOf="@id/tv_livevideo_teacher_wechat"
             android:layout_toRightOf="@id/cb_livevideo_message_teacher"
             android:background="@drawable/shape_corners_20_adb4be"
             android:gravity="center"
