@@ -306,9 +306,7 @@ public class LightLiveRedPackageView extends LiveBasePager implements IRedPackag
         postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (gold == -1) {
-                    onPagerClose.onClose(LightLiveRedPackageView.this);
-                }
+                onPagerClose.onClose(LightLiveRedPackageView.this);
             }
         }, 3000);
 //        lvBusiRedPackRed.setOnClickListener(null);

@@ -17,6 +17,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.MessageAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.pager.LightLiveRoomInfoPager;
+import com.xueersi.parentsmeeting.modules.livevideo.message.config.LiveMessageConfig;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -123,10 +124,14 @@ public class RoomInfoIRCMessageBll extends LiveBaseBll implements MessageAction 
 
     @Override
     public void onUserList(String channel, User[] users) {
+        this.users.clear();
         for (User user : users) {
-            if (!this.users.contains(user.getNick())) {
-                this.users.add(user.getNick());
+            String _nick = user.getNick();
+            if (_nick != null && (_nick.startsWith(LiveMessageConfig.TEACHER_PREFIX)
+                    || _nick.startsWith(LiveMessageConfig.COUNTTEACHER_PREFIX))){
+                continue;
             }
+            this.users.add(user.getNick());
         }
         peopleCount.set(this.users.size(), new Exception());
         lightLiveRoomInfoPager.setTvCount("在线"+ peopleCount + "人");
@@ -134,7 +139,8 @@ public class RoomInfoIRCMessageBll extends LiveBaseBll implements MessageAction 
 
     @Override
     public void onJoin(String target, String sender, String login, String hostname) {
-        if (!users.contains(sender)) {
+        if (sender!= null && !users.contains(sender) && !sender.startsWith(LiveMessageConfig.TEACHER_PREFIX)
+                && !sender.startsWith(LiveMessageConfig.COUNTTEACHER_PREFIX) ) {
             XrsCrashReport.d(TAG, "onJoin:sender=" + sender + ",get=" + peopleCount.get()+ ",users=" + users.size() + ",this=" + this);
             peopleCount.set(peopleCount.get() + 1, new Exception(sender));
             users.add(sender);
@@ -144,7 +150,8 @@ public class RoomInfoIRCMessageBll extends LiveBaseBll implements MessageAction 
 
     @Override
     public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
-        if (users.contains(sourceNick)) {
+        if (sourceNick != null && users.contains(sourceNick) && !sourceNick.startsWith(LiveMessageConfig.TEACHER_PREFIX)
+                && !sourceNick.startsWith(LiveMessageConfig.COUNTTEACHER_PREFIX)) {
             boolean remove = users.remove(sourceNick);
             XrsCrashReport.d(TAG, "onQuit:sourceNick=" + sourceNick + ",get=" + peopleCount.get() + ",remove=" + remove + ",users=" + users.size() + ",this=" + this);
             if (remove) {
