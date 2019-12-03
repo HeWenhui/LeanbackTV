@@ -108,8 +108,10 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
         if (isArts == LiveVideoSAConfig.ART_SEC) {
             questionBll.setBigQueCreate(new LiveBackBigQueCreate(activity, this));
         }
-        QuestionWebCache webCache = new QuestionWebCache(activity);
-        webCache.startCacheZip(liveGetInfo.getIsArts(), liveGetInfo.getId());
+        if(mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE){
+            QuestionWebCache webCache = new QuestionWebCache(activity);
+            webCache.startCacheZip(liveGetInfo.getIsArts(), liveGetInfo.getId());
+        }
     }
 
     @Override

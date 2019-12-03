@@ -304,8 +304,10 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 }
             });
         }
-        QuestionWebCache webCache = new QuestionWebCache(activity);
-        webCache.startCacheZip(data.getIsArts(), data.getId());
+        if(mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE){
+            QuestionWebCache webCache = new QuestionWebCache(activity);
+            webCache.startCacheZip(data.getIsArts(), data.getId());
+        }
 //        if (com.xueersi.common.config.AppConfig.DEBUG) {
 //            com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultEntity speechResultEntity = new com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultEntity();
 //            speechResultEntity.score = 12;
