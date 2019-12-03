@@ -147,7 +147,13 @@ public class LiveBackVideoBll {
 
             String videoPath = LiveBackVideoPlayerUtils.handleBackVideoPath(mVideoEntity.getVideoPath());
             if (!islocal) {
-                liveBackPlayVideoFragment.playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
+                int protocol = mVideoEntity.getProtocol();
+                if (protocol == MediaPlayer.VIDEO_PROTOCOL_M3U8) {
+                    videoPath = mVideoEntity.getFileId();
+                } else {
+                    protocol = MediaPlayer.VIDEO_PROTOCOL_MP4;
+                }
+                liveBackPlayVideoFragment.playPSVideo(videoPath, protocol);
             } else {
                 liveBackPlayVideoFragment.playPSFile(videoPath, (int) getStartPosition());
             }

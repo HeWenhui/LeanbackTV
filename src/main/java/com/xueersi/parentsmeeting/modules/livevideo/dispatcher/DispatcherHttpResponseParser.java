@@ -90,6 +90,7 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
         section.setStuCouId(stucourseId);
         if (oldSection != null) {
             section.setProtocol(oldSection.getProtocol());
+            section.setFileId(oldSection.getFileId());
         }
         JSONArray questionArray = jsonObject.optJSONArray("events");
         boolean isNewArtsPlatForm = false;
@@ -295,6 +296,7 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
                     }
                     section.setHostPath(pathArray.toString());
                     section.setProtocol(sectionJson.optInt("protocol", MediaPlayer.VIDEO_PROTOCOL_MP4));
+                    section.setFileId(sectionJson.optString("fileId"));
                     hostPath = pathArray.toString();
                     section.setVideoPath(videoPath);
                     videopath = videoPath;

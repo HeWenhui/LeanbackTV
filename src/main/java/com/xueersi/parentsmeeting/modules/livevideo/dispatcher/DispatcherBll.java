@@ -255,6 +255,7 @@ public class DispatcherBll extends BaseBll {
             videoEntity.setProtocol(MediaPlayer.VIDEO_PROTOCOL_MP4);
         } else {
             videoEntity.setProtocol(protocol);
+            videoEntity.setFileId(sectionEntity.getFileId());
         }
         return videoEntity;
     }
