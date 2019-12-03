@@ -75,6 +75,7 @@ public class LightLiveVideoFragment  extends LiveFragmentBase implements Activit
 
     public LightLiveVideoFragment(){
         mLayoutVideo = R.layout.activity_video_live_lightlive;
+        LiveVideoConfig.isLightLive = true;
     }
 
     @Override

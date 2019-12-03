@@ -84,6 +84,7 @@ public class LightLiveRedPackageBll implements RedPackageAction, Handler.Callbac
      */
     LightLiveRedPackageView lightLiveRedPackageView;
     AtomicBoolean mIsLand;
+    private boolean isGetPagClick;
 
     public LightLiveRedPackageBll(Activity activity, LiveGetInfo liveGetInfo) {
         mLogtf = new LogToFile(activity, TAG);
@@ -169,11 +170,16 @@ public class LightLiveRedPackageBll implements RedPackageAction, Handler.Callbac
         lightLiveRedPackageView.setReceiveGold(new com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.mvp.ReceiveGold() {
             @Override
             public void sendReceiveGold(int operateId, OnRedPackageSend onRedPackageSend) {
-                if (AppBll.getInstance().isAlreadyLogin()) {
-                    LightLiveRedPackageBll.this.sendReceiveGold(operateId, mVSectionID, onRedPackageSend);
-                } else {
-                    LoginEnter.openLogin(activity, false, new Bundle());
+                if(!isGetPagClick){
+                    isGetPagClick = true;
+                    if (AppBll.getInstance().isAlreadyLogin()) {
+                        LightLiveRedPackageBll.this.sendReceiveGold(operateId, mVSectionID, onRedPackageSend);
+                    } else {
+                        LoginEnter.openLogin(activity, false, null);
+                        isGetPagClick = false;
+                    }
                 }
+
 
             }
         });
@@ -210,6 +216,7 @@ public class LightLiveRedPackageBll implements RedPackageAction, Handler.Callbac
             @Override
             public void onDataFail(int errStatus, String failMsg) {
                 super.onDataFail(errStatus, failMsg);
+                isGetPagClick = false;
                 XESToastUtils.showToastAtCenter("红包领取失败，请重试");
                 onRedPackageSend.onReceiveFail();
 
@@ -220,6 +227,7 @@ public class LightLiveRedPackageBll implements RedPackageAction, Handler.Callbac
                 super.onDataFail(errStatus, failMsg, code);
                 if (CODE_60411 == code) {
                     XESToastUtils.showToastAtCenter("" + failMsg);
+                    isGetPagClick = false;
                     onRedPackageSend.onReceiveError(errStatus, failMsg, code);
                 } else if (CODE_60410 == code) {
                     onRedPackageSend.onHaveReceiveGold();

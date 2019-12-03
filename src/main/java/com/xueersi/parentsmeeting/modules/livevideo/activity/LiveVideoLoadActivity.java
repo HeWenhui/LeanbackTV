@@ -271,6 +271,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                             com.xueersi.parentsmeeting.modules.livevideo.fragment.LecVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
                         }else {
                             LiveVideoConfig.isLightLive = true;
+                            bundle.putBoolean("isGently",true);
                             com.xueersi.parentsmeeting.modules.livevideo.fragment.LightLiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
                         }
 

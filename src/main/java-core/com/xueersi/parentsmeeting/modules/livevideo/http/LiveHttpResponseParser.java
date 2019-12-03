@@ -598,6 +598,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 LPWeChatEntity lpEntity = new LPWeChatEntity();
                 lpEntity.setTipType(lpInfo.optInt("tipType"));
                 lpEntity.setTipInfo(lpInfo.optString("tipInfo"));
+                lpEntity.setWxQrUrl(lpInfo.optString("wxQrUrl"));
                 lpEntity.setExistWx(lpInfo.optInt("existWx"));
                 if (lpInfo.has("wxInfo")){
                     JSONObject teaInfo  = lpInfo.optJSONObject("wxInfo");

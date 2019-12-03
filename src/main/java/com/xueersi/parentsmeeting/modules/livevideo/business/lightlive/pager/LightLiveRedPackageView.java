@@ -157,7 +157,7 @@ public class LightLiveRedPackageView extends LiveBasePager implements IRedPackag
 
         @Override
         public void onClick(View v) {
-            lvBusiRedPackRed.setOnClickListener(null);
+//            lvBusiRedPackRed.setOnClickListener(null);
             receiveGold.sendReceiveGold(operateId, new ReceiveGold.OnRedPackageSend() {
 
                 @Override

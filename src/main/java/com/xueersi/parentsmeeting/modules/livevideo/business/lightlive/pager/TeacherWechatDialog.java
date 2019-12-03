@@ -153,11 +153,11 @@ public class TeacherWechatDialog extends BaseAlertDialog {
         if (TYPE_WITH_HEAD == type) {
             rlWechatWithHead.setVisibility(View.VISIBLE);
             llWechatWithQrcode.setVisibility(View.GONE);
-            tvSubTitle.setText("添加班主任微信号，领取课程资料");
+//            tvSubTitle.setText("添加班主任微信号，领取课程资料");
         } else {
             rlWechatWithHead.setVisibility(View.GONE);
             llWechatWithQrcode.setVisibility(View.VISIBLE);
-            tvSubTitle.setText("老师为你准备了神秘礼物哦！");
+//            tvSubTitle.setText("老师为你准备了神秘礼物哦！");
             tvSubTitle.setTextSize(14);
             tvSubTitle.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
             tvTitle.setText("扫码加入班级群");
@@ -165,13 +165,17 @@ public class TeacherWechatDialog extends BaseAlertDialog {
     }
 
     public TeacherWechatDialog setTeacherName(String name) {
-        tvName.setText(name);
+        if (name != null){
+            tvName.setText(name);
+        }
         return this;
     }
 
     public TeacherWechatDialog setTeacherWechat(String num){
-        mWechat= num;
-        tvWechatNum.setText(num);
+        if (num != null){
+            mWechat = num;
+            tvWechatNum.setText(num);
+        }
         return this;
     }
 
@@ -198,6 +202,11 @@ public class TeacherWechatDialog extends BaseAlertDialog {
             ImageLoader.with(ContextManager.getContext()).load(imgURL).error(defaultHeadImg)
                     .placeHolder(defaultHeadImg).into(ivQrcode);
         }
+        return this;
+    }
+
+    public TeacherWechatDialog setSubTitle(String subTitle){
+        tvSubTitle.setText(subTitle);
         return this;
     }
 

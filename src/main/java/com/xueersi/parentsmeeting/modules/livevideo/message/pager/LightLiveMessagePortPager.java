@@ -166,7 +166,7 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
                 isShowWeChat = true;
                 ivTeacherWeChat.setVisibility(View.VISIBLE);
                 tvTeacherWeChat.setVisibility(View.VISIBLE);
-                tvTeacherWeChat.setText("班级群");
+                tvTeacherWeChat.setText("加班级群");
             }else if (getInfo.getLpWeChatEntity().getTipType() == LPWeChatEntity.TEACHER_WECHAT && getInfo.getLpWeChatEntity().getExistWx() == 1){
                 isShowWeChat = true;
                 ivTeacherWeChat.setVisibility(View.VISIBLE);
@@ -317,7 +317,7 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
 
             @Override
             public void onClick(View v) {
-                //测试代码
+
                 if (weChatEntity != null){
                     showWeChatDialog();
                 }
@@ -798,7 +798,7 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
     private void showWeChatDialog(){
         wechatDialog = new TeacherWechatDialog(mContext,mBaseApplication,weChatEntity.getTipType());
         wechatDialog.setTeacherHead(weChatEntity.getTeacherImg()).setTeacherName(weChatEntity.getTeacherName())
-                .setTeacherWechat(weChatEntity.getTeacherWx()).setQrcode(weChatEntity.getTipInfo());
+                .setTeacherWechat(weChatEntity.getTeacherWx()).setQrcode(weChatEntity.getWxQrUrl()).setSubTitle(weChatEntity.getTipInfo());
         wechatDialog.showDialog();
     }
 

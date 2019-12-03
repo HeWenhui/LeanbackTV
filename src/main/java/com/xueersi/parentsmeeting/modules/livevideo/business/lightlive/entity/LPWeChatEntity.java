@@ -22,7 +22,7 @@ public class LPWeChatEntity {
     private int id;
     /** 类型 1公众号 2加群 3加老师微信*/
     private int tipType;
-    /** 2的时候为群二维码Url*/
+    /** 提示文案*/
     private String tipInfo;
 
     private int existWx;
@@ -32,6 +32,8 @@ public class LPWeChatEntity {
     private String teacherName;
     /** 老师头像*/
     private String teacherImg;
+    /** 2的时候为群二维码Url*/
+    private String wxQrUrl;
 
     public int getId() {
         return id;
@@ -87,5 +89,13 @@ public class LPWeChatEntity {
 
     public void setTeacherImg(String teacherImg) {
         this.teacherImg = teacherImg;
+    }
+
+    public String getWxQrUrl() {
+        return wxQrUrl;
+    }
+
+    public void setWxQrUrl(String wxQrUrl) {
+        this.wxQrUrl = wxQrUrl;
     }
 }
