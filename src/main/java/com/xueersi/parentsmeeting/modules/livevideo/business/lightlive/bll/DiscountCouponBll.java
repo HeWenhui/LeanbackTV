@@ -8,10 +8,12 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.hwl.bury.xrsbury.XrsBury;
+import com.hwl.log.xrsBusiLog.XrsBusiLog;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.util.LoginEnter;
+import com.xueersi.lib.framework.utils.EventBusUtil;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -23,7 +25,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.pager.Dis
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.pager.DiscountCouponPager;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.share.business.login.LoginActionEvent;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -65,6 +70,8 @@ public class DiscountCouponBll extends LiveBaseBll {
         mHttpManager = new LightLiveHttpManager(getHttpManager());
         mHttpResponseParser = new LightLiveHttpResponseParser();
         couponEntities = new ArrayList<>();
+        EventBusUtil.register(this);
+
         //测试环境
 //        for (int i = 0; i < 10; i++) {
 //            CouponEntity e1 = new CouponEntity();
@@ -240,6 +247,14 @@ public class DiscountCouponBll extends LiveBaseBll {
 
     @Override
     public void onDestroy() {
+        EventBusUtil.unregister(toString());
         super.onDestroy();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onAnswerResult(LoginActionEvent event) {
+        if (event.isAlreadyLogin()){
+            getCouponList(false);
+        }
     }
 }

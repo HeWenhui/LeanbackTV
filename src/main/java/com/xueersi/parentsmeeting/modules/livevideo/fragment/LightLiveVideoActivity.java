@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+
 /**
  * @ProjectName: xueersiwangxiao
  * @Package: com.xueersi.parentsmeeting.modules.livevideo.fragment
@@ -45,5 +47,17 @@ public class LightLiveVideoActivity extends LiveVideoActivity {
 //        intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
         intent.putExtras(bundle);
         context.startActivity(intent);
+    }
+
+    @Override
+    public void onResume() {
+        LiveVideoConfig.isLightLive = true;
+        super.onResume();
+    }
+
+    @Override
+    public void onDestroy() {
+        LiveVideoConfig.isLightLive = false;
+        super.onDestroy();
     }
 }

@@ -244,7 +244,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
         final String vSectionID = intent.getStringExtra("vSectionID");
         final int liveType = bundle.getInt("type", 0);
         final int from = intent.getIntExtra("", 0);
-
+        LiveVideoConfig.isLightLive = false;
 
         final LiveHttpManager httpManager = new LiveHttpManager(this);
         if (liveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {
@@ -268,6 +268,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                         String stuId = LiveAppUserInfo.getInstance().getStuId();
                         getInfos.put(liveType + "-" + stuId + "-" + vSectionID, mGetInfo);
                         if(!mGetInfo.isGently()){
+                            LiveVideoConfig.isLightLive = false;
                             com.xueersi.parentsmeeting.modules.livevideo.fragment.LecVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
                         }else {
                             LiveVideoConfig.isLightLive = true;
