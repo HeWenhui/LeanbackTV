@@ -85,11 +85,7 @@ public class LiveVideoDispatcher extends AbsDispatcher {
 
     private Activity activity;
     DataLoadEntity dataLoadEntity;
-
     EnglishNameBusiness englishNameBll;
-
-    DataLoadEntity dataLoadEntity;
-
     @Override
     public void dispatch(Activity srcActivity, Bundle bundle, int requestCode) {
         if (bundle == null) {
