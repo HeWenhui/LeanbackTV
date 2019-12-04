@@ -607,6 +607,9 @@ public class LiveLogSendLogRunnable extends SendLogRunnable {
             DebugLog.log( "Exception lineLog:" + lineLog);
             DebugLog.log( "Exception lineLog exception:" + e.getMessage());
 
+
+
+
         }
         return null;
     }
