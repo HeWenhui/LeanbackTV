@@ -82,4 +82,7 @@ public class UploadAliUtils {
                 + "GB" : "error")));
     }
 
+    public static final String SUPER_SPEAKER_VIDEO_PERCENT = "super_speaker_video_percent";
+
+    public static final String SUPER_SPEAKER_LOG = "super_speaker_log";
 }

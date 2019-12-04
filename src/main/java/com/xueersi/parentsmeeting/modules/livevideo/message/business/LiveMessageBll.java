@@ -41,6 +41,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.message.pager.SmallChineseLi
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.SmallEnglishLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LivePsMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowAction;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
@@ -71,7 +72,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
     private BaseLiveMediaControllerTop baseLiveMediaControllerTop;
 
     private Activity activity;
-    private Handler mHandler = new Handler();
+    private Handler mHandler = LiveMainHandler.getMainHandler();
     private RelativeLayout rlLiveMessageContent;
     private IRCState mLiveBll;
     private boolean openchat;
@@ -137,6 +138,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
     public View getView() {
         return rlLiveMessageContent;
     }
+
 
     /**
      * 站立直播聊天
@@ -603,7 +605,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
 //        }
         //  Loger.d("____join:  "+sender+"___peoplecount:  "+peopleCount);
         if (!users.contains(sender)) {
-            XrsCrashReport.d(TAG, "onJoin:sender=" + sender + ",get=" + peopleCount.get());
+            XrsCrashReport.d(TAG, "onJoin:sender=" + sender + ",get=" + peopleCount.get()+ ",users=" + users.size() + ",this=" + this);
             peopleCount.set(peopleCount.get() + 1, new Exception(sender));
             users.add(sender);
             if (mLiveMessagePager != null) {
@@ -622,7 +624,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
 //        }
         if (users.contains(sourceNick)) {
             boolean remove = users.remove(sourceNick);
-            XrsCrashReport.d(TAG, "onQuit:sourceNick=" + sourceNick + ",get=" + peopleCount.get() + ",remove=" + remove);
+            XrsCrashReport.d(TAG, "onQuit:sourceNick=" + sourceNick + ",get=" + peopleCount.get() + ",remove=" + remove + ",users=" + users.size() + ",this=" + this);
             if (remove) {
                 peopleCount.set(peopleCount.get() - 1, new Exception(sourceNick));
             }

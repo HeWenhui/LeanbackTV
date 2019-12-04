@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.content.Context;
 
+import com.google.gson.JsonObject;
 import com.tal100.chatsdk.ChatClient;
 import com.tal100.chatsdk.IChatClientListener;
 import com.tal100.chatsdk.IPeerChatListener;
@@ -692,15 +693,23 @@ public class NewIRCMessage implements IIRCMessage {
                 if (mIRCCallback != null) {
                     if (PMDefs.MessagePriority.MSG_PRIORITY_TOPIC == roomChatMessage.msgPriority) {
                         target = "TOPIC";
+                        //是不是能转成json
+                        boolean json = false;
                         try {
                             long before = System.currentTimeMillis();
-                            JSONObject diffJson = LiveJsonUtil.getDiffJson(new JSONObject(text), new JSONObject(lastTopicJson));
+                            JSONObject jsonObject = new JSONObject(text);
+                            json = true;
+                            JSONObject diffJson = LiveJsonUtil.getDiffJson(jsonObject, new JSONObject(lastTopicJson));
                             mLogtf.d(SysLogLable.receivedMessageOfTopic, "onTopic:channel=" + channel + ",topicIndex=" + topicIndex + ",time=" + (System.currentTimeMillis() - before) + ",difftopic=" + diffJson);
                         } catch (Exception e) {
-                            mLogtf.d(SysLogLable.receivedMessageOfTopic, "onTopic:channel=" + channel + ",topicIndex=" + topicIndex + ",topic=" + text);
-                            LiveCrashReport.postCatchedException(TAG, e);
+                            mLogtf.d(SysLogLable.receivedMessageOfTopic, "onTopicerr:channel=" + channel + ",topicIndex=" + topicIndex + ",topic=" + text + ",last=" + lastTopicJson);
+                            if (!(e instanceof JSONException)) {
+                                LiveCrashReport.postCatchedException(TAG, e);
+                            }
                         }
-                        lastTopicJson = text;
+                        if (json) {
+                            lastTopicJson = text;
+                        }
                         topicIndex++;
                         onTopic(channel, text, date);
                     } else if (MSG_PRIORITY_NOTICE == roomChatMessage.msgPriority) {

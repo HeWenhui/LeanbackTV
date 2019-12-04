@@ -12,14 +12,7 @@ public class AllBackBllConfig {
             "com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.NBH5PlayBackBll",
             "com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.business.SpeechBulletScreenPalyBackBll",
             "com.xueersi.parentsmeeting.modules.livevideo.question.business.ChsAnswerResultBackBll",
-    };
-
-    private static String[] standLiveClassPath = {
-            //弹幕
-            "com.xueersi.parentsmeeting.modules.livevideo.business.danmaku.LiveDanmakuBackBll",
-            "com.xueersi.parentsmeeting.modules.livevideo.question.business.StandExperienceQuestionPlayBackBll",
-            "com.xueersi.parentsmeeting.modules.livevideo.fragment.se.StandExperienceRedPackageBll",
-            "com.xueersi.parentsmeeting.modules.livevideo.question.business.StandExperienceEnglishH5PlayBackBll",
+            "com.xueersi.parentsmeeting.modules.livevideo.business.ScienceVotePlayBackBll",
     };
 
     private static String[] lecClassPath = {
@@ -40,11 +33,4 @@ public class AllBackBllConfig {
         return arrayList;
     }
 
-    public static ArrayList<BllConfigEntity> getStandLiveVideoExperienceBusiness() {
-        ArrayList<BllConfigEntity> arrayList = new ArrayList<>();
-        for (int i = 0; i < standLiveClassPath.length; i++) {
-            arrayList.add(new BllConfigEntity(standLiveClassPath[i]));
-        }
-        return arrayList;
-    }
 }

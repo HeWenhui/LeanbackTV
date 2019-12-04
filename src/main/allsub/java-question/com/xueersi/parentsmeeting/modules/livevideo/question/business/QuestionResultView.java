@@ -8,8 +8,10 @@ import com.alibaba.fastjson.JSON;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.PrimaryScienceAnswerResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ArtsAnswerResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ArtsPSEAnswerResultPager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.ExperCourseResultPager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +49,10 @@ public class QuestionResultView {
 //            }
 //        });
 //        return popupWindow_view;
-        return createViceResultView(context,entity);
+        if (entity.isExperience()) {
+            return createViceResultViewExper(context, entity);
+        }
+        return createViceResultView(context, entity);
 
     }
 
@@ -72,7 +77,10 @@ public class QuestionResultView {
 //            }
 //        });
 //        return popupWindow_view;
-        return createViceResultView(context,entity);
+        if (entity.isExperience()) {
+            return createViceResultViewExper(context, entity);
+        }
+        return createViceResultView(context, entity);
 
     }
 
@@ -100,7 +108,10 @@ public class QuestionResultView {
 ////            }
 ////        });
 ////        return popupWindow_view;
-        return createViceResultView(context,entity);
+        if (entity.isExperience()) {
+            return createViceResultViewExper(context, entity);
+        }
+        return createViceResultView(context, entity);
 
     }
 
@@ -123,20 +134,24 @@ public class QuestionResultView {
 //            }
 //        });
 //        return popupWindow_view;
-        return createViceResultView(context,entity);
+        if (entity.isExperience()) {
+            return createViceResultViewExper(context, entity);
+        }
+        return createViceResultView(context, entity);
     }
 
     /**
      * 语音答题结果
+     *
      * @param context
      * @param entity
      * @return
      */
-    private static View createViceResultView(Context context, VideoResultEntity entity){
-        UmsAgentManager.umsAgentDebug(context,"createViceResultView_result1",JSON.toJSONString(entity));
-        AnswerResultEntity resultEntity  = new AnswerResultEntity();
+    private static View createViceResultView(Context context, VideoResultEntity entity) {
+        UmsAgentManager.umsAgentDebug(context, "createViceResultView_result1", JSON.toJSONString(entity));
+        AnswerResultEntity resultEntity = new AnswerResultEntity();
         resultEntity.setGold(entity.getGoldNum());
-        AnswerResultEntity.Answer  answer = new AnswerResultEntity.Answer();
+        AnswerResultEntity.Answer answer = new AnswerResultEntity.Answer();
         resultEntity.setEnergy(entity.getEnergy());
         resultEntity.isVoice = 1;
         // 用户答案
@@ -184,6 +199,52 @@ public class QuestionResultView {
         }
     }
 
+    /**
+     * 语音答题结果
+     *
+     * @param context
+     * @param entity
+     * @return
+     */
+    private static View createViceResultViewExper(Context context, VideoResultEntity entity) {
+        UmsAgentManager.umsAgentDebug(context, "createViceResultView_result1", JSON.toJSONString(entity));
+        AnswerResultEntity resultEntity = new AnswerResultEntity();
+        resultEntity.setGold(entity.getGoldNum());
+        PrimaryScienceAnswerResultEntity.Answer answer = new PrimaryScienceAnswerResultEntity.Answer();
+        resultEntity.setEnergy(entity.getEnergy());
+        resultEntity.isVoice = 1;
+        // 用户答案
+        if (!TextUtils.isEmpty(entity.getYourAnswer())) {
+            answer.setMyAnswer(entity.getYourAnswer());
+        }
+        // 标准答案
+        if (!TextUtils.isEmpty(entity.getStandardAnswer())) {
+            answer.setRightAnswer(entity.getStandardAnswer());
+        }
+        PrimaryScienceAnswerResultEntity primaryScienceAnswerResultEntity = new PrimaryScienceAnswerResultEntity();
+        primaryScienceAnswerResultEntity.setGold(entity.getGoldNum());
+        // 如果是文科平台
+        if (entity.isNewArt()) {
+            if (entity.getResultType() == QUE_RES_TYPE1 || entity.getResultType() == QUE_RES_TYPE2) {
+                primaryScienceAnswerResultEntity.setType(PrimaryScienceAnswerResultEntity.ABSLUTELY_RIGHT);
+                answer.setRight(PrimaryScienceAnswerResultEntity.ABSLUTELY_RIGHT);
+            } else {
+                resultEntity.setIsRight(ArtsAnswerResultPager.RESULT_TYPE_ERRRO);
+            }
+        } else {
+            if (entity.getResultType() == QUE_RES_TYPE1 || entity.getResultType() == QUE_RES_TYPE4) {
+                primaryScienceAnswerResultEntity.setType(PrimaryScienceAnswerResultEntity.ABSLUTELY_RIGHT);
+                answer.setRight(PrimaryScienceAnswerResultEntity.ABSLUTELY_RIGHT);
+            } else {
+                resultEntity.setIsRight(ArtsAnswerResultPager.RESULT_TYPE_ERRRO);
+            }
+        }
+        List<PrimaryScienceAnswerResultEntity.Answer> answerList = primaryScienceAnswerResultEntity.getAnswerList();
+        answerList.add(answer);
+
+        ExperCourseResultPager experCourseResultPager = new ExperCourseResultPager(context, null, primaryScienceAnswerResultEntity);
+        return experCourseResultPager.getRootLayout();
+    }
 
     public static View initArtsAnswerRightResultVoice(Context context, AnswerResultEntity answerResultEntity, AnswerResultStateListener stateListener) {
 //        answerResultEntity.setIsRight(ArtsPSEAnswerResultPager.RESULT_TYPE_CORRECT);

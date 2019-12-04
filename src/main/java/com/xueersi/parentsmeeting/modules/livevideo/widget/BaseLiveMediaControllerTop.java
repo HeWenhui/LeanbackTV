@@ -42,13 +42,13 @@ public class BaseLiveMediaControllerTop extends FrameLayout implements Controlle
     /** 上方信息栏布局 */
     protected View mSystemInfoLayout;
     /** 顶部信息栏左边的回退按钮 */
-    private ImageView mBack;
+    protected ImageView mBack;
     /** 上方信息栏的播放文件名显示控件 */
     protected TextView tvFileName;
     /** 底部控制栏右边的横竖屏切换按钮 */
-    private ImageView mAllView;
+    protected ImageView mAllView;
     /** 标题栏右侧按钮 */
-    private View vTitleRight;
+    protected View vTitleRight;
     private AnimatorSet mAnimatorsetIn;
     private ObjectAnimator mTransOut;
     private AnimatorSet mAnimatorSetOut;
@@ -165,7 +165,7 @@ public class BaseLiveMediaControllerTop extends FrameLayout implements Controlle
 
 
     /** 横竖屏切换按钮点击监听 */
-    private OnClickListener mAllViewClickListener = new OnClickListener() {
+    protected OnClickListener mAllViewClickListener = new OnClickListener() {
 
         @Override
         public void onClick(View v) {

@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.page;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
@@ -11,10 +12,13 @@ import android.os.Handler;
 import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.webkit.JavascriptInterface;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.google.gson.JsonObject;
@@ -31,10 +35,13 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.CoursewareNativePager;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.evaluateteacher.bussiness.FeedBackTeacherInterface;
 
 import org.json.JSONObject;
 
+import cn.dreamtobe.kpswitch.util.KeyboardUtil;
+import cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout;
 import pl.droidsonroids.gif.GifDrawable;
 
 /**
@@ -58,6 +65,9 @@ public class LiveFeedBackSecondPager extends LiveBasePager {
     private MiddleSchool preLoad;
     FeedBackTeacherInterface feedBackTeacherInterface;
     Handler mHandler;
+    private ScrollView svSubjectWeb;
+    ViewTreeObserver.OnGlobalLayoutListener onGlobalLayoutListener;
+    boolean mKeyboardShow = false;
     public LiveFeedBackSecondPager(Context context) {
         super(context);
     }
@@ -80,12 +90,19 @@ public class LiveFeedBackSecondPager extends LiveBasePager {
 
     @Override
     public View initView() {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.layout_live_video_feed_back_second, null);
+        View view;
+        try {
+            view = LayoutInflater.from(mContext).inflate(R.layout.layout_live_video_feed_back_second, null);
+        } catch (Throwable e) {
+            return null;
+        }
+
         webView = view.findViewById(R.id.wv_livevideo_feedback_second);
+        svSubjectWeb = view.findViewById(R.id.sv_livevideo_web);
         webViewConfig();
         webView.addJavascriptInterface(this, "xesAppStudyCenter");
         mView = view;
-        rlSubjectLoading = view.findViewById(R.id.rl_livevideo_subject_loading);
+        rlSubjectLoading = view.findViewById(R.id.rl_livevideo_subject_loading_feedback_second);
         preLoad = new MiddleSchool();
         return mView;
     }
@@ -105,6 +122,18 @@ public class LiveFeedBackSecondPager extends LiveBasePager {
         // target="_blank"的超链接失效
         webView.setInitialScale(0);
 
+
+        onGlobalLayoutListener = KeyboardUtil.attach((Activity) mContext, new KPSwitchFSPanelLinearLayout(mContext),
+                new KeyboardUtil.OnKeyboardShowingListener() {
+                    @Override
+                    public void onKeyboardShowing(boolean isShowing) {
+                        if(mKeyboardShow !=isShowing){
+                            LiveFeedBackSecondPager.this.onKeyboardShowing(isShowing);
+                            mKeyboardShow = isShowing;
+                        }
+
+                    }
+                });
         webSetting.setSupportZoom(false);
         webSetting.setBuiltInZoomControls(false);
 
@@ -127,7 +156,33 @@ public class LiveFeedBackSecondPager extends LiveBasePager {
         }
 
     }
+    public void onKeyboardShowing(boolean isShowing) {
 
+        ViewGroup.MarginLayoutParams lpsc = (ViewGroup.MarginLayoutParams) svSubjectWeb.getLayoutParams();
+       // if (isShowing) {
+//            svSubjectWeb.post(new Runnable() {
+//                @Override
+//                public void run() {
+//                    svSubjectWeb.fullScroll(ScrollView.FOCUS_DOWN);
+//                }
+//            });
+
+           // svSubjectWeb.fullScroll(ScrollView.FOCUS_DOWN);
+        //}
+        int bottomMargin;
+        if (isShowing) {
+            int panelHeight = KeyboardUtil.getValidPanelHeight(mContext);
+            bottomMargin = panelHeight;
+        } else {
+            bottomMargin = 0;
+        }
+        if (bottomMargin != lpsc.bottomMargin) {
+            lpsc.bottomMargin = bottomMargin;
+
+            svSubjectWeb.setLayoutParams(lpsc);
+
+        }
+    }
     class MyWebChromeClient extends WebChromeClient{
         @Override
         public void onProgressChanged(WebView var1, int newProgress) {
@@ -250,8 +305,9 @@ public class LiveFeedBackSecondPager extends LiveBasePager {
         if (!isShow) {
 
             isShow = feedBackTeacherInterface.showPager();
-            webView.loadUrl(mUrl);
-            isShow = true;
+            if (isShow) {
+                webView.loadUrl(mUrl);
+            }
 
         } else {
 
@@ -289,6 +345,9 @@ public class LiveFeedBackSecondPager extends LiveBasePager {
         if (feedBackTeacherInterface != null) {
             feedBackTeacherInterface.onClose();
         }
+        if (onGlobalLayoutListener != null) {
+            KeyboardUtil.detach((Activity)mContext,onGlobalLayoutListener);
+        }
     }
     CountDownTimer timer = new CountDownTimer(2000, 1000) {
         @Override
@@ -312,9 +371,9 @@ public class LiveFeedBackSecondPager extends LiveBasePager {
         private TextView tvDataLoadingTip;
 
         public void onStart() {
-            ivLoading = mView.findViewById(R.id.iv_data_loading_show);
-            pgCourseProg = mView.findViewById(R.id.pg_livevideo_new_course_prog);
-            tvDataLoadingTip = mView.findViewById(R.id.tv_data_loading_tip);
+            ivLoading = mView.findViewById(R.id.iv_data_loading_show_feedback_second);
+            pgCourseProg = mView.findViewById(R.id.pg_livevideo_new_course_prog_feedback_second);
+            tvDataLoadingTip = mView.findViewById(R.id.tv_data_loading_tip_feedback_second);
             logger.d("MiddleSchool:onStart");
             try {
                 Drawable drawable = mContext.getResources().getDrawable(R.drawable.animlst_app_loading);
@@ -328,8 +387,17 @@ public class LiveFeedBackSecondPager extends LiveBasePager {
         }
 
         public void onProgressChanged(WebView view, int newProgress) {
-            pgCourseProg.setProgress(newProgress);
-            tvDataLoadingTip.setText("加载中 " + newProgress + "%");
+            if (pgCourseProg != null) {
+                pgCourseProg.setProgress(newProgress);
+            } else {
+                logger.d("MiddleSchool:pgCourseProg =null");
+            }
+            if (tvDataLoadingTip != null) {
+                tvDataLoadingTip.setText("加载中 " + newProgress + "%");
+            } else {
+                logger.d("MiddleSchool:tvDataLoadingTip =null");
+            }
+
         }
 
         public void onStop() {

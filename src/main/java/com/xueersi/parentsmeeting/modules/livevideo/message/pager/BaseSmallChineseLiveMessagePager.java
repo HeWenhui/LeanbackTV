@@ -1,46 +1,24 @@
 package com.xueersi.parentsmeeting.modules.livevideo.message.pager;
 
 import android.content.Context;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
-import android.text.TextPaint;
 import android.text.style.ImageSpan;
 
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.danmaku.LiveDanmakuPro;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VerticalImageSpan;
 
-import java.io.InputStream;
-import java.util.HashMap;
-
-import master.flame.danmaku.danmaku.controller.DrawHandler;
-import master.flame.danmaku.danmaku.controller.IDanmakuView;
-import master.flame.danmaku.danmaku.danmaku.loader.ILoader;
-import master.flame.danmaku.danmaku.danmaku.loader.IllegalDataException;
-import master.flame.danmaku.danmaku.danmaku.loader.android.DanmakuLoaderFactory;
 import master.flame.danmaku.danmaku.danmaku.model.BaseDanmaku;
-import master.flame.danmaku.danmaku.danmaku.model.DanmakuTimer;
-import master.flame.danmaku.danmaku.danmaku.model.IDanmakus;
-import master.flame.danmaku.danmaku.danmaku.model.IDisplayer;
-import master.flame.danmaku.danmaku.danmaku.model.android.BaseCacheStuffer;
-import master.flame.danmaku.danmaku.danmaku.model.android.DanmakuContext;
-import master.flame.danmaku.danmaku.danmaku.model.android.Danmakus;
-import master.flame.danmaku.danmaku.danmaku.model.android.SpannedCacheStuffer;
-import master.flame.danmaku.danmaku.danmaku.parser.BaseDanmakuParser;
-import master.flame.danmaku.danmaku.danmaku.parser.IDataSource;
-import master.flame.danmaku.danmaku.danmaku.parser.android.BiliDanmukuParser;
 
 /**
  * 小学语文礼物弹幕，同小英三分屏的鲜花弹幕
  */
-public abstract class BaseSmallChineseLiveMessagePager extends BaseLiveMessagePager {
+public abstract class BaseSmallChineseLiveMessagePager extends LiveMessageCommonMessagePager {
 
     //    private int DANMU_RADIUS = 20;//圆角半径
     public int DANMU_PADDING = 0;//弹幕之间的间距

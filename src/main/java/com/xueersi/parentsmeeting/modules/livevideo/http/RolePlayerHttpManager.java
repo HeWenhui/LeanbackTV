@@ -7,6 +7,7 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.question.config.ExperLiveQueHttpConfig;
 
 import java.util.HashMap;
 
@@ -18,9 +19,11 @@ import java.util.HashMap;
 public class RolePlayerHttpManager extends BaseHttpBusiness {
 
     HashMap<String, String> defaultKey = new HashMap<>();
+    LiveHttpAction liveHttpAction;
 
-    public RolePlayerHttpManager(Context context) {
+    public RolePlayerHttpManager(Context context, LiveHttpAction liveHttpAction) {
         super(context);
+        this.liveHttpAction = liveHttpAction;
     }
 
     public void addBodyParam(String key, String value) {
@@ -80,7 +83,32 @@ public class RolePlayerHttpManager extends BaseHttpBusiness {
         params.addBodyParam("stuCouId", stuCouId);
         params.addBodyParam("stuId", stuId);
         params.addBodyParam("testId", testId);
-        sendPost(LiveHttpConfig.URL_ROLEPLAY_NEWARTS_TESTINFOS, params, requestCallBack);
+        if (liveHttpAction != null) {
+            liveHttpAction.sendPostDefault(LiveHttpConfig.URL_ROLEPLAY_NEWARTS_TESTINFOS, params, requestCallBack);
+        } else {
+            sendPost(LiveHttpConfig.URL_ROLEPLAY_NEWARTS_TESTINFOS, params, requestCallBack);
+        }
+    }
+
+    /**
+     * 文科新课件平台请求试题-体验课
+     *
+     * @param liveId
+     * @param stuCouId
+     * @param testId
+     * @param stuId
+     */
+    public void requestExperNewArtsRolePlayTestInfos(String liveId, String stuCouId, String testId, String stuId, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("stuCouId", stuCouId);
+        params.addBodyParam("stuId", stuId);
+        params.addBodyParam("testId", testId);
+        if (liveHttpAction != null) {
+            liveHttpAction.sendPostDefault(ExperLiveQueHttpConfig.URL_ROLEPLAY_NEWARTS_TESTINFOS, params, requestCallBack);
+        } else {
+            sendPost(ExperLiveQueHttpConfig.URL_ROLEPLAY_NEWARTS_TESTINFOS, params, requestCallBack);
+        }
     }
 
     /**
@@ -124,5 +152,33 @@ public class RolePlayerHttpManager extends BaseHttpBusiness {
         params.setWriteAndreadTimeOut(5);
         setDefaultParameter(params);
         sendPost(LiveHttpConfig.URL_ROLEPLAY_NEWARTS_RESULT, params, requestCallBack);
+    }
+
+    /**
+     * 文科新课件平台结果请求
+     *
+     * @param liveId
+     * @param testId
+     * @param roler
+     * @param answer
+     * @param type
+     * @param requestCallBack
+     */
+    public void requestExperNewArtsResult(String stuCouId, String liveId, String testId, String roler, String answer, int type, long releaseTime,HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("stuCouId", stuCouId);
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("testId", testId);
+        params.addBodyParam("roler", roler);
+        params.addBodyParam("type", "" + type);
+        params.addBodyParam("data", answer);
+        params.addBodyParam("releaseTime", ""+releaseTime);
+        params.setWriteAndreadTimeOut(5);
+        if (liveHttpAction != null) {
+            liveHttpAction.sendPostDefault(ExperLiveQueHttpConfig.URL_ROLEPLAY_NEWARTS_RESULT, params, requestCallBack);
+        } else {
+            setDefaultParameter(params);
+            sendPost(ExperLiveQueHttpConfig.URL_ROLEPLAY_NEWARTS_RESULT, params, requestCallBack);
+        }
     }
 }

@@ -13,6 +13,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoHttpEnConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 
 import org.json.JSONArray;
 
@@ -128,7 +129,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
                                   String classId, String type, String isSubmit,
                                   double voiceTime, boolean isRight, HttpCallBack requestCallBack) {
         if (isNewArt) {
-            if ("16".equals(type) || "15".equals(type)) {
+            if (LiveQueConfig.EN_COURSE_TYPE_VOICE_BLANK.equals(type) || LiveQueConfig.EN_COURSE_TYPE_VOICE_CHOICE.equals(type)) {
                 HttpRequestParams params = new HttpRequestParams();
                 String url = LiveHttpConfig.URL_LIVE_SUBMIT_NEWARTSH5_ANSWER;
                 setDefaultParameter(params);
@@ -146,6 +147,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
                 params.addBodyParam("answer", LiveVideoConfig.answer);
                 sendPost(url, params, requestCallBack);
             } else {
+                //类型18 19
                 HttpRequestParams params = new HttpRequestParams();
                 String url = LiveHttpConfig.URL_LIVE_SUBMIT_NEWARTS_ANSWER;
                 setDefaultParameter(params);
