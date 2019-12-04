@@ -5,6 +5,7 @@ import android.view.View;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.http.HttpRequestParams;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
@@ -39,6 +40,8 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import okhttp3.Call;
@@ -56,6 +59,7 @@ public class LiveVideoBll implements VPlayerListenerReg, ProgressAction {
     /** 直播服务器 */
     private PlayServerEntity mServer;
     private LiveGetInfo mGetInfo;
+    private int isFlatfish = 0;
     private int lastIndex;
     /** 直播服务器选择 */
     private PlayServerEntity.PlayserverEntity lastPlayserverEntity;
@@ -138,6 +142,9 @@ public class LiveVideoBll implements VPlayerListenerReg, ProgressAction {
     public void releaseWithViewGone() {
         View view = activity.findViewById(R.id.vv_course_video_video);
         if (view != null) {
+            Map<String,String> map = new HashMap<>();
+            map.put("videoview","gone");
+            UmsAgentManager.umsAgentDebug(activity,"livevideo_videoview",map);
             view.setVisibility(View.GONE);
         }
         stopPlay();
@@ -152,6 +159,9 @@ public class LiveVideoBll implements VPlayerListenerReg, ProgressAction {
         if (MediaPlayer.getIsNewIJK()) {
             View view = activity.findViewById(R.id.vv_course_video_video);
             if (view != null) {
+                Map<String,String> map = new HashMap<>();
+                map.put("videoview","visible");
+                UmsAgentManager.umsAgentDebug(activity,"livevideo_videoview",map);
                 view.setVisibility(View.VISIBLE);
             }
             psRePlay(false);
@@ -167,6 +177,7 @@ public class LiveVideoBll implements VPlayerListenerReg, ProgressAction {
     /** 在{@link LiveBll2}获取getInfo成功而之后,{@link LiveBll2#onGetInfoSuccess(LiveGetInfo)} */
     public void onLiveInit(LiveGetInfo getInfo, LiveTopic liveTopic) {
         this.mGetInfo = getInfo;
+        isFlatfish = getInfo.getIsFlatfish();
         this.mLiveTopic = liveTopic;
         liveGetPlayServer = new LiveGetPlayServer(activity, new TeacherIsPresent() {
 
@@ -462,6 +473,11 @@ public class LiveVideoBll implements VPlayerListenerReg, ProgressAction {
             mHandler.postDelayed(mPlayDuration, mPlayDurTime);
             mHandler.removeCallbacks(getVideoCachedDurationRun);
             mHandler.postDelayed(getVideoCachedDurationRun, 10000);
+            if (isFlatfish == 1) {
+                currentSeiTimetamp = -1;
+                mHandler.removeCallbacks(getCurrentSeiTimetamp);
+                mHandler.postDelayed(getCurrentSeiTimetamp, 10000);
+            }
         }
 
         @Override
@@ -588,6 +604,8 @@ public class LiveVideoBll implements VPlayerListenerReg, ProgressAction {
 //    };
     public void stopPlayDuration() {
         mHandler.removeCallbacks(mPlayDuration);
+        currentSeiTimetamp = -1;
+        mHandler.removeCallbacks(getCurrentSeiTimetamp);
         playTime += (System.currentTimeMillis() - lastPlayTime);
         logger.d("onPause:playTime=" + (System.currentTimeMillis() - lastPlayTime));
     }
@@ -623,6 +641,28 @@ public class LiveVideoBll implements VPlayerListenerReg, ProgressAction {
                     }
                 });
                 //logger.i( "onOpenSuccess:videoCachedDuration=" + videoCachedDuration);
+            }
+        }
+    };
+
+    /** 视频时间 */
+    private long currentSeiTimetamp = -2;
+
+    public long getCurrentSeiTimetamp() {
+        return currentSeiTimetamp;
+    }
+
+    /**
+     * 得到Video播放时间戳
+     */
+    private Runnable getCurrentSeiTimetamp = new Runnable() {
+        @Override
+        public void run() {
+            mHandler.removeCallbacks(this);
+            if (isPlay && !activity.isFinishing()) {
+                currentSeiTimetamp = vPlayer.getCurrentSeiTimetamp();
+                logger.i("getCurrentSeiTimetamp:time=" + currentSeiTimetamp);
+                mHandler.postDelayed(getCurrentSeiTimetamp, 500);
             }
         }
     };

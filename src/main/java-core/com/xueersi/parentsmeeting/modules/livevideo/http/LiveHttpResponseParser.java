@@ -564,6 +564,12 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 String[] arrSubjIds = strSubjIds.split(",");
                 getInfo.setSubjectIds(arrSubjIds);
             }
+            //理科
+            if (data.has("subjectIds")) {
+                String strSubjIds = data.getString("subjectIds");
+                String[] arrSubjIds = strSubjIds.split(",");
+                getInfo.setSubjectIds(arrSubjIds);
+            }
             //金话筒
             getInfo.setUseGoldMicroPhone(data.optInt("isGoldMicrophone"));
             //超级演讲秀  注意空格
@@ -582,6 +588,10 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 }
             }
             getInfo.setSubjectiveItem2AIUrl(data.optString("subjectiveItem2AIUrl"));
+            LiveGetInfo.EvenDriveInfo evenDriveInfo = new LiveGetInfo.EvenDriveInfo();
+            evenDriveInfo.setIsOpenStimulation(data.optInt("isOpenStimulation"));
+            getInfo.setEvenDriveInfo(evenDriveInfo);
+            getInfo.setIsFlatfish(data.optInt("isFlatfish", 0));
 
             //英语1V2小组课
             JSONObject recordStandLiveJson = data.optJSONObject("recordStandlive");
@@ -816,6 +826,13 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 mainStatusEntity.setOnmic("off");
                 mainStatusEntity.setOpenhands("off");
                 mainStatusEntity.getClassmateEntities().clear();
+            }
+            if (status.has("chat_interact")) {
+                JSONObject jsonObject = status.optJSONObject("chat_interact");
+                if (jsonObject != null) {
+                    mainStatusEntity.setOnChatInteract(jsonObject.optString("open"));
+                    mainStatusEntity.setChatInteractionId(jsonObject.optString("interactionId"));
+                }
             }
             mainStatusEntity.setOpenDbEnergy(status.optBoolean("openDbEnergy", false));
             mainStatusEntity.setOpenVoiceBarrage(status.optBoolean("openVoiceBarrage", false));
@@ -2093,6 +2110,9 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         info.setIsGroupGameCourseWare(data.optInt("isGroupGameCourseWare", -1));
         info.setSummerCourseWareSize(data.optString("summerCourseWareSize"));
         info.setBolockChinese(data.optInt("blockChinese", 2));
+        info.setEvenDriveRightEvenNumUrl(data.optInt("getContinueRightNum"));
+        info.setIsOpenStimulation(data.optInt("isOpenStimulation"));
+//        info.setIsGroupGameCourseWare(data.optInt("isOpenStimulation"));
         UmsAgentTrayPreference.getInstance().put(ShareDataConfig.SP_EN_ENGLISH_STAND_SUMMERCOURS_EWARESIZE, info.getSummerCourseWareSize());
         return info;
     }

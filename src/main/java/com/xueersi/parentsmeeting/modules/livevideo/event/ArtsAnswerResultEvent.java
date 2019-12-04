@@ -27,7 +27,8 @@ public class ArtsAnswerResultEvent {
     private long entranceTime;
 
     private boolean isPlayBack;
-
+    /** 体验课题目*/
+    private boolean isExper = false;
     private int mType;
     /** 新课件互动题 */
     private VideoQuestionLiveEntity detailInfo;
@@ -183,6 +184,14 @@ public class ArtsAnswerResultEvent {
 
     public void setPlayBack(boolean playBack) {
         isPlayBack = playBack;
+    }
+
+    public void setExper(boolean exper) {
+        isExper = exper;
+    }
+
+    public boolean isExper() {
+        return isExper;
     }
 
     @Override

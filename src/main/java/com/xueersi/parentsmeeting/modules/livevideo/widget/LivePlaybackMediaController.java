@@ -326,6 +326,8 @@ public class LivePlaybackMediaController extends MediaController2 {
                 }
 
             }
+        } else if(LocalCourseConfig.CATEGORY_SCIENCE_VOTE == videoQuestionEntity.getvCategory()){
+            textView.setText("投票");
         } else if(LocalCourseConfig.CATEGORY_GROUP_CLASS==videoQuestionEntity.getvCategory()){
             String packageAttr = videoQuestionEntity.getPackageAttr();
             switch (packageAttr) {

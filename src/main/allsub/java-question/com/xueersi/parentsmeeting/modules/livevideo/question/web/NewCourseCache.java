@@ -5,6 +5,7 @@ import android.os.SystemClock;
 import android.util.Log;
 
 import com.airbnb.lottie.AssertUtil;
+import com.tencent.smtt.export.external.interfaces.ConsoleMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.MimeTypeMap;
@@ -111,8 +112,11 @@ public class NewCourseCache {
 
     public int loadCourseWareUrl(String url) {
         int type = index(url, coursewarePages);
-        if (type != 1) {
+        if (type == 0) {
             type = index(url, XESlides);
+            if (type == 0) {
+                type = -1;
+            }
         }
         return type;
     }
@@ -174,7 +178,8 @@ public class NewCourseCache {
 
     public WebResourceResponse interceptIndexRequest(WebView view, final String url) {
         courseUrl = url;
-        final File file = getCourseWareFile(url);
+        final int startProgress = newProgress;
+        final File file = getIndexFile(url);
         InputStream inputStream = null;
         final boolean ispreload;
         if (file != null) {
@@ -184,12 +189,12 @@ public class NewCourseCache {
             ispreload = false;
         }
         logToFile.d("interceptIndexRequest:url=" + url + ",inputStream1=" + (inputStream == null));
-        long before = SystemClock.currentThreadTimeMillis();
+        long before = SystemClock.elapsedRealtime();
         final AtomicBoolean islocal = new AtomicBoolean();
         if (inputStream == null) {
             inputStream = webInstertJs.httpRequest(url, islocal);
         }
-        final long httptime = SystemClock.currentThreadTimeMillis() - before;
+        final long httptime = SystemClock.elapsedRealtime() - before;
         logToFile.d("interceptIndexRequest:url=" + url + ",inputStream2=" + (inputStream == null));
         if (inputStream != null) {
             String extension = android.webkit.MimeTypeMap.getFileExtensionFromUrl(url.toLowerCase());
@@ -203,11 +208,12 @@ public class NewCourseCache {
                         @Override
                         public void run() {
                             try {
-                                StableLogHashMap stableLogHashMap = new StableLogHashMap("interceptrequesthtml");
+                                StableLogHashMap stableLogHashMap = new StableLogHashMap("interceptrequesthtmlv3");
                                 stableLogHashMap.put("courseurl", "" + courseUrl);
                                 stableLogHashMap.put("url", url);
                                 stableLogHashMap.put("urlindex", "" + (urlindex++));
                                 stableLogHashMap.put("newProgress", "" + newProgress);
+                                stableLogHashMap.put("startProgress", "" + startProgress);
                                 stableLogHashMap.put("reload", "" + reload);
                                 stableLogHashMap.put("liveId", liveId);
                                 stableLogHashMap.put("testid", testid);
@@ -235,23 +241,31 @@ public class NewCourseCache {
         return null;
     }
 
+    private File getIndexFile(String url) {
+        File file = getCourseWareFile(coursewarePages, url);
+        if (file == null) {
+            file = getCourseWareFile(XESlides, url);
+        }
+        return file;
+    }
+
     /**
      * 新课件地址都带courseware_pages，和本地文件对比
      *
      * @param url
      * @return
      */
-    private File getCourseWareFile(String url) {
+    private File getCourseWareFile(String mark, String url) {
         File file = null;
-        int index = url.indexOf(coursewarePages);
+        int index = url.indexOf(mark);
         if (index != -1) {
-            String url2 = url.substring(index + coursewarePages.length());
+            String url2 = url.substring(index + mark.length());
             int index2 = url2.indexOf("?");
             if (index2 != -1) {
                 url2 = url2.substring(0, index2);
             }
             file = new File(mMorecacheout, url2);
-            logger.d("getCourseWareFile:file=" + file + ",file=" + file.exists());
+            logger.d("getCourseWareFile:mark=" + mark + ",file=" + file + ",file.exists=" + file.exists());
             if (!file.exists()) {
                 return null;
             }
@@ -272,45 +286,74 @@ public class NewCourseCache {
         this.newProgress = newProgress;
     }
 
-    public WebResourceResponse shouldInterceptRequest(WebView view, final String s) {
-        final Thread thread = Thread.currentThread();
-        File file = null;
-        int index = s.indexOf(coursewarePages);
-        if (index != -1) {
-            file = getCourseWarePagesFileName(s, coursewarePages, index);
-            logger.d("shouldInterceptRequest:file=" + file + ",file=" + file.exists());
-        } else {
-            index = s.indexOf(mathJax);
-            if (index != -1) {
-                file = getMathJaxFileName(s, index);
-            } else {
-                index = s.indexOf(katex);
-                if (index != -1) {
-                    file = getkatexFileName(s, index);
-                } else {
-                    File interceptFile = null;
-                    for (int i = 0; i < interceptRequests.size(); i++) {
-                        InterceptRequest interceptRequest = interceptRequests.get(i);
-                        interceptFile = interceptRequest.shouldInterceptRequest(view, s);
-                        if (interceptFile != null) {
-                            file = interceptFile;
-                            break;
-                        }
-                    }
-                    if (interceptFile == null) {
-                        file = getPubFileName(s);
-                    }
+    /** 网页报错，删除文件 */
+    public File onConsoleMessage(WebView view, ConsoleMessage consoleMessage) {
+        try {
+            File file = getLocalFile(view, consoleMessage.sourceId());
+            if (!consoleMessage.sourceId().contains(".html") && consoleMessage.messageLevel() == ConsoleMessage.MessageLevel.ERROR) {
+                if (file != null) {
+                    file.delete();
                 }
             }
-            index = s.lastIndexOf("/");
-            String name = s;
-            if (index != -1) {
-                name = s.substring(index);
+            if (file != null && file.exists()) {
+                return file;
             }
-            logger.d("shouldInterceptRequest:file2=" + file.getName() + ",name=" + name + ",file=" + file
-                    .exists());
+        } catch (Exception e) {
+            LiveCrashReport.postCatchedException(TAG, e);
         }
-        if (file.exists()) {
+        return null;
+    }
+
+    /** 获得本地路径 */
+    private File getLocalFile(WebView view, String s) {
+        File file = null;
+        try {
+            int index = s.indexOf(coursewarePages);
+            if (index != -1) {
+                file = getCourseWarePagesFileName(s, coursewarePages, index);
+                logger.d("shouldInterceptRequest:file=" + file + ",file.exists=" + file.exists());
+            } else {
+                index = s.indexOf(mathJax);
+                if (index != -1) {
+                    file = getMathJaxFileName(s, index);
+                } else {
+                    index = s.indexOf(katex);
+                    if (index != -1) {
+                        file = getkatexFileName(s, index);
+                    } else {
+                        File interceptFile = null;
+                        for (int i = 0; i < interceptRequests.size(); i++) {
+                            InterceptRequest interceptRequest = interceptRequests.get(i);
+                            interceptFile = interceptRequest.shouldInterceptRequest(view, s);
+                            if (interceptFile != null) {
+                                file = interceptFile;
+                                break;
+                            }
+                        }
+                        if (interceptFile == null) {
+                            file = getPubFileName(s);
+                        }
+                    }
+                }
+                index = s.lastIndexOf("/");
+                String name = s;
+                if (index != -1) {
+                    name = s.substring(index);
+                }
+                logger.d("shouldInterceptRequest:file2=" + file.getName() + ",name=" + name + ",file=" + file
+                        .exists());
+            }
+        } catch (Exception e) {
+            LiveCrashReport.postCatchedException(TAG, e);
+        }
+        return file;
+    }
+
+    public WebResourceResponse shouldInterceptRequest(WebView view, final String s) {
+        final int startProgress = newProgress;
+        final Thread thread = Thread.currentThread();
+        File file = getLocalFile(view, s);
+        if (file != null && file.exists()) {
             final File finalFile = file;
             if (file.length() > 0) {
                 FileInputStream inputStream = null;
@@ -324,11 +367,12 @@ public class NewCourseCache {
                                 @Override
                                 public void run() {
                                     try {
-                                        StableLogHashMap stableLogHashMap = new StableLogHashMap("interceptrequestv2");
+                                        StableLogHashMap stableLogHashMap = new StableLogHashMap("interceptrequestv3");
                                         stableLogHashMap.put("courseurl", "" + courseUrl);
                                         stableLogHashMap.put("url", s);
                                         stableLogHashMap.put("urlindex", "" + (urlindex++));
                                         stableLogHashMap.put("newProgress", "" + newProgress);
+                                        stableLogHashMap.put("startProgress", "" + startProgress);
                                         stableLogHashMap.put("reload", "" + reload);
                                         stableLogHashMap.put("liveId", liveId);
                                         stableLogHashMap.put("testid", testid);
@@ -363,17 +407,22 @@ public class NewCourseCache {
                 @Override
                 public void run() {
                     try {
-                        StableLogHashMap stableLogHashMap = new StableLogHashMap("interceptrequestv2");
+                        StableLogHashMap stableLogHashMap = new StableLogHashMap("interceptrequestv3");
                         stableLogHashMap.put("courseurl", "" + courseUrl);
                         stableLogHashMap.put("url", s);
                         stableLogHashMap.put("urlindex", "" + (urlindex++));
                         stableLogHashMap.put("newProgress", "" + newProgress);
+                        stableLogHashMap.put("startProgress", "" + startProgress);
                         stableLogHashMap.put("reload", "" + reload);
                         stableLogHashMap.put("liveId", liveId);
                         stableLogHashMap.put("testid", testid);
                         stableLogHashMap.put("ispreload", "false");
                         stableLogHashMap.put("thread", "" + thread);
-                        stableLogHashMap.put("filepath", finalFile1.getPath());
+                        if (finalFile1 == null) {
+                            stableLogHashMap.put("filepath", "null");
+                        } else {
+                            stableLogHashMap.put("filepath", finalFile1.getPath());
+                        }
                         UmsAgentManager.umsAgentDebug(mContext, eventId, stableLogHashMap.getData());
                     } catch (Exception e) {
                         LiveCrashReport.postCatchedException(new LiveException(TAG, e));
@@ -485,7 +534,7 @@ public class NewCourseCache {
                     url2 = url2.substring(0, index2);
                 }
                 file = new File(mMorecacheout, url2);
-                logger.d("FutureCourse:Intercept:file=" + file + ",file=" + file.exists());
+                logger.d("FutureCourse:Intercept:file=" + file + ",file.exists=" + file.exists());
                 if (!file.exists()) {
                     return null;
                 }

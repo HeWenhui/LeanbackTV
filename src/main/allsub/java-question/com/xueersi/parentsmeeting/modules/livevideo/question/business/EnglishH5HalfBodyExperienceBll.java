@@ -17,6 +17,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
@@ -26,11 +27,12 @@ import org.json.JSONObject;
 import java.util.HashMap;
 
 /**
- * 半身直播体验课  试题加载处理
+ * 半身直播体验课  试题加载处理,用了去壳的EnglishH5ExperienceBll，这个类没用了
  *
  * @author chekun
  * created  at 2019/1/16 11:04
  */
+@Deprecated
 public class EnglishH5HalfBodyExperienceBll extends LiveBackBaseBll {
 
     EnglishH5CoursewareBll englishH5CoursewareBll;
@@ -180,6 +182,7 @@ public class EnglishH5HalfBodyExperienceBll extends LiveBackBaseBll {
                 packageSource = jsonObject.optString("pSrc");
             } catch (Exception e) {
                 e.printStackTrace();
+                LiveCrashReport.postCatchedException(TAG, e);
             }
         }
         String url = TextUtils.isEmpty(mHalfBodyUrl) ? LiveHttpConfig.URL_HALFBODY_EXPERIENCE_LIVE_H5 : mHalfBodyUrl;

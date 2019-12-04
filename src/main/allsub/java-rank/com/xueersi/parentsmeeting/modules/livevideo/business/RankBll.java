@@ -2,7 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -16,8 +15,6 @@ import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.XESToastUtils;
-import com.xueersi.lib.log.LoggerFactory;
-import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.RankItem;
@@ -25,9 +22,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.RankPage.SmallChine
 import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.EvenDriveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.MiddleScienceEvenDrivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.itempager.ItemMiddleSciencePager;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.MessageAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
@@ -35,7 +31,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.AllRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RankEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.http.RankHttp;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.evendrive.EvenDriveUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
@@ -181,7 +179,7 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
                             /** 异步获取的实体数据，这个时候 */
                             allRankEntity = (AllRankEntity) objData[0];
 
-                            if (mGetInfo.getIsOpenNewCourseWare() == 1) {
+                            if (EvenDriveUtils.getOldEvenDrive(mGetInfo)) {
                                 //中学连对激励
 
                                 scienceEvenDrivePager.updataRankData(allRankEntity);
@@ -211,7 +209,7 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
                         }
                     });
                     /** 是否支持连对激励 0：关闭 1：打开 */
-                    if (mGetInfo.getIsOpenNewCourseWare() == 1) {
+                    if (EvenDriveUtils.getOldEvenDrive(mGetInfo)) {
                         getEvenLikeData();
                     }
                     relativeLayout.setVisibility(View.VISIBLE);
@@ -333,7 +331,7 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
         this.mGetInfo = getInfo;
         if (mGetInfo != null) {
             isSmallEnglish = mGetInfo.getSmallEnglish();
-            if (mGetInfo.getIsOpenNewCourseWare() == 1) {
+            if (EvenDriveUtils.getOldEvenDrive(getInfo)) {
                 setEvenDriveLayout();
             }
         }
@@ -484,7 +482,7 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
 
         } else {
             //中学连对激励系统
-            if (mGetInfo.getIsOpenNewCourseWare() == 1) {
+            if (EvenDriveUtils.getOldEvenDrive(mGetInfo)) {
                 scienceEvenDrivePager = new MiddleScienceEvenDrivePager(mContext);
 
                 scienceEvenDrivePager.setiNotice(new ItemMiddleSciencePager.INotice() {

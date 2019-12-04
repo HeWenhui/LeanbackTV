@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Build;
+import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -12,6 +13,8 @@ import android.widget.ImageView;
 
 import com.tencent.smtt.export.external.interfaces.ConsoleMessage;
 import com.tencent.smtt.export.external.interfaces.JsResult;
+import com.tencent.smtt.export.external.interfaces.WebResourceRequest;
+import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.WebChromeClient;
 import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
@@ -29,9 +32,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionOnSubmit;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionWebCache;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ErrorWebViewClient;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
+
+import java.io.File;
 
 import cn.dreamtobe.kpswitch.util.KeyboardUtil;
 import cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout;
@@ -203,7 +209,8 @@ public class ExamQuestionX5PlaybackPager extends LiveBasePager implements BaseEx
             if (mLevel == ConsoleMessage.MessageLevel.ERROR || mLevel == ConsoleMessage.MessageLevel.WARNING) {
                 isRequst = true;
             }
-            UmsAgentUtil.webConsoleMessage(mContext, TAG, wvSubjectWeb.getUrl(), consoleMessage, isRequst);
+            File file = QuestionWebCache.onConsoleMessage(mContext, TAG, logger, consoleMessage);
+            UmsAgentUtil.webConsoleMessageFile(mContext, TAG, wvSubjectWeb.getUrl(), consoleMessage, isRequst, file);
             return super.onConsoleMessage(consoleMessage);
         }
 
@@ -273,6 +280,17 @@ public class ExamQuestionX5PlaybackPager extends LiveBasePager implements BaseEx
                 }
             }
             return true;
+        }
+
+        @Override
+        public WebResourceResponse shouldInterceptRequest(WebView webView, WebResourceRequest request) {
+            String url = request.getUrl().toString();
+            WebResourceResponse webResourceResponse = QuestionWebCache.shouldInterceptRequest(mContext, logger, "" + url);
+            logger.e("shouldInterceptRequestnew:totalurl=" + url + ",resp=" + (webResourceResponse == null));
+            if (webResourceResponse != null) {
+                return webResourceResponse;
+            }
+            return super.shouldInterceptRequest(webView, request);
         }
     }
 

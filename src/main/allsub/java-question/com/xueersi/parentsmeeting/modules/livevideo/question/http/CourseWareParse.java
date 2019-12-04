@@ -139,6 +139,7 @@ public class CourseWareParse {
             JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
             newCourseSec.setIsAnswer(jsonObject.optInt("isAnswer"));
             newCourseSec.setReleaseTime(jsonObject.optLong("releaseTime", System.currentTimeMillis()));
+            newCourseSec.setOperateTimeStamp(jsonObject.optLong("operateTimeStamp", 1));
             ArrayList<NewCourseSec.Test> tests = newCourseSec.getTests();
             JSONArray array = jsonObject.getJSONArray("list");
             for (int i = 0; i < array.length(); i++) {
