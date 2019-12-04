@@ -1093,7 +1093,6 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
      * 解析大班整合回放
      *
      * @param responseEntity
-     * @param publicLiveCourseEntity
      */
     public BigLivePlayBackEntity praseBigLiveEnterPlayBack(ResponseEntity responseEntity) {
         BigLivePlayBackEntity playBackEntity = null;
@@ -1228,6 +1227,8 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
                     configs.setInitModuleUrl(urlsJsonObj.optString("initModuleUrl"));
                 }
                 configs.setIrcRoomsJson(configsJsonObj.optJSONArray("ircRooms").toString());
+                configs.setProtocol(configsJsonObj.optInt("protocol", MediaPlayer.VIDEO_PROTOCOL_MP4));
+                configs.setFileId(configsJsonObj.optString("fileId"));
                 playBackEntity.setConfigs(configs);
             }
 

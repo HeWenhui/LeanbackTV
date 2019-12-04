@@ -422,6 +422,10 @@ public class LiveVideoDispatcher extends AbsDispatcher {
         //大班整合默认 走新ijk
         MediaPlayer.setIsNewIJK(true);
         updatePsInfo(entity);
+        if(entity.getConfigs() != null){
+            videoEntity.setProtocol(entity.getConfigs().getProtocol());
+            videoEntity.setFileId(entity.getConfigs().getFileId());
+        }
         Bundle bundle = new Bundle();
         bundle.putSerializable("videoliveplayback", videoEntity);
         bundle.putInt("type", 2);
@@ -481,6 +485,10 @@ public class LiveVideoDispatcher extends AbsDispatcher {
         //大班整合默认 走新ijk
         MediaPlayer.setIsNewIJK(true);
         updatePsInfo(entity);
+        if(entity.getConfigs() != null){
+            videoEntity.setProtocol(entity.getConfigs().getProtocol());
+            videoEntity.setFileId(entity.getConfigs().getFileId());
+        }
         Bundle bundle = new Bundle();
         bundle.putSerializable("videoliveplayback", videoEntity);
         bundle.putInt("type", LocalCourseConfig.LIVETYPE_LIVE);
