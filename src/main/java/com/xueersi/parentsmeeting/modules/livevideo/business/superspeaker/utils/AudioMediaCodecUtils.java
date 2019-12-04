@@ -17,6 +17,9 @@ import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import io.reactivex.FlowableEmitter;
 import io.reactivex.FlowableOnSubscribe;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.schedulers.Schedulers;
 
 /**
@@ -30,36 +33,31 @@ public class AudioMediaCodecUtils {
     private String mFilePath;
 
     /** 是否正在播放 */
-    private boolean mIsPalying;
+    private boolean mIsPalying = false;
 
     private MediaCodec mAudioDecoder;
 
+    public AudioMediaCodecUtils() {
+        mIsPalying = false;
+    }
 
-//    public AudioMediaCodecUtils() {
-//    }
-
+    /**
+     * 初始化文件音频文件夹
+     *
+     * @param path
+     * @return
+     */
     public boolean init(String path) {
-//        mFilePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/parentsmeeting/livevideo/superSpeaker/485219_7.mp4";
         this.mFilePath = path;
         File mAudioFile = new File(mFilePath);
         if (mAudioFile == null || !mAudioFile.exists()) {
-//            textView.setText(textView.getText() + "\n文件为空，请先录音");
             return false;
         }
         if (!mIsPalying) {
             mIsPalying = true;
-            initAudioDecoder();
-//            Executors.newCachedThreadPool().submit(new Runnable() {
-//                @Override
-//                public void run() {
-//                    // 解码
-//                    aacToPCM();
-//                }
-//            });
-        } else {
-            mIsPalying = false;
+            return initAudioDecoder();
         }
-        return true;
+        return false;
     }
 
     private MediaExtractor mMediaExtractor;
@@ -167,9 +165,13 @@ public class AudioMediaCodecUtils {
             this.size = size;
         }
 
-        public PCMEntity(byte[] bytes, int size) {
+        private PCMEntity(byte[] bytes, int size) {
             this.bytes = bytes;
             this.size = size;
+        }
+
+        static PCMEntity create(byte[] bytes, int size) {
+            return new PCMEntity(bytes, size);
         }
     }
 
@@ -178,22 +180,24 @@ public class AudioMediaCodecUtils {
                 create(new FlowableOnSubscribe<PCMEntity>() {
                     @Override
                     public void subscribe(FlowableEmitter<PCMEntity> e) throws Exception {
-
+                        aacRxToPCM(e);
                     }
-
-//                    @Override
-//                    public void subscribe(ObservableEmitter<PCMEntity> e) throws Exception {
-
-//        listener.pcmComplete(true);
-
-//                    }
                 }, BackpressureStrategy.BUFFER).subscribeOn(Schedulers.io());
+    }
+
+    public Observable rxObservableAACToPCM() {
+        return Observable.create(new ObservableOnSubscribe() {
+            @Override
+            public void subscribe(ObservableEmitter e) throws Exception {
+                aacRxToPCM(e);
+            }
+        });
     }
 
     /**
      * aacToPCM
      */
-    public boolean aacRxToPCM() {
+    public boolean aacRxToPCM(FlowableEmitter<PCMEntity> emitter) {
         MediaCodec.BufferInfo decodeBufferInfo = new MediaCodec.BufferInfo();
         while (!isFinish && mIsPalying) {
             try {
@@ -220,24 +224,80 @@ public class AudioMediaCodecUtils {
                     chunkPCM = new byte[decodeBufferInfo.size];
                     outputBuffer.get(chunkPCM);
                     outputBuffer.clear();
+                    emitter.onNext(PCMEntity.create(chunkPCM, decodeBufferInfo.size));
 //                    Byte[] bytes = new Byte[chunkPCM.length];
-                    if (listener != null) {
-                        listener.pcmData(chunkPCM, decodeBufferInfo.size);
-                    }
+//                    if (listener != null) {
+//                        listener.pcmData(chunkPCM, decodeBufferInfo.size);
+//                    }
 //                audioTrack.write(chunkPCM, 0, decodeBufferInfo.size);
                     mAudioDecoder.releaseOutputBuffer(outputIndex, false);
                     outputIndex = mAudioDecoder.dequeueOutputBuffer(decodeBufferInfo, 10000);
 
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-                logger.e(e);
+            } catch (Exception e1) {
+                e1.printStackTrace();
+                logger.e(e1);
 //                if (listener != null) {
 //                    listener.pcmComplete(false);
 //                }
                 return false;
             }
         }
+        stopPlay();
+//        listener.pcmComplete(true);
+        return true;
+    }
+
+    /**
+     * aacToPCM
+     */
+    public boolean aacRxToPCM(ObservableEmitter<PCMEntity> emitter) {
+        MediaCodec.BufferInfo decodeBufferInfo = new MediaCodec.BufferInfo();
+        while (!isFinish && mIsPalying) {
+            try {
+                int inputIdex = mAudioDecoder.dequeueInputBuffer(10000);//等待10s
+                if (inputIdex < 0) {
+                    isFinish = true;
+                }
+                ByteBuffer inputBuffer = mAudioDecoder.getInputBuffer(inputIdex);
+                inputBuffer.clear();
+                int samplesize = mMediaExtractor.readSampleData(inputBuffer, 0);
+                if (samplesize > 0) {
+                    mAudioDecoder.queueInputBuffer(inputIdex, 0, samplesize, 0, 0);
+                    mMediaExtractor.advance();
+                } else {
+                    isFinish = true;
+                }
+                int outputIndex = mAudioDecoder.dequeueOutputBuffer(decodeBufferInfo, 10000);
+
+                ByteBuffer outputBuffer;
+                byte[] chunkPCM;
+
+                while (outputIndex >= 0) {            //每次解码完成的数据不一定能一次吐出 所以用while循环，保证解码器吐出所有数据
+                    outputBuffer = mAudioDecoder.getOutputBuffer(outputIndex);
+                    chunkPCM = new byte[decodeBufferInfo.size];
+                    outputBuffer.get(chunkPCM);
+                    outputBuffer.clear();
+                    emitter.onNext(PCMEntity.create(chunkPCM, decodeBufferInfo.size));
+//                    Byte[] bytes = new Byte[chunkPCM.length];
+//                    if (listener != null) {
+//                        listener.pcmData(chunkPCM, decodeBufferInfo.size);
+//                    }
+//                audioTrack.write(chunkPCM, 0, decodeBufferInfo.size);
+                    mAudioDecoder.releaseOutputBuffer(outputIndex, false);
+                    outputIndex = mAudioDecoder.dequeueOutputBuffer(decodeBufferInfo, 10000);
+
+                }
+            } catch (Exception e1) {
+                e1.printStackTrace();
+                logger.e(e1);
+//                if (listener != null) {
+//                    listener.pcmComplete(false);
+//                }
+                return false;
+            }
+        }
+        emitter.onComplete();
         stopPlay();
 //        listener.pcmComplete(true);
         return true;

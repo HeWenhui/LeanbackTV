@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.airbnb.lottie.AssertUtil;
+import com.xueersi.common.base.XrsCrashReport;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
@@ -29,6 +30,7 @@ import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by linyuqiang on 2019/3/5.
@@ -101,6 +103,7 @@ public class WebInstertJs {
                         line = line.substring(0, index + findStr.length()) + "\n" + indexJs + "\n" + line.substring(index + findStr.length());
                     }
                     logToFile.d("httpRequest:insertJs=" + line);
+                    XrsCrashReport.d(TAG,"httpRequest:insertJs=" + line);
                     addJs = true;
                 }
             }
@@ -123,12 +126,15 @@ public class WebInstertJs {
         return null;
     }
 
-    public InputStream httpRequest(String url) {
+    public InputStream httpRequest(String url, AtomicBoolean islocal) {
         String fileName = "index_" + url.hashCode() + "_" + saveTime + ".html";
         File saveFile = new File(cacheDir, fileName);
         logToFile.d("httpRequest:fileName=" + saveFile + ",exists=" + saveFile.exists());
         if (saveFile.exists()) {
             try {
+                if (islocal != null) {
+                    islocal.set(true);
+                }
                 return new FileInputStream(saveFile);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -195,3 +201,4 @@ public class WebInstertJs {
         return "/android/courseware/index.js";
     }
 }
+

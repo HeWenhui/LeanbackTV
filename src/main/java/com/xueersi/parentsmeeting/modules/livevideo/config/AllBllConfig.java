@@ -29,6 +29,8 @@ public class AllBllConfig {
             "com.xueersi.parentsmeeting.modules.livevideo.teacherpraisesec.business.TeacherPraiseSecBll",
             //投票
             "com.xueersi.parentsmeeting.modules.livevideo.business.LiveVoteBll",
+            //理科投票
+            "com.xueersi.parentsmeeting.modules.livevideo.business.ScienceVoteBll",
             //智能私信
             "com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeIRCBll",
             //领奖台
@@ -58,13 +60,15 @@ public class AllBllConfig {
             //接麦，初中小学
             "com.xueersi.parentsmeeting.modules.livevideo.videoaudiochat.business.VideoChatCreat",
             //直播反馈
-            "com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.EvaluateTeacherBll",
+//            "com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.EvaluateTeacherBll",
             //金话筒
             "com.xueersi.parentsmeeting.modules.livevideo.goldmicrophone.GoldMicroPhoneBll",
             //教师反馈
             "com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.FeedbackTeacherBll",
             //语文半身直播超级演讲秀
-            "com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.SuperSpeakerBll"
+            "com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.SuperSpeakerBll",
+
+            "com.xueersi.parentsmeeting.modules.livevideo.business.foruminteraction.ForumInteractionIRCBll"
     };
     private static String[] engClassPath = {
             //弹幕
@@ -88,7 +92,7 @@ public class AllBllConfig {
             "com.xueersi.parentsmeeting.modules.livevideo.enteampk.business.EnTeamPkIRCBll",
             "com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementIRCBll",
             "com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChatIRCBll",
-            "com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.EvaluateTeacherBll",
+//            "com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.EvaluateTeacherBll",
             "com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.FeedbackTeacherBll",
             "com.xueersi.parentsmeeting.modules.livevideo.betterme.presenter.BetterMeIRCBll",};
     private static String[] cnClassPath = {
@@ -117,7 +121,7 @@ public class AllBllConfig {
             "com.xueersi.parentsmeeting.modules.livevideo.goldmicrophone.GoldMicroPhoneBll",
             "com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.SuperSpeakerBll",
             "com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChatIRCBll",
-            "com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.EvaluateTeacherBll",
+//            "com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.EvaluateTeacherBll",
             "com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.FeedbackTeacherBll"
     };
     private static String[] lecClassPath = {

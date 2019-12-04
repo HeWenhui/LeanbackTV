@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="iv_livevideo_expe_course_game_result" type="id" />
+    <item name="rl_livevideo_expe_course_game_result" type="id" />
+    <item name="v_livevideo_expe_course_game_result" type="id" />
+    <item name="tv_livevideo_expe_course_game_result" type="id" />
+</resources>

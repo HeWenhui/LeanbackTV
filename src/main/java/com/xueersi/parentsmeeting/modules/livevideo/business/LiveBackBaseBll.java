@@ -18,9 +18,11 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.LivePlu
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpAction;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpResponseParser;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
@@ -32,7 +34,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * 直播回放总bll
  */
 public class LiveBackBaseBll extends BaseBll implements LiveViewAction {
-    protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
+    protected Logger logger = LiveLoggerFactory.getLogger(getClass().getSimpleName());
     protected LiveBackBll liveBackBll;
     protected Activity activity;
     protected RelativeLayout mRootViewBottom;
@@ -115,6 +117,14 @@ public class LiveBackBaseBll extends BaseBll implements LiveViewAction {
 
     public LiveHttpManager getmHttpManager() {
         return liveBackBll.getmHttpManager();
+    }
+
+    /**
+     * 获取网络请求对象
+     */
+    protected final LiveHttpAction getLiveHttpAction() {
+        LiveHttpAction liveHttpAction = liveBackBll.getmHttpManager();
+        return liveHttpAction;
     }
 
     protected void onRestart() {

@@ -15,11 +15,10 @@ import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.tencent.smtt.sdk.WebViewClient;
 import com.xueersi.common.config.AppConfig;
-import com.xueersi.lib.analytics.umsagent.UmsAgentTrayPreference;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.browser.business.XesWebViewCookieUtils;
-import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
+import com.xueersi.parentsmeeting.modules.livevideo.util.WebViewObserve;
 
 import java.io.File;
 import java.io.IOException;
@@ -88,6 +87,10 @@ public class CacheWebView extends WebView {
 
     public void setCacheInterceptor(CacheInterceptor interceptor) {
         mCacheWebViewClient.setCacheInterceptor(interceptor);
+    }
+
+    public void setRequestIntercept(RequestIntercept requestIntercept) {
+        mCacheWebViewClient.setRequestIntercept(requestIntercept);
     }
 
     public static CacheConfig getCacheConfig() {
@@ -192,6 +195,7 @@ public class CacheWebView extends WebView {
 //        } catch (Exception e) {
 //            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
 //        }
+        WebViewObserve.getInstance().loadUrl(this, url);
         return url;
     }
 
@@ -216,6 +220,8 @@ public class CacheWebView extends WebView {
         webSettings.setDisplayZoomControls(false);
 
         webSettings.setDefaultTextEncodingName("UTF-8");
+
+        webSettings.setTextZoom(100);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             webSettings.setAllowFileAccessFromFileURLs(true);
@@ -303,6 +309,7 @@ public class CacheWebView extends WebView {
         ViewGroup parent = (ViewGroup) viewParent;
         parent.removeView(this);
         super.destroy();
+        WebViewObserve.getInstance().destory(this);
     }
 
     @Override

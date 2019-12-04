@@ -83,6 +83,10 @@ public class CoursewarePreload {
      */
     private AtomicInteger subjectNum = new AtomicInteger(0);
 
+    private int isBig;
+
+    private String newBigUrl;
+
     /**
      * nb 加试实验 预加载资源信息
      **/
@@ -97,6 +101,11 @@ public class CoursewarePreload {
         if (!cacheFile.exists()) {
             cacheFile.mkdirs();
         }
+    }
+
+    public void setBig(int big, String url) {
+        this.isBig = big;
+        this.newBigUrl = url;
     }
 
     public void setmHttpManager(LiveHttpManager mHttpManager) {
@@ -211,18 +220,25 @@ public class CoursewarePreload {
         cdnPos = new AtomicInteger(0);
         if (!TextUtils.isEmpty(liveId)) {
             isPrecise.set(true);
-            if (0 == mSubject) {//理科
-                logger.i("donwload science");
-                subjectNum.getAndIncrement();
-                mHttpManager.getScienceCourewareInfo(liveId, new CoursewareHttpCallBack(false, "science", liveId));
-            } else if (1 == mSubject) {//英语
-                logger.i("download english");
-                subjectNum.getAndIncrement();
-                mHttpManager.getEnglishCourewareInfo(liveId, new CoursewareHttpCallBack(false, "english", liveId));
-            } else if (2 == mSubject) {//语文
-                logger.i("download chs");
-                subjectNum.getAndIncrement();
-                mHttpManager.getArtsCourewareInfo(liveId, new CoursewareHttpCallBack(false, "chs", liveId));
+            if (isBig == 1) {
+                if (!TextUtils.isEmpty(newBigUrl)) {
+                    subjectNum.incrementAndGet();
+                    mHttpManager.getBigLiveCourewareInfo(newBigUrl, liveId, new CoursewareHttpCallBack(false, "biglive", liveId));
+                }
+            } else {
+                if (0 == mSubject) {//理科
+                    logger.i("donwload science");
+                    subjectNum.getAndIncrement();
+                    mHttpManager.getScienceCourewareInfo(liveId, new CoursewareHttpCallBack(false, "science", liveId));
+                } else if (1 == mSubject) {//英语
+                    logger.i("download english");
+                    subjectNum.getAndIncrement();
+                    mHttpManager.getEnglishCourewareInfo(liveId, new CoursewareHttpCallBack(false, "english", liveId));
+                } else if (2 == mSubject) {//语文
+                    logger.i("download chs");
+                    subjectNum.getAndIncrement();
+                    mHttpManager.getArtsCourewareInfo(liveId, new CoursewareHttpCallBack(false, "chs", liveId));
+                }
             }
         } else {//下载当天所有课件资源
             logger.i("donwload all subjects");
@@ -827,7 +843,7 @@ public class CoursewarePreload {
                                     ips,
                                     cdns,
                                     url,
-                                    fileName,
+                                    "",
                                     new AtomicInteger(0),
                                     "",
                                     "2"), "");
@@ -858,7 +874,7 @@ public class CoursewarePreload {
                                     ips,
                                     cdns,
                                     url,
-                                    fileName,
+                                    "",
                                     new AtomicInteger(0),
                                     "3"),
                             "");
@@ -961,7 +977,7 @@ public class CoursewarePreload {
             } else {
                 isIP = true;
             }
-            sendUms(LogConfig.PRE_LOAD_START,
+            InfoUtils.sendUms(LogConfig.PRE_LOAD_START,
                     "endPreload",
                     md5,
                     isIP ? "true" : "false",
@@ -1055,7 +1071,7 @@ public class CoursewarePreload {
                     sb.append("," + ips.get(i) + url);
                 }
                 long downLoadTime = System.currentTimeMillis() - startDownLoadTime;
-                sendUms(LogConfig.PRE_LOAD_START,
+                InfoUtils.sendUms(LogConfig.PRE_LOAD_START,
                         "endPreload",
                         md5,
                         isIP ? "true" : "false",
@@ -1099,7 +1115,11 @@ public class CoursewarePreload {
             StableLogHashMap unZipMap = new StableLogHashMap();
             unZipMap.put("logtype", "startUnzip");
             unZipMap.put("preloadid", md5);
-            unZipMap.put("extrainfo", mMorecacheout.getAbsolutePath());
+            if (mInput != null) {
+                unZipMap.put("extrainfo", mInput.getAbsolutePath());
+            } else {
+                unZipMap.put("extrainfo", "null");
+            }
             unZipMap.put("sno", "3");
             unZipMap.put("liveid", itemLiveId);
             unZipMap.put("resourcetype", resourcetype);
@@ -1119,42 +1139,13 @@ public class CoursewarePreload {
             unZipMap.put("status", exception == null ? "true" : "false");
 //                    }
             unZipMap.put("extrainfo", mMorecacheout.getAbsolutePath());
+            unZipMap.put("inputfile", "" + mInput);
             unZipMap.put("sno", "4");
             unZipMap.put("liveid", itemLiveId);
             unZipMap.put("resourcetype", resourcetype);
             unZipMap.put("ip", IpAddressUtil.USER_IP);
             UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, unZipMap.getData());
         }
-    }
-
-    private void sendUms(String eventId,
-                         String logtype,
-                         String preloadid,
-                         String isuseip,
-                         String loadurl,
-                         String isresume,
-                         String loadtime,
-                         String sno,
-                         String status,
-                         String errorcode,
-                         String resourcetype,
-                         String failurl,
-                         String liveid) {
-        StableLogHashMap hashMap = new StableLogHashMap();
-        hashMap.put("logtype", logtype);
-        hashMap.put("preloadid", preloadid);
-        hashMap.put("isuseip", isuseip);
-        hashMap.put("loadurl", loadurl);
-        hashMap.put("isresume", isresume);
-        hashMap.put("loadtime", loadtime);
-        hashMap.put("sno", sno);
-        hashMap.put("status", status);
-        hashMap.put("errorcode", errorcode);
-        hashMap.put("resourcetype", resourcetype);
-        hashMap.put("failurl", failurl);
-        hashMap.put("liveid", liveid);
-        hashMap.put("ip", IpAddressUtil.USER_IP);
-        UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, eventId, hashMap.getData());
     }
 
     class NoZipDownloadListener implements DownloadListener {
@@ -1256,8 +1247,8 @@ public class CoursewarePreload {
                 } else {
                     isIP = true;
                 }
-                sendUms(LogConfig.PRE_LOAD_START,
-                        "startPreload",
+                InfoUtils.sendUms(LogConfig.PRE_LOAD_START,
+                        "endPreload",
                         md5,
                         isIP ? "true" : "false",
                         url,
@@ -1354,7 +1345,7 @@ public class CoursewarePreload {
 
                 if (!NbCourseWareConfig.RESOURSE_TYPE_NB.equals(resourcetype)) {
                     long downLoadTime = System.currentTimeMillis() - startDonwLoadTime;
-                    sendUms(LogConfig.PRE_LOAD_START,
+                    InfoUtils.sendUms(LogConfig.PRE_LOAD_START,
                             "endPreload",
                             md5,
                             isIP ? "true" : "false",

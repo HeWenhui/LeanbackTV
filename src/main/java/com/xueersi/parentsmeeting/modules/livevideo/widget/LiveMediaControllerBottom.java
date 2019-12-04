@@ -26,6 +26,11 @@ public class LiveMediaControllerBottom extends BaseLiveMediaControllerBottom {
 
     private int mArts = 0;
 
+    /**
+     * 是否拦截 底部控制栏自动隐藏
+     */
+    boolean interceptBtmMediaCtrHide;
+
     public LiveMediaControllerBottom(Context context, LiveMediaController controller, MediaPlayerControl player) {
         super(context, controller, player);
     }
@@ -98,9 +103,23 @@ public class LiveMediaControllerBottom extends BaseLiveMediaControllerBottom {
         super.onHide();
     }
 
+    @Override
+    public void onShow() {
+        if (!interceptBtmMediaCtrHide) {
+            super.onShow();
+        }
+    }
+
     public void experience() {
         findViewById(R.id.bt_livevideo_message_flowers).setVisibility(INVISIBLE);
         findViewById(R.id.bt_livevideo_mark).setVisibility(INVISIBLE);
     }
 
+    /**
+     * 拦截 显示隐藏 动画
+     * @param intercept
+     */
+    public void interceptHideBtmMediaCtr(boolean intercept) {
+        interceptBtmMediaCtrHide = intercept;
+    }
 }

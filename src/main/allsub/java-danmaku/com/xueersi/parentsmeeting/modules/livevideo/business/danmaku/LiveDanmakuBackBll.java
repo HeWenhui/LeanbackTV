@@ -6,7 +6,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEnt
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.StandExperienceLiveBackBll;
+//import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.StandExperienceLiveBackBll;
 
 import java.util.HashMap;
 
@@ -24,10 +24,10 @@ public class LiveDanmakuBackBll extends LiveBackBaseBll {
     }
 
     /** 全身直播体验课弹幕 */
-    public LiveDanmakuBackBll(Activity activity, StandExperienceLiveBackBll liveBackBll) {
-        super(activity, liveBackBll);
-        liveDanmaku = new LiveDanmaku(activity);
-    }
+//    public LiveDanmakuBackBll(Activity activity, StandExperienceLiveBackBll liveBackBll) {
+//        super(activity, liveBackBll);
+//        liveDanmaku = new LiveDanmaku(activity);
+//    }
 
     @Override
     public void initView() {

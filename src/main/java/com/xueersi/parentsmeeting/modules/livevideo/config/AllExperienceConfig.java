@@ -9,12 +9,36 @@ public class AllExperienceConfig {
             "com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionExperienceBll",
             "com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5ExperienceBll",
             "com.xueersi.parentsmeeting.modules.livevideo.question.business.NBH5ExperienceBll",
+            "com.xueersi.parentsmeeting.modules.livevideo.question.business.ArtsAnswerResultPlayBackBll",
+    };
+    private static String[] experienceRecordClassPath = {
+            "com.xueersi.parentsmeeting.modules.livevideo.business.ExperIRCMessBll",
+            "com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionExperienceBll",
+            "com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5ExperienceBll",
+            "com.xueersi.parentsmeeting.modules.livevideo.question.business.NBH5ExperienceBll",
+            "com.xueersi.parentsmeeting.modules.livevideo.question.business.ArtsAnswerResultPlayBackBll",
     };
     private static String[] experienceHalfClassPath = {
+            "com.xueersi.parentsmeeting.modules.livevideo.business.ExperHalfbodyIRCMessBll",
             "com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionExperienceBll",
-            "com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5HalfBodyExperienceBll",
+            "com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5ExperienceBll",
             "com.xueersi.parentsmeeting.modules.livevideo.question.business.NBH5ExperienceBll",
             "com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.HalfBodyRedPackageExperienceBll",
+    };
+    private static String[] standLiveClassPath = {
+            //弹幕
+            "com.xueersi.parentsmeeting.modules.livevideo.business.danmaku.LiveDanmakuBackBll",
+            "com.xueersi.parentsmeeting.modules.livevideo.fragment.se.StandExperienceRedPackageBll",
+            "com.xueersi.parentsmeeting.modules.livevideo.fragment.se.livemessage.StandExperienceMessageBll",
+            "com.xueersi.parentsmeeting.modules.livevideo.fragment.se.understand.StandExperienceUnderstandBll",
+            "com.xueersi.parentsmeeting.modules.livevideo.fragment.se.examination.StandExperienceEvaluationBll",
+            "com.xueersi.parentsmeeting.modules.livevideo.fragment.se.learnfeedback.StandExperienceLearnFeedbackBll",
+            "com.xueersi.parentsmeeting.modules.livevideo.question.business.StandExperienceEnglishH5PlayBackBll",
+            "com.xueersi.parentsmeeting.modules.livevideo.question.business.StandExperienceQuestionPlayBackBll",
+//            "com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionExperienceBll",
+//            "com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5ExperienceBll",
+//            "com.xueersi.parentsmeeting.modules.livevideo.question.business.ArtsAnswerResultPlayBackBll",
+
     };
     private static String[] lecClassPath = {
             "com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll",
@@ -34,10 +58,26 @@ public class AllExperienceConfig {
         return arrayList;
     }
 
+    public static ArrayList<BllConfigEntity> getExperienceRecordBusiness() {
+        ArrayList<BllConfigEntity> arrayList = new ArrayList<>();
+        for (int i = 0; i < experienceRecordClassPath.length; i++) {
+            arrayList.add(new BllConfigEntity(experienceRecordClassPath[i]));
+        }
+        return arrayList;
+    }
+
     public static ArrayList<BllConfigEntity> getHalfExperienceBusiness() {
         ArrayList<BllConfigEntity> arrayList = new ArrayList<>();
         for (int i = 0; i < experienceHalfClassPath.length; i++) {
             arrayList.add(new BllConfigEntity(experienceHalfClassPath[i]));
+        }
+        return arrayList;
+    }
+
+    public static ArrayList<BllConfigEntity> getStandLiveVideoExperienceBusiness() {
+        ArrayList<BllConfigEntity> arrayList = new ArrayList<>();
+        for (int i = 0; i < standLiveClassPath.length; i++) {
+            arrayList.add(new BllConfigEntity(standLiveClassPath[i]));
         }
         return arrayList;
     }

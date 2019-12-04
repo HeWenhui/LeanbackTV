@@ -2,6 +2,9 @@ package com.xueersi.parentsmeeting.modules.livevideo.util;
 
 import android.os.Looper;
 
+import com.alibaba.fastjson.JSON;
+import com.tencent.smtt.export.external.interfaces.SslError;
+import com.tencent.smtt.export.external.interfaces.SslErrorHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.tencent.smtt.export.external.interfaces.WebResourceError;
 import com.tencent.smtt.export.external.interfaces.WebResourceRequest;
@@ -58,6 +61,30 @@ public class ErrorWebViewClient extends WebViewClient {
         super.onLoadResource(webView, s);
     }
 
+
+    @Override
+    public void onReceivedSslError(WebView webView, SslErrorHandler sslErrorHandler, SslError sslError) {
+
+        if (sslErrorHandler != null) {
+            sslErrorHandler.proceed();
+        }
+        onReceivedHttpError(webView, "xes_err_web_onReceivedSslError", 1, sslError.getCertificate().toString());
+    }
+
+    public void onError(WebView webView, String url, int statusCode, String reasonPhrase) {
+        HashMap<String, String> logHashMap = new HashMap<>();
+        logHashMap.put("tag", TAG);
+        logHashMap.put("status", "false");
+        logHashMap.put("loadurl", "" + url);
+        logHashMap.put("weburl", "" + loadUrl);
+        logHashMap.put("errcode", "" + statusCode);
+        logHashMap.put("errmsg", "" + reasonPhrase);
+        logHashMap.put("userip", "" + IpAddressUtil.USER_IP);
+        logHashMap.put("operator", "" + IpAddressUtil.USER_OPERATE);
+        UmsAgentManager.umsAgentDebug(webView.getContext(), "webError:", JSON.toJSONString(logHashMap));
+    }
+
+
     @Override
     public void onReceivedError(final WebView webView, final WebResourceRequest webResourceRequest, final WebResourceError webResourceError) {
         liveThreadPoolExecutor.execute(new Runnable() {
@@ -104,6 +131,9 @@ public class ErrorWebViewClient extends WebViewClient {
                     logHashMap.put("txdns", TxHttpDns.getInstance().getTxEnterpriseDns(url));
                     otherMsg(logHashMap, loadUrl);
                     String enentId = logHashMap.getData().get("eventid");
+                    if (url.endsWith("index_files/data2.js") || url.endsWith("assets/images/startBg.jpg")) {
+                        enentId = LiveVideoConfig.LIVE_WEBVIEW_ERROR;
+                    }
                     if (enentId != null) {
                         LiveAndBackDebug liveAndBackDebug = ProxUtil.getProxUtil().get(webView.getContext(), LiveAndBackDebug.class);
                         if (liveAndBackDebug != null) {
@@ -141,6 +171,9 @@ public class ErrorWebViewClient extends WebViewClient {
         logHashMap.put("operator", "" + IpAddressUtil.USER_OPERATE);
         otherMsg(logHashMap, loadUrl);
         String enentId = logHashMap.getData().get("eventid");
+        if (("" + url).endsWith("index_files/data2.js") || ("" + url).endsWith("assets/images/startBg.jpg")) {
+            enentId = LiveVideoConfig.LIVE_WEBVIEW_ERROR;
+        }
         if (enentId != null) {
             LiveAndBackDebug liveAndBackDebug = ProxUtil.getProxUtil().get(webView.getContext(), LiveAndBackDebug.class);
             if (liveAndBackDebug != null) {
