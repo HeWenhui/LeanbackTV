@@ -28,7 +28,7 @@ import java.util.List;
  * @ProjectName: xueersiwangxiao
  * @Package: com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.pager
  * @ClassName: DiscountCouponDetailPager
- * @Description: java类作用描述
+ * @Description: 优惠券页面
  * @Author: WangDe
  * @CreateDate: 2019/11/26 14:32
  * @UpdateUser: 更新者

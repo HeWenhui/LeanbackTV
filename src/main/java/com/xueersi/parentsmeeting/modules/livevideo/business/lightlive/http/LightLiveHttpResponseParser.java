@@ -27,6 +27,11 @@ import java.util.List;
  */
 public class LightLiveHttpResponseParser extends HttpResponseParser {
 
+    /**
+     * 解析优化券
+     * @param responseEntity
+     * @return
+     */
     public List<CouponEntity> parserCouponList(ResponseEntity responseEntity) {
         if (responseEntity == null) return null;
 
@@ -62,6 +67,11 @@ public class LightLiveHttpResponseParser extends HttpResponseParser {
 
     }
 
+    /**
+     * 解析推荐课程
+     * @param responseEntity
+     * @return
+     */
     public List<CourseEntity> parserCourseList(ResponseEntity responseEntity) {
         {
             List<CourseEntity> courseEntities = new ArrayList<>();
@@ -173,78 +183,6 @@ public class LightLiveHttpResponseParser extends HttpResponseParser {
             }
             return null;
         }
-//        if (responseEntity == null) return null;
-//
-//        JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-//        if (jsonObject == null) return null;
-//
-//        int status =  jsonObject.optInt("status");
-//        if (status == 0){
-//            return null;
-//        }
-//
-//        JSONArray courseList = jsonObject.optJSONArray("list");
-//        if (courseList == null || courseList.length() == 0) {
-//            return null;
-//        }
-//        List<CourseEntity> entities = new ArrayList<>();
-//        for (int i = 0; i < courseList.length(); i++) {
-//            JSONObject listObj = null;
-//            try {
-//                listObj = courseList.getJSONObject(i);
-//                if (listObj == null) continue;
-//                CourseEntity courseEntity = new CourseEntity();
-//                courseEntity.setCourseId(listObj.optString("courseId"));
-//                courseEntity.setSubjectName(listObj.optString("subjectName"));
-//                String orignPrice = listObj.optString("price","0");
-//                if (orignPrice.isEmpty()){
-//                    orignPrice = "0";
-//                }
-//                courseEntity.setCourseOrignPrice(Integer.parseInt(orignPrice));
-//                courseEntity.setCoursePrice(Integer.parseInt(listObj.optString("resaleSale","0")));
-//                courseEntity.setCourseDifficulity(Integer.parseInt(listObj.optString("difficultyId", "0")));
-//                courseEntity.setSecondTitle(listObj.optString("secondTitle"));
-//                courseEntity.setCourseName(listObj.optString("courseName"));
-//                courseEntity.setLiveShowTime(listObj.optString("schooltimeName"));
-//                courseEntity.setChapterCount("共" + listObj.optString("planCount") + "讲");
-//                courseEntity.setRemainPeople(listObj.optString("leftNum"));
-//                courseEntity.setDeadTime(listObj.optString("reminder"));
-//                if(listObj.has("teacherInfo")){
-//                    JSONArray mainArray = listObj.optJSONArray("teacherInfo");
-//                    ArrayList<CourseTeacherEntity> mainTeacherEntities = new ArrayList<>();
-//                    for (int j = 0; j < mainArray.length(); j++) {
-//                        JSONObject mainObject =  mainArray.optJSONObject(j);
-//                        CourseTeacherEntity entity = new CourseTeacherEntity();
-//                        entity.setTeacherName(mainObject.optString("teacher_name"));
-//                        entity.setTeacherImg(mainObject.optString("avatar"));
-//                        entity.setTeacherHint(mainObject.optString("type_name"));
-//                        mainTeacherEntities.add(entity);
-//                    }
-//                    courseEntity.setLstMainTeacher(mainTeacherEntities);
-//                }
-//                if(listObj.has("counselorInfo")){
-//                    JSONArray mainArray = listObj.optJSONArray("counselorInfo");
-//                    ArrayList<CourseTeacherEntity> coachTeacherEntities = new ArrayList<>();
-//                    for (int j = 0; j < mainArray.length(); j++) {
-//                        JSONObject coachObject =  mainArray.optJSONObject(j);
-//                        CourseTeacherEntity entity = new CourseTeacherEntity();
-//                        entity.setTeacherName(coachObject.optString("teacher_name"));
-//                        entity.setTeacherImg(coachObject.optString("avatar"));
-//                        entity.setTeacherHint(coachObject.optString("type_name"));
-//                        if("专属老师".equals(entity.getTeacherHint()) && "7".equals(coachObject.optString("teacher_type"))){
-//                            courseEntity.setExcTeacherCourse(1);
-//                        }
-//                        coachTeacherEntities.add(entity);
-//                    }
-//                    courseEntity.setLstCoachTeacher(coachTeacherEntities);
-//                }
-//                entities.add(courseEntity);
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
-//
-//        }
-//        return entities;
     }
     protected ArrayList<CourseTeacherEntity> parserTeacherEntity(JSONArray jsonArray) {
         if (jsonArray != null && jsonArray.length() > 0) {

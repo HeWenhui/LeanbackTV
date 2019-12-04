@@ -19,6 +19,7 @@ import com.airbnb.lottie.AssertUtil;
 import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
+import com.hwl.bury.xrsbury.XrsBury;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -145,6 +146,7 @@ public class LightLiveRedPackageView extends LiveBasePager implements IRedPackag
         ivBusiRedPackClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                XrsBury.clickBury(mContext.getResources().getString(R.string.livevideo_click_03_54_018));
                 cancleAnim();
                 mView.setOnClickListener(null);
                 mView.setClickable(false);

@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
+import com.hwl.bury.xrsbury.XrsBury;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.entity.CourseEntity;
@@ -64,6 +65,7 @@ public class RecommendCoursePager extends BasePager {
         if (courseEntities != null && !courseEntities.isEmpty()){
             initData();
             mView.setVisibility(View.VISIBLE);
+            XrsBury.showBury(mContext.getResources().getString(R.string.livevideo_show_03_32_001));
         }else {
             mView.setVisibility(View.GONE);
         }

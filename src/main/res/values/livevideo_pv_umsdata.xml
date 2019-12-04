@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<!-->说明: 轻直播间  
+         参数: 屏幕观看id【0：横屏 1：竖屏】</!-->
+	<string name="livevideo_pv_052">{"buryId":\"livevideo_pv_052\","businessinfo$json":{"screenid":\"%1$s\"}}</string>
+</resources>

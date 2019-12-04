@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.hwl.bury.xrsbury.XrsBury;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
@@ -46,13 +47,15 @@ public class DiscountCouponBll extends LiveBaseBll {
     private LinearLayout middleLayout;
     /** 全屏布局*/
     private RelativeLayout contentLayout;
+    /** 优惠券缩率页面*/
     private DiscountCouponPager discountCouponPager;
+    /** 优惠券详细页面*/
     private DiscountCouponDetailPager detailPager;
     private boolean isDetailShow;
+    /** 优惠券*/
     private List<CouponEntity> couponEntities;
     private LightLiveHttpManager mHttpManager;
     private LightLiveHttpResponseParser mHttpResponseParser;
-    private boolean isNewData;
     private String liveId;
 
     public DiscountCouponBll(Activity context, LiveBll2 liveBll) {
@@ -111,6 +114,9 @@ public class DiscountCouponBll extends LiveBaseBll {
             }
         }
         discountCouponPager.setData(couponEntities);
+        if (couponEntities != null && !couponEntities.isEmpty()){
+            XrsBury.showBury(mContext.getResources().getString(R.string.livevideo_show_03_32_003));
+        }
         initListener();
         super.initView();
     }
@@ -120,6 +126,7 @@ public class DiscountCouponBll extends LiveBaseBll {
             @Override
             public void onClick() {
                 if (!isDetailShow){
+                    XrsBury.clickBury(mContext.getResources().getString(R.string.livevideo_click_03_54_005));
                     contentLayout.addView(detailPager.getRootView());
                     RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) detailPager.getRootView().getLayoutParams();
                     params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
@@ -128,6 +135,7 @@ public class DiscountCouponBll extends LiveBaseBll {
                     contentLayout.setBackground(mContext.getResources().getDrawable(R.color.COLOR_80000000));
                     contentLayout.setClickable(true);
                     detailPager.updataView(couponEntities);
+                    XrsBury.showBury(mContext.getResources().getString(R.string.livevideo_show_03_32_004));
                 }
                 isDetailShow = true;
             }
@@ -140,12 +148,13 @@ public class DiscountCouponBll extends LiveBaseBll {
                 contentLayout.setBackground(mContext.getResources().getDrawable(R.color.COLOR_00000000));
                 contentLayout.setClickable(false);
                 isDetailShow = false;
+                XrsBury.clickBury(mContext.getResources().getString(R.string.livevideo_click_03_54_006));
             }
         });
 
         detailPager.setCouponClickListener(new DiscountCouponDetailPager.GetCouponClickListener() {
             @Override
-            public void onClick(String couponId) {
+            public void onClick(final String couponId) {
                 if (AppBll.getInstance().isAlreadyLogin()){
                     mHttpManager.getCouponGet(couponId, new HttpCallBack(false) {
                         @Override
@@ -153,8 +162,10 @@ public class DiscountCouponBll extends LiveBaseBll {
 
                             JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
                             if (jsonObject != null) {
+                                int status = jsonObject.optInt("status");
                                 String toast = jsonObject.optString("tip");
                                 XESToastUtils.showToastAtCenter(toast);
+                                XrsBury.clickBury(mContext.getResources().getString(R.string.livevideo_click_03_54_007),couponId, status== 1 ? 0:1);
                             }
                             getCouponList(false);
                         }
@@ -163,21 +174,25 @@ public class DiscountCouponBll extends LiveBaseBll {
                         public void onPmFailure(Throwable error, String msg) {
                             super.onPmFailure(error, msg);
                             XESToastUtils.showToastAtCenter(msg);
+                            XrsBury.clickBury(mContext.getResources().getString(R.string.livevideo_click_03_54_007),couponId,1);
                         }
 
                         @Override
                         public void onPmError(ResponseEntity responseEntity) {
                             super.onPmError(responseEntity);
                             XESToastUtils.showToastAtCenter(responseEntity.getErrorMsg());
+                            XrsBury.clickBury(mContext.getResources().getString(R.string.livevideo_click_03_54_007),couponId,1);
                         }
                     });
                 } else {
+                    XrsBury.showBury(mContext.getResources().getString(R.string.livevideo_show_03_32_005),"");
                     LoginEnter.openLogin(mContext,false,new Bundle());
                 }
             }
         });
     }
 
+    /** 获取优惠券列表*/
     private void getCouponList(final boolean isClear){
 
         mHttpManager.getCouponList(liveId, new HttpCallBack(false) {
@@ -187,10 +202,14 @@ public class DiscountCouponBll extends LiveBaseBll {
                 couponEntities = mHttpResponseParser.parserCouponList(responseEntity);
                 if (discountCouponPager != null){
                     discountCouponPager.setData(couponEntities);
+                    if (isClear && couponEntities != null && !couponEntities.isEmpty()){
+                        XrsBury.showBury(mContext.getResources().getString(R.string.livevideo_show_03_32_003));
+                    }
                 }
                 if (detailPager != null){
                     detailPager.updataView(couponEntities);
                 }
+
             }
 
             @Override

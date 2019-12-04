@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.hwl.bury.xrsbury.XrsBury;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.route.XueErSiRouter;
 import com.xueersi.lib.framework.are.ContextManager;
@@ -102,6 +103,7 @@ public class RecommendCourseItem extends BasePager {
 //            bundle.putString("classId", mCourseEntity.getClassID());
             //采用ARouter来跳转
             XueErSiRouter.startModule(mContext, "/xesmallCourseDetail/xrsmodule", bundle);
+                XrsBury.clickBury(mContext.getResources().getString(R.string.livevideo_click_03_54_002),mCourseEntity.getCourseId());
             }
         });
     }

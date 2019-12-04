@@ -25,6 +25,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.hwl.bury.xrsbury.XrsBury;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.ScreenUtils;
@@ -164,9 +165,11 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
                 isShowWeChat = true;
                 tvTeacherWeChat.setVisibility(View.VISIBLE);
                 tvTeacherWeChat.setText("加班级群");
+               XrsBury.showBury(mContext.getResources().getString(R.string.livevideo_show_03_32_008));
             }else if (getInfo.getLpWeChatEntity().getTipType() == LPWeChatEntity.TEACHER_WECHAT && getInfo.getLpWeChatEntity().getExistWx() == 1){
                 isShowWeChat = true;
                 tvTeacherWeChat.setVisibility(View.VISIBLE);
+                XrsBury.showBury(mContext.getResources().getString(R.string.livevideo_show_03_32_006));
             }else {
                 isShowWeChat = false;
                 tvTeacherWeChat.setVisibility(View.GONE);
@@ -294,6 +297,7 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
             @Override
             public void onClick(View v) {
 //                ConfirmAlertDialog
+                XrsBury.clickBury(mContext.getResources().getString(R.string.livevideo_click_03_54_014));
                 cleanMessage();
             }
         });
@@ -302,8 +306,10 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     XESToastUtils.showToast(mContext, "只看老师消息");
+                    XrsBury.clickBury(mContext.getResources().getString(R.string.livevideo_click_03_54_013),1);
                 } else {
                     XESToastUtils.showToast(mContext, "接收全部消息");
+                    XrsBury.clickBury(mContext.getResources().getString(R.string.livevideo_click_03_54_013),0);
                 }
             }
         });
@@ -791,7 +797,16 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
      * 显示联系老师弹窗
      */
     private void showWeChatDialog(){
-        wechatDialog = new TeacherWechatDialog(mContext,mBaseApplication,weChatEntity.getTipType());
+        if (wechatDialog == null ){
+            wechatDialog = new TeacherWechatDialog(mContext,mBaseApplication,weChatEntity.getTipType());
+        }
+        if (weChatEntity.getTipType() == TeacherWechatDialog.TYPE_WITH_HEAD){
+            XrsBury.clickBury(mContext.getResources().getString(R.string.livevideo_click_03_54_008));
+            XrsBury.showBury(mContext.getResources().getString(R.string.livevideo_show_03_32_007));
+        } else if (weChatEntity.getTipType() == TeacherWechatDialog.TYPE_WITH_QRCODE){
+            XrsBury.clickBury(mContext.getResources().getString(R.string.livevideo_click_03_54_010));
+            XrsBury.showBury(mContext.getResources().getString(R.string.livevideo_show_03_32_009));
+        }
         wechatDialog.setTeacherHead(weChatEntity.getTeacherImg()).setTeacherName(weChatEntity.getTeacherName())
                 .setTeacherWechat(weChatEntity.getTeacherWx()).setQrcode(weChatEntity.getWxQrUrl()).setSubTitle(weChatEntity.getTipInfo());
         wechatDialog.showDialog();
@@ -852,6 +867,14 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
                     if (otherMessageAdapter != null) {
                         otherMessageAdapter.notifyDataSetChanged();
                     }
+                    XrsBury.clickBury(mContext.getResources().getString(R.string.livevideo_click_03_54_015));
+                }
+            });
+            cleanMessageDialog.setCancelBtnListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    XrsBury.clickBury(mContext.getResources().getString(R.string.livevideo_click_03_54_016));
+                    cleanMessageDialog.cancelDialog();
                 }
             });
         }

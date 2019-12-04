@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.hwl.bury.xrsbury.XrsBury;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.SizeUtils;
@@ -121,6 +122,7 @@ public class RecommendCourseBll extends LiveBaseBll {
             @Override
             public void onClick() {
                 if (!isDetailShow){
+                    XrsBury.clickBury(mContext.getResources().getString(R.string.livevideo_click_03_54_001));
                     contentLayout.addView(mDetailPager.getRootView());
                     RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mDetailPager.getRootView().getLayoutParams();
                     params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
@@ -129,6 +131,7 @@ public class RecommendCourseBll extends LiveBaseBll {
                     contentLayout.setBackground(mContext.getResources().getDrawable(R.color.COLOR_80000000));
                     contentLayout.setClickable(true);
                     mDetailPager.updataView(courseEntities);
+                    XrsBury.showBury(mContext.getResources().getString(R.string.livevideo_show_03_32_002));
                 }
                 isDetailShow = true;
             }
@@ -140,6 +143,7 @@ public class RecommendCourseBll extends LiveBaseBll {
                 contentLayout.setBackground(mContext.getResources().getDrawable(R.color.COLOR_00000000));
                 contentLayout.setClickable(false);
                 isDetailShow = false;
+                XrsBury.clickBury(mContext.getResources().getString(R.string.livevideo_click_03_54_004));
             }
         });
     }

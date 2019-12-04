@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.hwl.bury.xrsbury.XrsBury;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.util.LoginEnter;
@@ -171,10 +172,12 @@ public class LightLiveRedPackageBll implements RedPackageAction, Handler.Callbac
             @Override
             public void sendReceiveGold(int operateId, OnRedPackageSend onRedPackageSend) {
                 if(!isGetPagClick){
+                    XrsBury.clickBury(activity.getResources().getString(R.string.livevideo_click_03_54_017));
                     isGetPagClick = true;
                     if (AppBll.getInstance().isAlreadyLogin()) {
                         LightLiveRedPackageBll.this.sendReceiveGold(operateId, mVSectionID, onRedPackageSend);
                     } else {
+                        XrsBury.showBury(activity.getResources().getString(R.string.livevideo_show_03_32_011),"");
                         LoginEnter.openLogin(activity, false, null);
                         isGetPagClick = false;
                     }
@@ -199,6 +202,7 @@ public class LightLiveRedPackageBll implements RedPackageAction, Handler.Callbac
         rlRedpacketContent.bringToFront();
         activity.getWindow().getDecorView().requestLayout();
         activity.getWindow().getDecorView().invalidate();
+        XrsBury.showBury(activity.getResources().getString(R.string.livevideo_show_03_32_010));
     }
 
     private void sendReceiveGold(final int operateId, String sectionID, final OnRedPackageSend onRedPackageSend) {
@@ -209,6 +213,7 @@ public class LightLiveRedPackageBll implements RedPackageAction, Handler.Callbac
                 // 广播 领取红包成功事件
                 int gold = entity.getGoldNum();
                 onRedPackageSend.onReceiveGold(gold);
+                XrsBury.showBury(activity.getResources().getString(R.string.livevideo_show_03_32_012));
                 EventBus.getDefault().post(new RedPackageEvent(mVSectionID, entity.getGoldNum(),
                         operateId + "", RedPackageEvent.STATE_CODE_SUCCESS));
             }

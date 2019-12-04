@@ -20,6 +20,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hwl.bury.xrsbury.XrsBury;
 import com.xueersi.common.toast.XesToast;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.ScreenUtils;
@@ -144,6 +145,11 @@ public class TeacherWechatDialog extends BaseAlertDialog {
 
                 cm.setPrimaryClip(mClipData);
                 XESToastUtils.showToast("您已复制老师微信号，快去添加吧");
+                if (TYPE_WITH_HEAD == type){
+                    XrsBury.clickBury(mContext.getResources().getString(R.string.livevideo_click_03_54_009));
+                }else if (TYPE_WITH_QRCODE == type){
+                    XrsBury.clickBury(mContext.getResources().getString(R.string.livevideo_click_03_54_011));
+                }
             }
         });
     }
