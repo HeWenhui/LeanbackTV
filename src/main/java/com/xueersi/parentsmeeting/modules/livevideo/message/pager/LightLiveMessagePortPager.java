@@ -161,7 +161,7 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
         super.setGetInfo(getInfo);
         if (getInfo != null && getInfo.getLpWeChatEntity() != null){
             weChatEntity = getInfo.getLpWeChatEntity();
-           if (getInfo.getLpWeChatEntity().getTipType() == LPWeChatEntity.WECHAT_GROUP){
+           if (getInfo.getLpWeChatEntity().getTipType() == LPWeChatEntity.WECHAT_GROUP && getInfo.getLpWeChatEntity().getExistWx() == 1){
                 isShowWeChat = true;
                 tvTeacherWeChat.setVisibility(View.VISIBLE);
                 tvTeacherWeChat.setText("加班级群");
