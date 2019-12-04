@@ -45,10 +45,10 @@ public class SettingEnglishNameBarItem implements RItemViewInterface<EngLishName
         tvIndex.setText(entity.getWordIndex());
         if (entity.isSelect()) {
             tvIndex.setBackgroundResource(R.drawable.bg_group_class_grouping_bar_select);
-            tvIndex.setTextColor(mContext.getResources().getColor(R.color.COLOR_7B6E6E));
+            tvIndex.setTextColor(mContext.getResources().getColor(R.color.COLOR_FFFFFF));
         } else {
             tvIndex.setBackground(null);
-            tvIndex.setTextColor(mContext.getResources().getColor(R.color.COLOR_BE4C15));
+            tvIndex.setTextColor(mContext.getResources().getColor(R.color.COLOR_FD963E));
         }
         tvIndex.setOnClickListener(new View.OnClickListener() {
             @Override

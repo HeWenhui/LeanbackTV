@@ -36,7 +36,7 @@ public abstract class LiveBackVideoActivityBase extends XesActivity {
     private String TAG = "LiveVideoActivityBaseLog";
     /** 当前界面是否横屏 */
     protected boolean mIsLand = false;
-    LiveBackVideoFragmentBase liveVideoFragmentBase;
+    protected LiveBackVideoFragmentBase liveVideoFragmentBase;
 
     // endregion
 

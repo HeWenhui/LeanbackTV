@@ -542,13 +542,21 @@ public class SettingEnglishLandActivity extends XesActivity {
      */
     public void setRecyclerViewDecoration() {
         HashMap<String, Integer> stringIntegerHashMap = new HashMap<>();
-        stringIntegerHashMap.put(RecyclerViewSpacesItemDecoration.TOP_DECORATION, SizeUtils.Dp2Px(mContext, 5));//top间距
+        stringIntegerHashMap.put(RecyclerViewSpacesItemDecoration.TOP_DECORATION, SizeUtils.Dp2Px(mContext, 3));//top间距
         stringIntegerHashMap.put(RecyclerViewSpacesItemDecoration.BOTTOM_DECORATION, 0);//底部间距
         stringIntegerHashMap.put(RecyclerViewSpacesItemDecoration.LEFT_DECORATION, 0);//左间距
         stringIntegerHashMap.put(RecyclerViewSpacesItemDecoration.RIGHT_DECORATION, SizeUtils.Dp2Px(mContext, 3));//右间距
-        rvRecommend.addItemDecoration(new RecyclerViewSpacesItemDecoration(stringIntegerHashMap));
+     //   rvRecommend.addItemDecoration(new RecyclerViewSpacesItemDecoration(stringIntegerHashMap));
         recyclerView.addItemDecoration(new RecyclerViewSpacesItemDecoration(stringIntegerHashMap));
         recyclerSearch.addItemDecoration(new RecyclerViewSpacesItemDecoration(stringIntegerHashMap));
+
+        HashMap<String, Integer> recommandMap = new HashMap<>();
+        recommandMap.put(RecyclerViewSpacesItemDecoration.TOP_DECORATION, SizeUtils.Dp2Px(mContext, 3));//top间距
+        recommandMap.put(RecyclerViewSpacesItemDecoration.BOTTOM_DECORATION, 0);//底部间距
+        recommandMap.put(RecyclerViewSpacesItemDecoration.LEFT_DECORATION, 0);//左间距
+        recommandMap.put(RecyclerViewSpacesItemDecoration.RIGHT_DECORATION, SizeUtils.Dp2Px(mContext, 3));//右间距
+        rvRecommend.addItemDecoration(new RecyclerViewSpacesItemDecoration(recommandMap));
+
     }
 
     public class GridSpanSearchSizeLookup extends GridLayoutManager.SpanSizeLookup {
