@@ -32,23 +32,29 @@
             android:id="@+id/lv_groupclass_setting_english_name_sex_boy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_group_class_sex_boy" />
+            android:background="@drawable/bg_group_class_sex_boy_click" />
 
         <ImageView
             android:id="@+id/lv_groupclass_setting_english_name_sex_girl"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_group_class_sex_girl" />
+            android:background="@drawable/bg_group_class_sex_girl_click" />
 
     </LinearLayout>
+    <RelativeLayout
+        android:id="@+id/rl_groupclass_setting_english_name_search"
+        android:layout_marginTop="50dp"
+        android:visibility="gone"
+        android:layout_width="186dp"
+        android:layout_centerHorizontal="true"
+        android:layout_height="38dp">
     <com.xueersi.parentsmeeting.widget.FangZhengCuYuanEditText
         android:id="@+id/et_groupclass_setting_english_name_search"
         android:layout_width="186dp"
-        android:layout_marginTop="50dp"
         android:layout_gravity="center_horizontal"
+        android:textCursorDrawable="@drawable/bg_live_video_red_cursor_purl"
         android:imeOptions="flagNoExtractUi"
         android:visibility="gone"
-        android:layout_centerHorizontal="true"
         android:layout_height="38dp"
         android:paddingRight="20dp"
         android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -59,10 +65,18 @@
         android:textColor="@color/COLOR_FA6000"
         android:gravity="center_vertical"
         android:background="@drawable/bg_groupclass_setting_english_search" />
-
+        <ImageView
+            android:id="@+id/iv_groupclass_setting_english_name_search_delete"
+            android:layout_marginRight="7dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/bg_groupclass_setting_english_search_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
     <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
         android:id="@+id/tv_groupclass_setting_english_name_search_empty"
-        android:layout_below="@id/et_groupclass_setting_english_name_search"
+        android:layout_below="@id/rl_groupclass_setting_english_name_search"
         android:layout_marginTop="28dp"
         android:text="没有搜到哦，试试别的吧"
         android:layout_centerHorizontal="true"
@@ -72,7 +86,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
     <android.support.design.widget.CoordinatorLayout
-        android:layout_below="@id/et_groupclass_setting_english_name_search"
+        android:layout_below="@id/rl_groupclass_setting_english_name_search"
         android:id="@+id/cdl_groupclass_setting_english_name_content"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
@@ -168,15 +182,15 @@
         <TextView
             android:id="@+id/tv_groupclass_setting_english_name_pre_sex"
             android:layout_width="106dp"
-            android:layout_height="40dp"
+            android:layout_height="38dp"
             android:layout_marginRight="10dp"
-            android:background="@drawable/bg_groupclass_setting_english_pre" />
+            android:background="@drawable/bg_groupclass_setting_english_pre_click" />
 
         <TextView
             android:id="@+id/tv_groupclass_setting_english_name_sumit_data"
             android:layout_width="106dp"
-            android:layout_height="40dp"
-            android:background="@drawable/bg_groupclass_setting_english_conform" />
+            android:layout_height="38dp"
+            android:background="@drawable/bg_groupclass_setting_english_conform_click" />
     </LinearLayout>
     <LinearLayout
         android:layout_centerHorizontal="true"

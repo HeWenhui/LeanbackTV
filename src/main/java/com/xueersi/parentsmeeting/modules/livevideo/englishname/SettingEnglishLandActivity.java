@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbnb.lottie.ImageAssetDelegate;
@@ -121,8 +122,12 @@ public class SettingEnglishLandActivity extends XesActivity {
     boolean isLive = true;
     String where = "";
     AppBarLayout mAppBarLayout;
-    AppBarLayout.Behavior appBarLayoutBehavior;
+
     ImageView ivLine;
+
+    ImageView ivSearchDelete;
+
+    RelativeLayout rlSearch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -175,7 +180,12 @@ public class SettingEnglishLandActivity extends XesActivity {
 
     private void initListener() {
 
-
+        ivSearchDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                etSearch.setText("");
+            }
+        });
         imgBtnClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -261,6 +271,7 @@ public class SettingEnglishLandActivity extends XesActivity {
         clNameContent.setVisibility(View.GONE);
         ivLine.setVisibility(View.GONE);
         etSearch.setVisibility(View.GONE);
+        rlSearch.setVisibility(View.GONE);
         llControl.setVisibility(View.GONE);
         tvSearchEmpty.setVisibility(View.GONE);
         startNameLottie(true);
@@ -269,6 +280,7 @@ public class SettingEnglishLandActivity extends XesActivity {
     private void sexSelect() {
         etSearch.setText("");
         ivBoy.setVisibility(View.GONE);
+        rlSearch.setVisibility(View.VISIBLE);
         ivGirl.setVisibility(View.GONE);
         clNameContent.setVisibility(View.VISIBLE);
         ivLine.setVisibility(View.VISIBLE);
@@ -290,9 +302,7 @@ public class SettingEnglishLandActivity extends XesActivity {
             } else if (EnglishNameConfig.GROUP_CLASS_ENGLISH_NAME_BAR == type) {
                 //快速滑动实现吸顶效果
                 int hight= mAppBarLayout.getHeight();
-                if(appBarLayoutBehavior!=null) {
-                    appBarLayoutBehavior.setTopAndBottomOffset(-hight);
-                }
+
                 selectIndex(position, text);
                 // 名字选中
             } else if (EnglishNameConfig.GROUP_CLASS_ENGLISH_NAME_SELECT == type) {
@@ -334,13 +344,8 @@ public class SettingEnglishLandActivity extends XesActivity {
         tvSearchEmpty =  findViewById(R.id.tv_groupclass_setting_english_name_search_empty);
         mAppBarLayout  =  findViewById(R.id.abl_groupclass_setting_english_name_title);
         ivLine =  findViewById(R.id.v_group_class_grouping_line);
-        CoordinatorLayout.Behavior behavior =
-                ((CoordinatorLayout.LayoutParams) mAppBarLayout.getLayoutParams()).getBehavior();
-        if (behavior instanceof AppBarLayout.Behavior) {
-            appBarLayoutBehavior = (AppBarLayout.Behavior) behavior;
-        }
-
-
+        ivSearchDelete =  findViewById(R.id.iv_groupclass_setting_english_name_search_delete);
+        rlSearch=  findViewById(R.id.rl_groupclass_setting_english_name_search);
         rvRecommend.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
         recyclerViewIndex.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
         //      areaIndexBarView = findViewById(R.id.aiv_setting_english_name_list_index);
@@ -412,8 +417,10 @@ public class SettingEnglishLandActivity extends XesActivity {
             recyclerView.setVisibility(View.VISIBLE);
             recyclerSearch.setVisibility(View.GONE);
             ivLine.setVisibility(View.VISIBLE);
+            ivSearchDelete.setVisibility(View.GONE);
         } else {
             listSearchName.clear();
+            ivSearchDelete.setVisibility(View.VISIBLE);
             ivLine.setVisibility(View.GONE);
             tvRecommendHint.setVisibility(View.GONE);
             rvRecommend.setVisibility(View.GONE);
@@ -546,16 +553,16 @@ public class SettingEnglishLandActivity extends XesActivity {
         stringIntegerHashMap.put(RecyclerViewSpacesItemDecoration.BOTTOM_DECORATION, 0);//底部间距
         stringIntegerHashMap.put(RecyclerViewSpacesItemDecoration.LEFT_DECORATION, 0);//左间距
         stringIntegerHashMap.put(RecyclerViewSpacesItemDecoration.RIGHT_DECORATION, SizeUtils.Dp2Px(mContext, 3));//右间距
-     //   rvRecommend.addItemDecoration(new RecyclerViewSpacesItemDecoration(stringIntegerHashMap));
+        rvRecommend.addItemDecoration(new RecyclerViewSpacesItemDecoration(stringIntegerHashMap));
         recyclerView.addItemDecoration(new RecyclerViewSpacesItemDecoration(stringIntegerHashMap));
         recyclerSearch.addItemDecoration(new RecyclerViewSpacesItemDecoration(stringIntegerHashMap));
 
-        HashMap<String, Integer> recommandMap = new HashMap<>();
-        recommandMap.put(RecyclerViewSpacesItemDecoration.TOP_DECORATION, SizeUtils.Dp2Px(mContext, 3));//top间距
-        recommandMap.put(RecyclerViewSpacesItemDecoration.BOTTOM_DECORATION, 0);//底部间距
-        recommandMap.put(RecyclerViewSpacesItemDecoration.LEFT_DECORATION, 0);//左间距
-        recommandMap.put(RecyclerViewSpacesItemDecoration.RIGHT_DECORATION, SizeUtils.Dp2Px(mContext, 3));//右间距
-        rvRecommend.addItemDecoration(new RecyclerViewSpacesItemDecoration(recommandMap));
+//        HashMap<String, Integer> recommandMap = new HashMap<>();
+//        recommandMap.put(RecyclerViewSpacesItemDecoration.TOP_DECORATION, SizeUtils.Dp2Px(mContext, 3));//top间距
+//        recommandMap.put(RecyclerViewSpacesItemDecoration.BOTTOM_DECORATION, 0);//底部间距
+//        recommandMap.put(RecyclerViewSpacesItemDecoration.LEFT_DECORATION, 0);//左间距
+//        recommandMap.put(RecyclerViewSpacesItemDecoration.RIGHT_DECORATION, SizeUtils.Dp2Px(mContext, 3));//右间距
+//        rvRecommend.addItemDecoration(new RecyclerViewSpacesItemDecoration(recommandMap));
 
     }
 

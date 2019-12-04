@@ -44,14 +44,14 @@
                 android:id="@+id/tv_dialog_setting_english_name_cancel"
                 android:layout_width="106dp"
                 android:layout_height="40dp"
-                android:background="@drawable/bg_live_setting_english_cancel" />
+                android:background="@drawable/bg_live_setting_english_cancel_click" />
 
             <TextView
                 android:id="@+id/tv_dialog_setting_english_name_sumit_data"
                 android:layout_width="106dp"
                 android:layout_height="40dp"
                 android:layout_marginLeft="10dp"
-                android:background="@drawable/bg_groupclass_setting_english_conform" />
+                android:background="@drawable/bg_groupclass_setting_english_conform_click" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>
