@@ -205,7 +205,6 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
                     public void onPmSuccess(ResponseEntity responseEntity) {
                         LiveBusinessResponseParser mHttpResponseParser = new LiveBusinessResponseParser();
                         JSONObject object = (JSONObject) responseEntity.getJsonObject();
-                        LiveTopic mLiveTopic = new LiveTopic();
                         mGetInfo = mHttpResponseParser.parseLiveEnter(object, mLiveTopic, LiveVideoConfig.LIVE_TYPE_LIVE, 0);
                         if (mGetInfo == null) {
                             XESToastUtils.showToast("服务器异常");
