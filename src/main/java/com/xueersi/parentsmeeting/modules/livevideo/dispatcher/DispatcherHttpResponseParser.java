@@ -558,6 +558,8 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
                 section = new VideoSectionEntity();
                 section.setvSectionID(id + LIVE_PLAY_BACK_TUTOR_FLAGE);
                 section.setVideoWebPath(url + json.optString("videoPath"));
+                section.setProtocol(json.optInt("protocol", MediaPlayer.VIDEO_PROTOCOL_MP4));
+                section.setFileId(json.optString("fileId"));
                 questionLst = parseEvent(json, isArts, stuCouId, section.getvSectionID(), stuId, entity);
                 setLiveInfo(liveInfo, entity, section, isArts, stuCouId, mainJson);
 
