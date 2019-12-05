@@ -105,7 +105,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
         bottomContent = (RelativeLayout) activity.findViewById(R.id.rl_course_video_live_question_content);
         this.liveId = mGetInfo.getId();
         this.mGetInfo = mGetInfo;
-        cacheFile = LiveCacheFile.geCacheFile(context, "webviewCache");
+        cacheFile = LiveCacheFile.getCacheDir(context, "webviewCache");
 //        cacheFile = new File(context.getCacheDir(), "cache/webviewCache");
         if (!cacheFile.exists()) {
             cacheFile.mkdirs();
