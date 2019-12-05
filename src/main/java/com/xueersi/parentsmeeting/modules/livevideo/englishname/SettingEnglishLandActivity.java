@@ -1,10 +1,12 @@
 package com.xueersi.parentsmeeting.modules.livevideo.englishname;
 
+import android.animation.Animator;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.GridLayoutManager;
@@ -33,6 +35,7 @@ import com.tal.user.fusion.entity.TalAccResp;
 import com.tal.user.fusion.http.TalAccApiCallBack;
 import com.tal.user.fusion.manager.TalAccApiFactory;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.common.base.BaseBll;
 import com.xueersi.common.base.XesActivity;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.sharedata.ShareDataManager;
@@ -57,6 +60,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.page.item.RecyclerViewSpacesItemDecoration;
 import com.xueersi.ui.adapter.RCommonAdapter;
+import com.xueersi.ui.dataload.DataLoadEntity;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -100,7 +106,7 @@ public class SettingEnglishLandActivity extends XesActivity {
     CoordinatorLayout clNameContent;
     LinearLayout llControl;
     GridLayoutManager manager;
-    TextView tvPreSex,tvSearchEmpty;
+    TextView tvPreSex, tvSearchEmpty;
     TextView tvSubmit;
     String filePath = "file:///generate.txt";
 
@@ -128,7 +134,9 @@ public class SettingEnglishLandActivity extends XesActivity {
     ImageView ivSearchDelete;
 
     RelativeLayout rlSearch;
+    boolean lottieSexFlag;
 
+    DataLoadEntity mDataLoadEntity;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -136,6 +144,7 @@ public class SettingEnglishLandActivity extends XesActivity {
         lp.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
         getWindow().setAttributes(lp);
         setContentView(R.layout.layout_live_group_class_setting_english_name);
+        EventBus.getDefault().register(this);
         englishNameBll = new EnglishNameBusiness(mContext);
         setIndexData();
         initView();
@@ -148,6 +157,8 @@ public class SettingEnglishLandActivity extends XesActivity {
     }
 
     private void initData() {
+        mDataLoadEntity = new DataLoadEntity(mContext);
+        BaseBll.postDataLoadEvent(mDataLoadEntity.beginLoading());
         isLive = getIntent().getExtras().getBoolean("engish1v2Type", true);
         where = getIntent().getExtras().getString("where");
         boolean isNeed = mShareDataManager.getBoolean(LiveVideoConfig.LIVE_GOUP_1V2_ENGLISH_CHECK, false,
@@ -156,13 +167,13 @@ public class SettingEnglishLandActivity extends XesActivity {
             continueToVideo();
         }
         int sexDfault = LiveAppUserInfo.getInstance().getSexProcess();
-        if(sexDfault==LiveVideoConfig.LIVE_GROUP_CLASS_USER_SEX_GIRL || sexDfault==LiveVideoConfig.LIVE_GROUP_CLASS_USER_SEX_BOY) {
+        if (sexDfault == LiveVideoConfig.LIVE_GROUP_CLASS_USER_SEX_GIRL || sexDfault == LiveVideoConfig.LIVE_GROUP_CLASS_USER_SEX_BOY) {
             sex = sexDfault;
             sexSelect();
             tvPreSex.setVisibility(View.GONE);
             defaultData();
         } else {
-            startNameLottie(true);
+            sexShow();
         }
     }
 
@@ -173,7 +184,7 @@ public class SettingEnglishLandActivity extends XesActivity {
         } else {
             com.xueersi.parentsmeeting.modules.livevideo.fragment.LivePlaybackVideoActivity.intentTo
                     (SettingEnglishLandActivity.this, getIntent().getExtras(),
-                    where, VIDEO_REQUEST);
+                            where, VIDEO_REQUEST);
         }
         finish();
     }
@@ -239,7 +250,7 @@ public class SettingEnglishLandActivity extends XesActivity {
         TalAccApiFactory.getTalAccRequestApi().editUserInfo(req, new TalAccApiCallBack<TalAccResp.StringResp>() {
             @Override
             public void onSuccess(TalAccResp.StringResp stringResp) {
-              //  XESToastUtils.showToast(stringResp.result);
+                //  XESToastUtils.showToast(stringResp.result);
                 UserBll.getInstance().setUserEnglishInfo(selectName, sex);
                 LiveAppUserInfo.getInstance().setEnglishNameAudio(audioPath);
                 continueToVideo();
@@ -265,28 +276,30 @@ public class SettingEnglishLandActivity extends XesActivity {
     }
 
     private void sexShow() {
-        ivBoy.setVisibility(View.VISIBLE);
-        ivGirl.setVisibility(View.VISIBLE);
-        lottieViewSex.playAnimation();
-        clNameContent.setVisibility(View.GONE);
-        ivLine.setVisibility(View.GONE);
-        etSearch.setVisibility(View.GONE);
-        rlSearch.setVisibility(View.GONE);
-        llControl.setVisibility(View.GONE);
-        tvSearchEmpty.setVisibility(View.GONE);
+
         startNameLottie(true);
     }
 
+
+    private void sexViewShow() {
+        ivBoy.setVisibility(View.VISIBLE);
+        ivGirl.setVisibility(View.VISIBLE);
+
+
+
+    }
+
     private void sexSelect() {
-        etSearch.setText("");
-        ivBoy.setVisibility(View.GONE);
+        startNameLottie(false);
+    }
+
+    private void nameViewShow() {
+      etSearch.setText("");
         rlSearch.setVisibility(View.VISIBLE);
-        ivGirl.setVisibility(View.GONE);
         clNameContent.setVisibility(View.VISIBLE);
         ivLine.setVisibility(View.VISIBLE);
         etSearch.setVisibility(View.VISIBLE);
         llControl.setVisibility(View.VISIBLE);
-        startNameLottie(false);
     }
 
 
@@ -418,6 +431,7 @@ public class SettingEnglishLandActivity extends XesActivity {
             recyclerSearch.setVisibility(View.GONE);
             ivLine.setVisibility(View.VISIBLE);
             ivSearchDelete.setVisibility(View.GONE);
+            tvSearchEmpty.setVisibility(View.VISIBLE);
         } else {
             listSearchName.clear();
             ivSearchDelete.setVisibility(View.VISIBLE);
@@ -459,7 +473,21 @@ public class SettingEnglishLandActivity extends XesActivity {
         }
     }
 
+
+
     private void startNameLottie(boolean isSex) {
+        lottieSexFlag = isSex;
+        if(isSex) {
+            clNameContent.setVisibility(View.GONE);
+            ivLine.setVisibility(View.GONE);
+            etSearch.setVisibility(View.GONE);
+            rlSearch.setVisibility(View.GONE);
+            llControl.setVisibility(View.GONE);
+            tvSearchEmpty.setVisibility(View.GONE);
+        } else {
+            ivBoy.setVisibility(View.GONE);
+            ivGirl.setVisibility(View.GONE);
+        }
         String dir = "english_name/images_name";
         String catheKey = "english_name_lottie";
         if(isSex) {
@@ -485,6 +513,17 @@ public class SettingEnglishLandActivity extends XesActivity {
         lottieViewSex.loop(false);
         lottieViewSex.useHardwareAcceleration(true);
         lottieViewSex.playAnimation();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(lottieSexFlag) {
+                    sexViewShow();
+                } else {
+                    nameViewShow();
+                }
+            }
+        }, 1000);
+
 
     }
 
@@ -717,6 +756,11 @@ public class SettingEnglishLandActivity extends XesActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
 
     public static void startSettingEnglishName(Context context) {
         Intent intent = new Intent(context, SettingEnglishLandActivity.class);
