@@ -158,7 +158,7 @@ public class SettingEnglishLandActivity extends XesActivity {
 
     private void initData() {
         mDataLoadEntity = new DataLoadEntity(mContext);
-        BaseBll.postDataLoadEvent(mDataLoadEntity.beginLoading());
+
         isLive = getIntent().getExtras().getBoolean("engish1v2Type", true);
         where = getIntent().getExtras().getString("where");
         boolean isNeed = mShareDataManager.getBoolean(LiveVideoConfig.LIVE_GOUP_1V2_ENGLISH_CHECK, false,
@@ -247,9 +247,12 @@ public class SettingEnglishLandActivity extends XesActivity {
         TalAccReq.EditUserInfoReq req = new TalAccReq.EditUserInfoReq();
         req.sex = sex + "";
         req.en_name = selectName;
+        BaseBll.postDataLoadEvent(mDataLoadEntity.beginLoading());
         TalAccApiFactory.getTalAccRequestApi().editUserInfo(req, new TalAccApiCallBack<TalAccResp.StringResp>() {
             @Override
             public void onSuccess(TalAccResp.StringResp stringResp) {
+                BaseBll.postDataLoadEvent(mDataLoadEntity.webDataSuccess());
+
                 //  XESToastUtils.showToast(stringResp.result);
                 UserBll.getInstance().setUserEnglishInfo(selectName, sex);
                 LiveAppUserInfo.getInstance().setEnglishNameAudio(audioPath);
@@ -259,6 +262,9 @@ public class SettingEnglishLandActivity extends XesActivity {
             @Override
             public void onError(TalAccErrorMsg resp) {
                 super.onError(resp);
+                XESToastUtils.showToast(resp.getMsg());
+                BaseBll.postDataLoadEvent(mDataLoadEntity.webDataSuccess());
+
             }
         });
     }
@@ -596,12 +602,6 @@ public class SettingEnglishLandActivity extends XesActivity {
         recyclerView.addItemDecoration(new RecyclerViewSpacesItemDecoration(stringIntegerHashMap));
         recyclerSearch.addItemDecoration(new RecyclerViewSpacesItemDecoration(stringIntegerHashMap));
 
-//        HashMap<String, Integer> recommandMap = new HashMap<>();
-//        recommandMap.put(RecyclerViewSpacesItemDecoration.TOP_DECORATION, SizeUtils.Dp2Px(mContext, 3));//top间距
-//        recommandMap.put(RecyclerViewSpacesItemDecoration.BOTTOM_DECORATION, 0);//底部间距
-//        recommandMap.put(RecyclerViewSpacesItemDecoration.LEFT_DECORATION, 0);//左间距
-//        recommandMap.put(RecyclerViewSpacesItemDecoration.RIGHT_DECORATION, SizeUtils.Dp2Px(mContext, 3));//右间距
-//        rvRecommend.addItemDecoration(new RecyclerViewSpacesItemDecoration(recommandMap));
 
     }
 
