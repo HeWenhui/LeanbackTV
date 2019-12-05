@@ -7,8 +7,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import com.hwl.bury.xrsbury.XrsBury;
-import com.hwl.log.xrsBusiLog.XrsBusiLog;
+import com.xrs.bury.xrsbury.XrsBury;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;

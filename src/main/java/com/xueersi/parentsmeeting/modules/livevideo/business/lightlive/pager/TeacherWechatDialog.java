@@ -20,7 +20,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.hwl.bury.xrsbury.XrsBury;
+
+import com.xrs.bury.xrsbury.XrsBury;
 import com.xueersi.common.toast.XesToast;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.ScreenUtils;

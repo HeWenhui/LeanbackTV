@@ -26,8 +26,8 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.hwl.bury.BuryManager;
-import com.hwl.bury.xrsbury.XrsBury;
+
+import com.xrs.bury.xrsbury.XrsBury;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;

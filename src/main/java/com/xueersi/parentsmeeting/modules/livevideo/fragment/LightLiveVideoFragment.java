@@ -13,8 +13,8 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.support.odps.udf.CodecCheck;
-import com.hwl.bury.BuryManager;
-import com.hwl.bury.xrsbury.XrsBury;
+
+import com.xrs.bury.xrsbury.XrsBury;
 import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.lib.framework.utils.ScreenUtils;

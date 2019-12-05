@@ -6,7 +6,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import com.hwl.bury.xrsbury.XrsBury;
+
+import com.xrs.bury.xrsbury.XrsBury;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.SizeUtils;

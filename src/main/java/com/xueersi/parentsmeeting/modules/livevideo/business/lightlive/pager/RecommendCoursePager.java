@@ -5,7 +5,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
-import com.hwl.bury.xrsbury.XrsBury;
+import com.xrs.bury.xrsbury.XrsBury;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.entity.CourseEntity;

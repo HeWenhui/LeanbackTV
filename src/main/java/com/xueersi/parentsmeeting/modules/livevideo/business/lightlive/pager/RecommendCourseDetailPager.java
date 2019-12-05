@@ -16,7 +16,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.hwl.bury.xrsbury.XrsBury;
+
+import com.xrs.bury.xrsbury.XrsBury;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.route.XueErSiRouter;
 import com.xueersi.lib.imageloader.ImageLoader;

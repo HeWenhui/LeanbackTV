@@ -19,7 +19,7 @@ import com.airbnb.lottie.AssertUtil;
 import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
-import com.hwl.bury.xrsbury.XrsBury;
+import com.xrs.bury.xrsbury.XrsBury;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
