@@ -370,6 +370,9 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 LightLiveHttpResponseParser responseParser = new LightLiveHttpResponseParser();
                 weChatEntity = responseParser.getLPWeChat(responseEntity);
+                if (weChatEntity != null && weChatEntity.hasData()){
+                    showWeChatDialog();
+                }
             }
 
             @Override
