@@ -5,6 +5,7 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.entity.CouponEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.entity.CourseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.entity.CourseTeacherEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.entity.LPWeChatEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 
 import org.json.JSONArray;
@@ -29,6 +30,7 @@ public class LightLiveHttpResponseParser extends HttpResponseParser {
 
     /**
      * 解析优化券
+     *
      * @param responseEntity
      * @return
      */
@@ -69,6 +71,7 @@ public class LightLiveHttpResponseParser extends HttpResponseParser {
 
     /**
      * 解析推荐课程
+     *
      * @param responseEntity
      * @return
      */
@@ -110,13 +113,13 @@ public class LightLiveHttpResponseParser extends HttpResponseParser {
                     // 价格
                     JSONObject price = jsonObject.optJSONObject("price");
                     if (price != null) {
-                        String orignPrice = price.optString("originPrice","0");
-                        if (orignPrice.isEmpty()){
+                        String orignPrice = price.optString("originPrice", "0");
+                        if (orignPrice.isEmpty()) {
                             orignPrice = "0";
                         }
                         itemEntity.setCourseOrignPrice(Integer.parseInt(orignPrice));
-                        String salePrice = price.optString("resale","0");
-                        if (salePrice.isEmpty()){
+                        String salePrice = price.optString("resale", "0");
+                        if (salePrice.isEmpty()) {
                             salePrice = "0";
                         }
                         itemEntity.setCoursePrice(Integer.parseInt(salePrice));
@@ -159,7 +162,7 @@ public class LightLiveHttpResponseParser extends HttpResponseParser {
                         if (counselor != null) {
                             ArrayList<CourseTeacherEntity> courseTeacher = new ArrayList<>();
                             CourseTeacherEntity teacherEntity = getTeacherEntity(counselor);
-                            if (teacherEntity != null){
+                            if (teacherEntity != null) {
                                 courseTeacher.add(teacherEntity);
                                 itemEntity.setLstCoachTeacher(courseTeacher);
                             }
@@ -178,12 +181,11 @@ public class LightLiveHttpResponseParser extends HttpResponseParser {
                 }
 
                 return courseEntities;
-
-
             }
             return null;
         }
     }
+
     protected ArrayList<CourseTeacherEntity> parserTeacherEntity(JSONArray jsonArray) {
         if (jsonArray != null && jsonArray.length() > 0) {
             ArrayList<CourseTeacherEntity> teacherEntities = new ArrayList<>();
@@ -198,6 +200,7 @@ public class LightLiveHttpResponseParser extends HttpResponseParser {
         }
         return null;
     }
+
     protected CourseTeacherEntity getTeacherEntity(JSONObject jsonObject) {
         if (jsonObject == null) {
             return null;
@@ -206,7 +209,7 @@ public class LightLiveHttpResponseParser extends HttpResponseParser {
         teacherEntity.setTeacherId(jsonObject.optString("id"));
         teacherEntity.setTeacherName(jsonObject.optString("name"));
         teacherEntity.setTeacherHint(jsonObject.optString("typeName"));
-        if (teacherEntity.getTeacherId() == null && teacherEntity.getTeacherName() == null && teacherEntity.getTeacherHint() == null){
+        if (teacherEntity.getTeacherId() == null && teacherEntity.getTeacherName() == null && teacherEntity.getTeacherHint() == null) {
             return null;
         }
         ArrayList<String> strings = new ArrayList<>();
@@ -216,9 +219,26 @@ public class LightLiveHttpResponseParser extends HttpResponseParser {
                 strings.add(avatars.optString(j));
             }
         }
-        if (!strings.isEmpty()){
+        if (!strings.isEmpty()) {
             teacherEntity.setTeacherImg(strings.get(0));
         }
         return teacherEntity;
+    }
+
+    public LPWeChatEntity getLPWeChat(ResponseEntity responseEntity) {
+        LPWeChatEntity lpEntity = new LPWeChatEntity();
+
+        JSONObject lpInfo = (JSONObject) responseEntity.getJsonObject();
+        lpEntity.setTipType(lpInfo.optInt("tipType"));
+        lpEntity.setTipInfo(lpInfo.optString("tipInfo"));
+        lpEntity.setWxQrUrl(lpInfo.optString("wxQrUrl"));
+        lpEntity.setExistWx(lpInfo.optInt("existWx"));
+        if (lpInfo.has("wxInfo")) {
+            JSONObject teaInfo = lpInfo.optJSONObject("wxInfo");
+            lpEntity.setTeacherWx(teaInfo.optString("teaWx"));
+            lpEntity.setTeacherName(teaInfo.optString("teaName"));
+            lpEntity.setTeacherImg(teaInfo.optString("teaImg"));
+        }
+        return lpEntity;
     }
 }

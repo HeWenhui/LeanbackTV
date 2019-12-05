@@ -1,5 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.entity;
 
+import android.text.TextUtils;
+
 /**
  * @ProjectName: xueersiwangxiao
  * @Package: com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.entity
@@ -20,19 +22,31 @@ public class LPWeChatEntity {
     public static final int TEACHER_WECHAT = 3;
 
     private int id;
-    /** 类型 1公众号 2加群 3加老师微信*/
+    /**
+     * 类型 1公众号 2加群 3加老师微信
+     */
     private int tipType;
-    /** 提示文案*/
+    /**
+     * 提示文案
+     */
     private String tipInfo;
 
     private int existWx;
-    /** 老师微信*/
+    /**
+     * 老师微信
+     */
     private String teacherWx;
-    /** 老师名字*/
+    /**
+     * 老师名字
+     */
     private String teacherName;
-    /** 老师头像*/
+    /**
+     * 老师头像
+     */
     private String teacherImg;
-    /** 2的时候为群二维码Url*/
+    /**
+     * 2的时候为群二维码Url
+     */
     private String wxQrUrl;
 
     public int getId() {
@@ -97,5 +111,18 @@ public class LPWeChatEntity {
 
     public void setWxQrUrl(String wxQrUrl) {
         this.wxQrUrl = wxQrUrl;
+    }
+
+    public boolean hasData() {
+        if (tipType == WECHAT_GROUP) {
+            if (!TextUtils.isEmpty(wxQrUrl)  && !TextUtils.isEmpty(teacherWx)&& !TextUtils.isEmpty(tipInfo)) {
+                return true;
+            }
+        } else if (TEACHER_WECHAT == tipType) {
+            if (!TextUtils.isEmpty(teacherName) && !TextUtils.isEmpty(teacherWx)&& !TextUtils.isEmpty(tipInfo)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -32,6 +32,7 @@ public class RecommendCoursePager extends BasePager {
     TextView tvMore;
     ViewFlipper vfCourses;
     MoreCouponClickListener listener;
+    private final int ANIMATION_TIME = 20 * 1000;
 
     public RecommendCoursePager(Context context){
         super(context);
@@ -54,9 +55,9 @@ public class RecommendCoursePager extends BasePager {
         for (CourseEntity entity : courseEntities) {
             vfCourses.addView(new RecommendCourseItem(mContext,entity).getRootView());
         }
-        vfCourses.setFlipInterval(20000);
-        vfCourses.setInAnimation(mContext,R.anim.anim_slide_in_bottom_blur);
-        vfCourses.setOutAnimation(mContext,R.anim.anim_slide_out_top_blur);
+        vfCourses.setFlipInterval(ANIMATION_TIME);
+        vfCourses.setInAnimation(mContext,R.anim.anim_slide_in_top_blur);
+        vfCourses.setOutAnimation(mContext,R.anim.anim_slide_out_bottom_blur);
         vfCourses.startFlipping();
     }
 

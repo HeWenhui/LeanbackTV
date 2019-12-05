@@ -116,7 +116,7 @@ public class TeacherWechatDialog extends BaseAlertDialog {
         mAlertDialog.setContentView(
                 alertView,
                 new ViewGroup.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
-                        type == TYPE_WITH_HEAD ? SizeUtils.Dp2Px(mContext, 246) : SizeUtils.Dp2Px(mContext, 390)));
+                        type == TYPE_WITH_HEAD ? SizeUtils.Dp2Px(mContext, 246) : SizeUtils.Dp2Px(mContext, 400)));
 
     }
 
@@ -199,7 +199,7 @@ public class TeacherWechatDialog extends BaseAlertDialog {
     }
 
     public TeacherWechatDialog setQrcode(String imgURL) {
-        int defaultHeadImg = R.drawable.bg_tutor_default_head_imge;
+        int defaultHeadImg = R.color.COLOR_F5F5F6;
         if (TextUtils.isEmpty(imgURL)) {
             // 如果图片URL为空则直接加载默认图片，因为图片加载框架对空字符串的路径加载会加载到其它图片上，故这样解决
             ivQrcode.setImageResource(defaultHeadImg);

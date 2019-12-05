@@ -98,7 +98,7 @@ public class RecommendCourseBll extends LiveBaseBll {
             middleLayout.addView(mCoursePager.getRootView(),middleLayout.getChildCount());
             ViewGroup.LayoutParams params = mCoursePager.getRootView().getLayoutParams();
             params.width = ViewGroup.LayoutParams.MATCH_PARENT;
-            params.height = SizeUtils.Dp2Px(mContext,92);
+            params.height = SizeUtils.Dp2Px(mContext,96);
         }
         if(!mIsLand.get()){
             middleLayout.setVisibility(View.VISIBLE);

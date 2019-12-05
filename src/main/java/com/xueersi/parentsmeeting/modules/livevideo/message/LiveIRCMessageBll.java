@@ -170,6 +170,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             }
         });
         mRoomAction.setLiveBll(new LiveIRCState());
+        mRoomAction.setLiveHttpManager(mHttpManager);
         BaseLiveMediaControllerTop controllerTop = getInstance(BaseLiveMediaControllerTop.class);
         setLiveMediaControllerTop(controllerTop);
         BaseLiveMediaControllerBottom baseLiveMediaControllerBottom = getInstance(BaseLiveMediaControllerBottom.class);

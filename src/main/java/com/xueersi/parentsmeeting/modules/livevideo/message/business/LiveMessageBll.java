@@ -454,6 +454,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
             if(LiveVideoConfig.isLightLive){
                 mLiveMessagePager = new LightLiveMessagePortPager(activity, this, liveMessagePortEntities,
                         liveMessageLandEntities);
+                ((LightLiveMessagePortPager) mLiveMessagePager).setLiveHttpManager(liveHttpManager);
             }else {
                 mLiveMessagePager = new LiveMessagePortPager(activity, this, liveMessagePortEntities,
                         liveMessageLandEntities);
@@ -811,5 +812,10 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
             }
         }
         return false;
+    }
+
+    LiveHttpManager liveHttpManager;
+    public void setLiveHttpManager(LiveHttpManager liveHttpManager){
+        this.liveHttpManager = liveHttpManager;
     }
 }

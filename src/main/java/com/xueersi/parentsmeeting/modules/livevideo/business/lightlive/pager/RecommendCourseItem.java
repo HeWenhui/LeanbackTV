@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -42,7 +41,7 @@ public class RecommendCourseItem extends BasePager {
     TextView tvTitle;
     TextView tvName;
     /** 去课程详情页*/
-    Button btApply;
+    TextView tvApply;
     CourseEntity mCourseEntity;
 
     public RecommendCourseItem(Context context, CourseEntity courseEntity){
@@ -57,7 +56,7 @@ public class RecommendCourseItem extends BasePager {
         ivHead = mView.findViewById(R.id.iv_lightlive_recommend_head);
         tvTitle = mView.findViewById(R.id.tv_lightlive_recommend_title);
         tvName = mView.findViewById(R.id.tv_lightlive_recommend_name);
-        btApply = mView.findViewById(R.id.bt_lightlive_recommend_buy);
+        tvApply = mView.findViewById(R.id.tv_lightlive_recommend_buy);
         return mView;
     }
 
@@ -94,7 +93,7 @@ public class RecommendCourseItem extends BasePager {
 
     @Override
     public void initListener() {
-        btApply.setOnClickListener(new View.OnClickListener() {
+        tvApply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
             //跳转到商城的订单详情页面

@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.message.pager;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
+import android.os.Bundle;
 import android.text.Editable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -25,9 +26,13 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.hwl.bury.BuryManager;
 import com.hwl.bury.xrsbury.XrsBury;
+import com.xueersi.common.business.AppBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.common.util.LoginEnter;
+import com.xueersi.lib.framework.utils.EventBusUtil;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
@@ -161,12 +166,12 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
         super.setGetInfo(getInfo);
         if (getInfo != null && getInfo.getLpWeChatEntity() != null){
             weChatEntity = getInfo.getLpWeChatEntity();
-           if (getInfo.getLpWeChatEntity().getTipType() == LPWeChatEntity.WECHAT_GROUP && getInfo.getLpWeChatEntity().getExistWx() == 1){
+           if (getInfo.getLpWeChatEntity().getTipType() == LPWeChatEntity.WECHAT_GROUP ){
                 isShowWeChat = true;
                 tvTeacherWeChat.setVisibility(View.VISIBLE);
                 tvTeacherWeChat.setText("加班级群");
                XrsBury.showBury(mContext.getResources().getString(R.string.livevideo_show_03_32_008));
-            }else if (getInfo.getLpWeChatEntity().getTipType() == LPWeChatEntity.TEACHER_WECHAT && getInfo.getLpWeChatEntity().getExistWx() == 1){
+            }else if (getInfo.getLpWeChatEntity().getTipType() == LPWeChatEntity.TEACHER_WECHAT ){
                 isShowWeChat = true;
                 tvTeacherWeChat.setVisibility(View.VISIBLE);
                 XrsBury.showBury(mContext.getResources().getString(R.string.livevideo_show_03_32_006));
@@ -174,7 +179,21 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
                 isShowWeChat = false;
                 tvTeacherWeChat.setVisibility(View.GONE);
             }
+
         }
+//        isShowWeChat = true;
+//        tvTeacherWeChat.setVisibility(View.VISIBLE);
+//        tvTeacherWeChat.setText("加班级群");
+//        if (getInfo != null){
+//            getInfo.setLpWeChatEntity(new LPWeChatEntity());
+//            getInfo.getLpWeChatEntity().setWxQrUrl("1");
+//            getInfo.getLpWeChatEntity().setTeacherName("aa");
+//            getInfo.getLpWeChatEntity().setTeacherWx("123456");
+//            getInfo.getLpWeChatEntity().setTipType(2);
+//            getInfo.getLpWeChatEntity().setTipInfo("5555dddddd");
+//            weChatEntity = getInfo.getLpWeChatEntity();
+//        }
+
 
     }
 
@@ -221,7 +240,7 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
                                         onKeyBoardShow(false);
                                     }
                                 } else {
-                                    XESToastUtils.showToast(mContext, "你已被禁言!");
+                                    XESToastUtils.showToastAtCenter( "你已被禁言!");
                                 }
                             } else {
                                 //暂时去掉3秒发言，信息提示
@@ -232,10 +251,10 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
                                 } catch (Exception e) {
                                     time = SEND_MSG_INTERVAL / 1000;
                                 }
-                                XESToastUtils.showToast(mContext, time + "秒后才能再次发言，要认真听课哦!");
+                                XESToastUtils.showToastAtCenter(time + "秒后才能再次发言，要认真听课哦!");
                             }
                         } else {
-                            XESToastUtils.showToast(mContext, "老师未开启聊天");
+                            XESToastUtils.showToastAtCenter( "老师未开启聊天");
                         }
                     } else {
                         addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, MESSAGE_EMPTY, "");
@@ -305,10 +324,11 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    XESToastUtils.showToast(mContext, "只看老师消息");
+                    XESToastUtils.showToastAtCenter( "只看老师消息");
                     XrsBury.clickBury(mContext.getResources().getString(R.string.livevideo_click_03_54_013),1);
                 } else {
-                    XESToastUtils.showToast(mContext, "接收全部消息");
+//                    BuryManager.permission = true;
+                    XESToastUtils.showToastAtCenter("接收全部消息");
                     XrsBury.clickBury(mContext.getResources().getString(R.string.livevideo_click_03_54_013),0);
                 }
             }
@@ -318,14 +338,52 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
 
             @Override
             public void onClick(View v) {
-
-                if (weChatEntity != null){
-                    showWeChatDialog();
+                if (AppBll.getInstance().isAlreadyLogin()){
+                    if (weChatEntity != null && weChatEntity.hasData()){
+                        showWeChatDialog();
+                    }else {
+                        getLPWeChat();
+                    }
+                } else {
+                    VerifyCancelAlertDialog goLoginDialog = new VerifyCancelAlertDialog(mContext,mBaseApplication,false,VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
+                    //立即登录，查看你的%s，还有丰富福利哦
+                    String message = String.format("立即登录，查看你的%s",weChatEntity.getTipType() == LPWeChatEntity.WECHAT_GROUP ?"专属班级群":"专属班主任");
+                    goLoginDialog.initInfo(message);
+                    goLoginDialog.setVerifyBtnListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            LoginEnter.openLogin(mContext,false,new Bundle());
+                        }
+                    });
+                    goLoginDialog.showDialog();
                 }
+
             }
         });
 
+    }
 
+    private void getLPWeChat(){
+        LightLiveHttpManager lightLiveHttpManager = new LightLiveHttpManager(liveHttpManager);
+        lightLiveHttpManager.getWechatInfo(getInfo.getId(), new HttpCallBack(false) {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                LightLiveHttpResponseParser responseParser = new LightLiveHttpResponseParser();
+                weChatEntity = responseParser.getLPWeChat(responseEntity);
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                super.onPmFailure(error, msg);
+                XESToastUtils.showToastAtCenter(msg);
+        }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                super.onPmError(responseEntity);
+                XESToastUtils.showToastAtCenter(responseEntity.getErrorMsg());
+            }
+        });
     }
 
     @Override
@@ -583,7 +641,7 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
             public void run() {
                 if (disable) {
                     if (fromNotice) {
-                        XESToastUtils.showToast(mContext, "你被老师禁言了");
+                        XESToastUtils.showToastAtCenter("你被老师禁言了");
                     }
                     //etMessageContent.setVisibility(View.GONE);
                     tvMessageDisable.setVisibility(View.VISIBLE);
@@ -591,7 +649,7 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
                     tvMessageDisable.setTag(MESSAGE_SEND_DIS);
                 } else {
                     if (fromNotice) {
-                        XESToastUtils.showToast(mContext, "老师解除了你的禁言");
+                        XESToastUtils.showToastAtCenter("老师解除了你的禁言");
                     }
                     if (ircState.openchat()) {
                         //etMessageContent.setVisibility(View.VISIBLE);
@@ -642,9 +700,9 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
                     }
                     if (fromNotice) {
                         if (LiveTopic.MODE_CLASS.equals(mode)) {
-                            XESToastUtils.showToast(mContext, "主讲老师" + (openchat ? "打开" : "关闭") + "了聊天区");
+                            XESToastUtils.showToastAtCenter("主讲老师" + (openchat ? "打开" : "关闭") + "了聊天区");
                         } else {
-                            XESToastUtils.showToast(mContext, "辅导老师" + (openchat ? "打开" : "关闭") + "了聊天区");
+                            XESToastUtils.showToastAtCenter("辅导老师" + (openchat ? "打开" : "关闭") + "了聊天区");
                         }
                     }
                 }
@@ -860,7 +918,7 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
             cleanMessageDialog.setVerifyBtnListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    XESToastUtils.showToast(mContext, "清屏成功！");
+                    XESToastUtils.showToastAtCenter( "清屏成功！");
                     liveMessageEntities.clear();
                     otherLiveMessageEntities.clear();
                     messageAdapter.notifyDataSetChanged();
@@ -880,5 +938,12 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
         }
         cleanMessageDialog.showDialog();
     }
+
+    LiveHttpManager liveHttpManager;
+
+    public void setLiveHttpManager(LiveHttpManager liveHttpManager){
+        this.liveHttpManager = liveHttpManager;
+    }
+
 }
 
