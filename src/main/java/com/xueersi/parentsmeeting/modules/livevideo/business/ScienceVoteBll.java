@@ -29,9 +29,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.event.UpdatePkState;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -238,6 +241,14 @@ public class ScienceVoteBll extends LiveBaseBll implements NoticeAction, TopicAc
 
 
     public void submitSuccess(final int type, final int gold) {
+        //更新金币
+        LiveMainHandler.getMainHandler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                EventBus.getDefault().post(new UpdatePkState(TAG + ":stop"));
+            }
+        }, 1000);
+        //展示动效
         final RelativeLayout relativeLayout =
                 (RelativeLayout) LayoutInflater.from(mContext).inflate(R.layout.page_livevideo_science_vote_submit, null);
         lottieAnimationView = relativeLayout.findViewById(R.id.livevideo_science_vote_lottie);
