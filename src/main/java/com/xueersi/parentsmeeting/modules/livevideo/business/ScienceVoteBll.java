@@ -271,13 +271,18 @@ public class ScienceVoteBll extends LiveBaseBll implements NoticeAction, TopicAc
                 jsonPath = "vote_submit_thumb_up/data.json";
             }
         } else if (type == 2) {
-            resPath = "vote_submit_come_on/images";
-            jsonPath = "vote_submit_come_on/data.json";
+            if (gold > 0) {
+                resPath = "vote_submit_come_on_gold/images";
+                jsonPath = "vote_submit_come_on_gold/data.json";
+            } else {
+                resPath = "vote_submit_come_on/images";
+                jsonPath = "vote_submit_come_on/data.json";
+            }
         }
         final LottieEffectInfo bubbleEffectInfo = new LottieEffectInfo(resPath, jsonPath, "img_0.png") {
             @Override
             public Bitmap fetchTargetBitMap(LottieAnimationView animationView, String fileName, String bitmapId, int width, int height) {
-                if ("img_0.png".equals(fileName) && type != 2) {
+                if ("img_0.png".equals(fileName) && gold > 0) {
                     return createMsgBitmap(width, height, "+" + gold);
                 }
                 return super.fetchTargetBitMap(animationView, fileName, bitmapId, width, height);
