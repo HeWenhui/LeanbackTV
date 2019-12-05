@@ -2,13 +2,14 @@ package com.xueersi.parentsmeeting.modules.livevideo.liveLog.busiLog;
 
 import android.os.Process;
 
-import com.hwl.log.LogConfig;
-import com.hwl.log.xrsLog.UpdateParamInterface;
-import com.hwl.log.xrsLog.XrsLogEntity;
-import com.hwl.log.xrsLog.XrsLogPublicParam;
-import com.hwl.logan.Logan;
-import com.hwl.logan.LoganConfig;
-import com.hwl.logan.SendLogRunnable;
+import com.dianping.logan.Logan;
+import com.dianping.logan.LoganConfig;
+import com.dianping.logan.SendLogRunnable;
+
+import com.xrs.log.LogConfig;
+import com.xrs.log.xrsLog.UpdateParamInterface;
+import com.xrs.log.xrsLog.XrsLogEntity;
+import com.xrs.log.xrsLog.XrsLogPublicParam;
 import com.xueersi.lib.framework.utils.JsonUtil;
 
 import java.text.SimpleDateFormat;
