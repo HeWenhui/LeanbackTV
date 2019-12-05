@@ -2,11 +2,12 @@ package com.xueersi.parentsmeeting.modules.livevideo.liveLog.busiLog;
 
 import android.util.Log;
 
+import com.dianping.logan.SendLogRunnable;
 import com.google.gson.Gson;
-import com.hwl.log.xrsLog.XrsLogEntity;
-import com.hwl.logan.SendLogRunnable;
+import com.xrs.log.xrsLog.XrsLogEntity;
 import com.xueersi.common.logerhelper.XesLogEntity;
 import com.xueersi.lib.framework.utils.string.MD5Utils;
+import com.xueersi.parentsmeeting.modules.livevideo.liveLog.DebugLog;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -122,18 +123,18 @@ public class LiveBusiLogSendLogRunnable extends SendLogRunnable {
 
 
         if (logFile.exists()) {
-            Log.e(TAG, "loginFile is exit");
+           DebugLog.log( "loginFile is exit");
         }
 
         deleteDir(LOGFILEPATH);//清空临时文件夹
         String log = getFileContent(logFile);
-        Log.e(TAG, "all_Log------------------:" + log);
+       DebugLog.log( "all_Log------------------:" + log);
         boolean isSuccess = false;
         try {
 
             //业务日志
             if (new File(LOGFILEPATH + LiveBusiLogSendLogRunnable.LOGTYPE_SYS + ".txt").exists()) {
-                Log.e(TAG, "日志-------requset--(-1)------------------");
+               DebugLog.log( "日志-------requset--(-1)------------------");
                 FileInputStream fileStream1 = new FileInputStream(new File(LOGFILEPATH + -1 + ".txt"));
                 boolean backData1 = doXrsPostRequest(mUploadLogUrl_sys, fileStream1, getActionHeader());
                 new File(LOGFILEPATH + LiveBusiLogSendLogRunnable.LOGTYPE_SYS + ".txt").delete();
@@ -213,7 +214,7 @@ public class LiveBusiLogSendLogRunnable extends SendLogRunnable {
             c.setRequestMethod("POST");
             outputStream = c.getOutputStream();
             int i;
-            Log.e(TAG, "read start-------");
+           DebugLog.log( "read start-------");
             while ((i = inputData.read(Buffer)) != -1) {
                 //Log.e("stone", "buffer:-------pre");
                 outputStream.write(Buffer, 0, i);
@@ -222,10 +223,10 @@ public class LiveBusiLogSendLogRunnable extends SendLogRunnable {
             outputStream.flush();
             int res = c.getResponseCode();
             if (res == 200) {
-                Log.e(TAG, "res code:------200,url:" + url);
+               DebugLog.log( "res code:------200,url:" + url);
                 data = true;
             } else {
-                Log.e(TAG, "res code:-----error,code=" + res);
+               DebugLog.log( "res code:-----error,code=" + res);
             }
 
         } catch (ProtocolException e) {
@@ -313,7 +314,7 @@ public class LiveBusiLogSendLogRunnable extends SendLogRunnable {
             raf.write(strContent.getBytes());
             raf.close();
         } catch (Exception e) {
-            Log.e(TAG, "Error on write File:" + e);
+           DebugLog.log( "Error on write File:" + e);
         }
     }
 
@@ -337,7 +338,7 @@ public class LiveBusiLogSendLogRunnable extends SendLogRunnable {
                         swichLineLogToLogFile(line);
                         content += line + "\n";
                         if (!line.contains("clogan header")) {
-                            Log.e(TAG, "lineLog:" + line);
+                           DebugLog.log( "lineLog:" + line);
                         }
                     }
                     instream.close();//关闭输入流
@@ -377,9 +378,9 @@ public class LiveBusiLogSendLogRunnable extends SendLogRunnable {
 
                 }
             } catch (Exception e) {
-                Log.e(TAG, "Exception lineLogqq:" + lineLog);
+               DebugLog.log( "Exception lineLogqq:" + lineLog);
                 //CrashReport.postCatchedException(new BuryException("Exception:" + lineLog, e));
-                Log.e(TAG, "Exception lineLogqq exception:" + e.getMessage());
+               DebugLog.log( "Exception lineLogqq exception:" + e.getMessage());
             }
             return entity;
 
@@ -387,8 +388,8 @@ public class LiveBusiLogSendLogRunnable extends SendLogRunnable {
         } catch (Exception e) {
             e.printStackTrace();
             //CrashReport.postCatchedException(new BuryException("" + lineLog, e));
-            Log.e(TAG, "Exception lineLog:" + lineLog);
-            Log.e(TAG, "Exception lineLog exception:" + e.getMessage());
+           DebugLog.log( "Exception lineLog:" + lineLog);
+           DebugLog.log( "Exception lineLog exception:" + e.getMessage());
 
         }
         return null;
@@ -405,7 +406,7 @@ public class LiveBusiLogSendLogRunnable extends SendLogRunnable {
     private void writeToFile(LiveBusiLogEntity bury, String log) {
         String fileName = bury.logType + ".txt";
 
-        Log.e(TAG, "livebusiLogInfo:" + log);
+       DebugLog.log( "livebusiLogInfo:" + log);
         writeTxtToFile(log, LOGFILEPATH, fileName);
 
     }
@@ -416,7 +417,7 @@ public class LiveBusiLogSendLogRunnable extends SendLogRunnable {
     private void writeToFile(XrsLogEntity bury, String log) {
         String fileName = bury.type + ".txt";
 
-        Log.e(TAG, "livebusiLogInfo:" + log);
+       DebugLog.log( "livebusiLogInfo:" + log);
         writeTxtToFile(log, LOGFILEPATH, fileName);
 
     }
