@@ -157,11 +157,6 @@ dependencies {
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.thirdlibraries.logan)
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.xrsbury)
 
-
- /*   rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.hwllog)
-    rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.hwllogan)*/
-    rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.hwllog)
-    rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.hwllogan)
     implementation(rootProject.ext.thirdlibraries.gson){
         changing = true
     }
