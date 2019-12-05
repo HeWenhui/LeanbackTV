@@ -24,6 +24,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoSectionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoSpeedEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.BigLivePlayBackEntity;
 
@@ -270,11 +271,17 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
                     entity.setIsArts(isArts);
                     section = new VideoSectionEntity();
                     JSONObject liveInfo = arrData.optJSONObject(i).optJSONObject("liveInfo");
+                    boolean setProtocol = false;
                     if (liveInfo != null) {
-                        if (isArts == 0 || isArts == 2) {//理科多一层data
+                        if (isArts == LiveVideoSAConfig.ART_SEC || isArts == LiveVideoSAConfig.ART_CH) {//理科多一层data
                             JSONObject infoData = liveInfo.optJSONObject("data");
                             if (infoData != null) {
                                 liveInfo = infoData;
+                                if (infoData.has("protocol") || infoData.has("fileId")) {
+                                    section.setProtocol(infoData.optInt("protocol", MediaPlayer.VIDEO_PROTOCOL_MP4));
+                                    section.setFileId(infoData.optString("fileId"));
+                                    setProtocol = true;
+                                }
                             }
                         }
 
@@ -295,8 +302,10 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
                         videoPaths = url + videoPath;
                     }
                     section.setHostPath(pathArray.toString());
-                    section.setProtocol(sectionJson.optInt("protocol", MediaPlayer.VIDEO_PROTOCOL_MP4));
-                    section.setFileId(sectionJson.optString("fileId"));
+                    if (!setProtocol) {
+                        section.setProtocol(sectionJson.optInt("protocol", MediaPlayer.VIDEO_PROTOCOL_MP4));
+                        section.setFileId(sectionJson.optString("fileId"));
+                    }
                     hostPath = pathArray.toString();
                     section.setVideoPath(videoPath);
                     videopath = videoPath;
