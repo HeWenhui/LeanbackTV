@@ -372,9 +372,9 @@ public class LightLiveVideoFragment  extends LiveFragmentBase implements Activit
     @Override
     public void onDestroy() {
         if (mIsLand.get()){
-            XrsBury.pageEndBury(activity.getResources().getString(R.string.livevideo_pv_052),1);
-        }else {
             XrsBury.pageEndBury(activity.getResources().getString(R.string.livevideo_pv_052),0);
+        }else {
+            XrsBury.pageEndBury(activity.getResources().getString(R.string.livevideo_pv_052),1);
         }
         super.onDestroy();
     }
