@@ -103,6 +103,11 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
         });
     }
 
+    @Override
+    public void onRemoveRedPackage() {
+
+    }
+
     private void onGetPackage(VideoResultEntity entity) {
         if (!isSmallEnglish && !LiveVideoConfig.isSmallChinese) {
             rlRedpacketContent.removeAllViews();

@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.logerhelper.XesMobAgent;
+import com.xueersi.lib.framework.drawable.DrawableHelper;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.TimeUtils;
 import com.xueersi.lib.log.LoggerFactory;
@@ -133,7 +134,7 @@ public class LivePlaybackMediaController extends MediaController2 {
                 });
                 return;
             }
-            Bitmap bitmap = BitmapFactory.decodeResource(activity.getResources(), R.drawable
+            Bitmap bitmap = DrawableHelper.bitmapFromResource(activity.getResources(), R.drawable
                     .ic_scrubber_control_selector_holo_spjd);
             int pointWidth = rlKeyPoints.getWidth();
             float screenDensity = ScreenUtils.getScreenDensity();
@@ -145,6 +146,9 @@ public class LivePlaybackMediaController extends MediaController2 {
             LayoutInflater inflater = activity.getLayoutInflater();
             for (int i = 0; i < lstVideoQuestion.size(); i++) {
                 final VideoQuestionEntity videoQuestionEntity = lstVideoQuestion.get(i);
+                if (LocalCourseConfig.CATEGORY_GROUP_CLASS_VIDEO == videoQuestionEntity.getvCategory()) {
+                    continue;
+                }
                 String key = "";
                 RelativeLayout rlClick = (RelativeLayout) inflater.inflate(R.layout.item_video_ques_point,
                         rlKeyPoints, false);
@@ -223,7 +227,9 @@ public class LivePlaybackMediaController extends MediaController2 {
         final View contentView = activity.getLayoutInflater().inflate(R.layout.pop_liveplayback_point, rlKeytip, false);
         contentView.setTag(videoQuestionEntity);
         TextView textView = (TextView) contentView.findViewById(R.id.tv_liveplayback_point_name);
-        if (LocalCourseConfig.CATEGORY_QUESTION == videoQuestionEntity.getvCategory()) {
+        if (LocalCourseConfig.CATEGORY_GROUP_CLASS_VIDEO == videoQuestionEntity.getvCategory()) {
+            return;
+        }else if (LocalCourseConfig.CATEGORY_QUESTION == videoQuestionEntity.getvCategory()) {
             if (LocalCourseConfig.QUESTION_TYPE_SPEECH.equals(videoQuestionEntity.getvQuestionType())) {
                 textView.setText("语音评测");
             } else {
@@ -322,6 +328,35 @@ public class LivePlaybackMediaController extends MediaController2 {
             }
         } else if(LocalCourseConfig.CATEGORY_SCIENCE_VOTE == videoQuestionEntity.getvCategory()){
             textView.setText("投票");
+        } else if(LocalCourseConfig.CATEGORY_GROUP_CLASS==videoQuestionEntity.getvCategory()){
+            String packageAttr = videoQuestionEntity.getPackageAttr();
+            switch (packageAttr) {
+                case "7":
+                    textView.setText("语音评测");
+                    break;
+                case "29":
+                    textView.setText("单人上台");
+                    break;
+                case "30":
+                    textView.setText("双人上台");
+                    break;
+                case "15":
+                    textView.setText("热气球");
+                    break;
+                case "14":
+                    textView.setText("语音炮弹");
+                    break;
+                case "16":
+                    textView.setText("抢水果");
+                    break;
+
+            }
+        } else if(LocalCourseConfig.CATEGORY_GROUP_CLASS_AUDIO_ROLL_CALL_START==videoQuestionEntity.getvCategory()){
+            textView.setText("打招呼");
+
+        } else if(LocalCourseConfig.CATEGORY_GROUP_CLASS_AUDIO_ROLL_CALL_END==videoQuestionEntity.getvCategory()){
+            textView.setText("再见");
+
         }
         final ImageView ivPlay = (ImageView) contentView.findViewById(R.id.iv_liveplayback_point_play);
         final int insretTime = videoQuestionEntity.getvQuestionInsretTime();

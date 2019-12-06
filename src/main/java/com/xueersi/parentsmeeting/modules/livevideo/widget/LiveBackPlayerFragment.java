@@ -359,7 +359,7 @@ public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoV
 
     /** 当前视频播放完毕 */
     @Override
-    protected void playComplete() {
+    public void playComplete() {
         if (mDuration == 0 || mCurrentPosition < (mDuration - 5000)) {
             // 异常中断退出
             resultFailed(0, 0);

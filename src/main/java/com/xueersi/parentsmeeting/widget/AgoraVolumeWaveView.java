@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import com.xueersi.lib.framework.drawable.DrawableHelper;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -137,7 +138,7 @@ public class AgoraVolumeWaveView extends SurfaceView implements SurfaceHolder.Ca
                         clearPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC));
 //                        canvas.drawColor(backColor);
                         if (back == null) {
-                            Bitmap back2 = BitmapFactory.decodeResource(getResources(), R.drawable.live_task_hongse_icon_normal);
+                            Bitmap back2 = DrawableHelper.bitmapFromResource(getResources(), R.drawable.live_task_hongse_icon_normal);
                             if (back2 != null) {
                                 back = Bitmap.createScaledBitmap(back2, viewWidth, viewHeight, true);
                                 if (back != back2) {

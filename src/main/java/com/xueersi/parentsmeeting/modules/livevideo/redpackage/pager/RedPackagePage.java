@@ -23,6 +23,7 @@ import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.RTCVideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
@@ -30,6 +31,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RedPackageStandLog
 import com.xueersi.parentsmeeting.modules.livevideo.util.GlideDrawableUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.StandLiveMethod;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FrameAnimation;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.StandLiveTextView;
@@ -53,6 +55,7 @@ public class RedPackagePage extends LiveBasePager {
     private ArrayList<GoldTeamStatus.Student> addStudents = new ArrayList<>();
     private ImageView rlLivevideoRedpackageBg;
     private ImageView ivLivevideoRedpackageBg;
+    private ImageView ivClickArea;
     private RelativeLayout rlLivevideoRedpackageTeams;
     GoldTeamStatus goldTeamStatus;
     private ArrayList<FrameAnimation> frameAnimations = new ArrayList<>();
@@ -68,6 +71,7 @@ public class RedPackagePage extends LiveBasePager {
     LiveAndBackDebug liveAndBackDebug;
     Top3FrameAnim top3FrameAnim;
     boolean viewAttached = true;
+    boolean isGroupClass = false;
     String file1 = "live_stand/frame_anim/redpackage/1_enter";
     String file2 = "live_stand/frame_anim/redpackage/2_loop";
     String file3 = "live_stand/frame_anim/redpackage/3_fly_up";
@@ -104,6 +108,7 @@ public class RedPackagePage extends LiveBasePager {
         rlLivevideoRedpackageBg = mView.findViewById(R.id.rl_livevideo_redpackage_bg);
         LayoutParamsUtil.setViewFullScreen(rlLivevideoRedpackageBg);
         ivLivevideoRedpackageBg = mView.findViewById(R.id.iv_livevideo_redpackage_bg);
+        ivClickArea = mView.findViewById(R.id.iv_livevideo_redpackage_click_area);
         rlLivevideoRedpackageTeams = mView.findViewById(R.id.rl_livevideo_redpackage_teams);
         mView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
             @Override
@@ -218,7 +223,8 @@ public class RedPackagePage extends LiveBasePager {
                             return;
                         }
                         logger.d("onPackageClick(timeout):operateId=" + operateId);
-                        ivLivevideoRedpackageBg.setOnClickListener(null);
+                        ivClickArea.setOnClickListener(null);
+                        ivClickArea.setClickable(false);
                         if (finalBtframeAnimation != null) {
                             finalBtframeAnimation.pauseAnimation();
                         }
@@ -231,6 +237,18 @@ public class RedPackagePage extends LiveBasePager {
                             public void onAnimationStart() {
                                 StandLiveMethod.voiceSiu(soundPool);
                                 redPackageAction.onPackageRight(operateId);
+                            }
+
+                            @Override
+                            public void onAnimationEnd() {
+                                rlLivevideoRedpackageBg.setVisibility(View.GONE);
+//                                        initResult2();
+                                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) ivLivevideoRedpackageBg.getLayoutParams();
+                                lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                                lp.rightMargin = 40;
+                                LayoutParamsUtil.setViewLayoutParams(ivLivevideoRedpackageBg, lp);
+                                btframeAnimationFile7 = createFromAees(file7, true);
+                                frameAnimations.add(btframeAnimationFile7);
                                 ivLivevideoRedpackageBg.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
@@ -254,29 +272,17 @@ public class RedPackagePage extends LiveBasePager {
                             }
 
                             @Override
-                            public void onAnimationEnd() {
-                                rlLivevideoRedpackageBg.setVisibility(View.GONE);
-//                                        initResult2();
-                                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) ivLivevideoRedpackageBg.getLayoutParams();
-                                lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                                lp.rightMargin = 40;
-                                LayoutParamsUtil.setViewLayoutParams(ivLivevideoRedpackageBg, lp);
-                                btframeAnimationFile7 = createFromAees(file7, true);
-                                frameAnimations.add(btframeAnimationFile7);
-                            }
-
-                            @Override
                             public void onAnimationRepeat() {
 
                             }
                         });
                     }
-                }, 3400);
-                ivLivevideoRedpackageBg.setOnClickListener(new View.OnClickListener() {
+                }, 8400);
+                ivClickArea.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         click.set(true);
-                        ivLivevideoRedpackageBg.setOnClickListener(null);
+                        ivClickArea.setOnClickListener(null);
                         logger.d("onPackageClick:operateId=" + operateId);
                         if (finalBtframeAnimation != null) {
                             finalBtframeAnimation.pauseAnimation();
@@ -349,29 +355,35 @@ public class RedPackagePage extends LiveBasePager {
      * @param entity
      */
     private void initCenterResult(final VideoResultEntity entity) {
-        final FrameAnimation btframeAnimation1 = FrameAnimation.createFromAees(mContext, rlLivevideoRedpackageBg,
-                file8, 50, false);
-        frameAnimations.add(btframeAnimation1);
-        btframeAnimation1.setAnimationListener(new FrameAnimation.AnimationListener() {
-            @Override
-            public void onAnimationStart() {
-                StandLiveMethod.changeScene(soundPool);
+        if (isGroupClass) {
+            rlLivevideoRedpackageTeams.setVisibility(View.VISIBLE);
+            if (goldTeamStatus != null) {
+                onGetTeamPackage(goldTeamStatus);
             }
+        } else {
+            final FrameAnimation btframeAnimation1 = FrameAnimation.createFromAees(mContext, rlLivevideoRedpackageBg,
+                    file8, 50, false);
+            frameAnimations.add(btframeAnimation1);
+            btframeAnimation1.setAnimationListener(new FrameAnimation.AnimationListener() {
+                @Override
+                public void onAnimationStart() {
+                    StandLiveMethod.changeScene(soundPool);
+                }
 
-            @Override
-            public void onAnimationEnd() {
-                FrameAnimation btframeAnimation2 = FrameAnimation.createFromAees(mContext, rlLivevideoRedpackageBg,
-                        file9, 50, false);
-                frameAnimations.add(btframeAnimation2);
-                btframeAnimation2.setAnimationListener(new FrameAnimation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart() {
+                @Override
+                public void onAnimationEnd() {
+                    FrameAnimation btframeAnimation2 = FrameAnimation.createFromAees(mContext, rlLivevideoRedpackageBg,
+                            file9, 50, false);
+                    frameAnimations.add(btframeAnimation2);
+                    btframeAnimation2.setAnimationListener(new FrameAnimation.AnimationListener() {
+                        @Override
+                        public void onAnimationStart() {
 
-                    }
+                        }
 
-                    @Override
-                    public void onAnimationEnd() {
-                        rlLivevideoRedpackageTeams.setVisibility(View.VISIBLE);
+                        @Override
+                        public void onAnimationEnd() {
+                            rlLivevideoRedpackageTeams.setVisibility(View.VISIBLE);
 //                        rlLivevideoRedpackageTeams.postDelayed(new Runnable() {
 //                            @Override
 //                            public void run() {
@@ -382,23 +394,24 @@ public class RedPackagePage extends LiveBasePager {
 //                                group.removeView(rlLivevideoRedpackageTeams);
 //                            }
 //                        }, 4000);
-                        if (goldTeamStatus != null) {
-                            onGetTeamPackage(goldTeamStatus);
+                            if (goldTeamStatus != null) {
+                                onGetTeamPackage(goldTeamStatus);
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onAnimationRepeat() {
+                        @Override
+                        public void onAnimationRepeat() {
 
-                    }
-                });
-            }
+                        }
+                    });
+                }
 
-            @Override
-            public void onAnimationRepeat() {
+                @Override
+                public void onAnimationRepeat() {
 
-            }
-        });
+                }
+            });
+        }
     }
 
     /**
@@ -458,6 +471,11 @@ public class RedPackagePage extends LiveBasePager {
                         redPackageAction.onPackageClose(operateId);
                     }
                 }, 3000);
+
+                RTCVideoAction rtcVideoAction = ProxUtil.getProxUtil().get(mContext, RTCVideoAction.class);
+                if (rtcVideoAction != null) {
+                    rtcVideoAction.updateGold(entity.getGoldNum(), 0, 0, RTCVideoAction.GOLD_TYPE_REDPACKAGE);
+                }
             }
 
             @Override
@@ -682,5 +700,9 @@ public class RedPackagePage extends LiveBasePager {
          */
         @Deprecated
         void onPackageRight(int operateId);
+    }
+
+    public void setGroupClass(boolean groupClass) {
+        isGroupClass = groupClass;
     }
 }

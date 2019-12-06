@@ -14,6 +14,7 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 
 import com.xueersi.common.util.FontCache;
+import com.xueersi.lib.framework.drawable.DrawableHelper;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 
 
@@ -51,7 +52,7 @@ public class ArtsAnswerTextView extends TextView {
         a.recycle();
 
         if (suffixResId > 0) {
-            icon = BitmapFactory.decodeResource(context.getResources(), suffixResId);
+            icon = DrawableHelper.bitmapFromResource(context.getResources(), suffixResId);
             //Loger.e("ArtsAnswerTextView","======> padding:"+icon.getWidth()+":"+drawableLeftMargin);
             int rightPadding = icon.getWidth() + drawableLeftMargin;
             this.setPadding(0, 0, rightPadding > 0?rightPadding:0, drawableTopMargin);
@@ -77,7 +78,7 @@ public class ArtsAnswerTextView extends TextView {
 
 
     public void setIconResId(int resId) {
-        icon = BitmapFactory.decodeResource(getContext().getResources(), resId);
+        icon = DrawableHelper.bitmapFromResource(getContext().getResources(), resId);
         invalidate();
     }
 

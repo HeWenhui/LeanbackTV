@@ -326,4 +326,16 @@ public interface XESCODE {
 
     int FORUM_INTERACTION = 412;
     int FORUM_INTERACTION_PRAISE = 10105;
+    /** 英语1v2 小组互动+上台发题+语音测评 开始*/
+    int GROUPCLASS_EVENTS_START = -10000;
+    /** 英语1v2 小组互动+上台发题+语音测评 结束*/
+    int GROUPCLASS_EVENTS_END = -10001;
+    /** 英语1v2 视频态 打开*/
+    int GROUPCLASS_VIDEO_START = -10002;
+    /** 英语1v2 视频态 关闭*/
+    int GROUPCLASS_VIDEO_END = -10003;
+    /** 英语1v2 视频态 打开*/
+    int GROUPCLASS_VIDEO_ROLL_CALL_START = -10004;
+    /** 英语1v2 视频态 打开*/
+    int GROUPCLASS_VIDEO_ROLL_CALL_END = -10005;
 }

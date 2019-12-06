@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
@@ -46,6 +45,7 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.are.ContextManager;
+import com.xueersi.lib.framework.drawable.DrawableHelper;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
@@ -710,7 +710,7 @@ public class LiveMessagePager extends BaseEvenDriveCommonPager {
             return;
         }
         mFlowerWindow = new PopupWindow(mContext);
-        mFlowerWindow.setBackgroundDrawable(new BitmapDrawable());
+        mFlowerWindow.setBackgroundDrawable(DrawableHelper.bitmap2drawable(null));
         mFlowerWindow.setOutsideTouchable(true);
         mFlowerWindow.setFocusable(true);
 

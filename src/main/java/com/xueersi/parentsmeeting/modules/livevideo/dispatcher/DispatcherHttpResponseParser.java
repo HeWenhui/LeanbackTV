@@ -16,6 +16,8 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.lib.analytics.umsagent.UmsAgentTrayPreference;
 import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.ExpLiveInfo;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.LiveExperienceEntity;
@@ -101,7 +103,10 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
                     questionEntity.setUrl(questionJson.optString("url"));
                     questionEntity.setName(questionJson.optString("type"));
                     questionEntity.setvQuestionType(questionJson.optString("type"));
-
+                    questionEntity.setPackageId(questionJson.optInt("packageId"));
+                    questionEntity.setCourseWareId(questionJson.optInt("courseWareId"));
+                    questionEntity.setPackageAttr(questionJson.optString("packageAttr"));
+                    questionEntity.setInteractType(questionJson.optInt("interactType"));
 
                     questionEntity.setSrcType(questionJson.optString("srcType"));
                     questionEntity.setQuestionNum(questionJson.optInt("num", 1));
@@ -119,6 +124,7 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
                             infos.setEstimatedTime(infoJson.optString("estimatedTime"));
                             infos.setAssess_ref(infoJson.optString("assess_ref"));
                             infos.setIsVoice(infoJson.optString("isVoice"));
+                            infos.setPageId(infoJson.optInt("pageId"));
                             infos.setTotalScore(infoJson.optString("totalScore"));
                             // 人为的划分H5Bll和QuestionBll: type为{"4", "0", "1", "2", "8", "5", "6"}的题型走QuestionBll,
                             // 将他们的category置为1001
@@ -128,7 +134,8 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
                             // 设置QuestionType,文科回放打点中使用
                             questionEntity.setvQuestionType(releasedArray.getJSONObject(0).optString("type"));
                             // 新增一个判断是否是新课件平台的字段
-                            if (1000 == questionEntity.getvCategory() || 1001 == questionEntity.getvCategory()) {
+                            if (1000 == questionEntity.getvCategory() || 1001 == questionEntity.getvCategory() ||
+                                    LocalCourseConfig.CATEGORY_GROUP_CLASS == questionEntity.getvCategory()) {
                                 isNewArtsPlatForm = true;
                             } else {
                                 isNewArtsPlatForm = false;

@@ -395,7 +395,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
         }
 
         @Override
-        protected void playComplete() {
+        public void playComplete() {
             liveFragmentBase.setFirstBackgroundVisible(View.VISIBLE);
             liveFragmentBase.postDelayedIfNotFinish(new Runnable() {
 

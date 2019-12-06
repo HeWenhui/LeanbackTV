@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lav_groupclass_setting_english_name_backgroud"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        app:lottie_loop="true" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lav_groupclass_setting_english_name_sex"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:lottie_loop="false" />
+
+    <LinearLayout
+        android:id="@+id/lv_groupclass_setting_english_name_sex"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+        <ImageView
+            android:id="@+id/lv_groupclass_setting_english_name_sex_boy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:background="@drawable/bg_group_class_sex_boy_click" />
+
+        <ImageView
+            android:visibility="gone"
+            android:id="@+id/lv_groupclass_setting_english_name_sex_girl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_group_class_sex_girl_click" />
+
+    </LinearLayout>
+    <RelativeLayout
+        android:id="@+id/rl_groupclass_setting_english_name_search"
+        android:layout_marginTop="50dp"
+        android:visibility="gone"
+        android:layout_width="186dp"
+        android:layout_centerHorizontal="true"
+        android:layout_height="38dp">
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanEditText
+        android:id="@+id/et_groupclass_setting_english_name_search"
+        android:layout_width="186dp"
+        android:layout_gravity="center_horizontal"
+        android:textCursorDrawable="@drawable/bg_live_video_red_cursor_purl"
+        android:imeOptions="flagNoExtractUi"
+        android:visibility="gone"
+        android:layout_height="38dp"
+        android:paddingRight="20dp"
+        android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        android:paddingLeft="20dp"
+        android:hint="搜索名字"
+        android:textSize="14sp"
+        android:textColorHint="@color/COLOR_FD963E"
+        android:textColor="@color/COLOR_FA6000"
+        android:gravity="center_vertical"
+        android:background="@drawable/bg_groupclass_setting_english_search" />
+        <ImageView
+            android:id="@+id/iv_groupclass_setting_english_name_search_delete"
+            android:layout_marginRight="7dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/bg_groupclass_setting_english_search_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        android:id="@+id/tv_groupclass_setting_english_name_search_empty"
+        android:layout_below="@id/rl_groupclass_setting_english_name_search"
+        android:layout_marginTop="28dp"
+        android:text="没有搜到哦，试试别的吧"
+        android:layout_centerHorizontal="true"
+        android:textSize="18sp"
+        android:textColor="@color/COLOR_756565"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <android.support.design.widget.CoordinatorLayout
+        android:layout_below="@id/rl_groupclass_setting_english_name_search"
+        android:id="@+id/cdl_groupclass_setting_english_name_content"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="57dp">
+
+
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/abl_groupclass_setting_english_name_title"
+            android:layout_width="match_parent"
+            android:background="@null"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/toolbar_group_class_english_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="5dp"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+
+                <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                    android:id="@+id/tv_setting_english_name_recommend_hint"
+                    android:text="推荐名字"
+                    android:textColor="@color/COLOR_E65C00"
+                    android:textSize="16sp"
+                    android:paddingLeft="8dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rv_setting_english_name_recommend"
+                    android:layout_width="wrap_content"
+                    android:layout_marginBottom="1dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="8dp" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/v_group_class_grouping_line"
+                    android:layout_marginLeft="5dp"
+                    android:background="@drawable/bg_group_class_grouping_line"
+                    android:layout_width="492dp"
+                    android:layout_height="1dp" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:layout_marginTop="2dp"
+                    android:id="@+id/rv_setting_english_name_index_list"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp" />
+            </LinearLayout>
+        </android.support.design.widget.AppBarLayout>
+
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_setting_english_name_list"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+    </android.support.design.widget.CoordinatorLayout>
+
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_setting_english_name_search_list"
+        android:layout_width="511dp"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="110dp"
+        android:layout_marginBottom="58dp"
+        android:layout_marginLeft="5dp" />
+    <LinearLayout
+        android:id="@+id/ll_groupclass_setting_english_name_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal"
+        android:paddingBottom="15dp">
+
+        <TextView
+            android:id="@+id/tv_groupclass_setting_english_name_pre_sex"
+            android:layout_width="106dp"
+            android:layout_height="38dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/bg_groupclass_setting_english_pre_click" />
+
+        <TextView
+            android:id="@+id/tv_groupclass_setting_english_name_sumit_data"
+            android:layout_width="106dp"
+            android:layout_height="38dp"
+            android:background="@drawable/bg_groupclass_setting_english_conform_click" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_centerHorizontal="true"
+        android:layout_width="500dp"
+        android:layout_marginTop="33dp"
+        android:gravity="right"
+        android:layout_height="wrap_content">
+    <ImageButton
+        android:id="@+id/imgbtn_live_setting_english_name_close"
+        android:layout_gravity="left"
+        android:background="@drawable/selector_page_livevideo_praise_list_lovely_close_style"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    </LinearLayout>
+
+</RelativeLayout>
