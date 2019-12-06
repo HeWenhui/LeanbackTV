@@ -212,7 +212,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
 
     @Override
     protected void createPlayer() {
-        MediaPlayer.setIsNewIJK(true);
+        MediaPlayer.setIsNewIJK(isNewIJK);
         super.createPlayer();
     }
 
@@ -585,7 +585,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                 synchronized (mIjkLock) {
                     if (isInitialized()) {
                         vPlayer.releaseSurface();
-                        if (MediaPlayer.getIsNewIJK()) {
+                        if (isNewIJK) {
                             transferStop();
                         } else {
                             vPlayer.stop();
@@ -1497,7 +1497,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         msg += ",url=" + stringBuilder;
         mLogtf.d(msg);
         logger.i("url = " + url);
-        if (!MediaPlayer.getIsNewIJK()) {
+        if (!isNewIJK) {
             playNewVideo(Uri.parse(stringBuilder.toString()), mGetInfo.getName());
         } else {
             if (nowProtol == MediaPlayer.VIDEO_PROTOCOL_RTMP || nowProtol == MediaPlayer.VIDEO_PROTOCOL_FLV) {
@@ -1636,7 +1636,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
      * 调用底层播放器的停止播放
      */
     private void transferStop() {
-        if (!MediaPlayer.getIsNewIJK()) {
+        if (!isNewIJK) {
             vPlayer.stop();
         } else {
             vPlayer.psStop();
