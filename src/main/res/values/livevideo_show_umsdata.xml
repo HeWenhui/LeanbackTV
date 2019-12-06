@@ -9,7 +9,7 @@
 	<!-->说明: 优惠券弹窗曝光</!-->
 	<string name="livevideo_show_03_32_004">{"buryId":\"livevideo_show_03_32_004\","levelone":\"03\","leveltwo":\"32\","levelthree":\"004\","businessinfo$json":{}}</string>
 	<!-->说明: 优惠券领取唤起登录曝光
-         参数: 带来源（source怎么记录待定）</!-->
+         参数: 带来源（184034402）</!-->
 	<string name="livevideo_show_03_32_005">{"buryId":\"livevideo_show_03_32_005\","levelone":\"03\","leveltwo":\"32\","levelthree":\"005\","businessinfo$json":{"sourceid":\"%1$s\"}}</string>
 	<!-->说明: 联系老师按钮曝光</!-->
 	<string name="livevideo_show_03_32_006">{"buryId":\"livevideo_show_03_32_006\","levelone":\"03\","leveltwo":\"32\","levelthree":\"006\","businessinfo$json":{}}</string>
@@ -22,7 +22,7 @@
 	<!-->说明: 红包曝光</!-->
 	<string name="livevideo_show_03_32_010">{"buryId":\"livevideo_show_03_32_010\","levelone":\"03\","leveltwo":\"32\","levelthree":\"010\","businessinfo$json":{}}</string>
 	<!-->说明: 红包唤起登录曝光
-         参数: 带来源（source怎么记录待定）</!-->
+         参数: 带来源（184034403）</!-->
 	<string name="livevideo_show_03_32_011">{"buryId":\"livevideo_show_03_32_011\","levelone":\"03\","leveltwo":\"32\","levelthree":\"011\","businessinfo$json":{"sourceid":\"%1$s\"}}</string>
 	<!-->说明: 红包领取成功弹窗曝光</!-->
 	<string name="livevideo_show_03_32_012">{"buryId":\"livevideo_show_03_32_012\","levelone":\"03\","leveltwo":\"32\","levelthree":\"012\","businessinfo$json":{}}</string>
