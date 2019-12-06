@@ -7,6 +7,7 @@ import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.CoursewarePreload;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ZipExtractorTask;
@@ -103,6 +104,7 @@ public abstract class CommonDonwLoadListener implements DownloadListener {
             unZipMap.put("liveid", itemLiveId);
             unZipMap.put("resourcetype", resourcetype);
             unZipMap.put("ip", IpAddressUtil.USER_IP);
+            unZipMap.put("freeSize", "" + CoursewarePreload.getFreeSize());
             UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, unZipMap.getData());
             return super.doInBackground(params);
 
@@ -122,6 +124,7 @@ public abstract class CommonDonwLoadListener implements DownloadListener {
             unZipMap.put("liveid", itemLiveId);
             unZipMap.put("resourcetype", resourcetype);
             unZipMap.put("ip", IpAddressUtil.USER_IP);
+            unZipMap.put("freeSize", "" + CoursewarePreload.getFreeSize());
             UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, unZipMap.getData());
         }
     }
