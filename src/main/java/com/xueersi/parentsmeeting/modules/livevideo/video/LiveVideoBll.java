@@ -5,7 +5,6 @@ import android.view.View;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.http.HttpRequestParams;
-import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
@@ -34,14 +33,13 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VPlayerListenerReg;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BasePlayerFragment;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.VideoPlayDebugUtils;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import okhttp3.Call;
@@ -140,11 +138,13 @@ public class LiveVideoBll implements VPlayerListenerReg, ProgressAction {
      */
     @Override
     public void releaseWithViewGone() {
+        VideoPlayDebugUtils.umsIfVideoViewIsNotVisible(activity, activity.findViewById(R.id.vv_course_video_video));
         View view = activity.findViewById(R.id.vv_course_video_video);
         if (view != null) {
-            Map<String,String> map = new HashMap<>();
-            map.put("videoview","gone");
-            UmsAgentManager.umsAgentDebug(activity,"livevideo_videoview",map);
+//            Map<String, String> map = new HashMap<>();
+//            map.put("videoview", "gone");
+//            UmsAgentManager.umsAgentDebug(activity, "livevideo_videoview", map);
+            VideoPlayDebugUtils.umsVideoViewGone(activity, view);
             view.setVisibility(View.GONE);
         }
         stopPlay();
@@ -157,11 +157,14 @@ public class LiveVideoBll implements VPlayerListenerReg, ProgressAction {
     @Override
     public void playVideoWithViewVisible() {
         if (MediaPlayer.getIsNewIJK()) {
+
             View view = activity.findViewById(R.id.vv_course_video_video);
             if (view != null) {
-                Map<String,String> map = new HashMap<>();
-                map.put("videoview","visible");
-                UmsAgentManager.umsAgentDebug(activity,"livevideo_videoview",map);
+                VideoPlayDebugUtils.umsIfVideoViewIsNotVisible(activity, activity.findViewById(R.id.vv_course_video_video));
+//                Map<String, String> map = new HashMap<>();
+//                map.put("videoview", "visible");
+//                UmsAgentManager.umsAgentDebug(activity, "livevideo_videoview", map);
+                VideoPlayDebugUtils.umsVideoViewVisible(activity, view);
                 view.setVisibility(View.VISIBLE);
             }
             psRePlay(false);
