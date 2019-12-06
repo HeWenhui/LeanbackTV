@@ -260,7 +260,11 @@ public class WebInstertJs {
         } finally {
 
         }
-        logToFile.e("httpRequest", dnsException);
+        if (dnsException instanceof UnknownHostException) {
+            logToFile.d("httpRequest:UnknownHostException");
+        } else {
+            logToFile.e("httpRequest", dnsException);
+        }
         return null;
     }
 
