@@ -141,10 +141,19 @@ public class WebInstertJs {
         ArrayList<File> cacheDirs = new ArrayList<>();
         cacheDirs.add(cacheDir);
         cacheDirs.add(innerFile);
+        //文件失败，需要换路径
+        boolean fileError = false;
         for (int i = 0; i < cacheDirs.size(); i++) {
             File dir = cacheDirs.get(i);
+            if (i == 1) {
+                if (fileError) {
+                    dir = cacheDirs.get(i);
+                } else {
+                    dir = cacheDirs.get(0);
+                }
+            }
             File saveFile = new File(dir, fileName);
-            logToFile.d("httpRequestTry:i=" + i + ",fileName=" + saveFile + ",exists=" + saveFile.exists());
+            logToFile.d("httpRequestTry:i=" + i + ",fileError=" + fileError + ",fileName=" + saveFile + ",exists=" + saveFile.exists());
             if (saveFile.exists()) {
                 try {
                     if (islocal != null) {
@@ -200,6 +209,9 @@ public class WebInstertJs {
                 logToFile.d("httpRequestTry:i=" + i + ",UnknownHostException");
             } else {
                 logToFile.e("httpRequestTry:i=" + i, dnsException);
+                if (dnsException instanceof java.io.FileNotFoundException) {
+                    fileError = true;
+                }
             }
         }
         return null;
