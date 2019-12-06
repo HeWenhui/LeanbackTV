@@ -437,7 +437,7 @@ public class SettingEnglishLandActivity extends XesActivity {
             recyclerSearch.setVisibility(View.GONE);
             ivLine.setVisibility(View.VISIBLE);
             ivSearchDelete.setVisibility(View.GONE);
-            tvSearchEmpty.setVisibility(View.VISIBLE);
+            tvSearchEmpty.setVisibility(View.GONE);
         } else {
             listSearchName.clear();
             ivSearchDelete.setVisibility(View.VISIBLE);
