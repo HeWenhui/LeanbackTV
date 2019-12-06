@@ -5,6 +5,7 @@ import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.CoursewarePreload;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
@@ -82,6 +83,7 @@ public class DeleteUtils {
                         hashMap.put("sno", "5");
                         hashMap.put("status", "true");
                         hashMap.put("ip", IpAddressUtil.USER_IP);
+                        hashMap.put("freeSize", "" + CoursewarePreload.getFreeSize());
                         UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, hashMap.getData());
                     } catch (Exception e) {
                         logger.e(e);
