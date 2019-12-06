@@ -9,6 +9,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xueersi.lib.framework.are.ContextManager;
+import com.xueersi.lib.framework.drawable.DrawableHelper;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -58,7 +59,7 @@ public class TeamMemberItem implements AdapterItemInterface<TeamMemberEntity> {
                     tvTeampkName.getViewTreeObserver().removeOnPreDrawListener(this);
                     int[] loc = ViewUtil.getLoc(tvTeampkName, group);
                     ImageView imageView = new ImageView(group.getContext());
-                    Bitmap bitmap = BitmapFactory.decodeResource(group.getResources(), R.drawable.app_zhanduipk_xuanzhong_pic);
+                    Bitmap bitmap = DrawableHelper.bitmapFromResource(group.getResources(), R.drawable.app_zhanduipk_xuanzhong_pic);
                     imageView.setImageBitmap(bitmap);
                     RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                     lp.leftMargin = loc[0] - (bitmap.getWidth() - tvTeampkName.getWidth()) / 2;

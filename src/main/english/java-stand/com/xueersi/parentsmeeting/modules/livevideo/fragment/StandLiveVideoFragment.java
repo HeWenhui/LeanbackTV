@@ -22,7 +22,7 @@ public class StandLiveVideoFragment extends LiveVideoFragment {
     Logger logger = LoggerFactory.getLogger(TAG);
     LiveStandFrameAnim liveStandFrameAnim;
     boolean startGetInfo = false;
-    LiveStandMediaControllerBottom standMediaControllerBottom;
+    protected LiveStandMediaControllerBottom standMediaControllerBottom;
     boolean isSetFirstParam = true;
 
     public StandLiveVideoFragment() {

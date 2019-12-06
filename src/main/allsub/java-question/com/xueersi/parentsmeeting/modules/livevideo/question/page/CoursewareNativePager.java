@@ -1050,7 +1050,12 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     if (detailInfo.isExper()) {
                         userAnswer.put("times", answer.optInt("times", -1));
                     } else {
-                        userAnswer.put("times", "" + answer.optInt("times", -1));
+                        JSONArray times = answer.getJSONArray("times");
+                        if(times.length()>0){
+                            userAnswer.put("times", "" + times.optInt(0));
+                        }else {
+                            userAnswer.put("times", -1);
+                        }
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -1152,6 +1157,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     artsAnswerResultEvent.setDetailInfo(detailInfo);
                     artsAnswerResultEvent.setIspreload(ispreload);
                     artsAnswerResultEvent.setExper(detailInfo.isExper());
+                    artsAnswerResultEvent.setInteractType(baseVideoQuestionEntity.getInteractType());
                     EventBus.getDefault().post(artsAnswerResultEvent);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -1340,6 +1346,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             artsAnswerResultEvent.setDetailInfo(detailInfo);
             artsAnswerResultEvent.setIspreload(ispreload);
             artsAnswerResultEvent.setExper(detailInfo.isExper());
+            artsAnswerResultEvent.setInteractType(baseVideoQuestionEntity.getInteractType());
             if (TextUtils.equals(LiveQueConfig.EN_COURSE_TYPE_21, detailInfo.getArtType())) {
                 if (isPlayBack) {
                     ViewGroup group = (ViewGroup) mView.getParent();
@@ -1497,7 +1504,6 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                             detailInfo.setArtType(test.getTestType());
                         }
                     }
-                    newCourseCache.add(newCourseCache.new FutureCourse());
                     showControl();
                     if (quesJson != null) {
                         for (int i = 0; i < tests.size(); i++) {

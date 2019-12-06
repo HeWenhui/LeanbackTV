@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.primaryclass;
 
 import android.content.Context;
 
+import com.xueersi.lib.framework.drawable.DrawableHelper;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -57,7 +58,7 @@ public class PrimaryClassViewSec implements PrimaryClassView {
 
     @Override
     public void decorateBack(int width, int height, RelativeLayout rl_course_video_contentview) {
-        Bitmap oldBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.bg_livevideo_priclass_normal);
+        Bitmap oldBitmap = DrawableHelper.bitmapFromResource(context.getResources(), R.drawable.bg_livevideo_priclass_normal);
         LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
         int screenWidth = liveVideoPoint.screenWidth;
         int screenHeight = liveVideoPoint.screenHeight;
@@ -190,7 +191,7 @@ public class PrimaryClassViewSec implements PrimaryClassView {
         int backTop = (ScreenUtils.getScreenHeight() - height) / 2;
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) tv_livevideo_primary_team_name_mid.getLayoutParams();
         int topMargin = backTop / 2 + (int) (114 * scale);
-        Bitmap bitmapDrawable = BitmapFactory.decodeResource(tv_livevideo_primary_team_name_mid.getResources(), R.drawable.bg_live_tips_bg_normal);
+        Bitmap bitmapDrawable = DrawableHelper.bitmapFromResource(tv_livevideo_primary_team_name_mid.getResources(), R.drawable.bg_live_tips_bg_normal);
         int left = (int) (14 * scale) + leftGap;
         int right = (int) (219 * scale) + leftGap;
         int leftMargin = left + (ScreenUtils.getScreenWidth() - left - right - bitmapDrawable.getWidth()) / 2;

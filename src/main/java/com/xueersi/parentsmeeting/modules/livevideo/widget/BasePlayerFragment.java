@@ -355,6 +355,24 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         return false;
     }
 
+    /**
+     * 是否静音模式
+     */
+    private boolean muteMode;
+
+    public void setMuteMode(boolean muteMode) {
+        this.muteMode = muteMode;
+        if (muteMode){
+            setVolume(0, 0);
+        }else {
+            setVolume(VP.DEFAULT_STEREO_VOLUME, VP.DEFAULT_STEREO_VOLUME);
+        }
+    }
+
+    public boolean isMuteMode() {
+        return muteMode;
+    }
+
     protected boolean handleMessage(Message msg) {
         return false;
     }
@@ -569,6 +587,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
             return true;
         }
     };
+
     protected WeakHandler vPlayerHandler = new WeakHandler(callback);
 
     @Nullable
@@ -1038,7 +1057,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
     }
 
     /** 当前视频播放完毕 */
-    protected void playComplete() {
+    public void playComplete() {
 
     }
 

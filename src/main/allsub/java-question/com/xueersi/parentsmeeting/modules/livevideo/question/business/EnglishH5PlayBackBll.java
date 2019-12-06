@@ -174,8 +174,8 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                 }
                 VideoQuestionLiveEntity videoQuestionLiveEntity = getVideoQuestionLiveEntity(questionEntity, vCategory);
                 Log.e("mqtt", "关闭上一题" + "CATEGORY_H5COURSE_NEWARTSWARE");
-                EventBus.getDefault().post(new LiveBackQuestionEvent(QUSTION_CLOSE, videoQuestionLiveEntity));
                 englishH5CoursewareBll.onH5Courseware("off", videoQuestionLiveEntity);
+                EventBus.getDefault().post(new LiveBackQuestionEvent(QUSTION_CLOSE, videoQuestionLiveEntity));
             }
             break;
             default:
@@ -461,6 +461,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
         videoQuestionLiveEntity.setvQuestionInsretTime(questionEntity.getvQuestionInsretTime());
         videoQuestionLiveEntity.setvEndTime(questionEntity.getvEndTime());
         videoQuestionLiveEntity.setAnswerDay(questionEntity.getAnswerDay());
+        videoQuestionLiveEntity.setInteractType(questionEntity.getInteractType());
         return videoQuestionLiveEntity;
     }
 

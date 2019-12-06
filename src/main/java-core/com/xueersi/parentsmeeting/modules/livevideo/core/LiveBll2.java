@@ -1,7 +1,9 @@
 package com.xueersi.parentsmeeting.modules.livevideo.core;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -42,15 +44,18 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LivePluginRequestParam;
 import com.xueersi.parentsmeeting.modules.livevideo.config.BigLiveCfg;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveActivityState;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveCoreConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.SysLogLable;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.SubGroupEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsExtLiveInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LivePostEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.User;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveBusinessResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpAction;
@@ -73,6 +78,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import okhttp3.Call;
@@ -100,6 +107,10 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
      * 需处理 全量 消息的 业务集合
      */
     private List<MessageAction> mMessageActions = new ArrayList<>();
+    /**
+     * 需处理 progress 业务集合
+     */
+    private List<ProgressAction> mProgressActions = new ArrayList<>();
     /**
      * 所有业务bll 集合
      */
@@ -360,6 +371,9 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         if (bll instanceof MessageAction) {
             mMessageActions.add((MessageAction) bll);
         }
+        if (bll instanceof ProgressAction) {
+            mProgressActions.add((ProgressAction) bll);
+        }
         businessBlls.add(bll);
     }
 
@@ -392,6 +406,9 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         }
         if (bll instanceof MessageAction) {
             mMessageActions.remove(bll);
+        }
+        if (bll instanceof ProgressAction) {
+            mProgressActions.remove(bll);
         }
     }
 
@@ -545,6 +562,9 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
             grayBusinessControl();
         } else {
             initLiveRoom(getInfo);
+        }
+        if (mGetInfo.getPattern() == 8) {
+            get1V2VirtualStuData();
         }
     }
 
@@ -853,8 +873,20 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         liveVideoBll.onLiveInit(getInfo, mLiveTopic);
         mShareDataManager.put(LiveVideoConfig.SP_LIVEVIDEO_CLIENT_LOG, getInfo.getClientLog(), ShareDataManager.SHAREDATA_NOT_CLEAR);
         initExtInfo(getInfo);
+        //英语1v2 开启定时器 监听直播进度
+        if (isGroupClass()) {
+            startGroupClassTimer();
+        }
     }
 
+    private void startGroupClassTimer() {
+        int diffBegin = mGetInfo.getRecordStandliveEntity().getDiffBegin();
+        long currentTime = SystemClock.elapsedRealtime();
+        diffBegin += Math.round((double) (currentTime - mGetInfo.getCreatTime()) / 1000);
+        mTimer = new Timer();
+        mTimerTask = new ScanningTimerTask(diffBegin);
+        mTimer.schedule(mTimerTask, 0, 1000);
+    }
 
     private static final long RETRY_DELAY = 3000;
     private static final long MAX_RETRY_TIME = 4;
@@ -872,6 +904,9 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
 
                     LiveGetInfo.EvenDriveInfo evenDriveInfo = new LiveGetInfo.EvenDriveInfo();
                     evenDriveInfo.setIsOpenStimulation(info.getIsOpenStimulation());
+                    if (isGroupClass()) {
+                        evenDriveInfo.setIsOpenStimulation(0);
+                    }
 //                    evenDriveInfo.setEvenNum(info.getEvenDriveRightEvenNumUrl());
                     mGetInfo.setEvenDriveInfo(evenDriveInfo);
                     mGetInfo.setArtsExtLiveInfo(info);
@@ -1227,9 +1262,6 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         }
 
     }
-
-    ;
-
 
     /**
      * 大班整合 IRC 回调
@@ -1591,6 +1623,15 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         for (LiveBaseBll businessBll : businessBlls) {
             businessBll.onResume();
         }
+
+        if (mGetInfo != null && isGroupClass()) {
+            int diffBegin = mGetInfo.getRecordStandliveEntity().getDiffBegin();
+            long currentTime = SystemClock.elapsedRealtime();
+            diffBegin += Math.round((double) (currentTime - mGetInfo.getCreatTime()) / 1000);
+            if (mTimerTask != null) {
+                mTimerTask.setPosition(diffBegin);
+            }
+        }
     }
 
     /**
@@ -1632,6 +1673,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         mNoticeActionMap.clear();
         mTopicActions.clear();
         mMessageActions.clear();
+        mProgressActions.clear();
         mVideoAction = null;
         if (mIRCMessage != null) {
             mIRCMessage.destory();
@@ -1641,6 +1683,14 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         }
         //清空场次缓存信息
         LiveAppUserInfo.getInstance().clearCachData();
+        if (mTimer != null) {
+            mTimer.cancel();
+            mTimer = null;
+        }
+        if (mTimerTask != null) {
+            mTimerTask.cancel();
+            mTimerTask = null;
+        }
 
     }
 
@@ -1660,6 +1710,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
 
     public void setLiveVideoBll(LiveVideoBll liveVideoBll) {
         this.liveVideoBll = liveVideoBll;
+        mProgressActions.add(liveVideoBll);
     }
 
 //    public void liveGetPlayServer() {
@@ -1676,7 +1727,9 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
     private boolean isPresent(String mode) {
         boolean isPresent = true;
         if (mIRCMessage != null && mIRCMessage.onUserList()) {
-            isPresent = teacherAction.isPresent(mode);
+            if (teacherAction != null) {
+                isPresent = teacherAction.isPresent(mode);
+            }
         }
         return isPresent;
     }
@@ -1689,7 +1742,11 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
      * 当前状态，老师是不是在直播间
      */
     public boolean isPresent() {
-        return isPresent(mLiveTopic.getMode());
+        if (isGroupClass()) {
+            return true;
+        } else {
+            return isPresent(mLiveTopic.getMode());
+        }
     }
 
     /**
@@ -1763,6 +1820,45 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
     }
 
 
+    public void get1V2VirtualStuData(){
+        if(mGetInfo==null || mGetInfo.getPattern()!=8
+                || (mGetInfo.getRecordStandliveEntity()!=null
+                && mGetInfo.getRecordStandliveEntity().getPartnerType() == 1)) {
+            return;
+        }
+        final LivePostEntity entity = new LivePostEntity();
+        entity.bizId = 3;
+        if(!TextUtils.isEmpty(mGetInfo.getId())) {
+            entity.planId = Integer.valueOf(mGetInfo.getId());
+        }
+        entity.gender = LiveAppUserInfo.getInstance().getSexProcess();
+        if(mGetInfo.getRecordStandliveEntity()!=null) {
+            entity.videoId = mGetInfo.getRecordStandliveEntity().getVideoId();
+        }
+
+        mHttpManager.get1V2VirtualStuData(entity, new HttpCallBack(false) {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+
+                mShareDataManager.put(LiveCoreConfig.SP_LIVE_GROUP_CLASS_VIRTUAL_INFO+ mGetInfo.getId(), responseEntity.getJsonObject().toString(), mShareDataManager.SHAREDATA_USER);
+
+                SubGroupEntity entity1 = mHttpResponseParser.parse1V2VirtualStuData(responseEntity);
+
+                if(entity1!=null) {
+                    SubGroupEntity catchEnttity = mGetInfo.getSubGroupEntity();
+                    if(catchEnttity != null) {
+                        entity1.setGroupList(catchEnttity.getGroupList());
+                        entity1.setGroupId(catchEnttity.getGroupId());
+                        if(!TextUtils.isEmpty(catchEnttity.getToken())) {
+                            entity1.setToken(catchEnttity.getToken());
+                        }
+                    }
+                    mGetInfo.setSubGroupEntity(entity1);
+
+                }
+            }
+        });
+    }
     /**
      * 设置直播Plugin配置信息
      *
@@ -1778,7 +1874,8 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         if (mLivePluginRequestParam == null) {
             return "";
         }
-        return "_" + mLivePluginRequestParam.bizId + "_" + mLivePluginRequestParam.planId + "_" + mLivePluginRequestParam.isPlayback;
+        return "_" + mLivePluginRequestParam.bizId + "_" + mLivePluginRequestParam.planId + "_" +
+                mLivePluginRequestParam.isPlayback;
     }
 
 
@@ -1913,5 +2010,77 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
 
     public AllLiveBasePagerIml getAllLiveBasePagerIml() {
         return allLiveBasePagerIml;
+    }
+
+    /**
+     * 获取服务器时间
+     *
+     * @param callBack
+     */
+    public void getServerTime(AbstractBusinessDataCallBack callBack) {
+
+        mHttpManager.getServerTime(new HttpCallBack(false) {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+
+            }
+
+        });
+    }
+
+    private Timer mTimer;
+    private ScanningTimerTask mTimerTask;
+
+    class ScanningTimerTask extends TimerTask {
+        int position;
+
+        ScanningTimerTask(int position) {
+            this.position = position;
+            logger.d("onProgressBegin : positon = " + position);
+            if (mProgressActions != null && mProgressActions.size() > 0) {
+                for (ProgressAction mProgressAction : mProgressActions) {
+                    try {
+                        mProgressAction.onProgressBegin(position);
+                    } catch (Exception e) {
+                        LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+                    }
+
+                }
+            }
+        }
+
+        @Override
+        public void run() {
+            position++;
+            logger.d("onProgressChanged : position = " + position + ", mState = " + mState);
+            if (mProgressActions != null && mProgressActions.size() > 0) {
+                for (ProgressAction mProgressAction : mProgressActions) {
+                    try {
+                        mProgressAction.onProgressChanged(position);
+                    } catch (Exception e) {
+                        LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+                    }
+
+                }
+            }
+        }
+
+        public void setPosition(int position) {
+            this.position = position;
+        }
+    }
+
+    boolean isGroupClass() {
+        return mGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_GROUP_CLASS;
     }
 }

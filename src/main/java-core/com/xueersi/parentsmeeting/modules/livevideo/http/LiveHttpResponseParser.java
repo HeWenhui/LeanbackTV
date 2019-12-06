@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.http;
 
 import android.content.Context;
+import android.os.SystemClock;
 import android.text.TextUtils;
 
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
@@ -28,6 +29,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.PkTeamEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.SubGroupEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.SubMemberEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AddPersonAndTeamEnergyEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AllRankEntity;
@@ -51,6 +54,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.MyRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity.PlayserverEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RankEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.RecordStandliveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentChestEntity;
@@ -313,6 +317,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
     public LiveGetInfo parseLiveGetInfo(JSONObject data, LiveTopic liveTopic, int liveType, int from) {
         try {
             LiveGetInfo getInfo = new LiveGetInfo(liveTopic);
+            getInfo.setCreatTime(SystemClock.elapsedRealtime());
 
             VideoConfigEntity videoConfigEntity = new VideoConfigEntity();
 
@@ -587,6 +592,22 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             evenDriveInfo.setIsOpenStimulation(data.optInt("isOpenStimulation"));
             getInfo.setEvenDriveInfo(evenDriveInfo);
             getInfo.setIsFlatfish(data.optInt("isFlatfish", 0));
+
+            //英语1V2小组课
+            JSONObject recordStandLiveJson = data.optJSONObject("recordStandlive");
+            if (recordStandLiveJson != null) {
+                RecordStandliveEntity recordStandliveEntity = new RecordStandliveEntity();
+                recordStandliveEntity.setDiffBegin(recordStandLiveJson.optInt("diffBegin"));
+                recordStandliveEntity.setMetaDataUrl(recordStandLiveJson.optString("metaDataUrl"));
+                recordStandliveEntity.setRecordUrl(recordStandLiveJson.optString("recordUrl"));
+                recordStandliveEntity.setVideoPath(recordStandLiveJson.optString("videoPath"));
+                recordStandliveEntity.setPartnerType(recordStandLiveJson.optInt("partnerType"));
+                recordStandliveEntity.setVideoId(recordStandLiveJson.optInt("videoId"));
+//                recordStandliveEntity.setDiffBegin(480);
+                getInfo.setRecordStandliveEntity(recordStandliveEntity);
+                getInfo.setMode(LiveTopic.MODE_CLASS);
+            }
+
             return getInfo;
         } catch (JSONException e) {
             logger.e("parseLiveGetInfo", e);
@@ -2832,5 +2853,33 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
         return null;
+    }
+
+    public SubGroupEntity parse1V2VirtualStuData(ResponseEntity entity) throws Exception{
+        JSONObject jsonObject = (JSONObject) entity.getJsonObject();
+        if(jsonObject==null) {
+            return null;
+        }
+        return parse1v2VirtualStuDataJson(jsonObject);
+    }
+
+    public SubGroupEntity parse1v2VirtualStuDataJson(JSONObject jsonObject){
+        SubGroupEntity subGroupEntity = new SubGroupEntity();
+        JSONObject virtuJson = jsonObject.optJSONObject("virStuInfo");
+        SubMemberEntity memberEntity = new SubMemberEntity();
+        memberEntity.setStuId(virtuJson.optInt("id"));
+        memberEntity.setGender(virtuJson.optInt("sex"));
+        memberEntity.setEnglishName(virtuJson.optString("englishName"));
+        memberEntity.setIconUrl(virtuJson.optString("avatar"));
+        JSONObject senceJson = jsonObject.optJSONObject("scene");
+        JSONObject dataJson = null;
+        if(senceJson != null) {
+            dataJson = senceJson.optJSONObject("data");
+            memberEntity.setIndex(senceJson.optInt("groupIndex"));
+        }
+        subGroupEntity.setVirStuInfo(memberEntity);
+        subGroupEntity.setVideoJson(jsonObject.optJSONObject("videoList"));
+        subGroupEntity.setDataJson(dataJson);
+        return subGroupEntity;
     }
 }
