@@ -891,6 +891,9 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                     LiveCrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
                 }
             }
+            if (activity != null) {
+                VideoPlayDebugUtils.umsIfVideoViewIsNotVisible(activity, activity.findViewById(R.id.vv_course_video_video));
+            }
         }
 
         /** 视频打开失败 */
@@ -1005,9 +1008,6 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
             VPlayerCallBack.VPlayerListener wrapListener = getWrapListener();
             if (wrapListener != null) {
                 wrapListener.onPlaying(currentPosition, duration);
-            }
-            if (activity != null) {
-                VideoPlayDebugUtils.umsIfVideoViewIsNotVisible(activity, activity.findViewById(R.id.vv_course_video_video));
             }
         }
 
