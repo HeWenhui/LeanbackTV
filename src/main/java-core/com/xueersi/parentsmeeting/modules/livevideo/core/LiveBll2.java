@@ -904,6 +904,9 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
 
                     LiveGetInfo.EvenDriveInfo evenDriveInfo = new LiveGetInfo.EvenDriveInfo();
                     evenDriveInfo.setIsOpenStimulation(info.getIsOpenStimulation());
+                    if (isGroupClass()) {
+                        evenDriveInfo.setIsOpenStimulation(0);
+                    }
 //                    evenDriveInfo.setEvenNum(info.getEvenDriveRightEvenNumUrl());
                     mGetInfo.setEvenDriveInfo(evenDriveInfo);
                     mGetInfo.setArtsExtLiveInfo(info);
