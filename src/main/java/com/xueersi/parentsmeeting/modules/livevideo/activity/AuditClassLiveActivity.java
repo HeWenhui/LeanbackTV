@@ -187,6 +187,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
     protected LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
     private AuditLiveEnvironment liveEnvironment;
+    private boolean isNewIJK = true;
 
     @Override
     protected boolean onVideoCreate(Bundle savedInstanceState) {
@@ -608,9 +609,6 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
 
     @Override
     protected void resultFailed(final int arg1, final int arg2) {
-        if (MediaPlayer.getIsNewIJK()) {
-            judgeTeacherIsPresent();
-        }
         postDelayedIfNotFinish(new Runnable() {
 
             @Override
@@ -629,12 +627,9 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
 
     /** 判断老师是否在直播间 */
     private void judgeTeacherIsPresent() {
-        boolean isPresent = mLiveBll.isPresent();
-        if (!isPresent) {//如果不在，设置当前页面为老师不在直播间
-            if (ivTeacherNotpresent.getVisibility() != View.VISIBLE) {
-                ivTeacherNotpresent.setVisibility(View.VISIBLE);
-                ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_normal);
-            }
+        if (ivTeacherNotpresent.getVisibility() != View.VISIBLE) {
+            ivTeacherNotpresent.setVisibility(View.VISIBLE);
+            ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_normal);
         }
     }
 
@@ -1652,6 +1647,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
      * 播放失败，或者完成时调用
      */
     private void onFail(int arg1, final int arg2) {
+        mLogtf.d("onFail:arg2=" + arg2);
         if (lastPlayserverEntity != null) {
             if (lastPlayserverEntity.isUseFlv()) {
                 if (!failFlvPlayserverEntity.contains(lastPlayserverEntity)) {
@@ -1668,23 +1664,51 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
             @Override
             public void run() {
                 if (tvLoadingHint != null) {
-                    String errorMsg = null;
-                    AvformatOpenInputError error = AvformatOpenInputError.getError(arg2);
-                    if (error != null) {
-                        errorMsg = error.getNum() + " (" + error.getTag() + ")";
-                    }
-                    TextView tvFail = (TextView) findViewById(R.id.tv_course_video_loading_fail);
-                    if (errorMsg != null) {
+                    TextView tvFail = findViewById(R.id.tv_course_video_loading_fail);
+                    if (isNewIJK) {
+                        MediaErrorInfo mediaErrorInfo = vPlayer.getMediaErrorInfo();
                         if (tvFail != null) {
-                            tvFail.setVisibility(View.VISIBLE);
-                            tvFail.setText(errorMsg);
+                            if (mediaErrorInfo != null) {
+                                tvFail.setVisibility(View.VISIBLE);
+                                tvFail.setText(mediaErrorInfo.mErrorMsg);
+                            } else {
+                                tvFail.setVisibility(View.INVISIBLE);
+                            }
+                        }
+                        switch (arg2) {
+                            case MediaErrorInfo.PSDispatchFailed: {
+
+                            }
+                            break;
+                            case MediaErrorInfo.PSChannelNotExist: {
+                                judgeTeacherIsPresent();
+                                break;
+                            }
+                            case MediaErrorInfo.PSServer403: {
+
+                            }
+                            break;
+                            default:
+                                break;
                         }
                     } else {
-                        if (tvFail != null) {
-                            tvFail.setVisibility(View.INVISIBLE);
+                        String errorMsg = null;
+                        AvformatOpenInputError error = AvformatOpenInputError.getError(arg2);
+                        if (error != null) {
+                            errorMsg = error.getNum() + " (" + error.getTag() + ")";
                         }
+                        if (errorMsg != null) {
+                            if (tvFail != null) {
+                                tvFail.setVisibility(View.VISIBLE);
+                                tvFail.setText(errorMsg);
+                            }
+                        } else {
+                            if (tvFail != null) {
+                                tvFail.setVisibility(View.INVISIBLE);
+                            }
+                        }
+                        mLogtf.d("onFail:arg2=" + arg2 + ",errorMsg=" + errorMsg + ",isPresent=" + mLiveBll.isPresent());
                     }
-                    mLogtf.d("onFail:arg2=" + arg2 + ",errorMsg=" + errorMsg + ",isPresent=" + mLiveBll.isPresent());
                     if (fluentMode.get()) {
                         if (vPlayer != null) {
                             vPlayer.onDestroy();
