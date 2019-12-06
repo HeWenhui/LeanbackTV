@@ -45,6 +45,8 @@ public class RoomInfoIRCMessageBll extends LiveBaseBll implements MessageAction 
     protected XesAtomicInteger peopleCount = new XesAtomicInteger(0);
     /** 公告*/
     private String mNotice;
+    /** 是否增加人数*/
+    private boolean chatSwitch;
 
     public RoomInfoIRCMessageBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -54,11 +56,14 @@ public class RoomInfoIRCMessageBll extends LiveBaseBll implements MessageAction 
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
-        if (!getInfo.getGentlyNotice().isEmpty()){
-            mNotice = "公告: " + getInfo.getGentlyNotice();
-            if(lightLiveRoomInfoPager != null){
-                lightLiveRoomInfoPager.setTvNotice(mNotice);
+        if (getInfo != null){
+            if (!getInfo.getGentlyNotice().isEmpty()){
+                mNotice = "公告: " + getInfo.getGentlyNotice();
+                if(lightLiveRoomInfoPager != null){
+                    lightLiveRoomInfoPager.setTvNotice(mNotice);
+                }
             }
+           chatSwitch = getInfo.getChatSwitch() == 1;
         }
 
     }
@@ -134,7 +139,7 @@ public class RoomInfoIRCMessageBll extends LiveBaseBll implements MessageAction 
             this.users.add(user.getNick());
         }
         peopleCount.set(this.users.size(), new Exception());
-        lightLiveRoomInfoPager.setTvCount("在线"+ peopleCount + "人");
+        lightLiveRoomInfoPager.setTvCount("在线"+ getShowCount() + "人");
     }
 
     @Override
@@ -144,7 +149,7 @@ public class RoomInfoIRCMessageBll extends LiveBaseBll implements MessageAction 
             XrsCrashReport.d(TAG, "onJoin:sender=" + sender + ",get=" + peopleCount.get()+ ",users=" + users.size() + ",this=" + this);
             peopleCount.set(peopleCount.get() + 1, new Exception(sender));
             users.add(sender);
-            lightLiveRoomInfoPager.setTvCount("在线"+ peopleCount + "人");
+            lightLiveRoomInfoPager.setTvCount("在线"+ getShowCount() + "人");
         }
     }
 
@@ -156,7 +161,7 @@ public class RoomInfoIRCMessageBll extends LiveBaseBll implements MessageAction 
             XrsCrashReport.d(TAG, "onQuit:sourceNick=" + sourceNick + ",get=" + peopleCount.get() + ",remove=" + remove + ",users=" + users.size() + ",this=" + this);
             if (remove) {
                 peopleCount.set(peopleCount.get() - 1, new Exception(sourceNick));
-                lightLiveRoomInfoPager.setTvCount("在线"+ peopleCount + "人");
+                lightLiveRoomInfoPager.setTvCount("在线"+ getShowCount() + "人");
             }
         }
     }
@@ -169,5 +174,15 @@ public class RoomInfoIRCMessageBll extends LiveBaseBll implements MessageAction 
     @Override
     public void onUnknown(String line) {
 
+    }
+
+    private int getShowCount(){
+        int count;
+        if (chatSwitch){
+            count = (int)Math.ceil(peopleCount.get() * 1.25) + 18;
+        }else {
+            count = peopleCount.get();
+        }
+        return count;
     }
 }

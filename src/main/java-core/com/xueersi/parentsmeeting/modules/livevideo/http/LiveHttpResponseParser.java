@@ -609,7 +609,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 getInfo.setLpWeChatEntity(lpEntity);
 
             }
-
+            getInfo.setChatSwitch(data.optInt("chatSwitch"));
             return getInfo;
         } catch (JSONException e) {
             logger.e("parseLiveGetInfo", e);

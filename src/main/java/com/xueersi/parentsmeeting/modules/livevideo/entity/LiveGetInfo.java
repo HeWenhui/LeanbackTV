@@ -400,6 +400,8 @@ public class LiveGetInfo {
     private boolean isGently;
 
     private LPWeChatEntity lpWeChatEntity;
+    /** 聊天人数增加开关 1开 0关*/
+    private int chatSwitch;
 
     public String getGentlyNotice() {
         return gentlyNotice;
@@ -423,6 +425,14 @@ public class LiveGetInfo {
 
     public void setLpWeChatEntity(LPWeChatEntity lpWeChatEntity) {
         this.lpWeChatEntity = lpWeChatEntity;
+    }
+
+    public int getChatSwitch() {
+        return chatSwitch;
+    }
+
+    public void setChatSwitch(int chatSwitch) {
+        this.chatSwitch = chatSwitch;
     }
 
     public LiveStatus getLiveStatus() {

@@ -132,6 +132,8 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
     private LPWeChatEntity weChatEntity;
     boolean isShowWeChat;
     private VerifyCancelAlertDialog cleanMessageDialog;
+    private LightLiveHttpManager lightLiveHttpManager;
+    private LiveHttpManager liveHttpManager;
 
     public LightLiveMessagePortPager(Context context, KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener,
                                      ArrayList<LiveMessageEntity> liveMessageEntities, ArrayList<LiveMessageEntity> otherLiveMessageEntities) {
@@ -364,7 +366,6 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
     }
 
     private void getLPWeChat(){
-        LightLiveHttpManager lightLiveHttpManager = new LightLiveHttpManager(liveHttpManager);
         lightLiveHttpManager.getWechatInfo(getInfo.getId(), new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
@@ -942,10 +943,10 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
         cleanMessageDialog.showDialog();
     }
 
-    LiveHttpManager liveHttpManager;
 
     public void setLiveHttpManager(LiveHttpManager liveHttpManager){
         this.liveHttpManager = liveHttpManager;
+        lightLiveHttpManager = new LightLiveHttpManager(liveHttpManager);
     }
 
 }
