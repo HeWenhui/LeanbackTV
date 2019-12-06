@@ -33,6 +33,10 @@ public class GroupGameUpload {
         logger.d("GroupGameUpload:live_id=" + live_id + ",testId=" + testId);
     }
 
+    public GroupGameUpload(Context context) {
+        this.context = context;
+    }
+
     /**
      * 把语音文件上传阿里云
      */
@@ -146,5 +150,21 @@ public class GroupGameUpload {
                 }
             }
         });
+    }
+
+    /**
+     * 把语音文件上传阿里云
+     */
+    public void uploadWonderMoment(final File saveFile, XesStsUploadListener xesStsUploadListener) {
+        logger.d("uploadWonderMoment:saveFile=" + saveFile + ",length=" + saveFile.length());
+        if (saveFile.length() == 0) {
+            return;
+        }
+        XesCloudUploadBusiness xesCloudUploadBusiness = new XesCloudUploadBusiness(ContextManager.getContext());
+        CloudUploadEntity uploadEntity = new CloudUploadEntity();
+        uploadEntity.setFilePath(saveFile.getPath());
+        uploadEntity.setType(XesCloudConfig.UPLOAD_OTHER);
+        uploadEntity.setCloudPath(CloudDir.GROUP_INTERACTIVE);
+        xesCloudUploadBusiness.asyncUpload(uploadEntity, xesStsUploadListener);
     }
 }

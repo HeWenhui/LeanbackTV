@@ -32,9 +32,11 @@
             android:id="@+id/lv_groupclass_setting_english_name_sex_boy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:background="@drawable/bg_group_class_sex_boy_click" />
 
         <ImageView
+            android:visibility="gone"
             android:id="@+id/lv_groupclass_setting_english_name_sex_girl"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -177,7 +179,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:orientation="horizontal"
-        android:paddingBottom="13dp">
+        android:paddingBottom="15dp">
 
         <TextView
             android:id="@+id/tv_groupclass_setting_english_name_pre_sex"
