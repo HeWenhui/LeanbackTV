@@ -1664,32 +1664,40 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
             @Override
             public void run() {
                 if (tvLoadingHint != null) {
-                    TextView tvFail = findViewById(R.id.tv_course_video_loading_fail);
+                    TextView errorInfo = findViewById(R.id.tv_course_video_loading_fail);
                     if (isNewIJK) {
                         MediaErrorInfo mediaErrorInfo = vPlayer.getMediaErrorInfo();
-                        if (tvFail != null) {
-                            if (mediaErrorInfo != null) {
-                                tvFail.setVisibility(View.VISIBLE);
-                                tvFail.setText(mediaErrorInfo.mErrorMsg);
-                            } else {
-                                tvFail.setVisibility(View.INVISIBLE);
+                        if (mediaErrorInfo != null) {
+                            if (errorInfo != null) {
+                                errorInfo.setVisibility(View.VISIBLE);
+                                errorInfo.setText(mediaErrorInfo.mErrorMsg);
+                                switch (mediaErrorInfo.mErrorCode) {
+                                    case MediaErrorInfo.PSPlayerError: {
+                                        errorInfo.setText("视频播放失败[" + mediaErrorInfo.mPlayerErrorCode + " " + "]");
+                                        break;
+                                    }
+                                    case MediaErrorInfo.PSDispatchFailed: {
+                                        errorInfo.setText("视频播放失败[" + MediaErrorInfo.PSDispatchFailed + "]");
+                                        break;
+                                    }
+                                    case MediaErrorInfo.PSChannelNotExist: {
+                                        judgeTeacherIsPresent();
+                                        break;
+                                    }
+                                    case MediaErrorInfo.PSServer403: {
+                                        errorInfo.setText("鉴权失败[" + MediaErrorInfo.PSServer403 + "]");
+                                        break;
+                                    }
+                                    default: {
+                                        errorInfo.setText("视频播放失败 [" + arg2 + "]");
+                                        break;
+                                    }
+                                }
                             }
-                        }
-                        switch (arg2) {
-                            case MediaErrorInfo.PSDispatchFailed: {
-
+                        } else {
+                            if (errorInfo != null) {
+                                errorInfo.setVisibility(View.INVISIBLE);
                             }
-                            break;
-                            case MediaErrorInfo.PSChannelNotExist: {
-                                judgeTeacherIsPresent();
-                                break;
-                            }
-                            case MediaErrorInfo.PSServer403: {
-
-                            }
-                            break;
-                            default:
-                                break;
                         }
                     } else {
                         String errorMsg = null;
@@ -1698,13 +1706,13 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                             errorMsg = error.getNum() + " (" + error.getTag() + ")";
                         }
                         if (errorMsg != null) {
-                            if (tvFail != null) {
-                                tvFail.setVisibility(View.VISIBLE);
-                                tvFail.setText(errorMsg);
+                            if (errorInfo != null) {
+                                errorInfo.setVisibility(View.VISIBLE);
+                                errorInfo.setText(errorMsg);
                             }
                         } else {
-                            if (tvFail != null) {
-                                tvFail.setVisibility(View.INVISIBLE);
+                            if (errorInfo != null) {
+                                errorInfo.setVisibility(View.INVISIBLE);
                             }
                         }
                         mLogtf.d("onFail:arg2=" + arg2 + ",errorMsg=" + errorMsg + ",isPresent=" + mLiveBll.isPresent());
