@@ -3,17 +3,16 @@ package com.xueersi.parentsmeeting.modules.livevideo.liveLog;
 
 import android.content.Context;
 
-import com.hwl.bury.xrsbury.BuryPublicParam;
-import com.hwl.log.LogConfig;
-import com.hwl.log.xrsLog.UpdateParamInterface;
-import com.hwl.log.xrsLog.XrsLogPublicParam;
+import com.xrs.bury.xrsbury.BuryPublicParam;
+import com.xrs.log.LogConfig;
+import com.xrs.log.xrsLog.UpdateParamInterface;
+import com.xrs.log.xrsLog.XrsLogPublicParam;
 import com.xueersi.common.base.XueErSiRunningEnvironment;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.entity.LiveRemoteConfigInfo;
 import com.xueersi.common.entity.MyUserInfoEntity;
 import com.xueersi.common.http.NetUtil;
-import com.xueersi.common.logerhelper.LogBill;
 import com.xueersi.common.logerhelper.network.PingInfo;
 import com.xueersi.lib.analytics.umsagent.CommonUtil;
 import com.xueersi.lib.analytics.umsagent.DeviceInfo;
@@ -53,7 +52,7 @@ public class LiveLogBill {
 
     public static LiveLogBill getInstance() {
         if (mInstance == null) {
-            synchronized (LogBill.class) {
+            synchronized (LiveLogBill.class) {
                 if (mInstance == null) {
                     mInstance = new LiveLogBill(XueErSiRunningEnvironment.sAppContext);
                 }
@@ -65,7 +64,7 @@ public class LiveLogBill {
 
     public static LiveLogBill getInstance(Context context) {
         if (mInstance == null) {
-            synchronized (LogBill.class) {
+            synchronized (LiveLogBill.class) {
                 if (mInstance == null) {
                     mInstance = new LiveLogBill(context);
                 }

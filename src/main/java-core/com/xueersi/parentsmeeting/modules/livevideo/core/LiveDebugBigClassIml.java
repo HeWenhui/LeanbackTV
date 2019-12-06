@@ -2,11 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.core;
 
 import android.content.Context;
 
-import com.hwl.log.xrsLog.XrsLog;
-import com.hwl.log.xrsNetworkLog.XrsNetLog;
 import com.xueersi.common.network.IpAddressUtil;
-import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
-import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;

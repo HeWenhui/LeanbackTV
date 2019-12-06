@@ -192,7 +192,7 @@ public class NewCourseCache {
         long before = SystemClock.elapsedRealtime();
         final AtomicBoolean islocal = new AtomicBoolean();
         if (inputStream == null) {
-            inputStream = webInstertJs.httpRequest(url, islocal);
+            inputStream = webInstertJs.httpRequestTry(url, islocal);
         }
         final long httptime = SystemClock.elapsedRealtime() - before;
         logToFile.d("interceptIndexRequest:url=" + url + ",inputStream2=" + (inputStream == null));
