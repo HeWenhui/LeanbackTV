@@ -179,6 +179,7 @@ public class NewCourseCache {
     public WebResourceResponse interceptIndexRequest(WebView view, final String url) {
         courseUrl = url;
         final int startProgress = newProgress;
+        final Thread thread = Thread.currentThread();
         final File file = getIndexFile(url);
         InputStream inputStream = null;
         final boolean ispreload;
@@ -192,7 +193,7 @@ public class NewCourseCache {
         long before = SystemClock.elapsedRealtime();
         final AtomicBoolean islocal = new AtomicBoolean();
         if (inputStream == null) {
-            inputStream = webInstertJs.httpRequest(url, islocal);
+            inputStream = webInstertJs.httpRequestTry(url, islocal);
         }
         final long httptime = SystemClock.elapsedRealtime() - before;
         logToFile.d("interceptIndexRequest:url=" + url + ",inputStream2=" + (inputStream == null));
@@ -221,6 +222,7 @@ public class NewCourseCache {
                                 stableLogHashMap.put("islocal", "" + islocal);
                                 stableLogHashMap.put("readtime", "" + readtime);
                                 stableLogHashMap.put("readMethod", "" + readMethod);
+                                stableLogHashMap.put("thread", "" + thread.getId());
                                 stableLogHashMap.put("httptime", "" + httptime);
                                 if (file != null) {
                                     stableLogHashMap.put("filepath", file.getPath());
@@ -379,7 +381,7 @@ public class NewCourseCache {
                                         stableLogHashMap.put("ispreload", "true");
                                         stableLogHashMap.put("readtime", "" + readtime);
                                         stableLogHashMap.put("readMethod", "" + readMethod);
-                                        stableLogHashMap.put("thread", "" + thread);
+                                        stableLogHashMap.put("thread", "" + thread.getId());
                                         stableLogHashMap.put("filepath", finalFile.getPath());
                                         stableLogHashMap.put("filelength", "" + finalFile.length());
                                         UmsAgentManager.umsAgentDebug(mContext, eventId, stableLogHashMap.getData());
