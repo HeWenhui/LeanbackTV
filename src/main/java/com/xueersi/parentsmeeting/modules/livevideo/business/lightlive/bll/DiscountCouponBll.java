@@ -17,6 +17,7 @@ import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.config.BurySourceIds;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.entity.CouponEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.http.LightLiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.http.LightLiveHttpResponseParser;
@@ -191,7 +192,7 @@ public class DiscountCouponBll extends LiveBaseBll {
                         }
                     });
                 } else {
-                    XrsBury.showBury(mContext.getResources().getString(R.string.livevideo_show_03_32_005),"");
+                    XrsBury.showBury(mContext.getResources().getString(R.string.livevideo_show_03_32_005), BurySourceIds.LIGHT_LIVE_POUPON_SOURCEID);
                     LoginEnter.openLogin(mContext,false,new Bundle());
                 }
             }

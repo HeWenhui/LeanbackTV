@@ -27,6 +27,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
+import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.config.BurySourceIds;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.mvp.ReceiveGold;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.pager.LightLiveRedPackageView;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -178,7 +179,7 @@ public class LightLiveRedPackageBll implements RedPackageAction, Handler.Callbac
                     if (AppBll.getInstance().isAlreadyLogin()) {
                         LightLiveRedPackageBll.this.sendReceiveGold(operateId, mVSectionID, onRedPackageSend);
                     } else {
-                        XrsBury.showBury(activity.getResources().getString(R.string.livevideo_show_03_32_011),"");
+                        XrsBury.showBury(activity.getResources().getString(R.string.livevideo_show_03_32_011), BurySourceIds.LIGHT_LIVE_RED_PAGERAGE_SOURCEID);
                         LoginEnter.openLogin(activity, false, null);
                         isGetPagClick = false;
                     }
