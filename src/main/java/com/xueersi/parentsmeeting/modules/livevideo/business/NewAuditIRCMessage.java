@@ -234,7 +234,7 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
                                             mHandler.removeCallbacks(startVideoRun);
                                         } else {
                                             if ("publishFail".equals(status)) {
-                                                msg = "推流失败";
+                                                msg = "学生网络异常";
                                             } else if ("forbidden".equals(status)) {
                                                 msg = "摄像头已禁用";
                                             } else if ("disconnect".equals(status)) {

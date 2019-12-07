@@ -319,7 +319,7 @@ public class AuditClassRoomActivity extends XesActivity {
             sp = new SpannableString("暂无" + "\n" + fixText);
         } else {
             sp = new SpannableString(text + "\n" + fixText);
-            sp.setSpan(new AbsoluteSizeSpan(25, true), 1, numberText.length() + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            sp.setSpan(new AbsoluteSizeSpan(22, true), 1, numberText.length() + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         int whiteColor = getResources().getColor(R.color.white);
         sp.setSpan(new ForegroundColorSpan(whiteColor), 0, sp.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -455,7 +455,7 @@ public class AuditClassRoomActivity extends XesActivity {
                 char[] secondTime = times[1].toCharArray();
                 tvCheckInSecondEnd.setText(String.valueOf(secondTime[1]));
                 tvCheckInSecond.setText(String.valueOf(secondTime[0]));
-            }else {
+            } else {
                 tvCheckInSecondEnd.setText("0");
                 tvCheckInSecond.setText("0");
             }
@@ -564,7 +564,7 @@ public class AuditClassRoomActivity extends XesActivity {
             llQuestionDetailList.setVisibility(View.VISIBLE);
             hasData = true;
             if (mQuestionRateDetailAdapter == null) {
-                mQuestionRateDetailAdapter = new QuestionRateDetailAdapter(mContext, lstUserScore,isBigLive);
+                mQuestionRateDetailAdapter = new QuestionRateDetailAdapter(mContext, lstUserScore, isBigLive);
                 gvQuestionDetail.setAdapter(mQuestionRateDetailAdapter);
             } else {
                 mQuestionRateDetailAdapter.notifyDataSetChanged();

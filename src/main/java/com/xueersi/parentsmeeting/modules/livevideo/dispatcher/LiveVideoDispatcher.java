@@ -176,7 +176,7 @@ public class LiveVideoDispatcher extends AbsDispatcher {
     }
 
     private void startAudit() {
-        LiveVideoEnter.intentToAuditClassActivity(activity, vStuCourseId, planId,planVersion == DispatcherConfig.BIGLIVE_GRAY_CONTROL_PLANVERSION_BIG);
+        LiveVideoEnter.intentToAuditClassActivity(activity, vStuCourseId, planId,planVersion != DispatcherConfig.BIGLIVE_GRAY_CONTROL_PLANVERSION_COMMON);
     }
 
     private void startExp() {

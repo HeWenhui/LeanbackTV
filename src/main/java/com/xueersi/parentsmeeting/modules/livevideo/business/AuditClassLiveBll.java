@@ -205,7 +205,6 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
                     public void onPmSuccess(ResponseEntity responseEntity) {
                         LiveBusinessResponseParser mHttpResponseParser = new LiveBusinessResponseParser();
                         JSONObject object = (JSONObject) responseEntity.getJsonObject();
-                        LiveTopic mLiveTopic = new LiveTopic();
                         mGetInfo = mHttpResponseParser.parseLiveEnter(object, mLiveTopic, LiveVideoConfig.LIVE_TYPE_LIVE, 0);
                         if (mGetInfo == null) {
                             XESToastUtils.showToast("服务器异常");
@@ -607,6 +606,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
                 String subjectId = (mGetInfo.getSubjectIds() != null && mGetInfo.getSubjectIds().length > 0) ?
                         mGetInfo.getSubjectIds()[0] : "";
                 mHttpManager.addHeaderParams("switch-subject", subjectId);
+                mHttpManager.addHeaderParams("planId", mGetInfo.getId());
                 mHttpManager.addHeaderParams("bizId", mLiveType + "");
                 mHttpManager.addHeaderParams("SESSIONID", AppBll.getInstance().getLiveSessionId());
                 //Log.e("ckTrac","====>LiveBll2_initBigLiveRoom:"+ AppBll.getInstance().getLiveSessionId());

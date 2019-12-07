@@ -187,6 +187,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
     protected LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
     private AuditLiveEnvironment liveEnvironment;
+    private boolean isNewIJK = true;
 
     @Override
     protected boolean onVideoCreate(Bundle savedInstanceState) {
@@ -211,7 +212,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
 
     @Override
     protected void createPlayer() {
-        MediaPlayer.setIsNewIJK(true);
+        MediaPlayer.setIsNewIJK(isNewIJK);
         super.createPlayer();
     }
 
@@ -561,6 +562,10 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                     }
                 }
             });
+            if (mGetInfo != null) {
+                mHandler.removeCallbacks(studentLiveInfoRunnable);
+                mHandler.post(studentLiveInfoRunnable);
+            }
         }
     }
 
@@ -580,7 +585,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                 synchronized (mIjkLock) {
                     if (isInitialized()) {
                         vPlayer.releaseSurface();
-                        if (MediaPlayer.getIsNewIJK()) {
+                        if (isNewIJK) {
                             transferStop();
                         } else {
                             vPlayer.stop();
@@ -604,9 +609,6 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
 
     @Override
     protected void resultFailed(final int arg1, final int arg2) {
-        if (MediaPlayer.getIsNewIJK()) {
-            judgeTeacherIsPresent();
-        }
         postDelayedIfNotFinish(new Runnable() {
 
             @Override
@@ -625,12 +627,9 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
 
     /** 判断老师是否在直播间 */
     private void judgeTeacherIsPresent() {
-        boolean isPresent = mLiveBll.isPresent();
-        if (!isPresent) {//如果不在，设置当前页面为老师不在直播间
-            if (ivTeacherNotpresent.getVisibility() != View.VISIBLE) {
-                ivTeacherNotpresent.setVisibility(View.VISIBLE);
-                ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_normal);
-            }
+        if (ivTeacherNotpresent.getVisibility() != View.VISIBLE) {
+            ivTeacherNotpresent.setVisibility(View.VISIBLE);
+            ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_normal);
         }
     }
 
@@ -846,25 +845,27 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         mMediaController.setFileName(getInfo.getName());
         mLiveBll.setHalfBodyLive(isHalfBodyLive());
         liveEnvironment.setLiveGetInfo(getInfo);
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (isFinishing()) {
-                    return;
-                }
-                mLiveBll.getStudentLiveInfo();
-                long delayMillis;
-                //大班直播一分钟
-                if (isBigLive) {
-                    delayMillis = 60000;
-                } else {
-                    delayMillis = 300000;
-                }
-                mHandler.postDelayed(this, delayMillis);
-            }
-        });
+        mHandler.post(studentLiveInfoRunnable);
         initBussinessUI();
     }
+
+    private Runnable studentLiveInfoRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (isFinishing()) {
+                return;
+            }
+            mLiveBll.getStudentLiveInfo();
+            long delayMillis;
+            //大班直播一分钟
+            if (isBigLive) {
+                delayMillis = 60000;
+            } else {
+                delayMillis = 300000;
+            }
+            mHandler.postDelayed(this, delayMillis);
+        }
+    };
 
     private void initBussinessUI() {
         if (isHalfBodyLive()) {
@@ -1496,7 +1497,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         msg += ",url=" + stringBuilder;
         mLogtf.d(msg);
         logger.i("url = " + url);
-        if (!MediaPlayer.getIsNewIJK()) {
+        if (!isNewIJK) {
             playNewVideo(Uri.parse(stringBuilder.toString()), mGetInfo.getName());
         } else {
             if (nowProtol == MediaPlayer.VIDEO_PROTOCOL_RTMP || nowProtol == MediaPlayer.VIDEO_PROTOCOL_FLV) {
@@ -1635,7 +1636,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
      * 调用底层播放器的停止播放
      */
     private void transferStop() {
-        if (!MediaPlayer.getIsNewIJK()) {
+        if (!isNewIJK) {
             vPlayer.stop();
         } else {
             vPlayer.psStop();
@@ -1646,6 +1647,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
      * 播放失败，或者完成时调用
      */
     private void onFail(int arg1, final int arg2) {
+        mLogtf.d("onFail:arg2=" + arg2);
         if (lastPlayserverEntity != null) {
             if (lastPlayserverEntity.isUseFlv()) {
                 if (!failFlvPlayserverEntity.contains(lastPlayserverEntity)) {
@@ -1662,23 +1664,59 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
             @Override
             public void run() {
                 if (tvLoadingHint != null) {
-                    String errorMsg = null;
-                    AvformatOpenInputError error = AvformatOpenInputError.getError(arg2);
-                    if (error != null) {
-                        errorMsg = error.getNum() + " (" + error.getTag() + ")";
-                    }
-                    TextView tvFail = (TextView) findViewById(R.id.tv_course_video_loading_fail);
-                    if (errorMsg != null) {
-                        if (tvFail != null) {
-                            tvFail.setVisibility(View.VISIBLE);
-                            tvFail.setText(errorMsg);
+                    TextView errorInfo = findViewById(R.id.tv_course_video_loading_fail);
+                    if (isNewIJK) {
+                        MediaErrorInfo mediaErrorInfo = vPlayer.getMediaErrorInfo();
+                        if (mediaErrorInfo != null) {
+                            if (errorInfo != null) {
+                                errorInfo.setVisibility(View.VISIBLE);
+                                errorInfo.setText(mediaErrorInfo.mErrorMsg);
+                                switch (mediaErrorInfo.mErrorCode) {
+                                    case MediaErrorInfo.PSPlayerError: {
+                                        errorInfo.setText("视频播放失败[" + mediaErrorInfo.mPlayerErrorCode + " " + "]");
+                                        break;
+                                    }
+                                    case MediaErrorInfo.PSDispatchFailed: {
+                                        errorInfo.setText("视频播放失败[" + MediaErrorInfo.PSDispatchFailed + "]");
+                                        break;
+                                    }
+                                    case MediaErrorInfo.PSChannelNotExist: {
+                                        judgeTeacherIsPresent();
+                                        break;
+                                    }
+                                    case MediaErrorInfo.PSServer403: {
+                                        errorInfo.setText("鉴权失败[" + MediaErrorInfo.PSServer403 + "]");
+                                        break;
+                                    }
+                                    default: {
+                                        errorInfo.setText("视频播放失败 [" + arg2 + "]");
+                                        break;
+                                    }
+                                }
+                            }
+                        } else {
+                            if (errorInfo != null) {
+                                errorInfo.setVisibility(View.INVISIBLE);
+                            }
                         }
                     } else {
-                        if (tvFail != null) {
-                            tvFail.setVisibility(View.INVISIBLE);
+                        String errorMsg = null;
+                        AvformatOpenInputError error = AvformatOpenInputError.getError(arg2);
+                        if (error != null) {
+                            errorMsg = error.getNum() + " (" + error.getTag() + ")";
                         }
+                        if (errorMsg != null) {
+                            if (errorInfo != null) {
+                                errorInfo.setVisibility(View.VISIBLE);
+                                errorInfo.setText(errorMsg);
+                            }
+                        } else {
+                            if (errorInfo != null) {
+                                errorInfo.setVisibility(View.INVISIBLE);
+                            }
+                        }
+                        mLogtf.d("onFail:arg2=" + arg2 + ",errorMsg=" + errorMsg + ",isPresent=" + mLiveBll.isPresent());
                     }
-                    mLogtf.d("onFail:arg2=" + arg2 + ",errorMsg=" + errorMsg + ",isPresent=" + mLiveBll.isPresent());
                     if (fluentMode.get()) {
                         if (vPlayer != null) {
                             vPlayer.onDestroy();

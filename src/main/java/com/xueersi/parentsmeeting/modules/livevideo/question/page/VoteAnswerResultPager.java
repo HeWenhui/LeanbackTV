@@ -30,6 +30,7 @@ import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.tcp.TcpMessageAction;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.tcp.TcpMessageReg;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsAnswerResultLottieEffectInfo;
@@ -310,6 +311,7 @@ public class VoteAnswerResultPager extends BasePager implements IArtsAnswerRsult
             playBackVoteData = jsonObject.optString("data");
         } catch (Exception e) {
             e.printStackTrace();
+            LiveCrashReport.postCatchedException(TAG, e);
         }
         if (!isPlayBack) {
             tcpMessageReg = ProxUtil.getProxUtil().get(mContext, TcpMessageReg.class);
@@ -521,6 +523,7 @@ public class VoteAnswerResultPager extends BasePager implements IArtsAnswerRsult
             answerListShowing = true;
         } catch (Exception e) {
             e.printStackTrace();
+            LiveCrashReport.postCatchedException(TAG, e);
         }
     }
 
@@ -716,6 +719,8 @@ public class VoteAnswerResultPager extends BasePager implements IArtsAnswerRsult
                 });
             }
         } catch (JSONException e) {
+            e.printStackTrace();
+            LiveCrashReport.postCatchedException(TAG, e);
         }
     }
 }

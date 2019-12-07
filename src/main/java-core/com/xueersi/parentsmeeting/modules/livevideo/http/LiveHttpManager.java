@@ -333,6 +333,8 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction,
         if(stuCould > 0){
             param.setStuCouId(stuCould);
         }
+        addHeaderParams("planId",planId+"");
+        addHeaderParams("bizId",bizId+"");
         sendJsonPost(LiveIntegratedCfg.LIVE_ENTER,param,requestCallBack);
     }
 

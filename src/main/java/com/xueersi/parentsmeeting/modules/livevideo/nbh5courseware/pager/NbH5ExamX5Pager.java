@@ -858,6 +858,9 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
 
     @Override
     public void destroy() {
+        if(wvSubjectWeb != null){
+            wvSubjectWeb.destroy();
+        }
         this.onDestroy();
     }
 }
