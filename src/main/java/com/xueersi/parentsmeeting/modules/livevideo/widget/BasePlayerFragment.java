@@ -632,7 +632,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
 
     protected void setVideoConfig() {
         if (videoConfigEntity != null) {
-            vPlayer.enableAutoSpeedPlay(videoConfigEntity.getWaterMark(), videoConfigEntity.getDuration());
+            vPlayer.enableAutoSpeedPlay(videoConfigEntity.getPsIjkParameter());
         }
     }
 
@@ -709,7 +709,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
     public void enableAutoSpeedPlay(VideoConfigEntity videoConfigEntity) {
         if (vPlayer != null && videoConfigEntity != null) {
             this.videoConfigEntity = videoConfigEntity;
-            vPlayer.enableAutoSpeedPlay(videoConfigEntity.getWaterMark(), videoConfigEntity.getDuration());
+            vPlayer.enableAutoSpeedPlay(videoConfigEntity.getPsIjkParameter());
         }
     }
 
