@@ -1,11 +1,13 @@
 package com.xueersi.parentsmeeting.modules.livevideo.core;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseBll;
@@ -18,6 +20,7 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsConstants;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.JsonUtil;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.XESToastUtils;
@@ -67,6 +70,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.video.LiveVideoBll;
 import com.xueersi.parentsmeeting.modules.livevideo.video.SampleLiveVPlayerListener;
 import com.xueersi.parentsmeeting.modules.livevideo.video.TeacherIsPresent;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VPlayerListenerReg;
+import com.xueersi.ui.dialog.ConfirmAlertDialog;
+import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -83,6 +88,8 @@ import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import okhttp3.Call;
+import ren.yale.android.cachewebviewlib.CacheWebView;
+import ren.yale.android.cachewebviewlib.WebViewCache;
 
 import static com.xueersi.common.sharedata.ShareDataManager.SHAREDATA_NOT_CLEAR;
 
@@ -1900,6 +1907,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
     }
 
 
+    boolean initModeRetried;
     public void grayBusinessControl() {
         if (grayControl != null && mGetInfo != null) {
             LivePluginRequestParam param = new LivePluginRequestParam();
@@ -1918,7 +1926,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
      *
      * @param callBack
      */
-    public void getLivePluingConfigInfo(LivePluginRequestParam param, final AbstractBusinessDataCallBack callBack) {
+    public void getLivePluingConfigInfo(final LivePluginRequestParam param, final AbstractBusinessDataCallBack callBack) {
         mLivePluginRequestParam = param;
 
         mHttpManager.getLivePluginConfigInfo(param, new HttpCallBack(false) {
@@ -1951,19 +1959,43 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
             @Override
             public void onPmFailure(Throwable error, String msg) {
                 //super.onPmFailure(error, msg);
+                onInitModeFail(param, callBack);
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 //super.onPmError(responseEntity);
+                onInitModeFail(param, callBack);
             }
-
-            @Override
-            public void onFailure(Call call, IOException e) {
-                //super.onFailure(call, e);
-            }
-
         });
+    }
+
+    /**
+     * initMode 接口失败重试
+     * @param param
+     * @param callBack
+     */
+    private void onInitModeFail(LivePluginRequestParam param, AbstractBusinessDataCallBack callBack) {
+        if (!initModeRetried) {
+            initModeRetried = true;
+            getLivePluingConfigInfo(param, callBack);
+        } else {
+            ConfirmAlertDialog cancelDialog = new ConfirmAlertDialog(mContext,
+                    ContextManager.getApplication(), false,
+                    VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
+            cancelDialog.setVerifyBtnListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(mContext!= null && mContext instanceof Activity){
+                        ((Activity)mContext).finish();
+                    }
+                }
+            });
+            cancelDialog.setDarkStyle();
+            cancelDialog.setCancelShowText("继续看课").setVerifyShowText("退出直播间")
+                    .initInfo("学习互动模块初始化失败，学习互动功能将无法使用，请退出重进",
+                    VerifyCancelAlertDialog.TITLE_MESSAGE_VERIRY_CANCEL_TYPE).showDialog();
+        }
     }
 
 

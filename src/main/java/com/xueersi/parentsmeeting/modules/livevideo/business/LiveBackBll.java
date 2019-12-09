@@ -5,12 +5,14 @@ import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseArray;
+import android.view.View;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.entity.ReleaseedInfos;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.AppMainHandler;
 import com.xueersi.lib.framework.utils.JsonUtil;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.ExpAutoLive;
@@ -58,6 +60,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.utils.LiveWebLog;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlaybackMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.OnPointClick;
+import com.xueersi.ui.dialog.ConfirmAlertDialog;
+import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import org.json.JSONObject;
 
@@ -1190,7 +1194,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
         return mGetInfo;
     }
 
-    public void getGrayControl(LivePluginRequestParam param, final AbstractBusinessDataCallBack requestCallBack) {
+    public void getGrayControl(final LivePluginRequestParam param, final AbstractBusinessDataCallBack requestCallBack) {
         if (mGetInfo != null && !TextUtils.isEmpty(mGetInfo.getInitModuleUrl())) {
             param.url = mGetInfo.getInitModuleUrl();
         }
@@ -1212,8 +1216,52 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
 
                 }
             }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                onInitModeFail(param,requestCallBack);
+            }
+
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                onInitModeFail(param,requestCallBack);
+            }
         });
     }
+
+
+
+    boolean initModeRetried;
+    /**
+     * initMode 接口失败重试
+     * @param param
+     * @param callBack
+     */
+    private void onInitModeFail(LivePluginRequestParam param, AbstractBusinessDataCallBack callBack) {
+        if (!initModeRetried) {
+            initModeRetried = true;
+            getGrayControl(param, callBack);
+        } else {
+            ConfirmAlertDialog cancelDialog = new ConfirmAlertDialog(mContext,
+                    ContextManager.getApplication(), false,
+                    VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
+            cancelDialog.setVerifyBtnListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(mContext!= null && mContext instanceof Activity){
+                        ((Activity)mContext).finish();
+                    }
+                }
+            });
+            cancelDialog.setDarkStyle();
+            cancelDialog.setCancelShowText("继续看课").setVerifyShowText("退出直播间")
+                    .initInfo("学习互动模块初始化失败，学习互动功能将无法使用，请退出重进",
+                            VerifyCancelAlertDialog.TITLE_MESSAGE_VERIRY_CANCEL_TYPE).showDialog();
+        }
+    }
+
+
 
 
     public void setLiveBackActionListener(LiveBackActionListener liveBackActionListener) {
