@@ -3,6 +3,6 @@
 
     <item android:drawable="@drawable/bg_livevideo_lightlive_message_port_teacher" android:state_pressed="true" />
     <item android:drawable="@drawable/bg_livevideo_lightlive_message_port_teacher" android:state_checked="true" />
-    <item android:drawable="@drawable/bg_livevideo_message_port_all" />
+    <item android:drawable="@drawable/bg_livevideo_lightlive_message_port_teacher_normal" />
 
 </selector>

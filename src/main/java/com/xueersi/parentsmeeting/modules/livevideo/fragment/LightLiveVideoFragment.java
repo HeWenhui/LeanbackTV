@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.xrs.bury.xrsbury.XrsBury;
 import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.logerhelper.XesMobAgent;
+import com.xueersi.lib.framework.utils.EventBusUtil;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
@@ -30,6 +31,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIm
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.bll.DiscountCouponBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.bll.RecommendCourseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.bll.RoomInfoIRCMessageBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.http.LightLiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
@@ -44,6 +46,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControll
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LightLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LightLiveMediaControllerTop;
+import com.xueersi.parentsmeeting.share.business.login.LoginActionEvent;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
@@ -103,6 +109,7 @@ public class LightLiveVideoFragment  extends LiveFragmentBase implements Activit
         videoFragment.setIsAutoOrientation(true);
         pauseNotStopVideoIml = new PauseNotStopVideoIml(activity);
         mLiveBll.addBusinessShareParam("videoView", videoView);
+        EventBusUtil.register(this);
     }
 
     @Override
@@ -582,6 +589,17 @@ public class LightLiveVideoFragment  extends LiveFragmentBase implements Activit
     public void changeLOrP() {
         if (videoFragment != null) {
             videoFragment.changeLOrP();
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onAnswerResult(LoginActionEvent event) {
+        if (event.isAlreadyLogin()){
+            if (mLiveBll != null && mLiveBll.getHttpManager()!= null){
+                LightLiveHttpManager manager = new LightLiveHttpManager(mLiveBll.getHttpManager());
+                manager.reportLogin(mLiveBll.getLiveId());
+            }
+
         }
     }
 }

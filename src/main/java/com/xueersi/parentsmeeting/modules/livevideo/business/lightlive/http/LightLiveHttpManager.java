@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.http;
 
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
+import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 
@@ -61,6 +62,17 @@ public class LightLiveHttpManager {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("lectureId", lectureId);
         liveHttpManager.sendPost(LiveHttpConfig.URL_LIGHTLIVE_GET_WECHAT, params, httpCallBack);
+    }
+
+    public void reportLogin(String liveid){
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("lliveId", liveid);
+        liveHttpManager.sendPost(LiveHttpConfig.URL_LIGHTLIVE_REPORT_LOGIN, params, new HttpCallBack(false) {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+
+            }
+        });
     }
 
 

@@ -64,7 +64,7 @@
             android:text="班主任:"
             android:textColor="@color/COLOR_212831"
             android:textSize="14dp"
-            android:textStyle="bold" />
+             />
 
         <TextView
             android:id="@+id/tv_lightlive_wechat_teacher_name"
@@ -76,7 +76,7 @@
             android:layout_toRightOf="@+id/tv_lightlive_wechat_teacher"
             android:textColor="@color/COLOR_212831"
             android:textSize="14dp"
-            android:textStyle="bold" />
+            />
 
         <TextView
             android:id="@+id/tv_lightlive_wechat"
@@ -89,7 +89,7 @@
             android:text="微信:"
             android:textColor="@color/COLOR_212831"
             android:textSize="14dp"
-            android:textStyle="bold" />
+            />
 
         <TextView
             android:id="@+id/tv_lightlive_wechat_num"
@@ -101,7 +101,7 @@
             android:layout_toRightOf="@+id/tv_lightlive_wechat"
             android:textColor="@color/COLOR_212831"
             android:textSize="14dp"
-            android:textStyle="bold" />
+            />
     </RelativeLayout>
 
     <LinearLayout

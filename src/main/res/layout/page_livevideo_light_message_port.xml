@@ -133,7 +133,7 @@
         android:dividerHeight="15dp"
         android:listSelector="@color/transparent"
         android:paddingLeft="16dp"
-        android:paddingTop="19dp"
+        android:paddingTop="10dp"
         android:paddingRight="16dp"
         android:paddingBottom="9dp"
         android:scrollbars="none" />
