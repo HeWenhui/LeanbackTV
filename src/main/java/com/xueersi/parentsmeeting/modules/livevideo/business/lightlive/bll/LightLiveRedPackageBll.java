@@ -1,15 +1,10 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.bll;
 
 import android.app.Activity;
-import android.graphics.drawable.Drawable;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
@@ -23,22 +18,14 @@ import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.config.BurySourceIds;
-import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.mvp.ReceiveGold;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.pager.LightLiveRedPackageView;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageAction;
-import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.entity.RedPackageEvent;
-import com.xueersi.parentsmeeting.modules.livevideo.redpackage.pager.SmallChineseRedPackagePager;
-import com.xueersi.parentsmeeting.modules.livevideo.redpackage.pager.SmallEnglishRedPackagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.mvp.ReceiveGold.OnRedPackageSend;
 
 import org.greenrobot.eventbus.EventBus;
@@ -174,12 +161,12 @@ public class LightLiveRedPackageBll implements RedPackageAction, Handler.Callbac
             @Override
             public void sendReceiveGold(int operateId, OnRedPackageSend onRedPackageSend) {
                 if(!isGetPagClick){
-                    XrsBury.clickBury(activity.getResources().getString(R.string.livevideo_click_03_54_017));
+                    XrsBury.clickBury(activity.getResources().getString(R.string.click_03_63_015));
                     isGetPagClick = true;
                     if (AppBll.getInstance().isAlreadyLogin()) {
                         LightLiveRedPackageBll.this.sendReceiveGold(operateId, mVSectionID, onRedPackageSend);
                     } else {
-                        XrsBury.showBury(activity.getResources().getString(R.string.livevideo_show_03_32_011), BurySourceIds.LIGHT_LIVE_RED_PAGERAGE_SOURCEID);
+                        XrsBury.showBury(activity.getResources().getString(R.string.show_03_63_005), BurySourceIds.LIGHT_LIVE_RED_PAGERAGE_SOURCEID);
                         LoginEnter.openLogin(activity, false, null);
                         isGetPagClick = false;
                     }
@@ -204,7 +191,7 @@ public class LightLiveRedPackageBll implements RedPackageAction, Handler.Callbac
         rlRedpacketContent.bringToFront();
         activity.getWindow().getDecorView().requestLayout();
         activity.getWindow().getDecorView().invalidate();
-        XrsBury.showBury(activity.getResources().getString(R.string.livevideo_show_03_32_010));
+        XrsBury.showBury(activity.getResources().getString(R.string.show_03_63_004));
     }
 
     private void sendReceiveGold(final int operateId, String sectionID, final OnRedPackageSend onRedPackageSend) {
@@ -215,7 +202,7 @@ public class LightLiveRedPackageBll implements RedPackageAction, Handler.Callbac
                 // 广播 领取红包成功事件
                 int gold = entity.getGoldNum();
                 onRedPackageSend.onReceiveGold(gold);
-                XrsBury.showBury(activity.getResources().getString(R.string.livevideo_show_03_32_012));
+                XrsBury.showBury(activity.getResources().getString(R.string.show_03_63_006));
                 EventBus.getDefault().post(new RedPackageEvent(mVSectionID, entity.getGoldNum(),
                         operateId + "", RedPackageEvent.STATE_CODE_SUCCESS));
             }

@@ -12,8 +12,6 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.alibaba.fastjson.support.odps.udf.CodecCheck;
-
 import com.xrs.bury.xrsbury.XrsBury;
 import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.logerhelper.XesMobAgent;
@@ -110,7 +108,7 @@ public class LightLiveVideoFragment  extends LiveFragmentBase implements Activit
     @Override
     protected void onBusinessCreate() {
         super.onBusinessCreate();
-        XrsBury.pageStartBury(activity.getResources().getString(R.string.livevideo_pv_052),1);
+        XrsBury.pageStartBury(activity.getResources().getString(R.string.pv_03_63),1);
         changeLandAndPort();
     }
 
@@ -357,11 +355,11 @@ public class LightLiveVideoFragment  extends LiveFragmentBase implements Activit
             logger.d("onConfigurationChanged:videoView2=" + lp.width + "," + lp.height);
         }
         if (mIsLand.get()){
-            XrsBury.pageEndBury(activity.getResources().getString(R.string.livevideo_pv_052),1);
-            XrsBury.pageStartBury(activity.getResources().getString(R.string.livevideo_pv_052),0);
+            XrsBury.pageEndBury(activity.getResources().getString(R.string.pv_03_63),1);
+            XrsBury.pageStartBury(activity.getResources().getString(R.string.pv_03_63),0);
         }else {
-            XrsBury.pageEndBury(activity.getResources().getString(R.string.livevideo_pv_052),0);
-            XrsBury.pageStartBury(activity.getResources().getString(R.string.livevideo_pv_052),1);
+            XrsBury.pageEndBury(activity.getResources().getString(R.string.pv_03_63),0);
+            XrsBury.pageStartBury(activity.getResources().getString(R.string.pv_03_63),1);
         }
         changeLandAndPort();
 //        if (lecLiveVideoAction != null) {
@@ -372,9 +370,9 @@ public class LightLiveVideoFragment  extends LiveFragmentBase implements Activit
     @Override
     public void onDestroy() {
         if (mIsLand.get()){
-            XrsBury.pageEndBury(activity.getResources().getString(R.string.livevideo_pv_052),0);
+            XrsBury.pageEndBury(activity.getResources().getString(R.string.pv_03_63),0);
         }else {
-            XrsBury.pageEndBury(activity.getResources().getString(R.string.livevideo_pv_052),1);
+            XrsBury.pageEndBury(activity.getResources().getString(R.string.pv_03_63),1);
         }
         super.onDestroy();
     }

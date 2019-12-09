@@ -34,7 +34,7 @@ public class LightLiveMediaControllerTop extends BaseLiveMediaControllerTop{
             @Override
             public void onClick(View v) {
                 mPlayer.changeLOrP(); // 切换横竖屏
-                XrsBury.clickBury(mContext.getResources().getString(R.string.livevideo_click_03_54_012));
+                XrsBury.clickBury(mContext.getResources().getString(R.string.click_03_63_020));
             }
         };
         return LayoutInflater.from(mContext).inflate(R.layout.layout_lightlivemediacontroller_top, this);

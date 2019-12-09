@@ -9,7 +9,6 @@ import com.xrs.bury.xrsbury.XrsBury;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.entity.CourseEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LivePlayBackMessageEntity;
 
 import java.util.List;
 
@@ -66,7 +65,7 @@ public class RecommendCoursePager extends BasePager {
         if (courseEntities != null && !courseEntities.isEmpty()){
             initData();
             mView.setVisibility(View.VISIBLE);
-            XrsBury.showBury(mContext.getResources().getString(R.string.livevideo_show_03_32_001));
+            XrsBury.showBury(mContext.getResources().getString(R.string.show_03_63_010));
         }else {
             mView.setVisibility(View.GONE);
         }

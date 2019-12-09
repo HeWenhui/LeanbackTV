@@ -6,7 +6,6 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.graphics.Typeface;
-import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
@@ -18,13 +17,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 import com.xrs.bury.xrsbury.XrsBury;
-import com.xueersi.common.toast.XesToast;
 import com.xueersi.lib.framework.are.ContextManager;
-import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
@@ -147,9 +143,9 @@ public class TeacherWechatDialog extends BaseAlertDialog {
                 cm.setPrimaryClip(mClipData);
                 XESToastUtils.showToast("您已复制老师微信号，快去添加吧");
                 if (TYPE_WITH_HEAD == type){
-                    XrsBury.clickBury(mContext.getResources().getString(R.string.livevideo_click_03_54_009));
+                    XrsBury.clickBury(mContext.getResources().getString(R.string.click_03_63_014));
                 }else if (TYPE_WITH_QRCODE == type){
-                    XrsBury.clickBury(mContext.getResources().getString(R.string.livevideo_click_03_54_011));
+                    XrsBury.clickBury(mContext.getResources().getString(R.string.click_03_63_002));
                 }
             }
         });

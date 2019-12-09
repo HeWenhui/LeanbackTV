@@ -103,7 +103,7 @@ public class RecommendCourseItem extends BasePager {
 //            bundle.putString("classId", mCourseEntity.getClassID());
             //采用ARouter来跳转
             XueErSiRouter.startModule(mContext, "/xesmallCourseDetail/xrsmodule", bundle);
-                XrsBury.clickBury(mContext.getResources().getString(R.string.livevideo_click_03_54_002),mCourseEntity.getCourseId());
+                XrsBury.clickBury(mContext.getResources().getString(R.string.click_03_63_011),mCourseEntity.getCourseId());
             }
         });
     }

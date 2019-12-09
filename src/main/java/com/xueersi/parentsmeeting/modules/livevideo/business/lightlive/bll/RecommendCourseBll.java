@@ -14,7 +14,6 @@ import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.entity.CourseEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.entity.CourseTeacherEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.http.LightLiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.http.LightLiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.pager.RecommendCourseDetailPager;
@@ -123,7 +122,7 @@ public class RecommendCourseBll extends LiveBaseBll {
             @Override
             public void onClick() {
                 if (!isDetailShow){
-                    XrsBury.clickBury(mContext.getResources().getString(R.string.livevideo_click_03_54_001));
+                    XrsBury.clickBury(mContext.getResources().getString(R.string.click_03_63_012));
                     contentLayout.addView(mDetailPager.getRootView());
                     RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mDetailPager.getRootView().getLayoutParams();
                     params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
@@ -132,7 +131,7 @@ public class RecommendCourseBll extends LiveBaseBll {
                     contentLayout.setBackground(mContext.getResources().getDrawable(R.color.COLOR_80000000));
                     contentLayout.setClickable(true);
                     mDetailPager.updataView(courseEntities);
-                    XrsBury.showBury(mContext.getResources().getString(R.string.livevideo_show_03_32_002));
+                    XrsBury.showBury(mContext.getResources().getString(R.string.show_03_63_009));
                 }
                 isDetailShow = true;
             }
@@ -144,7 +143,7 @@ public class RecommendCourseBll extends LiveBaseBll {
                 contentLayout.setBackground(mContext.getResources().getDrawable(R.color.COLOR_00000000));
                 contentLayout.setClickable(false);
                 isDetailShow = false;
-                XrsBury.clickBury(mContext.getResources().getString(R.string.livevideo_click_03_54_004));
+                XrsBury.clickBury(mContext.getResources().getString(R.string.click_03_63_008));
             }
         });
     }

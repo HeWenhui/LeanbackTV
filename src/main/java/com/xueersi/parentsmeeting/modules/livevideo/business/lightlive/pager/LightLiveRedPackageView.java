@@ -5,12 +5,10 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -20,19 +18,14 @@ import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
 import com.xrs.bury.xrsbury.XrsBury;
-import com.xueersi.lib.framework.utils.ScreenUtils;
-import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.mvp.IRedPackageView;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.mvp.ReceiveGold;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
-import com.xueersi.parentsmeeting.modules.livevideo.util.BezierEvaluator;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Point;
 
 public class LightLiveRedPackageView extends LiveBasePager implements IRedPackageView {
     private LiveViewAction liveViewAction;
@@ -146,7 +139,7 @@ public class LightLiveRedPackageView extends LiveBasePager implements IRedPackag
         ivBusiRedPackClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                XrsBury.clickBury(mContext.getResources().getString(R.string.livevideo_click_03_54_018));
+                XrsBury.clickBury(mContext.getResources().getString(R.string.click_03_63_003));
                 cancleAnim();
                 mView.setOnClickListener(null);
                 mView.setClickable(false);

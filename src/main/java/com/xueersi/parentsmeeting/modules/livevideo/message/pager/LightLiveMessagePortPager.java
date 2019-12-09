@@ -32,7 +32,6 @@ import com.xueersi.common.business.AppBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.util.LoginEnter;
-import com.xueersi.lib.framework.utils.EventBusUtil;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
@@ -55,7 +54,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessage
 import com.xueersi.parentsmeeting.modules.livevideo.message.config.LiveMessageConfig;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 import com.xueersi.ui.adapter.CommonAdapter;
-import com.xueersi.ui.dialog.ConfirmAlertDialog;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import org.json.JSONException;
@@ -172,11 +170,11 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
                 isShowWeChat = true;
                 tvTeacherWeChat.setVisibility(View.VISIBLE);
                 tvTeacherWeChat.setText("加班级群");
-               XrsBury.showBury(mContext.getResources().getString(R.string.livevideo_show_03_32_008));
+               XrsBury.showBury(mContext.getResources().getString(R.string.show_03_63_001));
             }else if (getInfo.getLpWeChatEntity().getTipType() == LPWeChatEntity.TEACHER_WECHAT ){
                 isShowWeChat = true;
                 tvTeacherWeChat.setVisibility(View.VISIBLE);
-                XrsBury.showBury(mContext.getResources().getString(R.string.livevideo_show_03_32_006));
+                XrsBury.showBury(mContext.getResources().getString(R.string.show_03_63_013));
             }else {
                 isShowWeChat = false;
                 tvTeacherWeChat.setVisibility(View.GONE);
@@ -318,7 +316,7 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
             @Override
             public void onClick(View v) {
 //                ConfirmAlertDialog
-                XrsBury.clickBury(mContext.getResources().getString(R.string.livevideo_click_03_54_014));
+                XrsBury.clickBury(mContext.getResources().getString(R.string.click_03_63_017));
                 cleanMessage();
             }
         });
@@ -327,11 +325,11 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     XESToastUtils.showToastAtCenter( "只看老师消息");
-                    XrsBury.clickBury(mContext.getResources().getString(R.string.livevideo_click_03_54_013),1);
+                    XrsBury.clickBury(mContext.getResources().getString(R.string.click_03_63_016),1);
                 } else {
 //                    BuryManager.permission = true;
                     XESToastUtils.showToastAtCenter("接收全部消息");
-                    XrsBury.clickBury(mContext.getResources().getString(R.string.livevideo_click_03_54_013),0);
+                    XrsBury.clickBury(mContext.getResources().getString(R.string.click_03_63_016),0);
                 }
             }
         });
@@ -863,11 +861,11 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
             wechatDialog = new TeacherWechatDialog(mContext,mBaseApplication,weChatEntity.getTipType());
         }
         if (weChatEntity.getTipType() == TeacherWechatDialog.TYPE_WITH_HEAD){
-            XrsBury.clickBury(mContext.getResources().getString(R.string.livevideo_click_03_54_008));
-            XrsBury.showBury(mContext.getResources().getString(R.string.livevideo_show_03_32_007));
+            XrsBury.clickBury(mContext.getResources().getString(R.string.click_03_63_013));
+            XrsBury.showBury(mContext.getResources().getString(R.string.show_03_63_014));
         } else if (weChatEntity.getTipType() == TeacherWechatDialog.TYPE_WITH_QRCODE){
-            XrsBury.clickBury(mContext.getResources().getString(R.string.livevideo_click_03_54_010));
-            XrsBury.showBury(mContext.getResources().getString(R.string.livevideo_show_03_32_009));
+            XrsBury.clickBury(mContext.getResources().getString(R.string.click_03_63_001));
+            XrsBury.showBury(mContext.getResources().getString(R.string.show_03_63_002));
         }
         wechatDialog.setTeacherHead(weChatEntity.getTeacherImg()).setTeacherName(weChatEntity.getTeacherName())
                 .setTeacherWechat(weChatEntity.getTeacherWx()).setQrcode(weChatEntity.getWxQrUrl()).setSubTitle(weChatEntity.getTipInfo());
@@ -929,13 +927,13 @@ public class LightLiveMessagePortPager extends BaseLiveMessagePager {
                     if (otherMessageAdapter != null) {
                         otherMessageAdapter.notifyDataSetChanged();
                     }
-                    XrsBury.clickBury(mContext.getResources().getString(R.string.livevideo_click_03_54_015));
+                    XrsBury.clickBury(mContext.getResources().getString(R.string.click_03_63_019));
                 }
             });
             cleanMessageDialog.setCancelBtnListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    XrsBury.clickBury(mContext.getResources().getString(R.string.livevideo_click_03_54_016));
+                    XrsBury.clickBury(mContext.getResources().getString(R.string.click_03_63_018));
                     cleanMessageDialog.cancelDialog();
                 }
             });
