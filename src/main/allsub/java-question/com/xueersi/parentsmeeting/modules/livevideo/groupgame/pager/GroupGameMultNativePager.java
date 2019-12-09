@@ -1411,7 +1411,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         extra.putString("liveid", "" + liveId);
         extra.putString("testid", "" + detailInfo.id);
         extra.putString("creattime", "" + creattime);
-       // mParam.setExtraBundle(extra);
+        mParam.setExtraBundle(extra);
         //开始评测
         mIse.startRecog(mParam, new EvaluatorListenerWithPCM() {
 
