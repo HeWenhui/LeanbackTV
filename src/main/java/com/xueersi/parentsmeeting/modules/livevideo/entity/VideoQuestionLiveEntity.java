@@ -97,6 +97,9 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
     /** 发题时间 */
     private long releaseTime;
 
+    /** 英语1v2 语音点名反馈字段 */
+    private int interactType;
+
     public String getTestsProtocal() {
         return testsProtocal;
     }
@@ -334,5 +337,13 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
 
     public long getReleaseTime() {
         return releaseTime;
+    }
+
+    public int getInteractType() {
+        return interactType;
+    }
+
+    public void setInteractType(int interactType) {
+        this.interactType = interactType;
     }
 }

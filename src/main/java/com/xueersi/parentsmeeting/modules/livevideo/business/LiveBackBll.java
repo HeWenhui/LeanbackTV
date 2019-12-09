@@ -145,7 +145,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
      */
     private Boolean isExperience;
     LiveDebugBigClassIml liveAndBackDebugIml;
-
+    LiveBackActionListener liveBackActionListener;
     public LiveBackBll(Activity activity, VideoLivePlayBackEntity mVideoEntity) {
         super(activity);
         logger.setLogMethod(false);
@@ -848,6 +848,25 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
                     break;
                 }
 
+            } else if (LocalCourseConfig.CATEGORY_GROUP_CLASS == videoQuestionEntity.getvCategory()) {
+                //英语1v2
+                if (startTime <= playPosition && playPosition < endTime) {
+                    mQuestionEntity = videoQuestionEntity;
+                    hasQuestionShow = true;
+                    index = i;
+                    break;
+                }
+
+            }else if (LocalCourseConfig.CATEGORY_GROUP_CLASS_AUDIO_ROLL_CALL_START == videoQuestionEntity.getvCategory()) {
+                //英语1v2
+                if (startTime == playPosition && liveBackActionListener!=null) {
+                        liveBackActionListener.onAction(LocalCourseConfig.CATEGORY_GROUP_CLASS_AUDIO_ROLL_CALL_START );
+                }
+            }else if (LocalCourseConfig.CATEGORY_GROUP_CLASS_AUDIO_ROLL_CALL_END == videoQuestionEntity.getvCategory()) {
+                //英语1v2
+                if (startTime == playPosition && liveBackActionListener!=null) {
+                    liveBackActionListener.onAction(LocalCourseConfig.CATEGORY_GROUP_CLASS_AUDIO_ROLL_CALL_END );
+                }
             } else if (LocalCourseConfig.CATEGORY_FUTURE_COURSE_WARE == videoQuestionEntity.getvCategory()) {
                 // 大班未来课件互动题
                 if (startTime <= playPosition && playPosition < endTime) {
@@ -1094,6 +1113,12 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
         }
     }
 
+    public void onPause(){
+        for (LiveBackBaseBll liveBackBaseBll : liveBackBaseBlls) {
+            liveBackBaseBll.onPause();
+        }
+    }
+
     public void onNewIntent(Intent intent) {
         for (LiveBackBaseBll businessBll : liveBackBaseBlls) {
             businessBll.onNewIntent(intent);
@@ -1166,5 +1191,10 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
                 }
             }
         });
+    }
+
+
+    public void setLiveBackActionListener(LiveBackActionListener liveBackActionListener) {
+        this.liveBackActionListener = liveBackActionListener;
     }
 }

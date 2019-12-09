@@ -79,7 +79,7 @@ public class AuditClassRoomProgressView extends View {
         canvas.drawArc(rectF, -90, 360, false, paint);//绘制外框大圆
         paint.setColor(arcForegroundColor);//改变画笔颜色，准备绘制进度
         canvas.drawArc(rectF, -90, progress / max * 360, false, paint);//绘制进度
-//        bitmap = BitmapFactory.decodeResource(context.getResources(), imageResId);//得到背景图片bitmap对象
+//        bitmap = DrawableHelper.bitmapFromResource(context.getResources(), imageResId);//得到背景图片bitmap对象
 //        if (bitmap != null) {
 //            int bmpWidth = bitmap.getWidth();//获取bitmap宽
 //            int bmpHeight = bitmap.getHeight();//获取bitmap高

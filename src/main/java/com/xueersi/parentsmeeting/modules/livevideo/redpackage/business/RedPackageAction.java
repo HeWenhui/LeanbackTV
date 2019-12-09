@@ -63,4 +63,10 @@ public interface RedPackageAction {
          */
         void onReceiveGold();
     }
+
+    /**
+     * 移除红包
+     */
+    void onRemoveRedPackage();
+
 }

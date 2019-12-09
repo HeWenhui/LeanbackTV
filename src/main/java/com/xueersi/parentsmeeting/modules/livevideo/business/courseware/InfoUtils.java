@@ -155,6 +155,7 @@ public class InfoUtils {
             hashMap.put("sno", "5");
             hashMap.put("status", "true");
             hashMap.put("ip", IpAddressUtil.USER_IP);
+            hashMap.put("freeSize", "" + CoursewarePreload.getFreeSize());
             UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, hashMap.getData());
         } catch (Exception e) {
             logger.e(e);
@@ -238,6 +239,7 @@ public class InfoUtils {
         hashMap.put("failurl", failurl);
         hashMap.put("liveid", liveid);
         hashMap.put("ip", IpAddressUtil.USER_IP);
+        hashMap.put("freeSize", "" + CoursewarePreload.getFreeSize());
         UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, eventId, hashMap.getData());
     }
 

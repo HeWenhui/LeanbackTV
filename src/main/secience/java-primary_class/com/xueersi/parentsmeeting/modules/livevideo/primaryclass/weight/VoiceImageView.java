@@ -8,6 +8,7 @@ import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
+import com.xueersi.lib.framework.drawable.DrawableHelper;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -24,7 +25,7 @@ public class VoiceImageView extends ImageView {
 
     public VoiceImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        bg_live_voicewave_bg1 = BitmapFactory.decodeResource(getResources(), R.drawable.bg_live_voicewave_bg2);
+        bg_live_voicewave_bg1 = DrawableHelper.bitmapFromResource(getResources(), R.drawable.bg_live_voicewave_bg2);
         height = bg_live_voicewave_bg1.getHeight();
         src = new Rect(0, bg_live_voicewave_bg1.getHeight(), bg_live_voicewave_bg1.getWidth(), bg_live_voicewave_bg1.getHeight());
         itemHeight = (int) (height * 2.0f / 13.0f);

@@ -19,6 +19,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.pager.RedPackagePage;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RedPackageStandLog;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -46,6 +47,7 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
     private boolean isLive;
     private LiveAndBackDebug liveAndBackDebug;
     private Handler mHandler = new Handler(Looper.getMainLooper());
+    private boolean isGroupClass = false;
 
     public RedPackageStandBll(Activity activity, boolean isLive, LiveAndBackDebug liveAndBackDebug) {
         mLogtf = new LogToFile(activity, TAG);
@@ -53,6 +55,7 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
         this.activity = activity;
         this.isLive = isLive;
         this.liveAndBackDebug = liveAndBackDebug;
+        ProxUtil.getProxUtil().put(activity,RedPackageAction.class,RedPackageStandBll.this);
     }
 
     public void setReceiveGold(ReceiveGoldStand receiveGold) {
@@ -84,6 +87,13 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
                 showRedPacket(operateId, onReceivePackage);
             }
         });
+    }
+
+    @Override
+    public void onRemoveRedPackage() {
+        if (liveViewAction != null && redPackagePage != null) {
+            liveViewAction.removeView(redPackagePage.getRootView());
+        }
     }
 
     private void onGetPackage(VideoResultEntity entity) {
@@ -230,6 +240,7 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
 //                }
             }
         }, userName, headUrl, isLive, liveAndBackDebug);
+        redPackagePage.setGroupClass(isGroupClass);
         View view = redPackagePage.getRootView();
         packagePageHashMap.put("" + operateId, redPackagePage);
         view.setTag(operateId);
@@ -350,4 +361,7 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
         mVPlayVideoControlHandler.postDelayed(r, delayMillis);
     }
 
+    public void setGroupClass(boolean groupClass) {
+        isGroupClass = groupClass;
+    }
 }

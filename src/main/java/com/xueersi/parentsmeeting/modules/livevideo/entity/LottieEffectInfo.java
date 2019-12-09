@@ -8,6 +8,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
+import android.util.JsonReader;
 
 import com.airbnb.lottie.AssertUtil;
 import com.airbnb.lottie.LottieAnimationView;
@@ -264,4 +265,20 @@ public class LottieEffectInfo {
         return result;
     }
 
+    /**
+     * 从assets 中获取 Reader
+     *
+     * @param context
+     * @return
+     */
+    public JsonReader getJsonReader(Context context) {
+        JsonReader jsonReader = null;
+        try {
+            InputStream in = context.getAssets().open(jsonFilePath);
+            jsonReader = new JsonReader(new InputStreamReader(in));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return jsonReader;
+    }
 }

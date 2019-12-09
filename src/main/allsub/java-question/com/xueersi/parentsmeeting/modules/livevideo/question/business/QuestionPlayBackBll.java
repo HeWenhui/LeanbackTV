@@ -134,8 +134,8 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
             break;
             case LocalCourseConfig.CATEGORY_QUESTIONBLL_NEWARTSWARE: {
                 VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
-                EventBus.getDefault().post(new LiveBackQuestionEvent(QUSTION_CLOSE, videoQuestionLiveEntity));
                 questionBll.onStopQuestion("PlayBack:onQuestionEnd3", questionEntity.getvQuestionType(), "");
+                EventBus.getDefault().post(new LiveBackQuestionEvent(QUSTION_CLOSE, videoQuestionLiveEntity));
             }
             break;
 //            case LocalCourseConfig.CATEGORY_BIG_TEST: {
@@ -201,6 +201,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                 videoQuestionLiveEntity.setvEndTime(questionEntity.getvEndTime());
                 videoQuestionLiveEntity.assess_ref = questionEntity.getAssess_ref();
                 videoQuestionLiveEntity.roles = questionEntity.getRoles();
+                videoQuestionLiveEntity.setInteractType(questionEntity.getInteractType());
 //                int isArts = liveBackBll.getIsArts();
 //                if (isArts == 0 && mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
 //                    String[] ss = videoQuestionLiveEntity.id.split("-");

@@ -12,7 +12,6 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.os.Build;
@@ -37,6 +36,7 @@ import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
 import com.xueersi.common.base.BasePager;
+import com.xueersi.lib.framework.drawable.DrawableHelper;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
@@ -318,7 +318,7 @@ public class ArtsPraisePager extends BasePager {
                 (new SingleConfig.BitmapListener() {
                     @Override
                     public void onSuccess(Drawable drawable) {
-                        Bitmap headBitmap = ((BitmapDrawable) drawable).getBitmap();
+                        Bitmap headBitmap = DrawableHelper.drawable2bitmap(drawable);
                         Bitmap resultBitmap = scaleBitmap(headBitmap, Math.min(headBitmap.getWidth(), headBitmap
                                 .getHeight()) / 2);
                         ivTeahcerHead.setImageBitmap(resultBitmap);
@@ -677,7 +677,6 @@ public class ArtsPraisePager extends BasePager {
     /**
      * 展示进场动效
      *
-     * @param resPath
      */
     private void showEnterAnim() {
         String imgPath = null;
@@ -728,7 +727,6 @@ public class ArtsPraisePager extends BasePager {
     /**
      * 展示 动效
      *
-     * @param resPath
      */
     private void showLoopAnim() {
 

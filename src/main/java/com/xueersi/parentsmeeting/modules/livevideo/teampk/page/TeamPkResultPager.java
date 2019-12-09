@@ -7,7 +7,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Point;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,6 +23,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
 import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.xueersi.lib.framework.are.ContextManager;
+import com.xueersi.lib.framework.drawable.DrawableHelper;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -303,7 +303,7 @@ public class TeamPkResultPager extends TeamPkBasePager {
                 (new SingleConfig.BitmapListener() {
                     @Override
                     public void onSuccess(Drawable drawable) {
-                        Bitmap headBitmap = ((BitmapDrawable) drawable).getBitmap();
+                        Bitmap headBitmap = DrawableHelper.drawable2bitmap(drawable);
                         Bitmap resultBitmap = LiveCutImage.scaleBitmap(headBitmap, Math.min(headBitmap
                                 .getWidth(), headBitmap
                                 .getHeight()) / 2);
@@ -320,7 +320,7 @@ public class TeamPkResultPager extends TeamPkBasePager {
                 .asBitmap(new SingleConfig.BitmapListener() {
                     @Override
                     public void onSuccess(Drawable drawable) {
-                        Bitmap headBitmap = ((BitmapDrawable) drawable).getBitmap();
+                        Bitmap headBitmap = DrawableHelper.drawable2bitmap(drawable);
                         Bitmap resultBitmap = LiveCutImage.scaleBitmap(headBitmap, Math.min(headBitmap
                                 .getWidth(), headBitmap
                                 .getHeight()) / 2);
@@ -390,7 +390,7 @@ public class TeamPkResultPager extends TeamPkBasePager {
                 (new SingleConfig.BitmapListener() {
                     @Override
                     public void onSuccess(Drawable drawable) {
-                        Bitmap headBitmap = ((BitmapDrawable) drawable).getBitmap();
+                        Bitmap headBitmap = DrawableHelper.drawable2bitmap(drawable);
                         Bitmap resultBitmap = LiveCutImage.scaleBitmap(headBitmap, Math.min(headBitmap
                                 .getWidth(), headBitmap
                                 .getHeight()) / 2);
@@ -407,7 +407,7 @@ public class TeamPkResultPager extends TeamPkBasePager {
                 .asBitmap(new SingleConfig.BitmapListener() {
                     @Override
                     public void onSuccess(Drawable drawable) {
-                        Bitmap headBitmap = ((BitmapDrawable) drawable).getBitmap();
+                        Bitmap headBitmap = DrawableHelper.drawable2bitmap(drawable);
                         Bitmap resultBitmap = LiveCutImage.scaleBitmap(headBitmap, Math.min(headBitmap
                                 .getWidth(), headBitmap
                                 .getHeight()) / 2);
@@ -505,10 +505,11 @@ public class TeamPkResultPager extends TeamPkBasePager {
                 @Override
                 public void onSuccess(Drawable drawable) {
                     Bitmap headBitmap = null;
-                    if (drawable instanceof BitmapDrawable) {
-                        headBitmap = ((BitmapDrawable) drawable).getBitmap();
-                    } else if (drawable instanceof GifDrawable) {
+                    if (drawable instanceof GifDrawable) {
                         headBitmap = ((GifDrawable) drawable).getFirstFrame();
+                    }
+                    else {
+                        headBitmap = DrawableHelper.drawable2bitmap(drawable);
                     }
                     if (headBitmap != null) {
                         Bitmap resultBitmap = LiveCutImage.scaleBitmap(headBitmap, Math.min(headBitmap.getWidth(),
