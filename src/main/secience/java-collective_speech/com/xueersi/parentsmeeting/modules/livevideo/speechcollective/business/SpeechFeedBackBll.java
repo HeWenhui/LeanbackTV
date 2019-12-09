@@ -312,7 +312,7 @@ public class SpeechFeedBackBll implements com.xueersi.parentsmeeting.modules.liv
         }
 
         @Override
-        public void onRemoteVideoStateChanged(int uid, int state) {
+        public void onRemoteVideoStateChanged(int uid, int state, int reason, int elapsed) {
 
         }
     };

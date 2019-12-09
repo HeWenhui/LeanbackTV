@@ -16,6 +16,8 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.lib.analytics.umsagent.UmsAgentTrayPreference;
 import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.ExpLiveInfo;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.LiveExperienceEntity;
@@ -24,6 +26,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoSectionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoSpeedEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.BigLivePlayBackEntity;
 
@@ -64,12 +67,14 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
     public VideoResultEntity parseNewArtsEvent(String stucourseId, String id, VideoResultEntity entity,
                                                ResponseEntity responseEntity) {
         Map<String, VideoSectionEntity> mapSection = new HashMap<String, VideoSectionEntity>();
+        VideoSectionEntity oldSection = null;
         if (entity != null && entity.getMapVideoSectionEntity() != null && entity.getMapVideoSectionEntity().size() > 0) {
             for (String key : entity.getMapVideoSectionEntity().keySet()) {
                 if (!TextUtils.isEmpty(key) && key.endsWith("_t")) {
                     Map<String, VideoSectionEntity> map = new HashMap<>();
                     mapSection.put(key, entity.getMapVideoSectionEntity().get(key));
                 }
+                oldSection = entity.getMapVideoSectionEntity().get(key);
             }
         }
         JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
@@ -86,6 +91,10 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
         section.setvSectionID(sectionId);
         section.setvSectionName(sectionName);
         section.setStuCouId(stucourseId);
+        if (oldSection != null) {
+            section.setProtocol(oldSection.getProtocol());
+            section.setFileId(oldSection.getFileId());
+        }
         JSONArray questionArray = jsonObject.optJSONArray("events");
         boolean isNewArtsPlatForm = false;
         if (questionArray != null) {
@@ -101,7 +110,10 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
                     questionEntity.setUrl(questionJson.optString("url"));
                     questionEntity.setName(questionJson.optString("type"));
                     questionEntity.setvQuestionType(questionJson.optString("type"));
-
+                    questionEntity.setPackageId(questionJson.optInt("packageId"));
+                    questionEntity.setCourseWareId(questionJson.optInt("courseWareId"));
+                    questionEntity.setPackageAttr(questionJson.optString("packageAttr"));
+                    questionEntity.setInteractType(questionJson.optInt("interactType"));
 
                     questionEntity.setSrcType(questionJson.optString("srcType"));
                     questionEntity.setQuestionNum(questionJson.optInt("num", 1));
@@ -119,6 +131,7 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
                             infos.setEstimatedTime(infoJson.optString("estimatedTime"));
                             infos.setAssess_ref(infoJson.optString("assess_ref"));
                             infos.setIsVoice(infoJson.optString("isVoice"));
+                            infos.setPageId(infoJson.optInt("pageId"));
                             infos.setTotalScore(infoJson.optString("totalScore"));
                             // 人为的划分H5Bll和QuestionBll: type为{"4", "0", "1", "2", "8", "5", "6"}的题型走QuestionBll,
                             // 将他们的category置为1001
@@ -128,7 +141,8 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
                             // 设置QuestionType,文科回放打点中使用
                             questionEntity.setvQuestionType(releasedArray.getJSONObject(0).optString("type"));
                             // 新增一个判断是否是新课件平台的字段
-                            if (1000 == questionEntity.getvCategory() || 1001 == questionEntity.getvCategory()) {
+                            if (1000 == questionEntity.getvCategory() || 1001 == questionEntity.getvCategory() ||
+                                    LocalCourseConfig.CATEGORY_GROUP_CLASS == questionEntity.getvCategory()) {
                                 isNewArtsPlatForm = true;
                             } else {
                                 isNewArtsPlatForm = false;
@@ -264,11 +278,17 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
                     entity.setIsArts(isArts);
                     section = new VideoSectionEntity();
                     JSONObject liveInfo = arrData.optJSONObject(i).optJSONObject("liveInfo");
+                    boolean setProtocol = false;
                     if (liveInfo != null) {
-                        if (isArts == 0 || isArts == 2) {//理科多一层data
+                        if (isArts == LiveVideoSAConfig.ART_SEC || isArts == LiveVideoSAConfig.ART_CH) {//理科多一层data
                             JSONObject infoData = liveInfo.optJSONObject("data");
                             if (infoData != null) {
                                 liveInfo = infoData;
+                                if (infoData.has("protocol") || infoData.has("fileId")) {
+                                    section.setProtocol(infoData.optInt("protocol", MediaPlayer.VIDEO_PROTOCOL_MP4));
+                                    section.setFileId(infoData.optString("fileId"));
+                                    setProtocol = true;
+                                }
                             }
                         }
 
@@ -289,6 +309,10 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
                         videoPaths = url + videoPath;
                     }
                     section.setHostPath(pathArray.toString());
+                    if (!setProtocol) {
+                        section.setProtocol(sectionJson.optInt("protocol", MediaPlayer.VIDEO_PROTOCOL_MP4));
+                        section.setFileId(sectionJson.optString("fileId"));
+                    }
                     hostPath = pathArray.toString();
                     section.setVideoPath(videoPath);
                     videopath = videoPath;
@@ -513,7 +537,7 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
                         }
                     } else if (questionEntity.getvCategory() == LocalCourseConfig.CATEGORY_H5COURSE_WARE) {
                         questionEntity.setH5Play_url(questionJson.optString("play_url"));
-                    } else if(questionEntity.getvCategory() == LocalCourseConfig.CATEGORY_SCIENCE_VOTE){
+                    } else if (questionEntity.getvCategory() == LocalCourseConfig.CATEGORY_SCIENCE_VOTE) {
                         try {
                             questionEntity.setOrgDataStr(questionJson.toString());
                         } catch (Exception e) {
@@ -550,6 +574,8 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
                 section = new VideoSectionEntity();
                 section.setvSectionID(id + LIVE_PLAY_BACK_TUTOR_FLAGE);
                 section.setVideoWebPath(url + json.optString("videoPath"));
+                section.setProtocol(json.optInt("protocol", MediaPlayer.VIDEO_PROTOCOL_MP4));
+                section.setFileId(json.optString("fileId"));
                 questionLst = parseEvent(json, isArts, stuCouId, section.getvSectionID(), stuId, entity);
                 setLiveInfo(liveInfo, entity, section, isArts, stuCouId, mainJson);
 
@@ -578,7 +604,7 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
         resultEntity.setLiveType(jsonObject.optInt("liveType"));
         int isArts = jsonObject.optInt("isArts");
         resultEntity.setIsArts(isArts);
-        resultEntity.setIsNewCourseWare(jsonObject.optBoolean("isNewCourseWare",false));
+        resultEntity.setIsNewCourseWare(jsonObject.optBoolean("isNewCourseWare", false));
         resultEntity.setClassId(jsonObject.optString("classId"));
         String videoPath = jsonObject.optString("videoPath");
         JSONArray pathArray = jsonObject.optJSONArray("hostPath");
@@ -1085,7 +1111,6 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
      * 解析大班整合回放
      *
      * @param responseEntity
-     * @param publicLiveCourseEntity
      */
     public BigLivePlayBackEntity praseBigLiveEnterPlayBack(ResponseEntity responseEntity) {
         BigLivePlayBackEntity playBackEntity = null;
@@ -1220,6 +1245,8 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
                     configs.setInitModuleUrl(urlsJsonObj.optString("initModuleUrl"));
                 }
                 configs.setIrcRoomsJson(configsJsonObj.optJSONArray("ircRooms").toString());
+                configs.setProtocol(configsJsonObj.optInt("protocol", MediaPlayer.VIDEO_PROTOCOL_MP4));
+                configs.setFileId(configsJsonObj.optString("fileId"));
                 playBackEntity.setConfigs(configs);
             }
 
@@ -1251,10 +1278,11 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
 
     /**
      * 大班整合-直播 灰度场次确认
+     *
      * @param responseEntity
      * @return
      */
-    public int parseBigLivePlanVersion(ResponseEntity responseEntity){
+    public int parseBigLivePlanVersion(ResponseEntity responseEntity) {
         JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
         if (jsonObject != null) {
             try {
@@ -1265,7 +1293,6 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
         }
         return -1;
     }
-
 
 
 }

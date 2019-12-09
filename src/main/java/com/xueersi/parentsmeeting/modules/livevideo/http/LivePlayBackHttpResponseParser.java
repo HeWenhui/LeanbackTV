@@ -13,6 +13,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageGroupEntit
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LivePlayBackMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RecommondCourseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoBannerBuyCourseEntity;
 
 import org.json.JSONArray;
@@ -272,5 +273,27 @@ public class LivePlayBackHttpResponseParser extends HttpResponseParser {
         SuperSpeakerRedPackageEntity entity = new SuperSpeakerRedPackageEntity();
         entity.setMoney(jsonObject.optString("gold"));
         return entity;
+    }
+
+    public StarAndGoldEntity parseStuGoldCount(ResponseEntity responseEntity) {
+        StarAndGoldEntity starAndGoldEntity = new StarAndGoldEntity();
+        JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+        try {
+            JSONObject starObj = jsonObject.getJSONObject("star");
+            starAndGoldEntity.setStarCount(starObj.optInt("stuStarAmount", 0));
+            JSONObject goldObj = jsonObject.getJSONObject("gold");
+            starAndGoldEntity.setGoldCount(goldObj.optInt("goldAmount", 0));
+            StarAndGoldEntity.PkEnergy pkEnergy = starAndGoldEntity.getPkEnergy();
+            JSONObject pkEnergyObj = jsonObject.optJSONObject("pkEnergy");
+            if (pkEnergyObj != null) {
+                pkEnergy.me = pkEnergyObj.optInt("me");
+                pkEnergy.myTeam = pkEnergyObj.optInt("myTeam");
+                pkEnergy.opTeam = pkEnergyObj.optInt("opTeam");
+            }
+        } catch (JSONException e) {
+            MobAgent.httpResponseParserError(TAG, "parseStuGoldCount", e.getMessage());
+            e.printStackTrace();
+        }
+        return starAndGoldEntity;
     }
 }

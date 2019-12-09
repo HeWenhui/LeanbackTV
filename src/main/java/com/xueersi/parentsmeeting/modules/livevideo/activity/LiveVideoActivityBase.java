@@ -758,7 +758,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
 
     public void enableAutoSpeedPlay(VideoConfigEntity videoConfigEntity) {
         if (vPlayer != null && videoConfigEntity != null) {
-            vPlayer.enableAutoSpeedPlay(videoConfigEntity.getWaterMark(), videoConfigEntity.getDuration());
+            vPlayer.enableAutoSpeedPlay(videoConfigEntity.getPsIjkParameter());
         }
 
     }

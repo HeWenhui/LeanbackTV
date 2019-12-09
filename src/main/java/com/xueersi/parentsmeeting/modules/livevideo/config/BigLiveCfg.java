@@ -11,5 +11,5 @@ public interface BigLiveCfg {
     int BIGLIVE_BIZID_LIVE = 3;
     /** 大班整合 直播 当前整合版本号：（进入直播间是 判断接口返回的planVersion <= 此值才进入直播间，否则提示升级)
      *  每期大班需更新此字段值**/
-    int BIGLIVE_CURRENT_ACCEPTPLANVERSION=2;
+    int BIGLIVE_CURRENT_ACCEPTPLANVERSION=3;
 }

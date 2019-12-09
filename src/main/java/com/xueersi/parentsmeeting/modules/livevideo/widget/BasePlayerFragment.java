@@ -355,6 +355,24 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         return false;
     }
 
+    /**
+     * 是否静音模式
+     */
+    private boolean muteMode;
+
+    public void setMuteMode(boolean muteMode) {
+        this.muteMode = muteMode;
+        if (muteMode){
+            setVolume(0, 0);
+        }else {
+            setVolume(VP.DEFAULT_STEREO_VOLUME, VP.DEFAULT_STEREO_VOLUME);
+        }
+    }
+
+    public boolean isMuteMode() {
+        return muteMode;
+    }
+
     protected boolean handleMessage(Message msg) {
         return false;
     }
@@ -569,6 +587,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
             return true;
         }
     };
+
     protected WeakHandler vPlayerHandler = new WeakHandler(callback);
 
     @Nullable
@@ -613,7 +632,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
 
     protected void setVideoConfig() {
         if (videoConfigEntity != null) {
-            vPlayer.enableAutoSpeedPlay(videoConfigEntity.getWaterMark(), videoConfigEntity.getDuration());
+            vPlayer.enableAutoSpeedPlay(videoConfigEntity.getPsIjkParameter());
         }
     }
 
@@ -690,7 +709,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
     public void enableAutoSpeedPlay(VideoConfigEntity videoConfigEntity) {
         if (vPlayer != null && videoConfigEntity != null) {
             this.videoConfigEntity = videoConfigEntity;
-            vPlayer.enableAutoSpeedPlay(videoConfigEntity.getWaterMark(), videoConfigEntity.getDuration());
+            vPlayer.enableAutoSpeedPlay(videoConfigEntity.getPsIjkParameter());
         }
     }
 
@@ -872,6 +891,9 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                     LiveCrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
                 }
             }
+            if (activity != null) {
+                VideoPlayDebugUtils.umsIfVideoViewIsNotVisible(activity, activity.findViewById(R.id.vv_course_video_video));
+            }
         }
 
         /** 视频打开失败 */
@@ -1035,7 +1057,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
     }
 
     /** 当前视频播放完毕 */
-    protected void playComplete() {
+    public void playComplete() {
 
     }
 

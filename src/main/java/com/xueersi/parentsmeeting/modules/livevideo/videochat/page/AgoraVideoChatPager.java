@@ -1,13 +1,11 @@
 package com.xueersi.parentsmeeting.modules.livevideo.videochat.page;
 
 import android.app.Activity;
-import android.graphics.Rect;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
-import com.xueersi.common.base.BasePager;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -110,7 +108,7 @@ public class AgoraVideoChatPager extends LiveBasePager implements VideoChatInter
         }
 
         @Override
-        public void onRemoteVideoStateChanged(int uid, int state) {
+        public void onRemoteVideoStateChanged(int uid, int state, int reason, int elapsed) {
 
         }
 

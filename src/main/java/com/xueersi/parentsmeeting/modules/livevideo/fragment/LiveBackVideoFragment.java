@@ -53,6 +53,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIm
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.liveback.SuperSpeakerBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.AllBackBllConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
@@ -90,7 +91,7 @@ import java.util.List;
  */
 public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements ActivityChangeLand,
         MediaControllerAction {
-    String TAG = "LiveBackVideoFragment";
+    public String TAG = "LiveBackVideoFragment";
 
     {
         /** 布局默认资源 */
@@ -250,8 +251,16 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         this.mMediaController = mPlayBackMediaController;
         liveBackPlayVideoFragment.setMediaController(mMediaController);
         rl_course_video_live_controller_content.removeAllViews();
-        rl_course_video_live_controller_content.addView(mPlayBackMediaController, new ViewGroup.LayoutParams(ViewGroup
-                .LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        if (mVideoEntity.getPattern() == LiveVideoConfig.LIVE_PATTERN_GROUP_CLASS) {
+            liveViewAction.addView(LiveVideoLevel.LEVEL_CTRl, mPlayBackMediaController, new ViewGroup.LayoutParams
+                    (ViewGroup
+                    .LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        } else {
+            rl_course_video_live_controller_content.addView(mPlayBackMediaController, new ViewGroup.LayoutParams
+                    (ViewGroup
+                    .LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        }
+
         if (mLiveRemarkBll == null || mVideoEntity.getIsAllowMarkpoint() != 1) {
             mMediaController.getTitleRightBtn().setVisibility(View.GONE);
         } else {
@@ -528,7 +537,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     }
 
     protected void initLiveRemarkBll() {
-        // TODO: 2018/12/5  
+        // TODO: 2018/12/5
         if (isArts == 1 || "PublicLiveDetailActivity".equals(where)) {
             return;
         }
@@ -648,13 +657,17 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         }
         //还原声音
         BasePlayerFragment videoFragment = ProxUtil.getProxUtil().get(activity, BasePlayerFragment.class);
-        if (videoFragment != null) {
+        if (videoFragment != null && !videoFragment.isMuteMode()) {//静音模式下不要次操作
             videoFragment.setVolume(1f, 1f);
         }
     }
 
     @Override
     public void onPause() {
+        if (liveBackBll != null) {
+            liveBackBll.onPause();
+        }
+
         if (isInitialized()) {
             if (!onPauseNotStopVideo.get()) {
                 if (liveBackVideoBll != null) {

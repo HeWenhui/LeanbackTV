@@ -28,6 +28,7 @@ import com.airbnb.lottie.model.animatable.AnimatableValue;
 import com.airbnb.lottie.model.layer.Layer;
 import com.airbnb.lottie.utils.Utils;
 import com.airbnb.lottie.value.Keyframe;
+import com.xueersi.lib.framework.drawable.DrawableHelper;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 
 import java.lang.reflect.Field;
@@ -535,10 +536,10 @@ public class XesLottieAnimView extends LottieAnimationView {
         if (imgWidth > 0 && imgHeight > 0) {
             if (mTargetImgClickResId != 0) {
                 BitmapFactory.Options options = new BitmapFactory.Options();
-                targetBitmapPres = BitmapFactory.decodeResource(getResources(), mTargetImgClickResId);
+                targetBitmapPres = DrawableHelper.bitmapFromResource(getResources(), mTargetImgClickResId);
             }
             if (mTargetImgNorResId != 0) {
-                targetBitmapNor = BitmapFactory.decodeResource(getResources(), mTargetImgNorResId);
+                targetBitmapNor = DrawableHelper.bitmapFromResource(getResources(), mTargetImgNorResId);
             }
             //缩放到目标图片尺寸
             if (targetBitmapPres != null) {

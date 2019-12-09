@@ -20,6 +20,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.config.GroupGameConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.util.AgoraUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.util.TextureVideoViewOutlineProvider;
 
 import io.agora.rtc.RtcEngine;
@@ -56,7 +57,7 @@ public class CourseGroupOtherItem extends BaseCourseGroupItem {
     }
 
     public void doRenderRemoteUi(SurfaceView surfaceV) {
-        state = 1;
+        state = AgoraUtils.REMOTE_VIDEO_STATE_STARTING;
         rlCourseItemVideoHead.setVisibility(View.GONE);
         boolean remove = false;
         if (rlCourseItemVideo.getChildCount() > 0) {
@@ -79,7 +80,7 @@ public class CourseGroupOtherItem extends BaseCourseGroupItem {
     @Override
     public void onRemoteVideoStateChanged(int state) {
         this.state = state;
-        if (state == 1 && enableVideo) {
+        if (AgoraUtils.isPlay(state) && enableVideo) {
             ivCourseItemVideo.setImageResource(VIDEO_RES[2]);
             rlCourseItemVideoHead.setVisibility(View.GONE);
         } else {
@@ -120,7 +121,7 @@ public class CourseGroupOtherItem extends BaseCourseGroupItem {
                 if (rtcEngine != null) {
                     enableVideo = !enableVideo;
                     if (enableVideo) {
-                        if (state == 1) {
+                        if (AgoraUtils.isPlay(state)) {
                             ivCourseItemVideo.setImageResource(VIDEO_RES[2]);
                             rlCourseItemVideoHead.setVisibility(View.GONE);
                         }

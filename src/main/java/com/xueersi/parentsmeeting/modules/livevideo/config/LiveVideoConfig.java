@@ -71,6 +71,8 @@ public class LiveVideoConfig {
     public final static int LIVE_PATTERN_2 = 2;
     /** 半身直播直播类型 */
     public static final int LIVE_TYPE_HALFBODY = 6;
+    /** 英语小组课 */
+    public static final int LIVE_PATTERN_GROUP_CLASS = 8;
     /** 半身直播直播类型-小组 */
     public static final int LIVE_TYPE_HALFBODY_CLASS = 9;
     /** 视频类型为站立直播体验课 */
@@ -392,6 +394,12 @@ public class LiveVideoConfig {
     }
 
     public final static String LIVE_PLAY_BACK_TUTOR_FLAGE = "_t";
+    /** 性别-未知 */
+    public static final int LIVE_GROUP_CLASS_USER_SEX_NONE = 3;
+    /** 性别-男 */
+    public static final int LIVE_GROUP_CLASS_USER_SEX_BOY = 1;
+    /** 性别-女 */
+    public static final int LIVE_GROUP_CLASS_USER_SEX_GIRL = 2;
 
     /**大班整合 bizId 定义**/
     /**大班整合-讲座**/
@@ -400,4 +408,10 @@ public class LiveVideoConfig {
     public final static  int BIGLIVE_BIZID_LIVE = 3;
 
 
+    /** 默认英文名-男 */
+    public static final String ENGLISH_NAME_DEFAULT_BOY = "Jack";
+    /** 默认英文名-女 */
+    public static final String ENGLISH_NAME_DEFAULT_GRIL = "Alice";
+    /** 是否需要设置英文名 */
+    public static final String LIVE_GOUP_1V2_ENGLISH_CHECK = "live_goup_1v2_english_name_check";
 }

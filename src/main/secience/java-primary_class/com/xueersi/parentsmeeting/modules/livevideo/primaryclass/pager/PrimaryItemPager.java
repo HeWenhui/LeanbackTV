@@ -756,6 +756,11 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         public void onOnceLastMileQuality(RTCEngine.RTC_LASTMILE_QUALITY lastmileQuality) {
 
         }
+
+        @Override
+        public void reportRtcStats(RTCEngine.ReportRtcStats stats) {
+
+        }
     };
 
     private void preview(final BasePrimaryTeamItem courseGroupItem) {

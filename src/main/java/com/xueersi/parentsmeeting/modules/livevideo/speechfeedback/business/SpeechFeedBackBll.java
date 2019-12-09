@@ -275,7 +275,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
         }
 
         @Override
-        public void onRemoteVideoStateChanged(int uid, int state) {
+        public void onRemoteVideoStateChanged(int uid, int state, int reason, int elapsed) {
 
         }
 

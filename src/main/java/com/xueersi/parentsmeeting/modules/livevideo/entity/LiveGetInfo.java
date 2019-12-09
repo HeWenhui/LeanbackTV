@@ -6,6 +6,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEnti
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuSegmentEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LiveModuleConfigInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LivePlugin;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.SubGroupEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.SubMemberEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.entity.LPWeChatEntity;
 
 import java.util.ArrayList;
@@ -556,6 +558,13 @@ public class LiveGetInfo {
      */
     LiveModuleConfigInfo liveModuleConfigInfo;
 
+    /** 分组信息 */
+    SubGroupEntity subGroupEntity;
+
+    /** 英语1v2小组课*/
+    private RecordStandliveEntity recordStandliveEntity;
+    /** getinfo创建时间*/
+    private long creatTime;
 
     public VideoConfigEntity getVideoConfigEntity() {
         return videoConfigEntity;
@@ -2016,6 +2025,13 @@ public class LiveGetInfo {
         }
     }
 
+    public RecordStandliveEntity getRecordStandliveEntity() {
+        return recordStandliveEntity;
+    }
+
+    public void setRecordStandliveEntity(RecordStandliveEntity recordStandliveEntity) {
+        this.recordStandliveEntity = recordStandliveEntity;
+    }
 
     /**
      * 根据moduleId 查找 Plugin
@@ -2110,5 +2126,21 @@ public class LiveGetInfo {
 
     public void setGradeIds(String gradeIds) {
         this.gradeIds = gradeIds;
+    }
+
+    public SubGroupEntity getSubGroupEntity() {
+        return subGroupEntity;
+    }
+
+    public void setSubGroupEntity(SubGroupEntity subGroupEntity) {
+        this.subGroupEntity = subGroupEntity;
+    }
+
+    public long getCreatTime() {
+        return creatTime;
+    }
+
+    public void setCreatTime(long creatTime) {
+        this.creatTime = creatTime;
     }
 }

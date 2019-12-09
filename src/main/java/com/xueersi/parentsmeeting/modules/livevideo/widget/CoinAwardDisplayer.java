@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.xueersi.lib.framework.drawable.DrawableHelper;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 
 import java.util.ArrayList;
@@ -140,11 +141,11 @@ public class CoinAwardDisplayer extends View {
 
         if (prefixResId > 0) {
             // 获取前缀Bitmap
-            prefixBitmap = BitmapFactory.decodeResource(getContext().getResources(), prefixResId);
+            prefixBitmap = DrawableHelper.bitmapFromResource(getContext().getResources(), prefixResId);
         }
         if (suffixResId > 0) {
             // 获取前缀Bitmap
-            suffixBitmap = BitmapFactory.decodeResource(getContext().getResources(), suffixResId);
+            suffixBitmap = DrawableHelper.bitmapFromResource(getContext().getResources(), suffixResId);
         }
         if (prefixBitmap != null) {
             drawableInfo = new DrawableInfo(prefixBitmap);
@@ -159,14 +160,14 @@ public class CoinAwardDisplayer extends View {
             mHeight = suffixBitmap.getHeight();
         }
         if (mHeight <= 0) {
-            mHeight = BitmapFactory.decodeResource(getContext().getResources(), numberResIds[0]).getHeight();
+            mHeight = DrawableHelper.bitmapFromResource(getContext().getResources(), numberResIds[0]).getHeight();
         }
 
         String coinNumStr = coinNum + "";
         Bitmap numBitmap;
         // 获取 数字 对应的 bitMap
         for (char c : coinNumStr.toCharArray()) {
-            numBitmap = BitmapFactory.decodeResource(getContext().getResources(),
+            numBitmap = DrawableHelper.bitmapFromResource(getContext().getResources(),
                     numberResIds[Integer.parseInt(String.valueOf(c))]);
             drawableInfo = new DrawableInfo(numBitmap);
             drawableInfoList.add(drawableInfo);

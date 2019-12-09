@@ -20,6 +20,7 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.LivePluginHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LivePluginRequestParam;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveCoreConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveIntegratedCfg;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoChConfig;
@@ -28,6 +29,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoHttpEnConfig
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.BigLiveEnterParam;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LivePostEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.util.DNSUtil;
@@ -563,7 +565,7 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction,
      * @param liveid          直播ID
      * @param requestCallBack
      */
-    public void sendReceiveGold(int type, int operateId, String liveid,
+    public void sendReceiveGold(int type,int pattern, int operateId, String liveid,
                                 HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         String url;
@@ -582,6 +584,10 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction,
             params.addBodyParam("liveId", liveid);
         } else {
             return;
+        }
+        //新增参数：红包类型 type=0 默认直播红包不用改 type=1 录播课直播红包 type=2 录播课回放红包
+        if(pattern==LiveVideoConfig.LIVE_PATTERN_GROUP_CLASS){
+            params.addBodyParam("type", "1");
         }
 //        params.addBodyParam("enstuId", enstuId);
         params.addBodyParam("operateId", "" + operateId);
@@ -1075,6 +1081,15 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction,
         params.addBodyParam("liveId", liveId);
         setDefaultParameter(params);
         requestCallBack.url = liveVideoSAConfigInner.URL_LIVE_STUDY_GOLD_COUNT;
+        sendPost(requestCallBack.url, params, requestCallBack);
+    }
+
+    public void getEnglishStuGoldCount(String liveId, HttpCallBack
+            requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("liveId", liveId);
+        setDefaultParameter(params);
+        requestCallBack.url = LiveVideoHttpEnConfig.URL_GET_STU_STAR_AND_GOLD_AMOUNT;
         sendPost(requestCallBack.url, params, requestCallBack);
     }
 
@@ -2482,7 +2497,7 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction,
      *
      * @param requestCallBack
      */
-    public void ScienceVoteCommit(String planId,int bizId, String classId, String interactionId, String option, String stuIRCId,String stuName,HttpCallBack requestCallBack) {
+    public void ScienceVoteCommit(String isPlayback,String planId,int bizId, String classId, String interactionId, String option, String stuIRCId,String stuName,HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("bizId", String.valueOf(bizId));
         params.addBodyParam("planId", planId);
@@ -2491,6 +2506,7 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction,
         params.addBodyParam("option", option);
         params.addBodyParam("stuIRCId", stuIRCId);
         params.addBodyParam("stuName", stuName);
+        params.addBodyParam("isPlayback", isPlayback);
         setDefaultParameter(params);
         sendPost(LiveQueHttpConfig.LIVE_SCIENCE_VOTE_SUBMIT, params, requestCallBack);
     }
@@ -2556,5 +2572,26 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction,
         params.addBodyParam("classId", classId);
         params.addBodyParam("teamId", teamId);
         sendPost(TextUtils.isEmpty(url) ? LiveHttpConfig.UEL_ENGLISH_EVEN_DRIVE_MSG : url, params, callBack);
+    }
+
+    /**
+     * 获取服务器时间
+     *
+     * @param requestCallBack
+     */
+    public void getServerTime( HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        setDefaultParameter(params);
+        sendPost(LiveVideoHttpEnConfig.URL_GET_SERVER_TIME, params, requestCallBack);
+    }
+
+    /**
+     * 获取直播Plugin配置信息
+     *
+     * @param requestCallBack
+     */
+    public void get1V2VirtualStuData(LivePostEntity param, HttpCallBack requestCallBack) {
+
+        sendJsonPost(LiveCoreConfig.URL_LIVE_GROUP_CLASS_VIRTUAL, param, requestCallBack);
     }
 }
