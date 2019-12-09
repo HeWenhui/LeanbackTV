@@ -5,6 +5,8 @@ public class GroupGameConfig {
     public static int OPERATION_VIDEO = 1;
     /** 用户点击音频关闭 */
     public static int OPERATION_AUDIO = 2;
+    /** 英语1v2 金币 */
+    public static int OPERATION_GOLD = 3;
     /** 语音炮弹最大能量 */
     public static int CANNON_MAX_ENERGY = 50;
     /** what's missing最大能量 */

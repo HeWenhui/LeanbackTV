@@ -5,6 +5,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.ScaleDrawable;
+import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
@@ -69,7 +70,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
     public static boolean DEBUG = false;
-    /** 语音保存位置 */
+    /** 直播id */
+    private String liveid;
+    /** 试题id */
     private String id;
     /** 时间倒计时，表情 */
     ImageView ivSpeectevalTimeEmoji;
@@ -159,6 +162,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         isNewArts = baseVideoQuestionEntity.isNewArtsH5Courseware();
         setBaseVideoQuestionEntity(baseVideoQuestionEntity);
         this.isLive = true;
+        this.liveid = liveid;
         this.id = testId;
         this.liveGetInfo = liveGetInfo;
         this.nonce = nonce;
@@ -187,6 +191,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         isNewArts = baseVideoQuestionEntity.isNewArtsH5Courseware();
         setBaseVideoQuestionEntity(baseVideoQuestionEntity);
         this.isLive = false;
+        this.liveid = liveid;
         this.id = testId;
         mLogtf.addCommon("testid", id);
         this.liveGetInfo = liveGetInfo;
@@ -397,6 +402,12 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         mParam.setLocalSavePath(saveVideoFile.getPath());
         mParam.setMultRef(false);
         mParam.setLearning_stage(learning_stage);
+        //添加试题信息
+        Bundle extra = new Bundle();
+        extra.putString("liveid", "" + liveid);
+        extra.putString("testid", "" + id);
+        extra.putString("creattime", "" + creattime);
+        mParam.setExtraBundle(extra);
         mIse.startRecog(mParam, new EvaluatorListener() {
             int lastVolume = 0;
 
@@ -1140,8 +1151,8 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 }
                 int left = index + lastSub;
                 int right = left + word.length();
-                subtemText = subtemText.substring(index);
-                lastSub += index;
+                subtemText = subtemText.substring(index + word.length());
+                lastSub += index + word.length();
                 if (lstPhonemeScore.get(i).getScore() > encourageScore) {
                     //显示绿色
                     spannable.setSpan(new ForegroundColorSpan(COLOR_32B16C), left, right, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);

@@ -9,7 +9,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -18,6 +17,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.xueersi.lib.framework.are.ContextManager;
+import com.xueersi.lib.framework.drawable.DrawableHelper;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -48,10 +48,10 @@ public class WinnerHolder extends RecyclerView.ViewHolder {
                     @Override
                     public void onSuccess(Drawable drawable) {
                         Bitmap resultBitmap = null;
-                        if (drawable instanceof BitmapDrawable) {
-                            resultBitmap = ((BitmapDrawable) drawable).getBitmap();
-                        } else if (drawable instanceof GifDrawable) {
+                        if (drawable instanceof GifDrawable) {
                             resultBitmap = ((GifDrawable) drawable).getFirstFrame();
+                        } else {
+                            resultBitmap = DrawableHelper.drawable2bitmap(drawable);
                         }
                         if (resultBitmap != null) {
                             Bitmap circleBitmap = scaleBitmap(resultBitmap, Math.min(resultBitmap.getWidth(),

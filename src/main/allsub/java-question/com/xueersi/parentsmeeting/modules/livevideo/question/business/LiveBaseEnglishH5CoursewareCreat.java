@@ -191,7 +191,9 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
                         } else {
                             CoursewareNativePager coursewareNativePager = new CoursewareNativePager(context, videoQuestionH5Entity, false, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
                                     videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, onH5ResultClose, "0", isArts, false, liveViewAction);
-                            coursewareNativePager.setLivePagerBack(livePagerBack);
+                            if (liveGetInfo.getPattern() != LiveVideoConfig.LIVE_PATTERN_GROUP_CLASS) {
+                                coursewareNativePager.setLivePagerBack(livePagerBack);
+                            }
                             h5CoursewarePager = coursewareNativePager;
                         }
 //                        CoursewareNativePager h5CoursewarePager = new CoursewareNativePager(context, videoQuestionH5Entity, false, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
@@ -339,7 +341,7 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
         VPlayerListenerReg reg = ProxUtil.getProxUtil().get(context, VPlayerListenerReg.class);
         if (reg != null) {
             logger.i("停止播放");
-            reg.release();
+            reg.releaseWithViewGone();
         }
         XueErSiRouter.startModuleForResult((Activity) context, "/aievaluation/intelligent_recognition", XESCODE.ARTS_SEND_QUESTION, bundle);
     }

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.Editable;
@@ -30,6 +29,7 @@ import android.widget.TextView;
 import com.airbnb.lottie.AssertUtil;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.lib.framework.drawable.DrawableHelper;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.RegexUtils;
@@ -212,7 +212,7 @@ public class LiveMessageStandPkPager extends BaseLiveMessagePager {
 //            bitmap.setDensity((int) (DisplayMetrics.DENSITY_MEDIUM * (FrameAnimation.IMAGE_HEIGHT / (float) com
 // .xueersi.parentsmeeting.util.ScreenUtils.getScreenHeight(mView.getContext()))));
             bitmap.setDensity((int) (FrameAnimation.DEFAULT_DENSITY * 2.8f / ScreenUtils.getScreenDensity()));
-            btMesOpen.setBackgroundDrawable(new BitmapDrawable(bitmap));
+            btMesOpen.setBackground(DrawableHelper.bitmap2drawable(bitmap));
             inputStream.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -566,7 +566,7 @@ public class LiveMessageStandPkPager extends BaseLiveMessagePager {
         flowerEntities.add(new FlowerEntity(FLOWERS_MIDDLE, flowsDrawTips[1], "1束玫瑰", 50));
         flowerEntities.add(new FlowerEntity(FLOWERS_BIG, flowsDrawTips[2], "1束蓝色妖姬", 100));
         PopupWindow flowerWindow = new PopupWindow(mContext);
-        flowerWindow.setBackgroundDrawable(new BitmapDrawable());
+        flowerWindow.setBackgroundDrawable(DrawableHelper.bitmap2drawable(null));
         flowerWindow.setOutsideTouchable(true);
         flowerWindow.setFocusable(true);
         flowerContentView = View.inflate(mContext, R.layout.pop_livevideo_message_flower, null);

@@ -65,6 +65,11 @@ public class PScienceRedPackageBll implements RedPackageAction {
         });
     }
 
+    @Override
+    public void onRemoveRedPackage() {
+
+    }
+
     private void onGetPackage(VideoResultEntity entity, View view) {
         redViews.remove(view);
         liveViewAction.removeView(view);
