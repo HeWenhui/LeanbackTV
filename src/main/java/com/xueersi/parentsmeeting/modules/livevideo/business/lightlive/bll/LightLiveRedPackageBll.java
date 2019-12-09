@@ -106,6 +106,11 @@ public class LightLiveRedPackageBll implements RedPackageAction, Handler.Callbac
         });
     }
 
+    @Override
+    public void onRemoveRedPackage() {
+
+    }
+
     private void onGetPackageFailure(int operateId) {
     }
 
