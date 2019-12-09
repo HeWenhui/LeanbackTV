@@ -192,9 +192,6 @@ public class TcpDispatch {
 
                 }
             }
-            if (type == TcpConstants.VOICE_CANNO_SEND) {
-
-            }
             List<TcpMessageAction> tcpMessageActions = mMessageActionMap.get((Short) type);
             if (tcpMessageActions != null) {
                 logToFile.d("onReceiveMeg:type=" + type + ",tcpMessageActions=" + tcpMessageActions.size());

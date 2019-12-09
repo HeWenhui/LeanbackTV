@@ -8,18 +8,6 @@ import android.util.SparseArray;
 import android.view.View;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
-import com.xueersi.common.config.AppConfig;
-import com.xueersi.common.entity.ReleaseedInfos;
-import com.xueersi.common.http.HttpCallBack;
-import com.xueersi.common.http.ResponseEntity;
-import com.xueersi.lib.framework.are.ContextManager;
-import com.xueersi.lib.framework.utils.AppMainHandler;
-import com.xueersi.lib.framework.utils.JsonUtil;
-import com.xueersi.parentsmeeting.module.videoplayer.entity.ExpAutoLive;
-import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LiveModuleConfigInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LivePluginRequestParam;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.BaseBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
@@ -30,6 +18,7 @@ import com.xueersi.common.network.IpAddressUtil;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsConstants;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.JsonUtil;
 import com.xueersi.lib.framework.utils.TimeUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
@@ -61,12 +50,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveBusinessResponsePar
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpResponseParser;
-import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.remark.business.OnItemClick;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
-import com.xueersi.parentsmeeting.modules.livevideo.utils.LiveWebLog;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlaybackMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.OnPointClick;
 import com.xueersi.ui.dialog.ConfirmAlertDialog;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
@@ -158,6 +144,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
     private Boolean isExperience;
     LiveDebugBigClassIml liveAndBackDebugIml;
     LiveBackActionListener liveBackActionListener;
+
     public LiveBackBll(Activity activity, VideoLivePlayBackEntity mVideoEntity) {
         super(activity);
         logger.setLogMethod(false);
@@ -534,7 +521,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
             mHttpManager.addHeaderParams("switch-grade", liveGetInfo.getGrade() + "");
             String subjectId = (liveGetInfo.getSubjectIds() != null && liveGetInfo.getSubjectIds().length > 0) ? liveGetInfo.getSubjectIds()[0] : "";
             mHttpManager.addHeaderParams("switch-subject", subjectId);
-            mHttpManager.addHeaderParams("planId",liveGetInfo.getId());
+            mHttpManager.addHeaderParams("planId", liveGetInfo.getId());
             mHttpManager.addHeaderParams("bizId", mLiveType + "");
             String calssId = (liveGetInfo.getStudentLiveInfo() != null) ? liveGetInfo.getStudentLiveInfo().getClassId() : "0";
             String stuCouId = TextUtils.isEmpty(liveGetInfo.getStuCouId()) ? "" : liveGetInfo.getStuCouId();
@@ -551,7 +538,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
             mHttpManager.addBusinessParams("classId", iClassId);
             mHttpManager.addBusinessParams("stuCouId", stuCouId);
             mHttpManager.addBusinessParams("isPlayback", 1);
-            mHttpManager.addBusinessParams("teamId",iTeamId);
+            mHttpManager.addBusinessParams("teamId", iTeamId);
         }
 
     }
@@ -875,15 +862,15 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
                     break;
                 }
 
-            }else if (LocalCourseConfig.CATEGORY_GROUP_CLASS_AUDIO_ROLL_CALL_START == videoQuestionEntity.getvCategory()) {
+            } else if (LocalCourseConfig.CATEGORY_GROUP_CLASS_AUDIO_ROLL_CALL_START == videoQuestionEntity.getvCategory()) {
                 //英语1v2
-                if (startTime == playPosition && liveBackActionListener!=null) {
-                        liveBackActionListener.onAction(LocalCourseConfig.CATEGORY_GROUP_CLASS_AUDIO_ROLL_CALL_START );
+                if (startTime == playPosition && liveBackActionListener != null) {
+                    liveBackActionListener.onAction(LocalCourseConfig.CATEGORY_GROUP_CLASS_AUDIO_ROLL_CALL_START);
                 }
-            }else if (LocalCourseConfig.CATEGORY_GROUP_CLASS_AUDIO_ROLL_CALL_END == videoQuestionEntity.getvCategory()) {
+            } else if (LocalCourseConfig.CATEGORY_GROUP_CLASS_AUDIO_ROLL_CALL_END == videoQuestionEntity.getvCategory()) {
                 //英语1v2
-                if (startTime == playPosition && liveBackActionListener!=null) {
-                    liveBackActionListener.onAction(LocalCourseConfig.CATEGORY_GROUP_CLASS_AUDIO_ROLL_CALL_END );
+                if (startTime == playPosition && liveBackActionListener != null) {
+                    liveBackActionListener.onAction(LocalCourseConfig.CATEGORY_GROUP_CLASS_AUDIO_ROLL_CALL_END);
                 }
             } else if (LocalCourseConfig.CATEGORY_FUTURE_COURSE_WARE == videoQuestionEntity.getvCategory()) {
                 // 大班未来课件互动题
@@ -1155,7 +1142,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
         }
     }
 
-    public void onPause(){
+    public void onPause() {
         for (LiveBackBaseBll liveBackBaseBll : liveBackBaseBlls) {
             liveBackBaseBll.onPause();
         }
@@ -1235,22 +1222,23 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
 
             @Override
             public void onPmFailure(Throwable error, String msg) {
-                onInitModeFail(param,requestCallBack);
+                onInitModeFail(param, requestCallBack);
             }
 
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
-                onInitModeFail(param,requestCallBack);
+                onInitModeFail(param, requestCallBack);
             }
         });
     }
 
 
-
     boolean initModeRetried;
+
     /**
      * initMode 接口失败重试
+     *
      * @param param
      * @param callBack
      */
@@ -1265,8 +1253,8 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
             cancelDialog.setVerifyBtnListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(mContext!= null && mContext instanceof Activity){
-                        ((Activity)mContext).finish();
+                    if (mContext != null && mContext instanceof Activity) {
+                        ((Activity) mContext).finish();
                     }
                 }
             });
@@ -1276,8 +1264,6 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
                             VerifyCancelAlertDialog.TITLE_MESSAGE_VERIRY_CANCEL_TYPE).showDialog();
         }
     }
-
-
 
 
     public void setLiveBackActionListener(LiveBackActionListener liveBackActionListener) {
