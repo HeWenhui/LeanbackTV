@@ -11,6 +11,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
@@ -92,7 +93,9 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
     private ArrayList<GoldTeamStatus.Student> addStudents = new ArrayList<>();
     /** 组内战况已经弹过 */
     private boolean teamStatus = false;
-    /** 语音保存位置 */
+    /** 直播id */
+    private String liveid;
+    /** 试题id */
     private String id;
     /** ReadyGo 动画 */
     ReadyGoImageView rgivLivevideoStandReadygo;
@@ -191,6 +194,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         isNewArts = baseVideoQuestionEntity.isNewArtsH5Courseware();
         setBaseVideoQuestionEntity(baseVideoQuestionEntity);
         this.isLive = true;
+        this.liveid = liveid;
         this.id = testId;
         this.nonce = nonce;
         this.speechEvalAction = speechEvalAction;
@@ -225,6 +229,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         isNewArts = baseVideoQuestionEntity.isNewArtsH5Courseware();
         setBaseVideoQuestionEntity(baseVideoQuestionEntity);
         this.isLive = false;
+        this.liveid = liveid;
         this.id = testId;
         this.nonce = nonce;
         this.speechEvalAction = speechEvalAction;
@@ -549,6 +554,12 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         mParam.setLocalSavePath(saveVideoFile.getPath());
         mParam.setMultRef(false);
         mParam.setLearning_stage(learning_stage);
+        //添加试题信息
+        Bundle extra = new Bundle();
+        extra.putString("liveid", "" + liveid);
+        extra.putString("testid", "" + id);
+        extra.putString("creattime", "" + creattime);
+        mParam.setExtraBundle(extra);
         mIse.startRecog(mParam, new EvaluatorListener() {
             int lastVolume = 0;
 

@@ -4,6 +4,7 @@ import com.xueersi.common.network.IpAddressUtil;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.are.ContextManager;
+import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.CoursewarePreload;
 import com.xueersi.parentsmeeting.modules.livevideo.business.newpreload.FileDownLoadManager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.newpreload.LiveVideoDownLoadUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
@@ -58,6 +59,7 @@ public abstract class NoZipDownloadListener extends CommonDonwLoadListener {
             hashMap.put("liveid", "");
             hashMap.put("resourcetype", resourcetype);
             hashMap.put("ip", IpAddressUtil.USER_IP);
+            hashMap.put("freeSize", "" + CoursewarePreload.getFreeSize());
             UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID,
                     LogConfig.PRE_LOAD_START, hashMap.getData());
         }

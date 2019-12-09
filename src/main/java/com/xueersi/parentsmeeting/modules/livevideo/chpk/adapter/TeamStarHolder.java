@@ -5,7 +5,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -15,6 +14,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.xueersi.lib.framework.are.ContextManager;
+import com.xueersi.lib.framework.drawable.DrawableHelper;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -42,10 +42,11 @@ public    class TeamStarHolder extends RecyclerView.ViewHolder {
             @Override
             public void onSuccess(Drawable drawable) {
                 Bitmap headBitmap = null;
-                if (drawable instanceof BitmapDrawable) {
-                    headBitmap = ((BitmapDrawable) drawable).getBitmap();
-                } else if (drawable instanceof GifDrawable) {
+                if (drawable instanceof GifDrawable) {
                     headBitmap = ((GifDrawable) drawable).getFirstFrame();
+                }
+                else {
+                    headBitmap = DrawableHelper.drawable2bitmap(drawable);
                 }
                 if (headBitmap != null) {
                     Bitmap resultBitmap = scaleBitmap(headBitmap, Math.min(headBitmap.getWidth(), headBitmap

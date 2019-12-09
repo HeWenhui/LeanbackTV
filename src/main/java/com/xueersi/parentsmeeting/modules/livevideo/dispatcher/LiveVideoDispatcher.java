@@ -20,7 +20,8 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEnt
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoSectionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.LiveVideoEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoLoadActivity;
-import com.xueersi.parentsmeeting.modules.livevideo.config.BigLiveCfg;
+import com.xueersi.parentsmeeting.share.business.biglive.config.BigLiveCfg;
+import com.xueersi.parentsmeeting.modules.livevideo.englishname.business.EnglishNameBusiness;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.BigLivePlayBackEntity;
 import com.xueersi.ui.dataload.DataLoadEntity;
 
@@ -81,13 +82,14 @@ public class LiveVideoDispatcher extends AbsDispatcher {
 
     private Activity activity;
     DataLoadEntity dataLoadEntity;
-
+    EnglishNameBusiness englishNameBll;
     @Override
     public void dispatch(Activity srcActivity, Bundle bundle, int requestCode) {
         if (bundle == null) {
             return;
         }
-
+        englishNameBll = new EnglishNameBusiness(srcActivity);
+        englishNameBll.checkName();
         if (bundle.containsKey(ParamKey.EXTRAKEY_JSONPARAM)) {
             activity = srcActivity;
             dispatcherBll = new DispatcherBll(srcActivity);

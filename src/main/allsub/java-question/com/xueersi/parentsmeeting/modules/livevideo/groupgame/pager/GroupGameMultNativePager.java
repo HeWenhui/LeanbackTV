@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.groupgame.pager;
 import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.SurfaceView;
@@ -243,7 +244,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         initListener();
         try {
             testsProtocalList = new ArrayList<>();
-            if(detailInfo.getTestsProtocal()!=null){
+            if (detailInfo.getTestsProtocal() != null) {
                 JSONArray testsProtocalArray = new JSONArray(detailInfo.getTestsProtocal());
                 for (int index = 0; index < testsProtocalArray.length(); index++) {
                     testsProtocalList.add(testsProtocalArray.optString(index));
@@ -1082,7 +1083,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         }
 
         @Override
-        public void onRemoteVideoStateChanged(int uid, final int state) {
+        public void onRemoteVideoStateChanged(int uid, final int state, int reason, int elapsed) {
             final BaseCourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + uid);
             mLogtf.d("onRemoteVideoStateChanged:uid=" + uid + ",state=" + state + ",courseGroupItem=null?" + (courseGroupItem == null));
             if (courseGroupItem != null) {
@@ -1406,6 +1407,13 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         mParam.setVad_pause_sec(vad_max_sec);
         final File file = saveVideoFile;
         final String speech = speechContent;
+        //添加试题信息
+        Bundle extra = new Bundle();
+        extra.putString("liveid", "" + liveId);
+        extra.putString("testid", "" + detailInfo.id);
+        extra.putString("creattime", "" + creattime);
+        mParam.setExtraBundle(extra);
+        //开始评测
         mIse.startRecog(mParam, new EvaluatorListenerWithPCM() {
 
             @Override
@@ -2543,7 +2551,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             e.printStackTrace();
             LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
-        StaticWeb.sendToCourseware(wvSubjectWeb, type, data,getProtocal());
+        StaticWeb.sendToCourseware(wvSubjectWeb, type, data, getProtocal());
     }
 
     private void postMessage(JSONObject jsonData) {
@@ -2559,7 +2567,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             e.printStackTrace();
             LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
-        StaticWeb.sendToCourseware(wvSubjectWeb, jsonData, "*",getProtocal());
+        StaticWeb.sendToCourseware(wvSubjectWeb, jsonData, "*", getProtocal());
         //wvSubjectWeb.loadUrl("javascript:postMessage(" + jsonData + ",'" + "*" + "')");
     }
 
@@ -3415,8 +3423,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         }
     }
 
-    private String getProtocal(){
-        if (testsProtocalList.size()>0){
+    private String getProtocal() {
+        if (testsProtocalList.size() > 0) {
             return testsProtocalList.get(0);
         }
         return "1";

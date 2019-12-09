@@ -65,211 +65,113 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCallback, LiveProvide {
     protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     BaseActivity activity;
-    /**
-     * 视频的名称，用于显示在播放器上面的信息栏
-     */
+    /** 视频的名称，用于显示在播放器上面的信息栏 */
     protected String mDisplayName;
-    /**
-     * 是否从头开始播放
-     */
+    /** 是否从头开始播放 */
     private boolean mFromStart = true;
-    /**
-     * 开始播放的起始点位
-     */
+    /** 开始播放的起始点位 */
     protected long mStartPos;
-    /**
-     * 当前视频是否播放到了结尾
-     */
+    /** 当前视频是否播放到了结尾 */
     protected boolean mIsEnd = false;
     public static final Object mIjkLock = new Object();
-    /**
-     * 所在的Activity是否已经onCreated
-     */
+    /** 所在的Activity是否已经onCreated */
     private boolean mCreated = false;
-    /**
-     * 播放器核心服务
-     */
+    /** 播放器核心服务 */
     protected volatile PlayerService vPlayer;
-    /**
-     * 播放服务是否已连接
-     */
+    /** 播放服务是否已连接 */
     protected boolean mServiceConnected = false;
-    /**
-     * 播放器的Surface是否创建
-     */
+    /** 播放器的Surface是否创建 */
     private boolean mSurfaceCreated = false;
-    /**
-     * 播放器的VideoView com.xueersi.parentsmeeting.player.media.VideoView
-     */
+    /** 播放器的VideoView com.xueersi.parentsmeeting.player.media.VideoView */
     protected VideoView videoView;
     // region 播放业务Handler
     protected AtomicBoolean mOpened = new AtomicBoolean(Boolean.FALSE); // 线程安全的Boolean值
-    /**
-     * 播放器统计时长
-     */
+    /** 播放器统计时长 */
     private double mUMPlayVideoTime;
-    /**
-     * 播放器界面的模式
-     */
+    /** 播放器界面的模式 */
     protected int mVideoMode = VideoView.VIDEO_LAYOUT_SCALE;
-    /**
-     * 是否可以播放视频
-     */
+    /** 是否可以播放视频 */
     protected boolean mIsPlayerEnable = true;
-    /**
-     * 是否使用硬解码，如当是本地采集的视频
-     */
+    /** 是否使用硬解码，如当是本地采集的视频 */
     protected boolean mIsHWCodec = false;
-    /**
-     * 是否完成了当前视频的播放
-     */
+    /** 是否完成了当前视频的播放 */
     protected boolean mCloseComplete = false;
     protected ShareDataManager mShareDataManager;
-    /**
-     * 当前播放进度
-     */
+    /** 当前播放进度 */
     protected long mCurrentPosition;
-    /**
-     * 视频总时长
-     */
+    /** 视频总时长 */
     protected long mDuration;
 
-    /**
-     * 当前播放的视频地址
-     */
+    /** 当前播放的视频地址 */
     protected Uri mUri;
-    /**
-     * 同步锁
-     */
+    /** 同步锁 */
     protected final Object mOpenLock = new Object();
-    /**
-     * 准备打开播放文件
-     */
+    /** 准备打开播放文件 */
     protected static final int OPEN_FILE = 0;
-    /**
-     * 初始化完播放器准备加载播放文件
-     */
+    /** 初始化完播放器准备加载播放文件 */
     protected static final int OPEN_START = 1;
-    /**
-     * 缓冲完毕可以播放
-     */
+    /** 缓冲完毕可以播放 */
     protected static final int OPEN_SUCCESS = 2;
-    /**
-     * 打开失败
-     */
+    /** 打开失败 */
     protected static final int OPEN_FAILED = 3;
-    /**
-     * 硬解码失败
-     */
+    /** 硬解码失败 */
     protected static final int HW_FAILED = 4;
-    /**
-     * 初始化播放器的默认参数
-     */
+    /** 初始化播放器的默认参数 */
     protected static final int LOAD_PREFS = 5;
-    /**
-     * 缓冲开始
-     */
+    /** 缓冲开始 */
     protected static final int BUFFER_START = 11;
-    /**
-     * 正在缓冲
-     */
+    /** 正在缓冲 */
     protected static final int BUFFER_PROGRESS = 12;
-    /**
-     * 缓冲结束
-     */
+    /** 缓冲结束 */
     protected static final int BUFFER_COMPLETE = 13;
-    /**
-     * 播放时的实时进度
-     */
+    /** 播放时的实时进度 */
     protected static final int ON_PLAYING_POSITION = 14;
-    /**
-     * 暂停播放
-     */
+    /** 暂停播放 */
     protected static final int STOP_PLAYER = 15;
-    /**
-     * seek完成
-     */
+    /** seek完成 */
     protected static final int SEEK_COMPLETE = 16;
-    /**
-     * 开始关闭播放器
-     */
+    /** 开始关闭播放器 */
     protected static final int CLOSE_START = 21;
-    /**
-     * 已退出播放器
-     */
+    /** 已退出播放器 */
     protected static final int CLOSE_COMPLETE = 22;
-    /**
-     * 是否可以自动横竖屏转换
-     */
+    /** 是否可以自动横竖屏转换 */
     protected boolean mIsAutoOrientation = true;
-    /**
-     * 当前界面方向
-     */
+    /** 当前界面方向 */
     protected int mDirection = VideoOrientationEventListener.DIRECTION_UP;
 
-    /**
-     * 是否点击了横竖屏切换按钮
-     */
+    /** 是否点击了横竖屏切换按钮 */
     private boolean mClick = false;
-    /**
-     * 当前界面是否横屏
-     */
+    /** 当前界面是否横屏 */
     protected boolean mIsLand = false;
-    /**
-     * 点击进入横屏
-     */
+    /** 点击进入横屏 */
     private boolean mClickLand = true;
 
-    /**
-     * 点击进入竖屏
-     */
+    /** 点击进入竖屏 */
     private boolean mClickPort = true;
-    /**
-     * 监听手机当前旋转角度
-     */
+    /** 监听手机当前旋转角度 */
     private VideoOrientationEventListener mOrientationEventListener;
     String video = "ijk";
-    /**
-     * 系统状态栏高度
-     */
+    /** 系统状态栏高度 */
     private int mStatusBarHeight = 0;
-    /**
-     * 播放器的屏幕高
-     */
+    /** 播放器的屏幕高 */
     protected int mPortVideoHeight = 0;
     float leftVolume = VP.DEFAULT_STEREO_VOLUME, rightVolume = VP.DEFAULT_STEREO_VOLUME;
 
-    /**
-     * 放播放器的 io.vov.vitamio.widget.CenterLayout
-     */
+    /** 放播放器的 io.vov.vitamio.widget.CenterLayout */
     protected ViewGroup viewRoot;
-    /**
-     * 加载中动画的加载文字
-     */
+    /** 加载中动画的加载文字 */
     protected TextView tvVideoLoadingText;
-    /**
-     * 播放器播放失败时的提供可刷新操作的背景
-     */
+    /** 播放器播放失败时的提供可刷新操作的背景 */
     protected View videoBackgroundRefresh;
-    /**
-     * 加载中动画Loading
-     */
+    /** 加载中动画Loading */
     private View videoLoadingLayout;
-    /**
-     * 直播类型
-     */
+    /** 直播类型 */
     public int liveType = 0;
-    /**
-     * 直播，使用{@link PSIJK#playLive(String, int)}
-     */
+    /** 直播，使用{@link PSIJK#playLive(String, int)} */
     public final static int PLAY_LIVE = 0;
-    /**
-     * 回放，使用{@link PSIJK#playVod(String, int)}
-     */
+    /** 回放，使用{@link PSIJK#playVod(String, int)} */
     public final static int PLAY_BACK = 1;
-    /**
-     * 录播，使用{@link PSIJK#playFile(String, int)}
-     */
+    /** 录播，使用{@link PSIJK#playFile(String, int)} */
     public final static int PLAY_TUTORIAL = 2;
 
     //自检提醒
@@ -456,6 +358,24 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
             return true;
         }
         return false;
+    }
+
+    /**
+     * 是否静音模式
+     */
+    private boolean muteMode;
+
+    public void setMuteMode(boolean muteMode) {
+        this.muteMode = muteMode;
+        if (muteMode){
+            setVolume(0, 0);
+        }else {
+            setVolume(VP.DEFAULT_STEREO_VOLUME, VP.DEFAULT_STEREO_VOLUME);
+        }
+    }
+
+    public boolean isMuteMode() {
+        return muteMode;
     }
 
     protected boolean handleMessage(Message msg) {
@@ -673,6 +593,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
             return true;
         }
     };
+
     protected WeakHandler vPlayerHandler = new WeakHandler(callback);
 
     @Nullable
@@ -689,18 +610,14 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         return viewRoot;
     }
 
-    /**
-     * 记录播放失败日志日志
-     */
+    /** 记录播放失败日志日志 */
     protected void recordFailData(String jsonString) {
         if (getActivity() != null) {
             UmsAgentManager.umsAgentDebug(getActivity(), LiveLogUtils.VIDEO_PLAYER_LOG_EVENT, jsonString);
         }
     }
 
-    /**
-     * 加载缓冲进度动画
-     */
+    /** 加载缓冲进度动画 */
     protected void setVideoLoadingLayoutVisibility(int visibility) {
         if (videoLoadingLayout != null) {
             videoLoadingLayout.setVisibility(visibility);
@@ -726,13 +643,9 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         }
     }
 
-    /**
-     * 切换线路使用位置
-     */
+    /** 切换线路使用位置 */
     protected int changeLinePos;
-    /**
-     * 当前使用的协议
-     */
+    /** 当前使用的协议 */
     protected int protocol;
     /**
      * 使用切换线路，
@@ -879,9 +792,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         vPlayerHandler.sendEmptyMessage(OPEN_FILE);
     }
 
-    /**
-     * 设置视频名称
-     */
+    /** 设置视频名称 */
     public void setmDisplayName(String displayName) {
         this.mDisplayName = displayName;
     }
@@ -987,6 +898,9 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                     LiveCrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
                 }
             }
+            if (activity != null) {
+                VideoPlayDebugUtils.umsIfVideoViewIsNotVisible(activity, activity.findViewById(R.id.vv_course_video_video));
+            }
         }
 
         /** 视频打开失败 */
@@ -1003,16 +917,15 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         /** 缓冲开始 */
         @Override
         public void onBufferStart() {
-//            String s = "onBufferStart";
-//            vPlayerHandler.sendEmptyMessage(BUFFER_START);
-//            if (vPlayer != null) {
-//                vPlayer.stopListenPlaying();
-//            }
+            String s = "onBufferStart";
+            vPlayerHandler.sendEmptyMessage(BUFFER_START);
+            if (vPlayer != null) {
+                vPlayer.stopListenPlaying();
+            }
             VPlayerCallBack.VPlayerListener wrapListener = getWrapListener();
             if (wrapListener != null) {
                 wrapListener.onBufferStart();
             }
-//            mLiveNetCheckTip.showTips(activity);
         }
 
         /** 缓冲结束 */
@@ -1116,9 +1029,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         }
     };
 
-    /**
-     * 加载播放器的默认设置参数
-     */
+    /** 加载播放器的默认设置参数 */
     protected void loadVPlayerPrefs() {
         if (!isInitialized()) {
             return;
@@ -1152,23 +1063,17 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         this.mDuration = duration;
     }
 
-    /**
-     * 当前视频播放完毕
-     */
-    protected void playComplete() {
+    /** 当前视频播放完毕 */
+    public void playComplete() {
 
     }
 
-    /**
-     * 视频非正常播放完毕，有可能是断网了，也有可能一开始打开失败了
-     */
+    /** 视频非正常播放完毕，有可能是断网了，也有可能一开始打开失败了 */
     public void resultFailed(int arg1, int arg2) {
         showRefresyLayout(arg1, arg2);
     }
 
-    /**
-     * 加载视频异常时出现可重新刷新的背景界面 TODO
-     */
+    /** 加载视频异常时出现可重新刷新的背景界面 TODO */
     protected void showRefresyLayout(int arg1, int arg2) {
         if (videoBackgroundRefresh == null) {
             return;
@@ -1186,27 +1091,21 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
 
     }
 
-    /**
-     * 控制开始播放视频
-     */
+    /** 控制开始播放视频 */
     public void start() {
         if (isInitialized()) {
             vPlayer.start();
         }
     }
 
-    /**
-     * 控制视频暂停
-     */
+    /** 控制视频暂停 */
     public void pause() {
         if (isInitialized()) {
             vPlayer.pause();
         }
     }
 
-    /**
-     * 停止（按了返回键）
-     */
+    /** 停止（按了返回键） */
     public void stop() {
         onBackPressed();
     }
@@ -1221,9 +1120,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         mShareDataManager.put(streamId + VP.SESSION_LAST_POSITION_SUFIX, (long) 0, ShareDataManager.SHAREDATA_USER);//重置播放进度
     }
 
-    /**
-     * 设置播放器的界面布局
-     */
+    /** 设置播放器的界面布局 */
     protected void setVideoLayout() {
         logger.d("setVideoLayout:VideoWidth=" + vPlayer.getVideoWidth() + ",VideoHeight=" + vPlayer.getVideoHeight());
         if (vPlayer.getVideoWidth() == 0 || vPlayer.getVideoHeight() == 0) {
@@ -1233,39 +1130,29 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                 vPlayer.getVideoHeight(), vPlayer.getVideoAspectRatio());
     }
 
-    /**
-     * 准备加载新视频
-     */
+    /** 准备加载新视频 */
     protected void onPlayOpenStart() {
 
     }
 
-    /**
-     * 视频预加载成功
-     */
+    /** 视频预加载成功 */
     protected void onPlayOpenSuccess() {
 
     }
 
-    /**
-     * seek完成
-     */
+    /** seek完成 */
     protected void onSeekComplete() {
 
     }
 
-    /**
-     * 暂停播放
-     */
+    /** 暂停播放 */
     protected void stopPlayer() {
         if (isInitialized()) {
             vPlayer.pause();
         }
     }
 
-    /**
-     * 释放播放器资源
-     */
+    /** 释放播放器资源 */
     public void release() {
         if (vPlayer != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
@@ -1288,9 +1175,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
     // region 播放器Surface界面回
 
 
-    /**
-     * 播放器是否已经成功初始化完毕处于可以加载资源随时播放的状态
-     */
+    /** 播放器是否已经成功初始化完毕处于可以加载资源随时播放的状态 */
     protected boolean isInitialized() {
         return (mCreated && vPlayer != null && vPlayer.isInitialized());
     }
@@ -1402,21 +1287,13 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
     }
 
     class VideoOrientationEventListener extends OrientationEventListener {
-        /**
-         * 当前界面方向-上方
-         */
+        /** 当前界面方向-上方 */
         public static final int DIRECTION_UP = 0;
-        /**
-         * 当前界面方向-手机左侧抬起
-         */
+        /** 当前界面方向-手机左侧抬起 */
         public static final int DIRECTION_LEFT = 1;
-        /**
-         * 当前界面方向-手机右侧抬起
-         */
+        /** 当前界面方向-手机右侧抬起 */
         public static final int DIRECTION_RIGHT = 2;
-        /**
-         * 当前界面方向-下方-暂时没有
-         */
+        /** 当前界面方向-下方-暂时没有 */
         public static final int DIRECTION_DOWN = 3;
 
         public VideoOrientationEventListener(Context context) {
@@ -1514,9 +1391,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
 //        return null;
     }
 
-    /**
-     * 网络发生变化
-     */
+    /** 网络发生变化 */
     public void onNetWorkChange(int netWorkType) {
 
         vPlayer.onNetWorkChange(netWorkType);

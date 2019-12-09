@@ -237,8 +237,11 @@ public class GroupGameTcp {
                 String uuid = UUID.randomUUID().toString();
                 b.put(uuid.getBytes());
                 if (bodyStr.length() > 0) {
+
                     b.put(bodyStr.getBytes());
                 }
+
+                log.d("WriteThread:send:seq=" + seq);
                 byte[] array = b.array();
                 outputStream.write(array);
                 log.d("WriteThread:send:write:array=" + array.length);

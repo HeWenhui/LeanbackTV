@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.xueersi.lib.framework.drawable.DrawableHelper;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -65,7 +66,7 @@ public class PrimaryClassViewSecPx implements PrimaryClassView {
 
     @Override
     public void decorateBack(int width, int height, RelativeLayout rl_course_video_contentview) {
-        Bitmap oldBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.bg_livevideo_priclass_normal);
+        Bitmap oldBitmap = DrawableHelper.bitmapFromResource(context.getResources(), R.drawable.bg_livevideo_priclass_normal);
         LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
         int screenWidth = liveVideoPoint.screenWidth;
         int screenHeight = liveVideoPoint.screenHeight;
@@ -199,7 +200,7 @@ public class PrimaryClassViewSecPx implements PrimaryClassView {
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) tv_livevideo_primary_team_name_mid.getLayoutParams();
         int topMargin = backTop / 2 + (int) (114 * scale);
         int left = (int) (1126 * scale) - backLeft;
-        Bitmap bitmapDrawable = BitmapFactory.decodeResource(tv_livevideo_primary_team_name_mid.getResources(), R.drawable.bg_live_tips_bg_normal);
+        Bitmap bitmapDrawable = DrawableHelper.bitmapFromResource(tv_livevideo_primary_team_name_mid.getResources(), R.drawable.bg_live_tips_bg_normal);
         int leftMargin = (left - bitmapDrawable.getWidth()) / 2;
         if (lp.topMargin != topMargin || lp.leftMargin != leftMargin) {
             lp.topMargin = topMargin;

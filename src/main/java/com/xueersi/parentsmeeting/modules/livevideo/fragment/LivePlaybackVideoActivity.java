@@ -29,8 +29,6 @@ public class LivePlaybackVideoActivity extends LiveBackVideoActivityBase {
     @Override
     protected LiveBackVideoFragmentBase getFragment() {
         String where = getIntent().getStringExtra("where");
-        Log.e("ckTrac", "=======>LiveBackVideoFragment_getFragment:" + where + ":" + isBigLive());
-
         if (isBigLive()) {
             try {
                 String fname = "com.xueersi.parentsmeeting.modules.livebusiness.enter.LiveBusinessBackFragment";
@@ -58,6 +56,15 @@ public class LivePlaybackVideoActivity extends LiveBackVideoActivityBase {
                     } catch (Exception e) {
                         LiveCrashReport.postCatchedException(TAG, e);
                     }
+                }else if(pattern == LiveVideoConfig.LIVE_PATTERN_GROUP_CLASS){
+                    try {
+                        String fname = "com.xueersi.parentsmeeting.modules.groupclass.fragment.GroupClassBackVideoFragment";
+                        LiveBackVideoFragmentBase fragmentBase =
+                                (LiveBackVideoFragmentBase) Fragment.instantiate(this, fname);
+                        return fragmentBase;
+                    } catch (Exception e) {
+                        LiveCrashReport.postCatchedException(TAG, e);
+                    }
                 }
                 return new LiveBackVideoFragment();
             }
@@ -77,7 +84,6 @@ public class LivePlaybackVideoActivity extends LiveBackVideoActivityBase {
     private boolean isBigLive() {
         Bundle bundle = getIntent().getExtras();
         boolean result = bundle != null && bundle.getBoolean("isBigLive");
-        Log.e("ckTrac", "=======>LiveBackVideoFragment_isBigLive:" + result);
         return result;
     }
 

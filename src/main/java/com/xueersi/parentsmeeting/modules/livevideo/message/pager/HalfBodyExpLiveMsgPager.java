@@ -841,7 +841,7 @@ public class HalfBodyExpLiveMsgPager extends BaseLiveMessagePager {
                         addDanmaKuFlowers(jsonObject.getInt("ftype"), jsonObject.getString("name"));
                     }
                 } catch (JSONException e) {
-                    addMessage(sender, LiveMessageEntity.MESSAGE_CLASS, message, "");
+//                    addMessage(sender, LiveMessageEntity.MESSAGE_CLASS, message, "");
                 }
             }
         });

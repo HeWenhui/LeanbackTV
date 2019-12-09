@@ -48,6 +48,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ErrorWebViewClient;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
+import com.xueersi.parentsmeeting.modules.livevideo.util.WebViewObserve;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -253,6 +254,8 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
 
     @Override
     public void initData() {
+        WebViewObserve.getInstance().put("liveId", liveid);
+        WebViewObserve.getInstance().put("testid", testId);
         newCourseCache = new NewCourseCache(mContext, liveid, "" + testId);
         btSubjectClose.setOnClickListener(new View.OnClickListener() {
             @Override

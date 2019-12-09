@@ -16,6 +16,7 @@ import com.airbnb.lottie.AssertUtil;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieComposition;
 import com.xueersi.lib.framework.are.ContextManager;
+import com.xueersi.lib.framework.drawable.DrawableHelper;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
@@ -150,7 +151,7 @@ public class StandLiveHeadView extends LottieAnimationView {
     }
 
     public void updateHeadSys() {
-        Bitmap headBitmap = BitmapFactory.decodeResource(getResources(), sysHeadId);
+        Bitmap headBitmap = DrawableHelper.bitmapFromResource(getResources(), sysHeadId);
         updateHead(headBitmap);
     }
 

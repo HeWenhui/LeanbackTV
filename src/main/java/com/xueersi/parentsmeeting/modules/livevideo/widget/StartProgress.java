@@ -145,7 +145,7 @@ public class StartProgress extends RelativeLayout {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-//        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bg_live_star_result_bg);
+//        Bitmap bitmap = DrawableHelper.bitmapFromResource(getResources(), R.drawable.bg_live_star_result_bg);
 //        LayoutParams lp = (LayoutParams) getLayoutParams();
 //        lp.width = bitmap.getWidth();
 //        lp.height = bitmap.getHeight();

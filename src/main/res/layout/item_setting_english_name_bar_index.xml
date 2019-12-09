@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        android:id="@+id/tv_setting_english_name_bar_index"
+        android:textColor="@color/COLOR_FD963E"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"
+        android:includeFontPadding="false"
+        android:layout_width="15dp"
+        android:textSize="14sp"
+        android:text="A"
+        android:gravity="center"
+        android:layout_height="15dp" />
+</LinearLayout>

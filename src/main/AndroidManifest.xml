@@ -259,6 +259,10 @@
         <service
             android:name="com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.UploadVideoService"
             android:process=":livevideo" />
+        <activity
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.xes"
+            android:name=".englishname.SettingEnglishLandActivity"
+            android:screenOrientation="landscape" />
     </application>
 
 </manifest>
