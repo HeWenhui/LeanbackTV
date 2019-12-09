@@ -1072,7 +1072,7 @@ public class VideoChatBll implements VideoChatAction {
     @Override
     public void raisehand(final String status, final String from, final String nonce) {
         mLogtf.d("raisehand:status=" + status);
-        btRaiseHands.post(new Runnable() {
+        LiveMainHandler.post(new Runnable() {
             @Override
             public void run() {
                 containMe = false;

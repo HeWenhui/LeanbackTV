@@ -1,10 +1,10 @@
 package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.xueersi.lib.framework.drawable.DrawableHelper;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
 
@@ -44,7 +44,7 @@ public class TeamSelectLottieEffectInfo extends LottieEffectInfo {
         ImageLoader.with(lavTeamSelectAnimView.getContext()).load(logoUrl).asBitmap(new SingleConfig.BitmapListener() {
             @Override
             public void onSuccess(Drawable drawable) {
-                Bitmap logo = ((BitmapDrawable) drawable).getBitmap();
+                Bitmap logo = DrawableHelper.drawable2bitmap(drawable);
                 Bitmap resultBitmap = null;
                 if (logo != null) {
                     float ratio = width / (float) logo.getWidth();

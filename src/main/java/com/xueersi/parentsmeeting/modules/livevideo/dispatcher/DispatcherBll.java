@@ -474,9 +474,9 @@ public class DispatcherBll extends BaseBll {
         bundle.putString("sex", entity.getSex());
         bundle.putInt("pattern", videoEntity.getPattern());
         bundle.putBoolean("isExperience", true);
-        if (videoEntity.getPattern() == LiveVideoConfig.LIVE_PATTERN_COMMON || videoEntity.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY) {
-            bundle.putBoolean("newCourse", true);
-        }
+//        if (videoEntity.getPattern() == LiveVideoConfig.LIVE_PATTERN_COMMON || videoEntity.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY) {
+        bundle.putBoolean("newCourse", true);
+//        }
         if (!"".equals(entity.getExamPaperUrl())) {
             if (entity.getIsArts() == 1) {
                 mShareDataManager.put(ShareBusinessConfig.SP_LIVE_EXAM_URL_LIBARTS, entity

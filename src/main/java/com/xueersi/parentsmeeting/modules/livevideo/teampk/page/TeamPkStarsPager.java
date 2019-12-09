@@ -4,7 +4,6 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.os.Build;
@@ -24,6 +23,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
 import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.xueersi.lib.framework.are.ContextManager;
+import com.xueersi.lib.framework.drawable.DrawableHelper;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
@@ -202,10 +202,11 @@ public class TeamPkStarsPager extends TeamPkBasePager {
                         @Override
                         public void onSuccess(Drawable drawable) {
                             Bitmap resultBitmap = null;
-                            if (drawable instanceof BitmapDrawable) {
-                                resultBitmap = ((BitmapDrawable) drawable).getBitmap();
-                            } else if (drawable instanceof GifDrawable) {
+                            if (drawable instanceof GifDrawable) {
                                 resultBitmap = ((GifDrawable) drawable).getFirstFrame();
+                            }
+                            else {
+                                resultBitmap = DrawableHelper.drawable2bitmap(drawable);
                             }
                             if (resultBitmap != null) {
                                 Bitmap circleBitmap = LiveCutImage.scaleBitmap(resultBitmap, Math.min(resultBitmap.getWidth(),

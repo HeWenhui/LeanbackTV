@@ -371,8 +371,11 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
             if (!TextUtils.isEmpty(mArtsList.get(i).getResourceUrl()) && !mArtsUrls.contains(mArtsList.get(i).getResourceUrl())) {
                 mArtsUrls.add(mArtsList.get(i).getResourceUrl());
             }
-            if (!TextUtils.isEmpty(mArtsList.get(i).getTemplateUrl()) && !mArtsUrls.contains(mArtsList.get(i).getTemplateUrl())) {
-                mArtsUrls.add(mArtsList.get(i).getTemplateUrl());
+            String templateUrl = mArtsList.get(i).getTemplateUrl();
+            if (!TextUtils.isEmpty(templateUrl) && !mArtsUrls.contains(mArtsList.get(i).getTemplateUrl())) {
+                if ((""+templateUrl).contains("http")) {
+                    mArtsUrls.add(templateUrl);
+                }
             }
         }
         for (int i = 0; i < mArtsUrls.size(); i++) {

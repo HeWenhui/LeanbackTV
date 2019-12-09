@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.business.courseware;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.http.HttpCallBack;
@@ -103,6 +104,18 @@ public class CoursewarePreload {
         }
     }
 
+    public static long getFreeSize() {
+        try {
+            File cacheFile = LiveCacheFile.geCacheFile(ContextManager.getContext(), "webviewCache");
+            long nSDFreeSize = cacheFile.getFreeSpace() / 1024L / 1024L;
+            Log.d("CoursewarePreload","getFreeSize:nSDFreeSize="+nSDFreeSize);
+            return nSDFreeSize;
+        }catch (Exception e){
+            LiveCrashReport.postCatchedException("CoursewarePreload",e);
+        }
+        return -1234;
+    }
+
     public void setBig(int big, String url) {
         this.isBig = big;
         this.newBigUrl = url;
@@ -153,6 +166,7 @@ public class CoursewarePreload {
                         hashMap.put("sno", "5");
                         hashMap.put("status", "true");
                         hashMap.put("ip", IpAddressUtil.USER_IP);
+                        hashMap.put("freeSize", "" + getFreeSize());
                         UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, hashMap.getData());
                     } catch (Exception e) {
                         logger.e(e);
@@ -293,6 +307,7 @@ public class CoursewarePreload {
                 hashMap.put("perform", "" + perform);
                 hashMap.put("liveId", "" + liveId);
                 hashMap.put("ip", IpAddressUtil.USER_IP);
+                hashMap.put("freeSize", "" + CoursewarePreload.getFreeSize());
                 UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID,
                         LogConfig.PRE_LOAD_START, hashMap.getData());
             } catch (Exception e) {
@@ -944,6 +959,7 @@ public class CoursewarePreload {
             hashMap.put("liveid", itemLiveId);
             hashMap.put("resourcetype", resourcetype);
             hashMap.put("ip", IpAddressUtil.USER_IP);
+            hashMap.put("freeSize", "" + getFreeSize());
             startDownLoadTime = System.currentTimeMillis();
             UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID,
                     LogConfig.PRE_LOAD_START, hashMap.getData());
@@ -1124,6 +1140,7 @@ public class CoursewarePreload {
             unZipMap.put("liveid", itemLiveId);
             unZipMap.put("resourcetype", resourcetype);
             unZipMap.put("ip", IpAddressUtil.USER_IP);
+            unZipMap.put("freeSize", "" + getFreeSize());
             UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, unZipMap.getData());
             return super.doInBackground(params);
 
@@ -1144,6 +1161,11 @@ public class CoursewarePreload {
             unZipMap.put("liveid", itemLiveId);
             unZipMap.put("resourcetype", resourcetype);
             unZipMap.put("ip", IpAddressUtil.USER_IP);
+            if (exception != null && mInput != null) {
+                boolean delete = mInput.delete();
+                unZipMap.put("delete", "" + delete);
+            }
+            unZipMap.put("freeSize", "" + getFreeSize());
             UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, unZipMap.getData());
         }
     }
@@ -1195,6 +1217,7 @@ public class CoursewarePreload {
                 hashMap.put("liveid", "");
                 hashMap.put("resourcetype", resourcetype);
                 hashMap.put("ip", IpAddressUtil.USER_IP);
+                hashMap.put("freeSize", "" + getFreeSize());
                 UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID,
                         LogConfig.PRE_LOAD_START, hashMap.getData());
             }

@@ -53,6 +53,9 @@ public class RaiseHandDialog extends BaseAlertDialog {
         super.showDialog();
         BuglyLog.d(TAG, "showDialog:showCount=" + showCount + ",method=" + method);
         showCount++;
+        if (showCount > 1) {
+            XrsCrashReport.postCatchedException(new Exception());
+        }
     }
 
     @Override

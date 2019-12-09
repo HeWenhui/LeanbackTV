@@ -22,6 +22,7 @@ import com.xueersi.common.http.DownloadCallBack;
 import com.xueersi.common.util.FontCache;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.are.ContextManager;
+import com.xueersi.lib.framework.drawable.DrawableHelper;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
@@ -49,11 +50,10 @@ public class LiveStandFrameAnim {
     static String TAG = "LiveStandFrameAnim";
     protected static Logger logger = LoggerFactory.getLogger(TAG);
     Activity activity;
-    private final String filePath = "/android_stand_live/" + StandLiveConfig.version + "/frame_anim7.zip";
     /** 下载地址，阿里云 */
-    private final String aliyun = "http://xesftp.oss-cn-beijing.aliyuncs.com" + filePath;
+    private final String aliyun = "https://xeswxapp.oss-cn-beijing.aliyuncs.com/Android/stand_live/frame_anim7.zip";
     /** 下载地址，网校 */
-    private final String xuersi = "http://client.xesimg.com" + filePath;
+    private final String xuersi = "https://wxapp.xesimg.com/Android/stand_live/frame_anim7.zip";
     /** 更新回调 */
     AbstractBusinessDataCallBack callBack;
     /** 解压任务 */
@@ -194,8 +194,8 @@ public class LiveStandFrameAnim {
     private void init(View view) {
         ProgressBar pbLiveStandUpdate = view.findViewById(R.id.pb_live_stand_update);
         ViewGroup.LayoutParams layoutParams = pbLiveStandUpdate.getLayoutParams();
-        Bitmap bitmap = BitmapFactory.decodeResource(activity.getResources(), R.drawable.bg_live_stand_update_prog_bg);
-        Bitmap bitmap2 = BitmapFactory.decodeResource(activity.getResources(), R.drawable.bg_live_stand_update_prog);
+        Bitmap bitmap = DrawableHelper.bitmapFromResource(activity.getResources(), R.drawable.bg_live_stand_update_prog_bg);
+        Bitmap bitmap2 = DrawableHelper.bitmapFromResource(activity.getResources(), R.drawable.bg_live_stand_update_prog);
         //设置进度条宽度
         layoutParams.width = bitmap.getWidth();
         LayoutParamsUtil.setViewLayoutParams(pbLiveStandUpdate, layoutParams);

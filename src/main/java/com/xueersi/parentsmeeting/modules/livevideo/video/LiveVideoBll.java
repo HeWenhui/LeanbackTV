@@ -13,10 +13,13 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
 import com.xueersi.parentsmeeting.module.videoplayer.ps.MediaErrorInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.RTCVideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
+import com.xueersi.parentsmeeting.modules.livevideo.core.ProgressAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
@@ -24,11 +27,13 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoConfigEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionStatic;
+import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageAction;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VPlayerListenerReg;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BasePlayerFragment;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.VideoPlayDebugUtils;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -46,7 +51,7 @@ import okhttp3.Response;
  * <p>
  * 所有跟直播中视频播放有关的逻辑处理（不处理任何ui）都在这里操作。
  */
-public class LiveVideoBll implements VPlayerListenerReg {
+public class LiveVideoBll implements VPlayerListenerReg, ProgressAction {
     private final String TAG = "LiveVideoBll";
     private Logger logger = LoggerFactory.getLogger(TAG);
     /** 直播服务器 */
@@ -126,20 +131,40 @@ public class LiveVideoBll implements VPlayerListenerReg {
         mPlayStatistics.remove(vPlayerListener);
     }
 
+    /**
+     * 这里是给不能直接访问livevideoBll的类使用的,会Gone掉VideoView，除非有这个需求，否则慎用.
+     * 切记，调用该方法，必须与playVideoWithViewVisible配对。
+     * 只是单纯释放player的话，使用{@link BasePlayerFragment#release()}方法
+     */
     @Override
-    public void release() {
+    public void releaseWithViewGone() {
+        VideoPlayDebugUtils.umsIfVideoViewIsNotVisible(activity, activity.findViewById(R.id.vv_course_video_video));
         View view = activity.findViewById(R.id.vv_course_video_video);
         if (view != null) {
+//            Map<String, String> map = new HashMap<>();
+//            map.put("videoview", "gone");
+//            UmsAgentManager.umsAgentDebug(activity, "livevideo_videoview", map);
+            VideoPlayDebugUtils.umsVideoViewGone(activity, view);
             view.setVisibility(View.GONE);
         }
         stopPlay();
     }
 
+    /**
+     * 播放视频并且恢复VideoView未Visibile。
+     * 与releaseWithViewGone配合使用
+     */
     @Override
-    public void playVideo() {
+    public void playVideoWithViewVisible() {
         if (MediaPlayer.getIsNewIJK()) {
+
             View view = activity.findViewById(R.id.vv_course_video_video);
             if (view != null) {
+                VideoPlayDebugUtils.umsIfVideoViewIsNotVisible(activity, activity.findViewById(R.id.vv_course_video_video));
+//                Map<String, String> map = new HashMap<>();
+//                map.put("videoview", "visible");
+//                UmsAgentManager.umsAgentDebug(activity, "livevideo_videoview", map);
+                VideoPlayDebugUtils.umsVideoViewVisible(activity, view);
                 view.setVisibility(View.VISIBLE);
             }
             psRePlay(false);
@@ -165,7 +190,9 @@ public class LiveVideoBll implements VPlayerListenerReg {
             }
         }, mLiveType, getInfo, liveTopic);
         liveGetPlayServer.setVideoAction(mVideoAction);
-        liveGetPlayServer(liveTopic.getMode(), false);
+        if (!isGroupClass()) {
+            liveGetPlayServer(liveTopic.getMode(), false);
+        }
     }
 
     /**
@@ -192,6 +219,10 @@ public class LiveVideoBll implements VPlayerListenerReg {
     }
 
     public void psRePlay(boolean modeChange) {
+        if (isGroupClass() && positon >= 0) {
+            playGroupClassVideo();
+            return;
+        }
         if (nowProtol != MediaPlayer.VIDEO_PROTOCOL_RTMP && nowProtol != MediaPlayer.VIDEO_PROTOCOL_FLV) {
             nowProtol = MediaPlayer.VIDEO_PROTOCOL_RTMP;
             videoFragment.playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_RTMP);
@@ -359,6 +390,13 @@ public class LiveVideoBll implements VPlayerListenerReg {
                 mLogtf.d("onPlaying:startRemote");
                 stopPlay();
             }
+            if (isGroupClass()) {
+                int current = (int) currentPosition / 1000;
+                logger.d("onPlaying(): current = " + current + ", positon = " + positon);
+                if ((positon - current) > 10) {
+                    seekGroupClass();
+                }
+            }
         }
 
         @Override
@@ -397,6 +435,28 @@ public class LiveVideoBll implements VPlayerListenerReg {
         @Override
         public void onOpenSuccess() {
             isPlay = true;
+            if (isGroupClass()) {
+                if (isClassEnd()) {
+                    videoFragment.release();
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            videoFragment.playComplete();
+                            if (mVideoAction != null) {
+                                mVideoAction.onTeacherNotPresent(false);
+                            }
+                            mLogtf.d("[zhangyuansun] onOpenSuccess: close RTCVideoPager");
+                            //关闭1v2真流
+                            RTCVideoAction rtcVideoAction = ProxUtil.getProxUtil().get(activity, RTCVideoAction.class);
+                            if (rtcVideoAction != null) {
+                                rtcVideoAction.close();
+                            }
+                        }
+                    });
+                } else {
+                    seekGroupClass();
+                }
+            }
             VideoChatEvent videoChatEvent = ProxUtil.getProxUtil().get(activity, VideoChatEvent.class);
             if (videoChatEvent != null && videoChatEvent.getStartRemote().get()) {
                 mLogtf.d("onOpenSuccess:startRemote=true");
@@ -674,7 +734,29 @@ public class LiveVideoBll implements VPlayerListenerReg {
                 case MediaErrorInfo.PLAY_COMPLETE: {
 //                    playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_RTMP);
 //                    liveGetPlayServer.liveGetPlayServer(false);
-                    psRePlay(false);
+                    if (isGroupClass()) {
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (mVideoAction != null) {
+                                    mVideoAction.onTeacherNotPresent(false);
+                                }
+                                mLogtf.d("[zhangyuansun] PLAY_COMPLETE: close RTCVideoPager");
+                                //关闭1v2真流
+                                RTCVideoAction rtcVideoAction = ProxUtil.getProxUtil().get(activity, RTCVideoAction.class);
+                                if (rtcVideoAction != null) {
+                                    rtcVideoAction.close();
+                                }
+                                //关闭红包
+                                RedPackageAction redPackageAction = ProxUtil.getProxUtil().get(activity, RedPackageAction.class);
+                                if (redPackageAction != null) {
+                                    redPackageAction.onRemoveRedPackage();
+                                }
+                            }
+                        });
+                    } else {
+                        psRePlay(false);
+                    }
                 }
                 break;
                 default:
@@ -851,4 +933,44 @@ public class LiveVideoBll implements VPlayerListenerReg {
         mPlayStatistics.clear();
     }
 
+    private int positon;
+
+    @Override
+    public void onProgressChanged(int progress) {
+        positon = progress;
+        if (positon == 0) {
+            playGroupClassVideo();
+        }
+    }
+
+    @Override
+    public void onProgressBegin(int beginProgress) {
+        positon = beginProgress;
+        if (positon >= 0) {
+            playGroupClassVideo();
+        }
+    }
+
+    private void playGroupClassVideo() {
+        logger.d("playGroupClassVideo()");
+        //英语1v2录直播 播放网络文件
+        String videoPath = mGetInfo.getRecordStandliveEntity().getVideoPath();
+        videoFragment.playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
+    }
+
+    private void seekGroupClass() {
+        logger.d("seekGroupClass()");
+        videoFragment.seekTo(positon * 1000);
+    }
+
+    private boolean isGroupClass() {
+        logger.d("isGroupClass()");
+        return mGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_GROUP_CLASS;
+    }
+
+    private boolean isClassEnd() {
+        int duration = (int) vPlayer.getDuration() / 1000;
+        mLogtf.d("isGroupClassEnd(): duration = " + duration + ", positon = " + positon);
+        return (duration > 0 && duration < positon);
+    }
 }

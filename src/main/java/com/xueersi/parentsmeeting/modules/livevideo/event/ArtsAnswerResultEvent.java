@@ -1,6 +1,8 @@
 package com.xueersi.parentsmeeting.modules.livevideo.event;
 
 
+import com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.GroupClassAnswerResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.AnswerResultStateListener;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultEntity;
@@ -12,6 +14,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResult
  * created  at 2018/9/6 14:07
  */
 public class ArtsAnswerResultEvent {
+
     /** h5 js回调待会的原始数据 */
     private String dataStr;
     SpeechResultEntity speechResultEntity;
@@ -31,6 +34,10 @@ public class ArtsAnswerResultEvent {
     private VideoQuestionLiveEntity detailInfo;
     /** 新课件是否是预加载 */
     private boolean ispreload;
+
+    private  AnswerResultEntity mAnswerResultEntity;
+    private GroupClassAnswerResultEntity mGroupClassAnswerResultEntity;
+
     /** js回调 传回答案 */
     public static final int TYPE_H5_ANSWERRESULT = 1;
 
@@ -52,9 +59,37 @@ public class ArtsAnswerResultEvent {
      * @param dataStr 结果数据   type 为1时  dataStr 为答案原始数据  type为2时  为试题id
      * @param type    答题结果类型
      */
+
+    /** 英语1v2 语音点名反馈字段 */
+    private int interactType;
     public ArtsAnswerResultEvent(String dataStr, int type) {
         this.dataStr = dataStr;
         this.mType = type;
+    }
+
+
+    public ArtsAnswerResultEvent(AnswerResultEntity answerResultEntity) {
+        this.mAnswerResultEntity=answerResultEntity;
+    }
+
+    public ArtsAnswerResultEvent(GroupClassAnswerResultEntity groupClassAnswerResultEntity) {
+        this.mGroupClassAnswerResultEntity = groupClassAnswerResultEntity;
+    }
+
+    public AnswerResultEntity getAnswerResultEntity() {
+        return mAnswerResultEntity;
+    }
+
+    public void setAnswerResultEntity(AnswerResultEntity mAnswerResultEntity) {
+        this.mAnswerResultEntity = mAnswerResultEntity;
+    }
+
+    public GroupClassAnswerResultEntity getGroupClassAnswerResultEntity() {
+        return mGroupClassAnswerResultEntity;
+    }
+
+    public void setGroupClassAnswerResultEntity(GroupClassAnswerResultEntity GroupClassAnswerResultEntity) {
+        this.mGroupClassAnswerResultEntity = GroupClassAnswerResultEntity;
     }
 
     public SpeechResultEntity getSpeechResultEntity() {
@@ -165,5 +200,13 @@ public class ArtsAnswerResultEvent {
                 "dataStr='" + dataStr + '\'' +
                 ", mType=" + mType +
                 '}';
+    }
+
+    public int getInteractType() {
+        return interactType;
+    }
+
+    public void setInteractType(int interactType) {
+        this.interactType = interactType;
     }
 }

@@ -12,7 +12,7 @@ public interface VPlayerListenerReg extends LiveProvide {
 
     void removeVPlayerListener(VPlayerCallBack.VPlayerListener vPlayerListener);
 
-    void release();
+    void releaseWithViewGone();
 
-    void playVideo();
+    void playVideoWithViewVisible();
 }

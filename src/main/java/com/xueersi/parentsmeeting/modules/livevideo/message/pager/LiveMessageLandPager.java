@@ -3,7 +3,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.message.pager;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.text.Editable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -31,6 +30,7 @@ import android.widget.TextView;
 
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.lib.framework.drawable.DrawableHelper;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.RegexUtils;
@@ -361,7 +361,7 @@ public class LiveMessageLandPager extends BaseLiveMessagePager {
         flowerEntities.add(new FlowerEntity(FLOWERS_MIDDLE, flowsDrawTips[1], "1束玫瑰", 50));
         flowerEntities.add(new FlowerEntity(FLOWERS_BIG, flowsDrawTips[2], "1束蓝色妖姬", 100));
         mFlowerWindow = new PopupWindow(mContext);
-        mFlowerWindow.setBackgroundDrawable(new BitmapDrawable());
+        mFlowerWindow.setBackgroundDrawable(DrawableHelper.bitmap2drawable(null));
         mFlowerWindow.setOutsideTouchable(true);
         mFlowerWindow.setFocusable(true);
         flowerContentView = View.inflate(mContext, R.layout.pop_livevideo_message_flower, null);
