@@ -107,7 +107,7 @@ public class LiveBackStandSpeechCreat implements BaseSpeechCreat {
 //        return speechAssessmentPager;
         RolePlayStandMachinePager rolePlayerPager = new RolePlayStandMachinePager(context,
                 videoQuestionLiveEntity, liveGetInfo.getId(), testId, liveGetInfo.getStuId(),
-                false, videoQuestionLiveEntity.nonce, speechEvalAction, stuCouId, false, livePagerBack, rolePlayMachineBll, liveGetInfo);
+                isExperience, videoQuestionLiveEntity.nonce, speechEvalAction, stuCouId, false, livePagerBack, rolePlayMachineBll, liveGetInfo);
         return rolePlayerPager;
     }
 
