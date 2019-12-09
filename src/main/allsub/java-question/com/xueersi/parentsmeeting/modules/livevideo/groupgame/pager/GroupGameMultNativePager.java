@@ -1845,10 +1845,10 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                     }
                 }
                 createSpeechContent("getCourseWareTests", lastTime < 0);
-                if (TextUtils.equals("2", getProtocal())) {
-                    wvSubjectWeb.loadUrl(testEntity.getPreviewPath() + "?cw_platform=android");
-                } else {
+                if (TextUtils.isEmpty(getProtocal())||TextUtils.equals("0", getProtocal())||TextUtils.equals("1", getProtocal())) {
                     wvSubjectWeb.loadUrl(testEntity.getPreviewPath());
+                }else {
+                    wvSubjectWeb.loadUrl(testEntity.getPreviewPath()+"?cw_platform=android");
                 }
                 int type = newCourseCache.loadCourseWareUrl(testEntity.getPreviewPath());
                 if (type != 0) {
