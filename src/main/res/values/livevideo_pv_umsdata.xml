@@ -2,5 +2,5 @@
 <resources>
 	<!-->说明: 轻直播间  
          参数: 屏幕观看id【0：横屏 1：竖屏】</!-->
-	<string name="pv_03_63">{"buryId":\"pv_03_63\","businessinfo$json":{"screenid":\"%1$s\"}}</string>
+	<string name="pv_03_63">{"buryId":\"pv_03_63\","levelone":\"03\","leveltwo":\"63\","businessinfo$json":{"screenid":\"%1$s\"}}</string>
 </resources>
