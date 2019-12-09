@@ -76,6 +76,23 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
         } else {
             mLiveBll.removeBusinessBll(this);
         }
+//        if (AppConfig.DEBUG) {
+//            final Random random = new Random();
+//            for (int i = 0; i < 1; i++) {
+//                LiveMainHandler.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        ImageView imageView = new ImageView(activity);
+//                        imageView.setImageResource(R.drawable.bg_livevideo_english_speek_praise);
+//                        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+//                        lp.leftMargin = random.nextInt(1000);
+//                        lp.topMargin = random.nextInt(600);
+//                        getLiveViewAction().addView(imageView, lp);
+//                        cutImage(1, imageView, false, true);
+//                    }
+//                }, i * 20);
+//            }
+//        }
     }
 
     private void initData() {
@@ -114,7 +131,7 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
                     }
                     final File saveFile = new File(agoradir, System.currentTimeMillis() + ".jpg");
                     mLogtf.d("onFirstRemoteVideoDecoded:saveFile=" + saveFile);
-                    mediaDataObserverPlugin.saveRenderVideoSnapshot(saveFile.getPath(), uid, new MediaDataObserverPlugin.OnRenderVideoShot() {
+                    mediaDataObserverPlugin.saveRenderVideoShot(saveFile.getPath(), uid, new MediaDataObserverPlugin.OnRenderVideoShot() {
                         @Override
                         public void onRenderVideoShot(String path) {
                             Bitmap bitmap = LiveCutImage.cutBitmap(path);
@@ -142,7 +159,7 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
             @Override
             public void run() {
                 createPlugin();
-                mediaDataObserverPlugin.addDecodeBuffer(uid);//720P
+                mediaDataObserverPlugin.addDecodeBuffer(uid, 1382400);//720P
             }
         });
     }
@@ -203,7 +220,7 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
             if (view != null) {
 //                stringBuilder = new StringBuilder();
 //                atomicBoolean = new AtomicBoolean(false);
-                resultBitmap = LiveCutImage.getViewBitmap(view, stringBuilder, atomicBoolean);
+                resultBitmap = LiveCutImage.getViewBitmap2(view, stringBuilder, atomicBoolean);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -345,6 +362,10 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
     /**
      * 主线程截屏，解决小学语文三分屏，在子线程截图报错bug
      *
+     * @param type
+     * @param view
+     * @param cut
+     * @param predraw
      */
 //    @Override
 //    public void cutImageMainThread(final int type, final View view, final boolean cut, final boolean predraw) {
@@ -604,11 +625,11 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
         if (mediaDataObserverPlugin == null) {
             mediaDataObserverPlugin = MediaDataObserverPlugin.the();
             MediaPreProcessing.setCallback(mediaDataObserverPlugin);
-            MediaPreProcessing.setVideoCaptureByteBuffer(mediaDataObserverPlugin.byteBufferCapture);
-            MediaPreProcessing.setAudioRecordByteBuffer(mediaDataObserverPlugin.byteBufferAudioRecord);
-            MediaPreProcessing.setAudioPlayByteBuffer(mediaDataObserverPlugin.byteBufferAudioPlay);
-            MediaPreProcessing.setBeforeAudioMixByteBuffer(mediaDataObserverPlugin.byteBufferBeforeAudioMix);
-            MediaPreProcessing.setAudioMixByteBuffer(mediaDataObserverPlugin.byteBufferAudioMix);
+            MediaPreProcessing.setVideoCaptureByteBUffer(mediaDataObserverPlugin.byteBufferCapture);
+            MediaPreProcessing.setAudioRecordByteBUffer(mediaDataObserverPlugin.byteBufferAudioRecord);
+            MediaPreProcessing.setAudioPlayByteBUffer(mediaDataObserverPlugin.byteBufferAudioPlay);
+            MediaPreProcessing.setBeforeAudioMixByteBUffer(mediaDataObserverPlugin.byteBufferBeforeAudioMix);
+            MediaPreProcessing.setAudioMixByteBUffer(mediaDataObserverPlugin.byteBufferAudioMix);
             mediaDataObserverPlugin.addVideoObserver(new MediaDataVideoObserver() {
                 @Override
                 public void onCaptureVideoFrame(byte[] data, int frameType, int width, int height, int bufferLength, int yStride, int uStride, int vStride, int rotation, long renderTimeMs) {
@@ -632,7 +653,7 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
                 }
 
                 @Override
-                public void onPlaybackAudioFrameBeforeMixing(int uid, byte[] data, int audioFrameType, int samples, int bytesPerSample, int channels, int samplesPerSec, long renderTimeMs, int bufferLength) {
+                public void onPlaybackAudioFrameBeforeMixing(byte[] data, int videoType, int samples, int bytesPerSample, int channels, int samplesPerSec, long renderTimeMs, int bufferLength) {
 
                 }
 

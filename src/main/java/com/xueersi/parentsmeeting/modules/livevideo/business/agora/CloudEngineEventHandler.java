@@ -81,11 +81,6 @@ public class CloudEngineEventHandler {
         }
 
         @Override
-        public void reportRtcStats(RTCEngine.ReportRtcStats stats) {
-
-        }
-
-        @Override
         public void didOccurError(RTCEngine.RTCEngineErrorCode code) {
             Iterator<RTCEngine.IRtcEngineEventListener> it = mEventHandlerList.keySet().iterator();
             while (it.hasNext()) {

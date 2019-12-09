@@ -117,7 +117,7 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
                 public void run() {
                     RTCEngine mRtcEngine = cloudWorkerThreadPool.getRtcEngine();
                     if (mRtcEngine != null) {
-                       // mRtcEngine.enableRemoteAudio(uid, false);
+                        mRtcEngine.enableRemoteAudio(uid, false);
                     }
                 }
             });
@@ -127,7 +127,7 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
                 public void run() {
                     RTCEngine mRtcEngine = cloudWorkerThreadPool.getRtcEngine();
                     if (mRtcEngine != null) {
-                       // mRtcEngine.enableRemoteAudio(uid, true);
+                        mRtcEngine.enableRemoteAudio(uid, true);
                     }
                 }
             });
@@ -386,7 +386,7 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
                     public void run() {
                         RTCEngine mRtcEngine = cloudWorkerThreadPool.getRtcEngine();
                         if (mRtcEngine != null) {
-                            //mRtcEngine.enableRemoteAudio(uid, !enable);
+                            mRtcEngine.enableRemoteAudio(uid, !enable);
                         }
                     }
                 });
@@ -396,7 +396,7 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
                     public void run() {
                         RTCEngine mRtcEngine = cloudWorkerThreadPool.getRtcEngine();
                         if (mRtcEngine != null) {
-                            //mRtcEngine.enableRemoteAudio(uid, true);
+                            mRtcEngine.enableRemoteAudio(uid, true);
                         }
                     }
                 });
