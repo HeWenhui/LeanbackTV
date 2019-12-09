@@ -250,6 +250,13 @@ public class DispatcherBll extends BaseBll {
         videoEntity.setTutorTeacherId(sectionEntity.getTutorTeacherId());
         videoEntity.setTutorTeacherName(sectionEntity.getTutorTeacherName());
         videoEntity.setTutorTeacherImg(sectionEntity.getTutorTeacherImg());
+        int protocol = sectionEntity.getProtocol();
+        if (protocol == 0) {
+            videoEntity.setProtocol(MediaPlayer.VIDEO_PROTOCOL_MP4);
+        } else {
+            videoEntity.setProtocol(protocol);
+            videoEntity.setFileId(sectionEntity.getFileId());
+        }
         return videoEntity;
     }
 
@@ -568,7 +575,7 @@ public class DispatcherBll extends BaseBll {
 
     public void getPublic(final String courseName, final String courseId, final String teacherId,
                           final String gotoClassTime,
-                          final AbstractBusinessDataCallBack callBack,DataLoadEntity dataLoadEntity) {
+                          final AbstractBusinessDataCallBack callBack, DataLoadEntity dataLoadEntity) {
         if (dataLoadEntity == null) {
             dataLoadEntity = new DataLoadEntity(mContext);
         }
@@ -610,7 +617,7 @@ public class DispatcherBll extends BaseBll {
         int iStuCouId = Integer.parseInt(stuCouId);
 
         dispatcherHttpManager.publicBigLivePlayBackEnter(iPlanId, bizeId, iStuCouId,
-                BigLiveCfg.BIGLIVE_CURRENT_ACCEPTPLANVERSION,   new HttpCallBack(dataLoadEntity) {
+                BigLiveCfg.BIGLIVE_CURRENT_ACCEPTPLANVERSION, new HttpCallBack(dataLoadEntity) {
                     public void onPmSuccess(ResponseEntity responseEntity) {
 
                         BigLivePlayBackEntity bigLivePlayBackEntity = dispatcherHttpResponseParser
@@ -711,12 +718,12 @@ public class DispatcherBll extends BaseBll {
      * @param callBack
      * @param dataLoadEntity
      */
-    public void bigLivePlanVersion( int liveId, int bizId,
+    public void bigLivePlanVersion(int liveId, int bizId,
                                    final AbstractBusinessDataCallBack callBack,
                                    final DataLoadEntity dataLoadEntity) {
         postDataLoadEvent(dataLoadEntity.beginLoading());
         //请求查询数据
-        dispatcherHttpManager.bigLivePlanVersion(liveId,bizId,
+        dispatcherHttpManager.bigLivePlanVersion(liveId, bizId,
                 new HttpCallBack() {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) {
