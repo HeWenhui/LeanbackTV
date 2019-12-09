@@ -5,11 +5,12 @@ import android.content.Context;
 import android.os.Process;
 import android.util.Log;
 
+
 import com.alibaba.fastjson.JSON;
-import com.hwl.bury.xrsbury.BuryPublicParam;
-import com.hwl.log.LogConfig;
-import com.hwl.log.xrsLog.UpdateParamInterface;
-import com.hwl.log.xrsLog.XrsLogPublicParam;
+import com.xrs.bury.xrsbury.BuryPublicParam;
+import com.xrs.log.LogConfig;
+import com.xrs.log.xrsLog.UpdateParamInterface;
+import com.xrs.log.xrsLog.XrsLogPublicParam;
 import com.xueersi.common.base.XueErSiRunningEnvironment;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
@@ -56,7 +57,7 @@ public class LiveLogBill {
 
     public static LiveLogBill getInstance() {
         if (mInstance == null) {
-            synchronized (LogBill.class) {
+            synchronized (LiveLogBill.class) {
                 if (mInstance == null) {
                     mInstance = new LiveLogBill(XueErSiRunningEnvironment.sAppContext);
                 }
@@ -68,7 +69,7 @@ public class LiveLogBill {
 
     public static LiveLogBill getInstance(Context context) {
         if (mInstance == null) {
-            synchronized (LogBill.class) {
+            synchronized (LiveLogBill.class) {
                 if (mInstance == null) {
                     mInstance = new LiveLogBill(context);
                 }
@@ -400,7 +401,7 @@ public class LiveLogBill {
                 if (LiveLogBill.param != null) {
                     log.liveid = LiveLogBill.param.liveid;
                 }
-                log.processId= Process.myPid();
+                log.processId=android.os.Process.myPid();
                 log.reason=type+"";
                 if (myUserInfoEntity == null) {
                     myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
@@ -416,8 +417,8 @@ public class LiveLogBill {
                 }
                 List<String> domainList = mLiveRemoteConfigInfo.liveRemoteDomainConfigInfo;
                 Pridata pridata = new Pridata();
-                pridata.ping = new HashMap<>();
-                Map<String, String> pingMap = new HashMap<>();
+                pridata.ping = new HashMap<String, PingInfo>();
+                Map<String, String> pingMap = new HashMap<String, String>();
                 if (!ListUtil.isEmpty(domainList)) {
                     for (int i = 0; i < domainList.size(); i++) {
                         PingInfo info = NetUtil.ping(domainList.get(i));
@@ -427,12 +428,10 @@ public class LiveLogBill {
                     log.pridata = pridata;
                     pridata.dnsinfo = pingMap;
                 }
-
                 String s = JSON.toJSONString(log);
                 LiveMonitorDebug.dLog(s);
-
-               LiveLog.log(log);
-               //LiveLog.sendLog();
+                //LiveLog.sendLog();
+                LiveLog.log(log);
                 LiveMonitorSender.send(s);
                 isRunning = false;
 

@@ -27,8 +27,12 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+
+import static com.tal100.chatsdk.PMDefs.MessagePriority.MSG_PRIORITY_NOTICE;
+import static com.tal100.chatsdk.PMDefs.MessagePriority.MSG_PRIORITY_PRI;
 
 /**
  * IRC消息。连接IRCConnection和LiveBll，控制聊天的连接和断开
@@ -73,6 +77,9 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
     private PMDefs.LiveInfo liveInfo;
     private boolean isConnected;
     private boolean isFirstLogin = true;
+    //消息序号
+    private long[] preMsgId = new long[]{0};
+    private HashMap<Long, String> msgMap = new HashMap<>();
 
     public NewAuditIRCMessage(LiveEnvironment liveEnvironment, String nickname, String liveId, String classId, String channel) {
         this.mChannel = channel;
@@ -119,12 +126,13 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
                 }
                 roomid.add("#" + mChannel);
                 mChatClient.getRoomManager().joinChatRooms(roomid);
-            } else if (PMDefs.ResultCode.Result_NicknameAlreadyExist == loginResp.code) {
-                mChatClient.logout("Nickname is already in use");
-                liveInfo.nickname = "pt_" + mNickname;
-                mChatClient.setLiveInfo(liveInfo);
-                int logincode = mChatClient.login(LiveAppUserInfo.getInstance().getPsimId(), LiveAppUserInfo.getInstance().getPsimPwd());
             }
+//            else if (PMDefs.ResultCode.Result_ExistNickname == loginResp.code) {
+//                mChatClient.logout("Nickname is already in use");
+//                liveInfo.nickname = "pt_" + mNickname;
+//                mChatClient.setLiveInfo(liveInfo);
+//                int logincode = mChatClient.login(LiveAppUserInfo.getInstance().getPsimId(), LiveAppUserInfo.getInstance().getPsimPwd());
+//            }
             StableLogHashMap logHashMap = defaultlog("login");
             logHashMap.put("loginCode", "" + loginResp.code);
             logHashMap.put("loginInfo", "" + loginResp.info);
@@ -157,6 +165,13 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
             logHashMap.put("logoutCode", "" + logoutNotice.code);
             logHashMap.put("logoutInfo", "" + logoutNotice.info);
             liveAndBackDebug.umsAgentDebugSys(eventid, logHashMap.getData());
+        }
+
+        @Override
+        public void onKickoutNotice(PMDefs.KickoutNotice kickoutNotice) {
+            if (kickoutNotice.code == PMDefs.ResultCode.Result_KickoutRepeat || kickoutNotice.code == PMDefs.ResultCode.Result_KickoutRequest){
+                mIRCCallback.onPrivateMessage(true, mNickname, "", "", "PRIVMSG", "T");
+            }
         }
 
         /**
@@ -327,12 +342,33 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
              **/
 
             logger.i("ircsdk onSendPeerMessageResponse");
-            logger.i("ircsdk onSendPeerMessageResponse code=" + sendPeerMessageResp.code);
-            logger.i("ircsdk onSendPeerMessageResponse info=" + sendPeerMessageResp.info);
+            logger.i("ircsdk onSendPeerMessageResponse code" + sendPeerMessageResp.code);
+            logger.i("ircsdk onSendPeerMessageResponse info" + sendPeerMessageResp.info);
             PMDefs.PsIdEntity toUserInfo = sendPeerMessageResp.toUserInfo;
             if (toUserInfo != null) {
                 logger.i("ircsdk onSendPeerMessageResponse:toUserInfo=" + toUserInfo.nickname);
             }
+
+            String msg = "";
+
+            //本地消息号
+            long preId = sendPeerMessageResp.preMsgId;
+            //服务器返回消息号
+            long msgId = sendPeerMessageResp.msgId;
+            if (msgMap.containsKey(preId)) {
+                msg = msgMap.get(preId);
+                msgMap.remove(preId);
+            }
+            StableLogHashMap logHashMap = defaultlog("IRCMessage");
+            logHashMap.put("type", "onSendPeerMessageResponse");
+            logHashMap.put("code", "" + sendPeerMessageResp.code);
+            logHashMap.put("sendPeerMessageRespInfo","" + sendPeerMessageResp.info);
+            logHashMap.put("toNickName","" + sendPeerMessageResp.toUserInfo.nickname);
+            logHashMap.put("toPsId","" + sendPeerMessageResp.toUserInfo.psid);
+            logHashMap.put("preMsgId","" + preId);
+            logHashMap.put("msgId","" + msgId);
+            logHashMap.put("msg", "" + msg);
+            liveAndBackDebug.umsAgentDebugSys(eventid, logHashMap);
         }
     };
 
@@ -430,14 +466,14 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
             // 353-聊天室昵称列表 366-聊天室昵称列表结束
             logger.i("ircsdk room user code: " + roomUserList.code);
             logger.i("ircsdk room user list size: " + roomUserList.userList.size());
-            if (PMDefs.ResultCode.Result_RoomUserList == roomUserList.code) {
+            if (PMDefs.ResultCode.Result_RoomUserList == roomUserList.code){
                 if (roomUserList.userList != null && !roomUserList.userList.isEmpty()) {
-                    if (userLists == null) {
+                    if (userLists == null){
                         userLists = new ArrayList<>();
                     }
                     userLists.addAll(roomUserList.userList);
                 }
-            } else if (PMDefs.ResultCode.Result_RoomUserListEnd == roomUserList.code) {
+            }else if (PMDefs.ResultCode.Result_RoomUserListEnd == roomUserList.code) {
                 onUserList = true;
                 String s = "___bug  onUserList:channel=" + roomUserList.roomId + ",users=" + roomUserList.userList.size();
                 if (roomUserList.userList != null && !roomUserList.userList.isEmpty()) {
@@ -474,9 +510,9 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
             logHashMap.put("roomCode", "" + roomTopic.code);
             logHashMap.put("roomTopic", "" + roomTopic.topic);
             liveAndBackDebug.umsAgentDebugSys(eventid, logHashMap.getData());
-            if (PMDefs.ResultCode.Result_RoomTopicEnd == roomTopic.code) {
-                return;
-            }
+//            if (PMDefs.ResultCode.Result_RoomTopicEnd == roomTopic.code){
+//                return;
+//            }
             if (mIRCCallback != null) {
                 mIRCCallback.onTopic(channel, topic, "", date, false, channel);
             }
@@ -536,7 +572,7 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
                         if (mIRCCallback != null) {
                             mIRCCallback.onNotice(sender, "", "", target, text, channel);
                         }
-                    } else if (PMDefs.MessagePriority.MSG_PRIORITY_PRI == roomChatMessage.msgPriority) {
+                    } else if (MSG_PRIORITY_PRI == roomChatMessage.msgPriority) {
                         mLogtf.d("onMessage:sender=" + sender + ":" + text);
                         target = "PRIVMSG";
                         String name = sender;
@@ -568,6 +604,27 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
             // 0-成功， 442->发送者不在聊天室
             logger.i("ircsdk send room message resp:" + sendRoomMessageResp.code);
             logger.i("ircsdk onSendRoomMessageResp" + " info: " + sendRoomMessageResp.info);
+            String msg = "";
+            //本地消息号
+            long preId = sendRoomMessageResp.preMsgId;
+            //服务器返回消息号
+            long msgId = sendRoomMessageResp.msgId;
+            if (msgMap.containsKey(preId)) {
+                msg = msgMap.get(preId);
+                msgMap.remove(preId);
+            }
+            logger.i("ircsdk onSendRoomMessageResp" + " info: " + sendRoomMessageResp.info + " " +
+                    " preMsgId:" + preId + " msgId:" + msgId+ " msg: " + msg + " toRoomId:" + sendRoomMessageResp.toRoomId +
+                    " fromUserInfo nickname:" + sendRoomMessageResp.fromUserInfo.nickname);
+            StableLogHashMap logHashMap = defaultlog("IRCMessage");
+            logHashMap.put("type", "onSendRoomMessageResp");
+            logHashMap.put("code", "" + sendRoomMessageResp.code);
+            logHashMap.put("roomMessageRespInfo", sendRoomMessageResp.info);
+            logHashMap.put("toRoomId","" + sendRoomMessageResp.toRoomId);
+            logHashMap.put("preMsgId","" + preId);
+            logHashMap.put("msgId","" + msgId);
+            logHashMap.put("msg", "" + msg);
+            liveAndBackDebug.umsAgentDebugSys(eventid, logHashMap);
         }
     };
 
@@ -595,17 +652,7 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
         //设置直播信息
         liveInfo = new PMDefs.LiveInfo();
         liveInfo.nickname = "p_" + mNickname;
-        if (LiveAppUserInfo.getInstance().getRealName() != null) {
-            liveInfo.realname = LiveAppUserInfo.getInstance().getRealName();
-        } else {
-            liveInfo.realname = mNickname;
-        }
         liveInfo.liveId = liveId;
-        if (LiveAppUserInfo.getInstance().getNickName() != null) {
-            liveInfo.username = LiveAppUserInfo.getInstance().getNickName();
-        } else {
-            liveInfo.username = "p_" + mNickname;
-        }
         if (classId != null) {
             liveInfo.classId = classId;
         } else {
@@ -634,9 +681,7 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
         logHashMap.put("PsImId", psimId);
         logHashMap.put("PsImPwd", psimKey);
         logHashMap.put("infocode", "" + infocode);
-        logHashMap.put("realname", liveInfo.realname);
         logHashMap.put("nickname", liveInfo.nickname);
-        logHashMap.put("username", liveInfo.username);
         logHashMap.put("classId", liveInfo.classId);
         logHashMap.put("businessId", liveInfo.businessId);
         logHashMap.put("location", liveInfo.location);
@@ -717,7 +762,8 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
         List<PMDefs.PsIdEntity> entityList = new ArrayList<>();
         PMDefs.PsIdEntity psIdEntity = new PMDefs.PsIdEntity(target, "");
         entityList.add(psIdEntity);
-        mChatClient.getPeerManager().sendPeerMessage(entityList, notice, 1);
+        mChatClient.getPeerManager().sendPeerMessage(entityList, notice, MSG_PRIORITY_NOTICE,preMsgId);
+        msgMap.put(preMsgId[0],notice);
     }
 
     /**
@@ -731,7 +777,8 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
         List<PMDefs.PsIdEntity> entityList = new ArrayList<>();
         PMDefs.PsIdEntity psIdEntity = new PMDefs.PsIdEntity(target, "");
         entityList.add(psIdEntity);
-        mChatClient.getPeerManager().sendPeerMessage(entityList, message, 99);
+        mChatClient.getPeerManager().sendPeerMessage(entityList, message, MSG_PRIORITY_PRI,preMsgId);
+        msgMap.put(preMsgId[0],message);
     }
 
     @Override
@@ -739,7 +786,8 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
         List<PMDefs.PsIdEntity> entityList = new ArrayList<>();
         PMDefs.PsIdEntity psIdEntity = new PMDefs.PsIdEntity(target, psid);
         entityList.add(psIdEntity);
-        mChatClient.getPeerManager().sendPeerMessage(entityList, message, 99);
+        mChatClient.getPeerManager().sendPeerMessage(entityList, message, MSG_PRIORITY_PRI,preMsgId);
+        msgMap.put(preMsgId[0],message);
     }
 
     /**
@@ -813,7 +861,7 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
         logMap.put("time", "" + System.currentTimeMillis());
         logMap.put("uid", LiveAppUserInfo.getInstance().getStuId());
         logMap.put("live_id", liveId);
-        logMap.put("channel", mChannel);
+        logMap.put("channel"  ,mChannel);
         return logMap;
     }
 

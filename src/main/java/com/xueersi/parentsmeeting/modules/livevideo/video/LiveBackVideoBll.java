@@ -11,6 +11,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEnt
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.StandExperienceVideoBll;
 import com.xueersi.parentsmeeting.modules.livevideo.liveLog.LiveLogBill;
@@ -19,6 +20,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.utils.LiveBackVideoPlayerUti
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveBackPlayerFragment;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -82,6 +85,14 @@ public class LiveBackVideoBll {
                     mWebPaths.add(url);
                 }
                 logger.d("setVideoEntity:hostPath=" + hostPath + ",videoPathNoHost=" + videoPathNoHost + ",mWebPaths=" + mWebPaths.size());
+            }
+
+            //英语1v2小组课 使用recordPath字段 替换videoPath字段
+            JSONObject getinfo = new JSONObject(mVideoEntity.getGetInfoStr());
+            int patten = getinfo.getInt("pattern");
+            String recordPath = getinfo.getString("recordPath");
+            if (patten == LiveVideoConfig.LIVE_PATTERN_GROUP_CLASS) {
+                mVideoEntity.setVideoPath(recordPath);
             }
         } catch (Exception e) {
             logger.d("setVideoEntity:hostPath=" + hostPath, e);

@@ -23,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.xueersi.common.config.AppConfig;
+import com.xueersi.lib.framework.drawable.DrawableHelper;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.string.ConstUtils;
 import com.xueersi.lib.framework.utils.string.RegexUtils;
@@ -218,7 +219,7 @@ public abstract class BaseLiveMessagePager extends LiveBasePager implements Room
                         exPressionGifUrl, bottomId);
                 int length = etMessageContent.getText().length();
                 if (length + exPressionName.length() <= 40) {
-                    Bitmap bitmap11 = BitmapFactory.decodeResource(mContext.getResources(), exPressionUrl);
+                    Bitmap bitmap11 = DrawableHelper.bitmapFromResource(mContext.getResources(), exPressionUrl);
                     ImageSpan imageSpan11 = new VerticalImageSpan(mContext, Bitmap.createScaledBitmap(bitmap11,
                             (int) etMessageContent.getTextSize(), (int) etMessageContent.getTextSize(), true));
                     SpannableString spannableString11 = new SpannableString(exPressionName);

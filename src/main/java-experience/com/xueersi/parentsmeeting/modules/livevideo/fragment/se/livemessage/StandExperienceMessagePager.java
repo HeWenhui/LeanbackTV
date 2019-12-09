@@ -10,11 +10,9 @@ import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Shader;
 import android.graphics.Typeface;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.os.CountDownTimer;
-import android.os.Handler;
-import android.os.Looper;
 import android.text.Editable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -60,6 +58,7 @@ import com.xueersi.component.cloud.config.XesCloudConfig;
 import com.xueersi.component.cloud.entity.CloudUploadEntity;
 import com.xueersi.component.cloud.entity.XesCloudResult;
 import com.xueersi.component.cloud.listener.XesStsUploadListener;
+import com.xueersi.lib.framework.drawable.DrawableHelper;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
@@ -77,7 +76,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.FlowerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.UserGoldTotal;
@@ -333,15 +331,12 @@ public class StandExperienceMessagePager extends BaseLiveMessagePager implements
 
             inputStream = AssertUtil.open(fileName);
             Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-//            bitmap.setDensity((int) (DisplayMetrics.DENSITY_MEDIUM * (FrameAnimation.IMAGE_HEIGHT / (float) com
-// .xueersi.parentsmeeting.util.ScreenUtils.getScreenHeight(mView.getContext()))));
             bitmap.setDensity((int) (FrameAnimation.DEFAULT_DENSITY * 2.8f / ScreenUtils.getScreenDensity()));
+            Drawable drawable = DrawableHelper.bitmap2drawable(bitmap);
             if (isVoice) {
-//                btnVoiceMesOpen.setBackgroundDrawable(new BitmapDrawable(bitmap));
-                btnVoiceMesOpen.setBackgroundDrawable(new BitmapDrawable(bitmap));
+                btnVoiceMesOpen.setBackground(drawable);
             } else {
-//                btMesOpen.setBackgroundDrawable(new BitmapDrawable(bitmap));
-                btMesOpen.setBackgroundDrawable(new BitmapDrawable(bitmap));
+                btMesOpen.setBackground(drawable);
             }
 
             inputStream.close();
@@ -839,7 +834,7 @@ public class StandExperienceMessagePager extends BaseLiveMessagePager implements
         flowerEntities.add(new FlowerEntity(FLOWERS_MIDDLE, flowsDrawTips[1], "1束玫瑰", 50));
         flowerEntities.add(new FlowerEntity(FLOWERS_BIG, flowsDrawTips[2], "1束蓝色妖姬", 100));
         PopupWindow flowerWindow = new PopupWindow(mContext);
-        flowerWindow.setBackgroundDrawable(new BitmapDrawable());
+        flowerWindow.setBackgroundDrawable(DrawableHelper.bitmap2drawable(null));
         flowerWindow.setOutsideTouchable(true);
         flowerWindow.setFocusable(true);
         flowerContentView = View.inflate(mContext, R.layout.pop_livevideo_message_flower, null);

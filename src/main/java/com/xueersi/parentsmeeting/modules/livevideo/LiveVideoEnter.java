@@ -13,7 +13,10 @@ import com.xueersi.common.base.BaseBll;
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.event.AppEvent;
+import com.xueersi.common.permission.XesPermission;
+import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.route.ReflexCenter;
+import com.xueersi.common.route.XueErSiRouter;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.common.toast.XesToast;
 import com.xueersi.common.util.LoadFileCallBack;
@@ -29,9 +32,13 @@ import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoTransferAc
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.dispatcher.DispatcherBll;
+import com.xueersi.parentsmeeting.modules.livevideo.englishname.SettingEnglishLandActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.LivePlaybackVideoActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.ui.dataload.DataLoadEntity;
 import com.xueersi.ui.dataload.DataLoadManager;
 
@@ -458,6 +465,20 @@ public class LiveVideoEnter {
             return false;
         }
 
+        //小组课先检测权限
+        if (pattern == 8) {
+            checkPermisson(context, bundle, where);
+        } else {
+            loadResource(context, bundle, where);
+        }
+
+        return true;
+
+
+    }
+
+    private static void loadResource(final Activity context, final Bundle bundle,
+                                     final String where) {
 
         LiveAssetsLoadUtil.loadAssertsResource(context, new LoadFileCallBack() {
             @Override
@@ -467,7 +488,15 @@ public class LiveVideoEnter {
 
             @Override
             public void success() {
-                android5X5Check(context, bundle, where);
+                boolean isNeed = LiveAppUserInfo.getInstance().isNeedEnglishName();
+                if (bundle.getInt("pattern") == 8 && !isNeed) {
+
+                    start1v2PlayBack(context, bundle, where);
+                } else {
+                    com.xueersi.parentsmeeting.modules.livevideo.fragment.LivePlaybackVideoActivity.intentTo(context, bundle,
+
+                            where, VIDEO_REQUEST);
+                }
             }
 
             @Override
@@ -480,13 +509,46 @@ public class LiveVideoEnter {
 
             }
         });
-
-        return true;
-
-
     }
 
-    private static void android5X5Check(final Activity context, final Bundle bundle, final String where) {
+    private static void checkPermisson(final Activity context, final Bundle bundle,
+                                       final String where) {
+        boolean have = XesPermission.checkPermission(context, new LiveActivityPermissionCallback() {
+
+                    @Override
+                    public void onFinish() {
+
+                    }
+
+                    @Override
+                    public void onDeny(String permission, int position) {
+                    }
+
+                    @Override
+                    public void onGuarantee(String permission, int position) {
+                        LiveMainHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                loadResource(context, bundle, where);
+                            }
+                        });
+                    }
+                },
+                PermissionConfig.PERMISSION_CODE_AUDIO, PermissionConfig.PERMISSION_CODE_STORAGE);
+        if (have) {
+            loadResource(context, bundle, where);
+        }
+    }
+
+    private static void start1v2PlayBack(final Activity context, final Bundle bundle,
+                                         final String where) {
+        bundle.putBoolean("engish1v2Type", false);
+        bundle.putString("where", where);
+        XueErSiRouter.startModule(context, "/groupclass/englishname", bundle);
+    }
+
+    private static void android5X5Check(final Activity context, final Bundle bundle,
+                                        final String where) {
         final DataLoadEntity mDataLoadEntity = new DataLoadEntity(context);
 
         try {
@@ -501,7 +563,8 @@ public class LiveVideoEnter {
                     public void onInstallFinish(int i) {
                         StableLogHashMap logHashMap = new StableLogHashMap("onInstallFinish_back");
                         logHashMap.put("code", "" + i);
-                        UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LogConfig.LIVE_X5_LOG, logHashMap.getData());
+                        UmsAgentManager.umsAgentDebug(ContextManager.getContext(),
+                                LogConfig.LIVE_X5_LOG, logHashMap.getData());
                         EventBus.getDefault().post(new AppEvent.OnDataLoadingEvent(mDataLoadEntity.webDataSuccess()));
                         intentToPlayback(context, bundle, where);
                     }
@@ -555,17 +618,23 @@ public class LiveVideoEnter {
      * @param context
      * @param bundle
      */
-    public static boolean intentToHalfBodyExperience(final Activity context, final Bundle bundle, final String where) {
+    public static boolean intentToHalfBodyExperience(final Activity context, final Bundle bundle,
+                                                     final String where) {
 //        ExperEnter.intentToHalfBodyExperience(context, bundle, where);
-        ReflexCenter.invokeMethodWithParams("com.xueersi.parentsmeeting.modules.livevideo.enter.ExperEnter",
-                "intentToHalfBodyExperience", new Class[]{Activity.class, Bundle.class, String.class}, new Object[]{context, bundle, where});
+        ReflexCenter.invokeMethodWithParams("com.xueersi.parentsmeeting.modules.livevideo.enter" +
+                        ".ExperEnter",
+                "intentToHalfBodyExperience", new Class[]{Activity.class, Bundle.class,
+                        String.class}, new Object[]{context, bundle, where});
         return true;
     }
 
-    public static boolean intentToLiveBackExperience(final Activity context, final Bundle bundle, final String where) {
+    public static boolean intentToLiveBackExperience(final Activity context, final Bundle bundle,
+                                                     final String where) {
 //        ExperEnter.intentToLiveBackExperience(context, bundle, where);
-        ReflexCenter.invokeMethodWithParams("com.xueersi.parentsmeeting.modules.livevideo.enter.ExperEnter",
-                "intentToLiveBackExperience", new Class[]{Activity.class, Bundle.class, String.class}, new Object[]{context, bundle, where});
+        ReflexCenter.invokeMethodWithParams("com.xueersi.parentsmeeting.modules.livevideo.enter" +
+                        ".ExperEnter",
+                "intentToLiveBackExperience", new Class[]{Activity.class, Bundle.class,
+                        String.class}, new Object[]{context, bundle, where});
         return true;
     }
 
@@ -575,10 +644,13 @@ public class LiveVideoEnter {
      * @param context
      * @param bundle
      */
-    public static boolean intentToAIExperience(final Activity context, final Bundle bundle, final String where) {
+    public static boolean intentToAIExperience(final Activity context, final Bundle bundle,
+                                               final String where) {
 //        ExperEnter.intentToAIExperience(context, bundle, where);
-        ReflexCenter.invokeMethodWithParams("com.xueersi.parentsmeeting.modules.livevideo.enter.ExperEnter",
-                "intentToAIExperience", new Class[]{Activity.class, Bundle.class, String.class}, new Object[]{context, bundle, where});
+        ReflexCenter.invokeMethodWithParams("com.xueersi.parentsmeeting.modules.livevideo.enter" +
+                        ".ExperEnter",
+                "intentToAIExperience", new Class[]{Activity.class, Bundle.class, String.class},
+                new Object[]{context, bundle, where});
         return true;
     }
 
@@ -590,7 +662,8 @@ public class LiveVideoEnter {
      * @param where
      * @return
      */
-    public static boolean intentToStandExperience(final Activity activity, final Bundle bundle, final String where) {
+    public static boolean intentToStandExperience(final Activity activity, final Bundle bundle,
+                                                  final String where) {
         LiveAssetsLoadUtil.loadAssertsResource(activity, new LoadFileCallBack() {
             @Override
             public void start() {
@@ -626,7 +699,8 @@ public class LiveVideoEnter {
      * @param context
      * @param bundle
      */
-    public static void intentToLectureLivePlayBackVideo(final Activity context, final Bundle bundle, final String where) {
+    public static void intentToLectureLivePlayBackVideo(final Activity context,
+                                                        final Bundle bundle, final String where) {
 
         XESToastUtils.showToast(context, "已暂停服务");
 //        LiveAssetsLoadUtil.loadAssertsResource(context, new LoadFileCallBack() {
@@ -653,7 +727,8 @@ public class LiveVideoEnter {
     }
 
     /** xesmall进体验课 */
-    public static void intentToExper(Context context, String chapterName, String liveId, final String termId) {
+    public static void intentToExper(Context context, String chapterName, String liveId,
+                                     final String termId) {
         VideoSectionEntity sectionEntity = new VideoSectionEntity();
         sectionEntity.setvSectionName(chapterName);
         sectionEntity.setvChapterName(chapterName);

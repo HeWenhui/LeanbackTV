@@ -51,9 +51,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class LiveVideoAction implements LiveVideoStateListener {
     private final String TAG = getClass().getSimpleName();
-    Logger logger = LoggerFactory.getLogger(TAG);
+    protected Logger logger = LoggerFactory.getLogger(TAG);
     protected WeakHandler mHandler = new WeakHandler(null);
-    Activity activity;
+    protected Activity activity;
     /** 初始进入播放器时的预加载界面 */
     protected RelativeLayout rlFirstBackgroundView;
     /** 老师不在直播间 */

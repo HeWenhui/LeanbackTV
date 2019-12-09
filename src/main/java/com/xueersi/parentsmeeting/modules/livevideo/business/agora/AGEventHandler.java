@@ -15,9 +15,10 @@ public interface AGEventHandler {
 
     /**
      * https://docs.agora.io/cn/Voice/API%20Reference/java/classio_1_1agora_1_1rtc_1_1_i_rtc_engine_event_handler.html#aaa721f00a7409aa091c9763c3385332e
-     *
-     * @param uid
+     *  @param uid
      * @param state
+     * @param reason
+     * @param elapsed
      */
-    void onRemoteVideoStateChanged(int uid, int state);
+    void onRemoteVideoStateChanged(int uid, int state, int reason, int elapsed);
 }

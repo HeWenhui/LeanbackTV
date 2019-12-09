@@ -58,6 +58,15 @@ public class LivePlaybackVideoActivity extends LiveBackVideoActivityBase {
                     } catch (Exception e) {
                         LiveCrashReport.postCatchedException(TAG, e);
                     }
+                }else if(pattern == LiveVideoConfig.LIVE_PATTERN_GROUP_CLASS){
+                    try {
+                        String fname = "com.xueersi.parentsmeeting.modules.groupclass.fragment.GroupClassBackVideoFragment";
+                        LiveBackVideoFragmentBase fragmentBase =
+                                (LiveBackVideoFragmentBase) Fragment.instantiate(this, fname);
+                        return fragmentBase;
+                    } catch (Exception e) {
+                        LiveCrashReport.postCatchedException(TAG, e);
+                    }
                 }
                 return new LiveBackVideoFragment();
             }
