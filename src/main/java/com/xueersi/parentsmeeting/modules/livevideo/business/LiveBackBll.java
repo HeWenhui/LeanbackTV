@@ -5,12 +5,14 @@ import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseArray;
+import android.view.View;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.entity.ReleaseedInfos;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.AppMainHandler;
 import com.xueersi.lib.framework.utils.JsonUtil;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.ExpAutoLive;
@@ -58,6 +60,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.utils.LiveWebLog;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlaybackMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.OnPointClick;
+import com.xueersi.ui.dialog.ConfirmAlertDialog;
+import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import org.json.JSONObject;
 
@@ -522,18 +526,24 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
             mHttpManager.addHeaderParams("switch-grade", liveGetInfo.getGrade() + "");
             String subjectId = (liveGetInfo.getSubjectIds() != null && liveGetInfo.getSubjectIds().length > 0) ? liveGetInfo.getSubjectIds()[0] : "";
             mHttpManager.addHeaderParams("switch-subject", subjectId);
+            mHttpManager.addHeaderParams("planId",liveGetInfo.getId());
             mHttpManager.addHeaderParams("bizId", mLiveType + "");
             String calssId = (liveGetInfo.getStudentLiveInfo() != null) ? liveGetInfo.getStudentLiveInfo().getClassId() : "0";
             String stuCouId = TextUtils.isEmpty(liveGetInfo.getStuCouId()) ? "" : liveGetInfo.getStuCouId();
+            String teamId = (liveGetInfo.getStudentLiveInfo() != null) ? liveGetInfo.getStudentLiveInfo().getTeamId() : "0";
+
             int iClassId = 0;
+            int iTeamId = 0;
             try {
                 iClassId = Integer.parseInt(calssId);
+                iTeamId = Integer.parseInt(teamId);
             } catch (Exception e) {
                 e.printStackTrace();
             }
             mHttpManager.addBusinessParams("classId", iClassId);
             mHttpManager.addBusinessParams("stuCouId", stuCouId);
             mHttpManager.addBusinessParams("isPlayback", 1);
+            mHttpManager.addBusinessParams("teamId",iTeamId);
         }
 
     }
@@ -875,8 +885,24 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
                     index = i;
                     break;
                 }
+            }else if(LocalCourseConfig.CATEGORY_NB_EXPERIMENT == videoQuestionEntity.getvCategory()){
+                //大班nb 实验
+                if (startTime <= playPosition && playPosition < endTime) {
+                    mQuestionEntity = videoQuestionEntity;
+                    hasQuestionShow = true;
+                    index = i;
+                    break;
+                }
             } else if (LocalCourseConfig.CATEGORY_SCIENCE_VOTE == videoQuestionEntity.getvCategory()) {
                 // 小学理科投票新
+                if (startTime <= playPosition && playPosition < endTime) {
+                    mQuestionEntity = videoQuestionEntity;
+                    hasQuestionShow = true;
+                    index = i;
+                    break;
+                }
+            }else if (LocalCourseConfig.CATEGORY_SPEECH_ASSESS == videoQuestionEntity.getvCategory()) {
+                // 大班三期语音评测题
                 if (startTime <= playPosition && playPosition < endTime) {
                     mQuestionEntity = videoQuestionEntity;
                     hasQuestionShow = true;
@@ -1168,7 +1194,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
         return mGetInfo;
     }
 
-    public void getGrayControl(LivePluginRequestParam param, final AbstractBusinessDataCallBack requestCallBack) {
+    public void getGrayControl(final LivePluginRequestParam param, final AbstractBusinessDataCallBack requestCallBack) {
         if (mGetInfo != null && !TextUtils.isEmpty(mGetInfo.getInitModuleUrl())) {
             param.url = mGetInfo.getInitModuleUrl();
         }
@@ -1190,8 +1216,52 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
 
                 }
             }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                onInitModeFail(param,requestCallBack);
+            }
+
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                onInitModeFail(param,requestCallBack);
+            }
         });
     }
+
+
+
+    boolean initModeRetried;
+    /**
+     * initMode 接口失败重试
+     * @param param
+     * @param callBack
+     */
+    private void onInitModeFail(LivePluginRequestParam param, AbstractBusinessDataCallBack callBack) {
+        if (!initModeRetried) {
+            initModeRetried = true;
+            getGrayControl(param, callBack);
+        } else {
+            ConfirmAlertDialog cancelDialog = new ConfirmAlertDialog(mContext,
+                    ContextManager.getApplication(), false,
+                    VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
+            cancelDialog.setVerifyBtnListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(mContext!= null && mContext instanceof Activity){
+                        ((Activity)mContext).finish();
+                    }
+                }
+            });
+            cancelDialog.setDarkStyle();
+            cancelDialog.setCancelShowText("继续看课").setVerifyShowText("退出直播间")
+                    .initInfo("学习互动模块初始化失败，学习互动功能将无法使用，请退出重进",
+                            VerifyCancelAlertDialog.TITLE_MESSAGE_VERIRY_CANCEL_TYPE).showDialog();
+        }
+    }
+
+
 
 
     public void setLiveBackActionListener(LiveBackActionListener liveBackActionListener) {

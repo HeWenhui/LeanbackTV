@@ -32,5 +32,4 @@ public class DispatcherConfig {
     public static final int  BIGLIVE_GRAY_CONTROL_PLANVERSION_DEFAULT = -1;
     /** 大班整合 直播灰测普通直播 **/
     public static final int BIGLIVE_GRAY_CONTROL_PLANVERSION_COMMON = 0;
-
 }
