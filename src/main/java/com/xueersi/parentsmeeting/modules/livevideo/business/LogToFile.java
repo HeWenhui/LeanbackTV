@@ -16,8 +16,6 @@ import java.util.Locale;
 public class LogToFile {
     String TAG;
     private static SimpleDateFormat dateFormat;
-    /** 静态唯一 */
-    public static LiveOnLineLogs auditClassLiveBll;
     public LiveOnLineLogs liveOnLineLogs;
     protected Logger logger = LoggerFactory.getLogger("LogToFile");
     private StableLogHashMap stableLogHashMap;
@@ -29,9 +27,6 @@ public class LogToFile {
     public LogToFile(String tag) {
         logger = LiveLoggerFactory.getLogger(tag);
         this.TAG = "OL:" + tag;
-        if (auditClassLiveBll != null) {
-            liveOnLineLogs = auditClassLiveBll;
-        }
     }
 
     public LogToFile(String tag, LiveOnLineLogs liveOnLineLogs) {

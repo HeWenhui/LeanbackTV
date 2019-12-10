@@ -18,9 +18,11 @@ public interface LiveEnvironment {
 
     boolean isBack();
 
+    boolean isBigLive();
+
     LiveAndBackDebug getLiveAndBackDebug();
 
     LogToFile createLogToFile(String TAG);
 
-    public <T> T get(Class<T> clazz);
+    <T> T get(Class<T> clazz);
 }

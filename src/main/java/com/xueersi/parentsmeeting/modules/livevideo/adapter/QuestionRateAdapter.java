@@ -51,7 +51,7 @@ public class QuestionRateAdapter extends   RecyclerView.Adapter<RecyclerView.Vie
 
         @Override
         public int getItemCount() {
-            return lstUserScore.size();
+            return lstUserScore==null?0:lstUserScore.size();
         }
 
         public void upDataList(List<UserScoreEntity> lstUserScore) {

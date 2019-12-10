@@ -26,6 +26,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoConfigEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
+import com.xueersi.parentsmeeting.modules.livevideo.liveLog.LiveLogBill;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageAction;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
@@ -192,6 +193,10 @@ public class LiveVideoBll implements VPlayerListenerReg, ProgressAction {
         liveGetPlayServer.setVideoAction(mVideoAction);
         if (!isGroupClass()) {
             liveGetPlayServer(liveTopic.getMode(), false);
+        }
+
+        if (mGetInfo != null) {//设置日志需要的liveid
+            LiveLogBill.getInstance().setLiveId(mGetInfo.getId());
         }
     }
 

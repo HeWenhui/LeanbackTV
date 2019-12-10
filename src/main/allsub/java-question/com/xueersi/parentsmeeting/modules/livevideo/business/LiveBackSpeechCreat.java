@@ -103,7 +103,7 @@ public class LiveBackSpeechCreat implements BaseSpeechCreat {
         if (liveGetInfo.getLiveType() != 2 && LiveQueConfig.EN_COURSE_TYPE_ROLEPLAY.equals(videoQuestionLiveEntity.type)) {
             RolePlayMachinePager rolePlayerPager = new RolePlayMachinePager(context,
                     videoQuestionLiveEntity, liveGetInfo.getId(), testId, liveGetInfo.getStuId(),
-                    false, videoQuestionLiveEntity.nonce, wrapSpeechEvalAction, stuCouId, false, livePagerBack, rolePlayMachineBll, liveGetInfo);
+                    isExperience, videoQuestionLiveEntity.nonce, wrapSpeechEvalAction, stuCouId, false, livePagerBack, rolePlayMachineBll, liveGetInfo);
             return rolePlayerPager;
         }
         SpeechAssessmentWebX5Pager speechAssessmentPager = new SpeechAssessmentWebX5Pager(context,

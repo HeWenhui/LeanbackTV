@@ -61,6 +61,7 @@ public class AuditClassRoomActivity extends XesActivity {
      * 旁听课堂业务类
      */
     AuditClassRoomBll mAuditClassRoomBll;
+    private boolean isBigLive;
     /**
      * 数据加载
      */
@@ -318,7 +319,7 @@ public class AuditClassRoomActivity extends XesActivity {
             sp = new SpannableString("暂无" + "\n" + fixText);
         } else {
             sp = new SpannableString(text + "\n" + fixText);
-            sp.setSpan(new AbsoluteSizeSpan(25, true), 1, numberText.length() + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            sp.setSpan(new AbsoluteSizeSpan(22, true), 1, numberText.length() + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         int whiteColor = getResources().getColor(R.color.white);
         sp.setSpan(new ForegroundColorSpan(whiteColor), 0, sp.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -365,7 +366,15 @@ public class AuditClassRoomActivity extends XesActivity {
                             .data_is_empty_tip_study_center);
         }
         mAuditClassRoomBll.postDataLoadEvent(mDataLoadEntity.beginLoading());
-        mAuditClassRoomBll.getLiveCourseUserScoreDetail(liveId, stuCouId, auditClassRoomRequestCallBack, mDataLoadEntity);
+        Intent intent = getIntent();
+        isBigLive = intent.getBooleanExtra("isBigLive", false);
+        if (isBigLive) {
+            int classId = intent.getIntExtra("classId", -1);
+            int teamId = intent.getIntExtra("teamId", -1);
+            mAuditClassRoomBll.getBigLiveCourseUserScoreDetail(liveId, stuCouId, classId, teamId, auditClassRoomRequestCallBack, mDataLoadEntity);
+        } else {
+            mAuditClassRoomBll.getLiveCourseUserScoreDetail(liveId, stuCouId, auditClassRoomRequestCallBack, mDataLoadEntity);
+        }
     }
 
 
@@ -442,9 +451,14 @@ public class AuditClassRoomActivity extends XesActivity {
                 tvCheckInHour.setText(String.valueOf(hourTime[0]));
                 tvCheckInMinute.setText(String.valueOf(hourTime[1]));
             }
-            char[] secondTime = times[1].toCharArray();
-            tvCheckInSecondEnd.setText(String.valueOf(secondTime[1]));
-            tvCheckInSecond.setText(String.valueOf(secondTime[0]));
+            if (times.length > 1) {
+                char[] secondTime = times[1].toCharArray();
+                tvCheckInSecondEnd.setText(String.valueOf(secondTime[1]));
+                tvCheckInSecond.setText(String.valueOf(secondTime[0]));
+            } else {
+                tvCheckInSecondEnd.setText("0");
+                tvCheckInSecond.setText("0");
+            }
         }
     }
 
@@ -550,7 +564,7 @@ public class AuditClassRoomActivity extends XesActivity {
             llQuestionDetailList.setVisibility(View.VISIBLE);
             hasData = true;
             if (mQuestionRateDetailAdapter == null) {
-                mQuestionRateDetailAdapter = new QuestionRateDetailAdapter(mContext, lstUserScore);
+                mQuestionRateDetailAdapter = new QuestionRateDetailAdapter(mContext, lstUserScore, isBigLive);
                 gvQuestionDetail.setAdapter(mQuestionRateDetailAdapter);
             } else {
                 mQuestionRateDetailAdapter.notifyDataSetChanged();

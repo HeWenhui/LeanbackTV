@@ -82,7 +82,7 @@ public class StandLiveVideoExperienceMediaController extends MediaController2 {
 
         @Override
         public void onScale(float scaleFactor, int state) {
-            mTouchListener.onScale(scaleFactor, state);
+//            mTouchListener.onScale(scaleFactor, state);
         }
     };
 }

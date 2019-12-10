@@ -335,6 +335,7 @@ public class SettingEnglishLandActivity extends XesActivity {
         @Override
         public void dialogCancel() {
             selectName = LiveVideoConfig.ENGLISH_NAME_DEFAULT_BOY;
+            sex = LiveVideoConfig.LIVE_GROUP_CLASS_USER_SEX_BOY;
             if (sex == LiveVideoConfig.LIVE_GROUP_CLASS_USER_SEX_GIRL) {
                 selectName = LiveVideoConfig.ENGLISH_NAME_DEFAULT_GRIL;
             }

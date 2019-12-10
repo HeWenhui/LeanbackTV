@@ -3,6 +3,11 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 import android.animation.Animator;
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -13,18 +18,24 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.common.util.FontCache;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.event.UpdatePkState;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -86,6 +97,7 @@ public class ScienceVoteBll extends LiveBaseBll implements NoticeAction, TopicAc
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                LiveCrashReport.postCatchedException(TAG, e);
             }
         }
     }
@@ -163,6 +175,7 @@ public class ScienceVoteBll extends LiveBaseBll implements NoticeAction, TopicAc
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
+                    LiveCrashReport.postCatchedException(TAG, e);
                 }
             }
 
@@ -178,7 +191,7 @@ public class ScienceVoteBll extends LiveBaseBll implements NoticeAction, TopicAc
     }
 
     private void submitResult() {
-        getHttpManager().ScienceVoteCommit(mLiveId, mGetInfo.getLiveType(), mGetInfo.getStudentLiveInfo().getClassId(), interactionId, getUserAnswer(), mLiveBll.getNickname(), mGetInfo.getStuName(), new HttpCallBack(true) {
+        getHttpManager().ScienceVoteCommit("0", mLiveId, mGetInfo.getLiveType(), mGetInfo.getStudentLiveInfo().getClassId(), interactionId, getUserAnswer(), mLiveBll.getNickname(), mGetInfo.getStuName(), new HttpCallBack(true) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 logger.d("ScienceVoteCommit:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
@@ -187,15 +200,16 @@ public class ScienceVoteBll extends LiveBaseBll implements NoticeAction, TopicAc
                 if (jsonObject.optBoolean("isRepeat")) {
                     XESToastUtils.showToast(mContext, "已作答");
                 } else {
+                    int gold = jsonObject.optInt("gold");
                     if (TextUtils.isEmpty(rightAnswer)) {
-                        submitSuccess(0);
+                        submitSuccess(0, gold);
                         liveLogInteractive("3", "2", "submitquickchoice", interactionId, "");
                     } else {
                         if (TextUtils.equals(getUserAnswer(), rightAnswer)) {
-                            submitSuccess(1);
+                            submitSuccess(1, gold);
                             liveLogInteractive("3", "2", "submitquickchoice", interactionId, "right");
                         } else {
-                            submitSuccess(2);
+                            submitSuccess(2, gold);
                             liveLogInteractive("3", "2", "submitquickchoice", interactionId, "wrong");
                         }
                     }
@@ -229,23 +243,54 @@ public class ScienceVoteBll extends LiveBaseBll implements NoticeAction, TopicAc
     }
 
 
-    public void submitSuccess(int type) {
+    public void submitSuccess(final int type, final int gold) {
+        //更新金币
+        LiveMainHandler.getMainHandler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                EventBus.getDefault().post(new UpdatePkState(TAG + ":stop"));
+            }
+        }, 1000);
+        //展示动效
         final RelativeLayout relativeLayout =
                 (RelativeLayout) LayoutInflater.from(mContext).inflate(R.layout.page_livevideo_science_vote_submit, null);
         lottieAnimationView = relativeLayout.findViewById(R.id.livevideo_science_vote_lottie);
         String resPath = "";
         String jsonPath = "";
         if (type == 0) {
-            resPath = "vote_submit_success/images";
-            jsonPath = "vote_submit_success/data.json";
+            if (gold > 0) {
+                resPath = "vote_submit_success_gold/images";
+                jsonPath = "vote_submit_success_gold/data.json";
+            } else {
+                resPath = "vote_submit_success/images";
+                jsonPath = "vote_submit_success/data.json";
+            }
         } else if (type == 1) {
-            resPath = "vote_submit_thumb_up/images";
-            jsonPath = "vote_submit_thumb_up/data.json";
+            if (gold > 0) {
+                resPath = "vote_submit_thumb_up_gold/images";
+                jsonPath = "vote_submit_thumb_up_gold/data.json";
+            } else {
+                resPath = "vote_submit_thumb_up/images";
+                jsonPath = "vote_submit_thumb_up/data.json";
+            }
         } else if (type == 2) {
-            resPath = "vote_submit_come_on/images";
-            jsonPath = "vote_submit_come_on/data.json";
+            if (gold > 0) {
+                resPath = "vote_submit_come_on_gold/images";
+                jsonPath = "vote_submit_come_on_gold/data.json";
+            } else {
+                resPath = "vote_submit_come_on/images";
+                jsonPath = "vote_submit_come_on/data.json";
+            }
         }
-        final LottieEffectInfo bubbleEffectInfo = new LottieEffectInfo(resPath, jsonPath);
+        final LottieEffectInfo bubbleEffectInfo = new LottieEffectInfo(resPath, jsonPath, "img_0.png") {
+            @Override
+            public Bitmap fetchTargetBitMap(LottieAnimationView animationView, String fileName, String bitmapId, int width, int height) {
+                if ("img_0.png".equals(fileName) && gold > 0) {
+                    return createMsgBitmap(width, height, "+" + gold);
+                }
+                return super.fetchTargetBitMap(animationView, fileName, bitmapId, width, height);
+            }
+        };
         lottieAnimationView.setAnimationFromJson(bubbleEffectInfo.getJsonStrFromAssets(mContext));
         lottieAnimationView.useHardwareAcceleration(true);
         ImageAssetDelegate imageAssetDelegate = new ImageAssetDelegate() {
@@ -305,14 +350,14 @@ public class ScienceVoteBll extends LiveBaseBll implements NoticeAction, TopicAc
                 logHashMap.put("courseid", mGetInfo.getStudentLiveInfo().getCourseId());
                 logHashMap.put("gradeid", String.valueOf(mGetInfo.getGrade()));
                 String subjects = "";
-                if (mGetInfo.getSubjectIds() != null){
+                if (mGetInfo.getSubjectIds() != null) {
                     String subjectIds[] = mGetInfo.getSubjectIds();
                     for (int i = 0; i < subjectIds.length; i++) {
                         subjects += subjectIds[i];
-                        if (i == subjectIds.length-1){
+                        if (i == subjectIds.length - 1) {
                             break;
                         }
-                        subjects +=",";
+                        subjects += ",";
                     }
                 }
                 logHashMap.put("subjectid", subjects);
@@ -333,14 +378,14 @@ public class ScienceVoteBll extends LiveBaseBll implements NoticeAction, TopicAc
                 logHashMap.put("courseid", mGetInfo.getStudentLiveInfo().getCourseId());
                 logHashMap.put("gradeid", String.valueOf(mGetInfo.getGrade()));
                 String subjects = "";
-                if (mGetInfo.getSubjectIds() != null){
+                if (mGetInfo.getSubjectIds() != null) {
                     String subjectIds[] = mGetInfo.getSubjectIds();
                     for (int i = 0; i < subjectIds.length; i++) {
                         subjects += subjectIds[i];
-                        if (i == subjectIds.length-1){
+                        if (i == subjectIds.length - 1) {
                             break;
                         }
-                        subjects +=",";
+                        subjects += ",";
                     }
                 }
                 logHashMap.put("subjectid", subjects);
@@ -351,4 +396,29 @@ public class ScienceVoteBll extends LiveBaseBll implements NoticeAction, TopicAc
             }
         }
     }
+
+    private Bitmap createMsgBitmap(int width, int height, String msg) {
+        Bitmap resultBitmap = null;
+        if (!TextUtils.isEmpty(msg)) {
+            resultBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(resultBitmap);
+            Paint paint = new Paint();
+            paint.setAntiAlias(true);
+            paint.setColor(Color.parseColor("#513C1B"));
+            paint.setTextSize(60);
+            paint.setTextAlign(Paint.Align.LEFT);
+            Typeface fontFace = FontCache.getTypeface(ContextManager.getContext(), "fangzhengcuyuan.ttf");
+            if (fontFace != null) {
+                paint.setTypeface(fontFace);
+            }
+            Rect fontRect = new Rect();
+            paint.getTextBounds(msg, 0, msg.length(), fontRect);
+            int offsetX = Math.max((width - fontRect.width()) / 2, 0);
+            Paint.FontMetricsInt fontMetricsInt = paint.getFontMetricsInt();
+            int baseLine = (height - (fontMetricsInt.descent - fontMetricsInt.ascent)) / 2 - fontMetricsInt.ascent;
+            canvas.drawText(msg, offsetX, baseLine, paint);
+        }
+        return resultBitmap;
+    }
+
 }
