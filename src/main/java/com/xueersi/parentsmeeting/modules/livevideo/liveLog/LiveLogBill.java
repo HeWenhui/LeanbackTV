@@ -17,7 +17,6 @@ import com.xueersi.common.business.UserBll;
 import com.xueersi.common.entity.LiveRemoteConfigInfo;
 import com.xueersi.common.entity.MyUserInfoEntity;
 import com.xueersi.common.http.NetUtil;
-import com.xueersi.common.logerhelper.LogBill;
 import com.xueersi.common.logerhelper.network.PingInfo;
 import com.xueersi.lib.analytics.umsagent.CommonUtil;
 import com.xueersi.lib.analytics.umsagent.DeviceInfo;

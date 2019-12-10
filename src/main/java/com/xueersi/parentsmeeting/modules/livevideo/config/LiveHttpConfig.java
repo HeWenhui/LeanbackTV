@@ -255,6 +255,16 @@ public class LiveHttpConfig {
     public final static String URL_LIVE_TUTORIAL_GOLD = LiveVideoConfig.HTTP_HOST + "/LiveTutorial/receiveGold";
     /** 公开直播领取金币 */
     public final static String URL_LIVE_LECTURE_GOLD = LiveVideoConfig.HTTP_HOST + "/LiveLecture/receiveGold";
+    /** 轻直播获取优惠券列表*/
+    public final static String URL_LIGHTLIVE_COUPON= AppConfig.HTTP_HOST_LECTUREPIE + "/exp/getCouponList";
+    /** 轻直播领取优惠券*/
+    public final static String URL_LIGHTLIVE_GET_COUPON= AppConfig.HTTP_HOST_LECTUREPIE + "/exp/stuReceiveCoupon";
+    /** 轻直播获取推荐课列表*/
+    public final static String URL_LIGHTLIVE_GET_COURSE= AppConfig.HTTP_HOST_LECTUREPIE + "/exp/getCourseList";
+    /** 轻直播获取老师或班级微信*/
+    public final static String URL_LIGHTLIVE_GET_WECHAT= AppConfig.HTTP_HOST_EXPAPI + "/operation/mobile/diversionLecture";
+    /** 轻直播获取推荐课列表*/
+    public final static String URL_LIGHTLIVE_REPORT_LOGIN= AppConfig.HTTP_HOST_LECTUREPIE + "/exp/loginReport";
     /** 直播辅导献花 */
     @Deprecated
     public final static String URL_LIVE_TUTORIAL_PRAISE_TEACHER = LiveVideoConfig.HTTP_HOST +

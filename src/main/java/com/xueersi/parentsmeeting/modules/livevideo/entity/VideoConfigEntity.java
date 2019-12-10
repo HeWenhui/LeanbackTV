@@ -1,14 +1,14 @@
 package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
 import com.xueersi.parentsmeeting.module.videoplayer.LiveLogUtils;
+import com.xueersi.parentsmeeting.module.videoplayer.media.PsIjkParameter;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 /** PSIJK使用的参数,包括打日志使用的参数 */
 public class VideoConfigEntity {
-    private long waterMark;
-    private long duration;
+    private final PsIjkParameter psIjkParameter = new PsIjkParameter();
 
     private String streamId;
 
@@ -54,22 +54,8 @@ public class VideoConfigEntity {
         this.changeLinePos = changeLinePos;
     }
 
-    public long getWaterMark() {
-        return waterMark;
-    }
-
-    public VideoConfigEntity setWaterMark(long waterMark) {
-        this.waterMark = waterMark;
-        return this;
-    }
-
-    public long getDuration() {
-        return duration;
-    }
-
-    public VideoConfigEntity setDuration(long duration) {
-        this.duration = duration;
-        return this;
+    public PsIjkParameter getPsIjkParameter() {
+        return psIjkParameter;
     }
 
     public String getUserName() {
@@ -93,8 +79,9 @@ public class VideoConfigEntity {
     public JSONObject toJSONObject() {
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("waterMark", waterMark);
-            jsonObject.put("duration", duration);
+            jsonObject.put("maxWaterMark", psIjkParameter.getMaxWaterMark());
+            jsonObject.put("minWaterMark", psIjkParameter.getMinWaterMark());
+            jsonObject.put("duration", psIjkParameter.getDuration());
             jsonObject.put("streamId", streamId);
             jsonObject.put("protocol", protocol);
             jsonObject.put("fileUrl", fileUrl);

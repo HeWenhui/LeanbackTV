@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@id/iv_lightlive_busi_red_pack_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/ll_lightlive_busi_red_pack_gold"
+        android:layout_marginRight="2dp"
+        android:layout_toLeftOf="@id/ll_lightlive_busi_red_pack_gold"
+        android:shadowRadius="3.0"
+        android:background="@drawable/livevideo_hongbao_add" />
+
+    <LinearLayout
+        android:id="@id/ll_lightlive_busi_red_pack_gold"
+        android:layout_width="wrap_content"
+        android:gravity="bottom"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="horizontal">
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@id/iv_lightlive_busi_red_pack_mei"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/ll_lightlive_busi_red_pack_gold"
+        android:layout_marginLeft="4dp"
+        android:layout_toRightOf="@id/ll_lightlive_busi_red_pack_gold"
+        android:gravity="center"
+        android:background="@drawable/livevideo_hongbao_mei" />
+
+</RelativeLayout>
