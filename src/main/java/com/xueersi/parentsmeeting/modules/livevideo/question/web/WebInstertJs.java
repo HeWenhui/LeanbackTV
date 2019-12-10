@@ -59,7 +59,7 @@ public class WebInstertJs {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
         Date date = new Date();
         final String today = dateFormat.format(date);
-        cacheDir = LiveCacheFile.geCacheFile(context, "webviewCache/" + today);
+        cacheDir = LiveCacheFile.getCacheDir(context, "webviewCache/" + today);
         if (!cacheDir.exists()) {
             cacheDir.mkdirs();
         }

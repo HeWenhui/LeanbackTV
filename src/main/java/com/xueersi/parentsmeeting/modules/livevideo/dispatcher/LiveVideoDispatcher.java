@@ -11,7 +11,6 @@ import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.entity.MyUserInfoEntity;
-import com.xueersi.common.route.XueErSiRouter;
 import com.xueersi.common.route.module.moduleInterface.AbsDispatcher;
 import com.xueersi.common.route.module.startParam.ParamKey;
 import com.xueersi.common.sharedata.ShareDataManager;
@@ -21,14 +20,12 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEnt
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoSectionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.LiveVideoEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoLoadActivity;
-import com.xueersi.parentsmeeting.modules.livevideo.config.BigLiveCfg;
+import com.xueersi.parentsmeeting.share.business.biglive.config.BigLiveCfg;
 import com.xueersi.parentsmeeting.modules.livevideo.englishname.business.EnglishNameBusiness;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.BigLivePlayBackEntity;
 import com.xueersi.ui.dataload.DataLoadEntity;
 
 import org.json.JSONObject;
-
-import ren.yale.android.cachewebviewlib.config.CacheConfig;
 
 import static com.xueersi.common.sharedata.ShareDataManager.SHAREDATA_USER;
 
@@ -181,7 +178,7 @@ public class LiveVideoDispatcher extends AbsDispatcher {
     }
 
     private void startAudit() {
-        LiveVideoEnter.intentToAuditClassActivity(activity, vStuCourseId, planId);
+        LiveVideoEnter.intentToAuditClassActivity(activity, vStuCourseId, planId,planVersion != DispatcherConfig.BIGLIVE_GRAY_CONTROL_PLANVERSION_COMMON);
     }
 
     private void startExp() {
@@ -427,6 +424,10 @@ public class LiveVideoDispatcher extends AbsDispatcher {
         //大班整合默认 走新ijk
         MediaPlayer.setIsNewIJK(true);
         updatePsInfo(entity);
+        if(entity.getConfigs() != null){
+            videoEntity.setProtocol(entity.getConfigs().getProtocol());
+            videoEntity.setFileId(entity.getConfigs().getFileId());
+        }
         Bundle bundle = new Bundle();
         bundle.putSerializable("videoliveplayback", videoEntity);
         bundle.putInt("type", 2);
@@ -486,6 +487,10 @@ public class LiveVideoDispatcher extends AbsDispatcher {
         //大班整合默认 走新ijk
         MediaPlayer.setIsNewIJK(true);
         updatePsInfo(entity);
+        if(entity.getConfigs() != null){
+            videoEntity.setProtocol(entity.getConfigs().getProtocol());
+            videoEntity.setFileId(entity.getConfigs().getFileId());
+        }
         Bundle bundle = new Bundle();
         bundle.putSerializable("videoliveplayback", videoEntity);
         bundle.putInt("type", LocalCourseConfig.LIVETYPE_LIVE);

@@ -20,6 +20,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView;
 
@@ -90,6 +91,7 @@ public class ScienceVotePager extends BasePager implements View.OnClickListener 
             }
         } catch (Exception e) {
             e.printStackTrace();
+            LiveCrashReport.postCatchedException(TAG, e);
         }
     }
 

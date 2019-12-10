@@ -134,8 +134,7 @@ public class LiveVideoEnter {
      * @param from       入口
      */
     @Deprecated
-    public static boolean intentToLiveVideoActivity(Activity context, String courseId,
-                                                    String vSectionID, int from) {
+    public static boolean intentToLiveVideoActivity(Activity context, String courseId, String vSectionID, int from) {
 
         if (TextUtils.isEmpty(vSectionID)) {
             Toast.makeText(context, "直播场次不能为空", Toast.LENGTH_SHORT).show();
@@ -157,10 +156,8 @@ public class LiveVideoEnter {
      * @param vSectionID 节id
      * @param from       入口
      */
-    public static boolean intentToLiveVideoActivity(final Activity context,
-                                                    final String vStuCourseID, final String
-                                                            courseId, final String vSectionID,
-                                                    final int from, boolean isBigLive) {
+    public static boolean intentToLiveVideoActivity(final Activity context, final String vStuCourseID, final String
+            courseId, final String vSectionID, final int from, boolean isBigLive) {
 
         if (TextUtils.isEmpty(vSectionID)) {
             Toast.makeText(context, "直播场次不能为空", Toast.LENGTH_SHORT).show();
@@ -187,9 +184,7 @@ public class LiveVideoEnter {
      * @param context
      * @param vSectionID
      */
-    public static boolean intentToAuditClassActivity(final Activity context,
-                                                     final String stuCouId,
-                                                     final String vSectionID) {
+    public static boolean intentToAuditClassActivity(final Activity context, final String stuCouId, final String vSectionID, final boolean isBigLive) {
 
         //低端机设备检测页拦截
         if (ShareDataManager.getInstance().getBoolean(ShareBusinessConfig
@@ -208,7 +203,7 @@ public class LiveVideoEnter {
 
             @Override
             public void success() {
-                AuditClassLiveActivity.intentTo(context, stuCouId, vSectionID);
+                AuditClassLiveActivity.intentTo(context, stuCouId, vSectionID,isBigLive);
             }
 
             @Override
@@ -233,8 +228,7 @@ public class LiveVideoEnter {
      * @param vSectionID 节id
      * @param from       入口
      */
-    public static void intentToLiveVideoActivityLecture(final Activity context,
-                                                        final String vSectionID,
+    public static void intentToLiveVideoActivityLecture(final Activity context, final String vSectionID,
                                                         final int from, final boolean isBiglive) {
         if (TextUtils.isEmpty(vSectionID)) {
             Toast.makeText(context, "直播场次不能为空", Toast.LENGTH_SHORT).show();
@@ -257,10 +251,8 @@ public class LiveVideoEnter {
                 bundle.putInt("type", LiveVideoConfig.LIVE_TYPE_LECTURE);
                 bundle.putBoolean("loadAsserts", true);
                 bundle.putInt(ENTER_ROOM_FROM, from);
-                //        LectureLiveVideoActivity.intentTo(context, bundle,
-                //        LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
-                LiveVideoLoadActivity.intentTo(context, bundle,
-                        LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
+                //        LectureLiveVideoActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
+                LiveVideoLoadActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
             }
 
             @Override
@@ -284,8 +276,7 @@ public class LiveVideoEnter {
      * @param vSectionID 节id
      * @param from       入口
      */
-    public static void intentToLiveVideoActivityLecture(final Activity context,
-                                                        final String vSectionID,
+    public static void intentToLiveVideoActivityLecture(final Activity context, final String vSectionID,
                                                         final int from) {
         if (TextUtils.isEmpty(vSectionID)) {
             Toast.makeText(context, "直播场次不能为空", Toast.LENGTH_SHORT).show();
@@ -307,10 +298,8 @@ public class LiveVideoEnter {
                 bundle.putInt("type", LiveVideoConfig.LIVE_TYPE_LECTURE);
                 bundle.putBoolean("loadAsserts", true);
                 bundle.putInt(ENTER_ROOM_FROM, from);
-                //        LectureLiveVideoActivity.intentTo(context, bundle,
-                //        LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
-                LiveVideoLoadActivity.intentTo(context, bundle,
-                        LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
+                //        LectureLiveVideoActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
+                LiveVideoLoadActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
             }
 
             @Override
@@ -336,9 +325,7 @@ public class LiveVideoEnter {
      * @param from          入口
      */
     @Deprecated
-    public static void intentToLiveVideoActivityTutorial(final Activity context,
-                                                         final String vSectionID,
-                                                         final String currentDutyId,
+    public static void intentToLiveVideoActivityTutorial(final Activity context, final String vSectionID, final String currentDutyId,
                                                          final int from) {
         if (TextUtils.isEmpty(vSectionID)) {
             Toast.makeText(context, "节id不能为空", Toast.LENGTH_SHORT).show();
@@ -364,8 +351,7 @@ public class LiveVideoEnter {
                 bundle.putString("currentDutyId", currentDutyId);
                 bundle.putInt("type", LiveVideoConfig.LIVE_TYPE_TUTORIAL);
                 bundle.putInt(ENTER_ROOM_FROM, from);
-                LiveVideoLoadActivity.intentTo(context, bundle,
-                        LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
+                LiveVideoLoadActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
 
             }
 
@@ -468,8 +454,7 @@ public class LiveVideoEnter {
      * @param context
      * @param bundle
      */
-    public static boolean intentTo(final Activity context, final Bundle bundle,
-                                   final String where) {
+    public static boolean intentTo(final Activity context, final Bundle bundle, final String where) {
 
         int pattern = bundle.getInt("pattern", 1);
         if (ShareDataManager.getInstance().getBoolean(ShareBusinessConfig
@@ -594,8 +579,7 @@ public class LiveVideoEnter {
                 });
 //                StableLogHashMap logHashMap = new StableLogHashMap("init_back");
 //                logHashMap.put("status", "" + init);
-//                UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LogConfig
-//                .LIVE_X5_LOG, logHashMap.getData());
+//                UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LogConfig.LIVE_X5_LOG, logHashMap.getData());
                 if (!init) {
                     return;
                 }
@@ -620,13 +604,10 @@ public class LiveVideoEnter {
      * @param context
      * @param bundle
      */
-    public static boolean intentToExperience(final Activity context, final Bundle bundle,
-                                             final String where) {
+    public static boolean intentToExperience(final Activity context, final Bundle bundle, final String where) {
 //        ExperEnter.intentToExperience(context, bundle, where);
-        ReflexCenter.invokeMethodWithParams("com.xueersi.parentsmeeting.modules.livevideo.enter" +
-                        ".ExperEnter",
-                "intentToExperience", new Class[]{Activity.class, Bundle.class, String.class},
-                new Object[]{context, bundle, where});
+        ReflexCenter.invokeMethodWithParams("com.xueersi.parentsmeeting.modules.livevideo.enter.ExperEnter",
+                "intentToExperience", new Class[]{Activity.class, Bundle.class, String.class}, new Object[]{context, bundle, where});
         return true;
     }
 

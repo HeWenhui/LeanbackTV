@@ -14,6 +14,7 @@ import com.xueersi.lib.framework.utils.JsonUtil;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveEnvironment;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.NewTalkConfEntity;
@@ -39,7 +40,7 @@ import static com.tal100.chatsdk.PMDefs.MessagePriority.MSG_PRIORITY_PRI;
  * @author linyuqiang
  */
 public class NewAuditIRCMessage implements IAuditIRCMessage {
-    private String TAG = "AuditIRCMessage";
+    private String TAG = "NewAuditIRCMessage";
     protected Logger logger = LoggerFactory.getLogger(TAG);
     String eventid = LiveVideoConfig.LIVE_LISTEN;
     private int mConnectCount = 0, mDisconnectCount = 0;
@@ -67,10 +68,9 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
     long enterTime;
 
     boolean onUserList = false;
-    Context context = ContextManager.getContext();
     ChatClient mChatClient;
     Context mContext;
-    File workSpaceDir = new File(context.getCacheDir(), "irc/workspace");
+    File workSpaceDir;
     private String liveId;
     private String classId;
     private List<String> roomid;
@@ -81,14 +81,14 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
     private long[] preMsgId = new long[]{0};
     private HashMap<Long, String> msgMap = new HashMap<>();
 
-    public NewAuditIRCMessage(Context context, String nickname, String liveId, String classId, String channel) {
+    public NewAuditIRCMessage(LiveEnvironment liveEnvironment, String nickname, String liveId, String classId, String channel) {
         this.mChannel = channel;
         this.mNickname = nickname;
         this.liveId = liveId;
         this.classId = classId;
-        mContext = context;
-        mLogtf = new LogToFile(TAG);
-        mLogtf.clear();
+        mContext = liveEnvironment.getActivity();
+        workSpaceDir = new File(mContext.getCacheDir(), "irc/workspace");
+        mLogtf = liveEnvironment.createLogToFile(TAG);
         mLogtf.d("AuditIRCMessage:channel=" + channel + ",nickname=" + nickname);
         enterTime = System.currentTimeMillis();
     }
@@ -249,7 +249,7 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
                                             mHandler.removeCallbacks(startVideoRun);
                                         } else {
                                             if ("publishFail".equals(status)) {
-                                                msg = "推流失败";
+                                                msg = "学生网络异常";
                                             } else if ("forbidden".equals(status)) {
                                                 msg = "摄像头已禁用";
                                             } else if ("disconnect".equals(status)) {
@@ -344,6 +344,11 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
             logger.i("ircsdk onSendPeerMessageResponse");
             logger.i("ircsdk onSendPeerMessageResponse code" + sendPeerMessageResp.code);
             logger.i("ircsdk onSendPeerMessageResponse info" + sendPeerMessageResp.info);
+            PMDefs.PsIdEntity toUserInfo = sendPeerMessageResp.toUserInfo;
+            if (toUserInfo != null) {
+                logger.i("ircsdk onSendPeerMessageResponse:toUserInfo=" + toUserInfo.nickname);
+            }
+
             String msg = "";
 
             //本地消息号
@@ -369,6 +374,7 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
 
     private IRoomChatListener mRoomListener = new IRoomChatListener() {
         private List<PMDefs.PsIdEntity> userLists;
+
         /**
          * 本人进入聊天室回调响应
          * @param joinRoomResp
@@ -674,12 +680,12 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
         logHashMap.put("PsAppClientKey", appkey);
         logHashMap.put("PsImId", psimId);
         logHashMap.put("PsImPwd", psimKey);
-        logHashMap.put("infocode",""+infocode);
-        logHashMap.put("nickname",liveInfo.nickname);
-        logHashMap.put("classId",liveInfo.classId);
-        logHashMap.put("businessId",liveInfo.businessId);
-        logHashMap.put("location",liveInfo.location);
-        logHashMap.put("liveId",liveInfo.liveId);
+        logHashMap.put("infocode", "" + infocode);
+        logHashMap.put("nickname", liveInfo.nickname);
+        logHashMap.put("classId", liveInfo.classId);
+        logHashMap.put("businessId", liveInfo.businessId);
+        logHashMap.put("location", liveInfo.location);
+        logHashMap.put("liveId", liveInfo.liveId);
         logHashMap.put("workspace", workSpaceDir.getAbsolutePath());
         logHashMap.put("time", "" + System.currentTimeMillis());
         logHashMap.put("userid", LiveAppUserInfo.getInstance().getStuId());

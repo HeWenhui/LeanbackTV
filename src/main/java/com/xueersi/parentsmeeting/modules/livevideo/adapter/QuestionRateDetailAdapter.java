@@ -24,11 +24,13 @@ public class QuestionRateDetailAdapter extends BaseAdapter {
     List<UserScoreEntity> lstUserScore;
     // 上下文
     Context mContext;
+    boolean isBigLive;
 
     public QuestionRateDetailAdapter(Context context, List<UserScoreEntity>
-            lstUserScore) {
+            lstUserScore, boolean isBigLive) {
         mContext = context;
         this.lstUserScore = lstUserScore;
+        this.isBigLive = isBigLive;
     }
 
     @Override
@@ -63,13 +65,22 @@ public class QuestionRateDetailAdapter extends BaseAdapter {
     }
 
     private void setData(UserScoreEntity entity, Holder holder) {
-        holder.tvQuestionIndex.setText(entity.getQuestionId()+"");
-        holder.tvQuestionStatus.setText(entity.getQuestionStatusText());
-        int color = mContext.getResources().getColor(R.color.COLOR_20ABFF);;
-        if (entity.getQuestionStatus() == AuditRoomConfig.QUESTION_WRONG) {
-             color = mContext.getResources().getColor(R.color.COLOR_FF4343);
-        } else if (entity.getQuestionStatus() == AuditRoomConfig.QUESTION_RIGHT) {
-             color = mContext.getResources().getColor(R.color.COLOR_6AC00B);
+        holder.tvQuestionIndex.setText(entity.getQuestionId() + "");
+        int color = mContext.getResources().getColor(R.color.COLOR_20ABFF);
+        if (isBigLive) {
+            holder.tvQuestionStatus.setText(entity.getBigQuestionStatusText());
+            if (entity.getQuestionStatus() == AuditRoomConfig.QUESTION_BIG_WRONG) {
+                color = mContext.getResources().getColor(R.color.COLOR_FF4343);
+            } else if (entity.getQuestionStatus() == AuditRoomConfig.QUESTION_BIG_RIGHT) {
+                color = mContext.getResources().getColor(R.color.COLOR_6AC00B);
+            }
+        } else {
+            holder.tvQuestionStatus.setText(entity.getQuestionStatusText());
+            if (entity.getQuestionStatus() == AuditRoomConfig.QUESTION_WRONG) {
+                color = mContext.getResources().getColor(R.color.COLOR_FF4343);
+            } else if (entity.getQuestionStatus() == AuditRoomConfig.QUESTION_RIGHT) {
+                color = mContext.getResources().getColor(R.color.COLOR_6AC00B);
+            }
         }
         holder.tvQuestionIndex.setTextColor(color);
     }

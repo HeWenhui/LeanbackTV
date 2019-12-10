@@ -15,7 +15,8 @@ import java.io.File;
  */
 public class LiveCacheFile {
 
-    public static File geCacheFile(Context context, String cache) {
+    /** 获得缓存目录，会创建 */
+    public static File getCacheDir(Context context, String cache) {
         File alldir;
         String msg = "";
         File cacheDir = context.getExternalCacheDir();
@@ -47,6 +48,11 @@ public class LiveCacheFile {
             UmsAgentManager.umsAgentDebug(context, LogConfig.LIVE_CACHE_FILE, logHashMap.getData());
         }
         return alldir;
+    }
+
+    @Deprecated
+    public static File geCacheFile(Context context, String cache) {
+        return getCacheDir(context, cache);
     }
 
     public static File geFileDir(Context context, String cache) {

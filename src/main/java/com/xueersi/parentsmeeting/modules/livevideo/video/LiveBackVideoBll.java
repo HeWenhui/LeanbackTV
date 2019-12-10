@@ -14,6 +14,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.StandExperienceVideoBll;
+import com.xueersi.parentsmeeting.modules.livevideo.liveLog.LiveLogBill;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.utils.LiveBackVideoPlayerUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveBackPlayerFragment;
@@ -35,17 +36,25 @@ public class LiveBackVideoBll {
     private String TAG = "LiveBackVideoBll";
     private Logger logger = LiveLoggerFactory.getLogger(TAG);
     private Activity activity;
-    /** 视频节对象 */
+    /**
+     * 视频节对象
+     */
     private VideoLivePlayBackEntity mVideoEntity;
     private LiveBackPlayerFragment liveBackPlayVideoFragment;
-    /** 节名称 */
+    /**
+     * 节名称
+     */
     private String mSectionName;
     private static int index = 0;
     private ArrayList<String> mWebPaths = new ArrayList<>();
-    /** 播放器核心服务 */
+    /**
+     * 播放器核心服务
+     */
     protected PlayerService vPlayer;
     private String mUri = "";
-    /** 进度缓存的追加KEY值 */
+    /**
+     * 进度缓存的追加KEY值
+     */
     protected String mShareKey = "LiveBack";
     private boolean playbackComplete = false;
     private boolean islocal;
@@ -93,6 +102,9 @@ public class LiveBackVideoBll {
             // 播放视频
             String mWebPath = mVideoEntity.getVideoPath();
             mWebPaths.add(mWebPath);
+        }
+        if (mVideoEntity != null) {//卡顿后设置日志需要的liveid
+            LiveLogBill.getInstance().setLiveId(mVideoEntity.getLiveId());
         }
     }
 
@@ -158,7 +170,13 @@ public class LiveBackVideoBll {
 
             String videoPath = LiveBackVideoPlayerUtils.handleBackVideoPath(mVideoEntity.getVideoPath());
             if (!islocal) {
-                liveBackPlayVideoFragment.playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
+                int protocol = mVideoEntity.getProtocol();
+                if (protocol == MediaPlayer.VIDEO_PROTOCOL_M3U8) {
+                    videoPath = mVideoEntity.getFileId();
+                } else {
+                    protocol = MediaPlayer.VIDEO_PROTOCOL_MP4;
+                }
+                liveBackPlayVideoFragment.playPSVideo(videoPath, protocol);
             } else {
                 liveBackPlayVideoFragment.playPSFile(videoPath, (int) getStartPosition());
             }
@@ -179,7 +197,9 @@ public class LiveBackVideoBll {
         }
     }
 
-    /** 取出当前播放视频上次播放的点位 */
+    /**
+     * 取出当前播放视频上次播放的点位
+     */
     public long getStartPosition() {
         // if (mStartPos <= 0.0f || mStartPos >= 1.0f)
         try {
@@ -245,6 +265,12 @@ public class LiveBackVideoBll {
         @Override
         public void onSeekComplete() {
             super.onSeekComplete();
+        }
+
+        @Override
+        public void onBufferStart() {
+            super.onBufferStart();
+
         }
 
         @Override

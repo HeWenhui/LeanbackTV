@@ -13,6 +13,7 @@ import com.xueersi.lib.analytics.umsagent.UmsAgentTrayPreference;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
+import com.xueersi.parentsmeeting.module.videoplayer.media.PsIjkParameter;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.AimRealTimeValEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEnergyBonusEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEntity;
@@ -318,12 +319,23 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         try {
             LiveGetInfo getInfo = new LiveGetInfo(liveTopic);
             getInfo.setCreatTime(SystemClock.elapsedRealtime());
-
-            VideoConfigEntity videoConfigEntity = new VideoConfigEntity();
-
-            videoConfigEntity.setDuration(data.optLong("duration"));
-            videoConfigEntity.setWaterMark(data.optLong("waterMark"));
-            getInfo.setVideoConfigEntity(videoConfigEntity);
+            try {
+                VideoConfigEntity videoConfigEntity = new VideoConfigEntity();
+                //追播参数
+                PsIjkParameter psIjkParameter = videoConfigEntity.getPsIjkParameter();
+                if (data.has("maxWaterMark") && data.has("minWaterMark")) {
+                    psIjkParameter.setDuration(data.getLong("duration"));
+                    psIjkParameter.setMaxWaterMark(data.getLong("maxWaterMark"));
+                    psIjkParameter.setMinWaterMark(data.getLong("minWaterMark"));
+                } else {
+                    psIjkParameter.setDuration(data.getLong("duration"));
+                    psIjkParameter.setMaxWaterMark(data.getLong("waterMark"));
+                    psIjkParameter.setMinWaterMark(psIjkParameter.getMaxWaterMark());
+                }
+                getInfo.setVideoConfigEntity(videoConfigEntity);
+            } catch (Exception e) {
+                LiveCrashReport.postCatchedException(TAG, e);
+            }
 //            MediaPlayer.getIsNewIJK() = "1".equals(data.optString("isNewSDK")) && "1".equals(data.optString("isNewIRC"));
 //            MediaPlayer.getIsNewIJK() = true;
             MediaPlayer.setIsNewIJK(true);

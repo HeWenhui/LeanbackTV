@@ -116,17 +116,23 @@ public class StaticWeb {
 
     public void sendToCourseware(final JSONObject type, String data,String coursewareType) {
         final int old = CALL_TIMES;
-        if(TextUtils.equals("2",coursewareType)){
-            wvSubjectWeb.loadUrl("javascript:transmitToCourseware(" + type + ",'" + data + "')");
-        }else {
+        if (TextUtils.isEmpty(coursewareType) || TextUtils.equals("0", coursewareType) || TextUtils.equals("1", coursewareType)) {
             wvSubjectWeb.loadUrl("javascript:sendToCourseware(" + type + ",'" + data + "')");
+            wvSubjectWeb.post(new Runnable() {
+                @Override
+                public void run() {
+                    logToFile.d("sendToCourseware:type=" + type + ",old=" + old + ",times=" + CALL_TIMES);
+                }
+            });
+        } else {
+            wvSubjectWeb.loadUrl("javascript:transmitToCourseware(" + type + ",'" + data + "')");
+            wvSubjectWeb.post(new Runnable() {
+                @Override
+                public void run() {
+                    logToFile.d("transmitToCourseware:type=" + type + ",old=" + old + ",times=" + CALL_TIMES);
+                }
+            });
         }
-        wvSubjectWeb.post(new Runnable() {
-            @Override
-            public void run() {
-                logToFile.d("sendToCourseware:type=" + type + ",old=" + old + ",times=" + CALL_TIMES);
-            }
-        });
     }
 
     /**直接使用对象调用。日志更全*/
@@ -147,17 +153,23 @@ public class StaticWeb {
     public static void sendToCourseware(final WebView wvSubjectWeb, final JSONObject type, String data,String coursewareType) {
         final LogToFile logToFile = new LogToFile(wvSubjectWeb.getContext(), TAG);
         final int old = CALL_TIMES;
-        if(TextUtils.equals("2",coursewareType)){
-            wvSubjectWeb.loadUrl("javascript:transmitToCourseware(" + type + ",'" + data + "')");
-        }else {
+        if (TextUtils.isEmpty(coursewareType) || TextUtils.equals("0", coursewareType) || TextUtils.equals("1", coursewareType)) {
             wvSubjectWeb.loadUrl("javascript:sendToCourseware(" + type + ",'" + data + "')");
+            wvSubjectWeb.post(new Runnable() {
+                @Override
+                public void run() {
+                    logToFile.d("sendToCourseware:type=" + type + ",old=" + old + ",times=" + CALL_TIMES);
+                }
+            });
+        } else {
+            wvSubjectWeb.loadUrl("javascript:transmitToCourseware(" + type + ",'" + data + "')");
+            wvSubjectWeb.post(new Runnable() {
+                @Override
+                public void run() {
+                    logToFile.d("transmitToCourseware:type=" + type + ",old=" + old + ",times=" + CALL_TIMES);
+                }
+            });
         }
-        wvSubjectWeb.post(new Runnable() {
-            @Override
-            public void run() {
-                logToFile.d("sendToCourseware:type=" + type + ",old=" + old + ",times=" + CALL_TIMES);
-            }
-        });
     }
 
     public void testCourseware() {
