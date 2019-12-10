@@ -107,6 +107,17 @@ public class UserScoreEntity {
         return "错误";
     }
 
+    public String getBigQuestionStatusText() {
+        if (questionStatus == AuditRoomConfig.QUESTION_BIG_WRONG) {
+            return "错误";
+        } else if (questionStatus == AuditRoomConfig.QUESTION_BIG_RIGHT) {
+            return "正确";
+        } else if (questionStatus == AuditRoomConfig.QUESTION_BIG_HALF_RIGHT) {
+            return "半对";
+        }
+        return "错误";
+    }
+
     public boolean isMyScore() {
         return isMyScore;
     }

@@ -10,6 +10,14 @@ public class AuditRoomConfig {
     public final static int QUESTION_RIGHT = 1;
     /** 互动题-半对 */
     public final static int QUESTION_HALF_RIGHT = 2;
+
+    /** 互动题-正确 */
+    public final static int QUESTION_BIG_RIGHT = 1;
+    /** 互动题-错误 */
+    public final static int QUESTION_BIG_WRONG = 2;
+    /** 互动题-半对 */
+    public final static int QUESTION_BIG_HALF_RIGHT = 3;
+
     /** 我的排名 */
     public final static int RATE_MY = 1;
     /** 小组排名 */
@@ -22,6 +30,8 @@ public class AuditRoomConfig {
     public final static int LIVE_COURSE_NONE = 0;
     /** 旁听课堂数据-理科 */
     public final static String URL_LIVE_COURSE_LIVE_DETAIL_A = AppConfig.HTTP_HOST + "/" + ShareBusinessConfig.LIVE_LIBARTS + "/LiveCourse/getLiveDetailData";
+    /** 旁听课堂数据-大班 */
+    public final static String URL_LIVE_COURSE_LIVE_DETAIL_BIG = LiveIntegratedCfg.HTTP_HOST + "/v1/student/audit/getLiveDetailData";
     /** 旁听课堂数据-文科 */
     public final static String URL_LIVE_COURSE_LIVE_DETAIL_S = AppConfig.HTTP_HOST + "/" + ShareBusinessConfig.LIVE_SCIENCE + "/LiveCourse/getLiveDetailData";
     /** 是否有旁听课堂数据 */

@@ -338,4 +338,8 @@ public interface XESCODE {
     int GROUPCLASS_VIDEO_ROLL_CALL_START = -10004;
     /** 英语1v2 视频态 打开*/
     int GROUPCLASS_VIDEO_ROLL_CALL_END = -10005;
+
+
+    /**大班整合切换主辅 模式**/
+    int LIVE_BUSINESS_MODE_CHANGE = 102;
 }

@@ -1,11 +1,12 @@
 package com.xueersi.parentsmeeting.modules.livevideo.core;
 
+import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseBll;
@@ -18,6 +19,7 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsConstants;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.JsonUtil;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.XESToastUtils;
@@ -25,7 +27,6 @@ import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoLoadActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IIRCMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCCallback;
@@ -42,7 +43,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.LivePlu
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LiveModuleConfigInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LivePlugin;
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LivePluginRequestParam;
-import com.xueersi.parentsmeeting.modules.livevideo.config.BigLiveCfg;
+import com.xueersi.parentsmeeting.share.business.biglive.config.BigLiveCfg;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveActivityState;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveCoreConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -64,14 +65,13 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveVideoBll;
-import com.xueersi.parentsmeeting.modules.livevideo.video.SampleLiveVPlayerListener;
 import com.xueersi.parentsmeeting.modules.livevideo.video.TeacherIsPresent;
-import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VPlayerListenerReg;
+import com.xueersi.ui.dialog.ConfirmAlertDialog;
+import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -81,8 +81,6 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import okhttp3.Call;
 
 import static com.xueersi.common.sharedata.ShareDataManager.SHAREDATA_NOT_CLEAR;
 
@@ -580,18 +578,23 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                     getInfo.getSubjectIds()[0] : "";
             mHttpManager.addHeaderParams("switch-subject", subjectId);
             mHttpManager.addHeaderParams("bizId", mLiveType + "");
+            mHttpManager.addHeaderParams("planId",getInfo.getId());
             mHttpManager.addHeaderParams("SESSIONID", AppBll.getInstance().getLiveSessionId());
             //Log.e("ckTrac","====>LiveBll2_initBigLiveRoom:"+ AppBll.getInstance().getLiveSessionId());
             String classId = getInfo.getStudentLiveInfo() != null ? getInfo.getStudentLiveInfo().getClassId() : "0";
+            String teamId = getInfo.getStudentLiveInfo() != null ?getInfo.getStudentLiveInfo().getTeamId() : "0";
+            int iTeamId = 0;
             int iClassId = 0;
             try {
                 iClassId = Integer.parseInt(classId);
+                iTeamId = Integer.parseInt(teamId);
             } catch (Exception e) {
                 e.printStackTrace();
             }
             String strStuCouId = TextUtils.isEmpty(mStuCouId) ? "" : mStuCouId;
             mHttpManager.addBusinessParams("stuCouId", strStuCouId);
             mHttpManager.addBusinessParams("classId", iClassId);
+            mHttpManager.addBusinessParams("teamId",iTeamId);
             mHttpManager.addBusinessParams("isPlayback", 0);
         }
         if (liveLog != null) {
@@ -1291,7 +1294,12 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
             try {
                 JSONObject object = new JSONObject(notice);
                 int mtype = object.getInt("type");
-                com.xueersi.lib.log.Loger.e("LiveBll2", "=======>onNotice:" + mtype + ":" + this);
+                com.xueersi.lib.log.Loger.e("LiveBll2", "=======>onNotice:" + mtype + ":" + object.toString());
+
+                if (XESCODE.LIVE_BUSINESS_MODE_CHANGE == mtype) {
+                    String mode = object.getString("mode");
+                    onTeacherMode(mode);
+                }
 
                 List<NoticeAction> noticeActions = mNoticeActionMap.get(mtype);
                 if (noticeActions != null && noticeActions.size() > 0) {
@@ -1338,36 +1346,10 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                 LiveTopic liveTopic = mBigLiveHttpParser.parseBigLiveTopic(mLiveTopic, jsonObject, mLiveType);
                 boolean teacherModeChanged = !mLiveTopic.getMode().equals(liveTopic.getMode());
                 ////直播相关//////
-               /* if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
+                if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
                     //模式切换
-                    if (!(mLiveTopic.getMode().equals(liveTopic.getMode()))) {
-                        String oldMode = mLiveTopic.getMode();
-                        mLiveTopic.setMode(liveTopic.getMode());
-                        // Loger.d("___channel: "+channel+"  mode: "+liveTopic.getMode()+"  topic:  "+topicstr);
-                        mGetInfo.setMode(liveTopic.getMode());
-                        boolean isPresent = isPresent(mLiveTopic.getMode());
-                        if (mVideoAction != null) {
-                            mVideoAction.onModeChange(mLiveTopic.getMode(), isPresent);
-                            mLogtf.d(SysLogLable.switchLiveMode, "onTopic:mode=" + liveTopic.getMode() + ",isPresent" +
-                                    "=" + isPresent);
-                        }
-                        if (mIRCMessage != null) {
-                            mIRCMessage.modeChange(mLiveTopic.getMode());
-                        }
-                        liveVideoBll.onModeChange(mLiveTopic.getMode(), isPresent);
-                        for (int i = 0; i < businessBlls.size(); i++) {
-                            businessBlls.get(i).onModeChange(oldMode, mLiveTopic.getMode(), isPresent);
-                        }
-                    }
-
-                    if (mVideoAction != null) {
-                        if (LiveTopic.MODE_TRANING.equals(mLiveTopic.getMode())) {
-                            if (mGetInfo.getStudentLiveInfo().isExpe()) {
-                                mVideoAction.onTeacherNotPresent(true);
-                            }
-                        }
-                    }
-                }*/
+                    onTeacherMode(liveTopic.getMode());
+                }
                 //////////////
                 if (teacherModeChanged) {
                     mLiveTopic.setMode(liveTopic.getMode());
@@ -1399,6 +1381,43 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
             }
         }
     }
+
+
+    /**
+     * 老师模式变换
+     * @param mode
+     */
+    private void onTeacherMode(String mode) {
+        try {
+            com.xueersi.lib.log.Loger.e("LiveBll2", "=======>onTeacherMode11111:");
+            if (!(mLiveTopic.getMode().equals(mode))) {
+                com.xueersi.lib.log.Loger.e("LiveBll2", "=======>onTeacherMode2222:");
+                String oldMode = mLiveTopic.getMode();
+                mLiveTopic.setMode(mode);
+                mGetInfo.setMode(mode);
+                boolean isPresent = isPresent(mode);
+                if (mVideoAction != null) {
+                    mVideoAction.onModeChange(mode, isPresent);
+                    mLogtf.d(SysLogLable.switchLiveMode, "onNotice:mode=" + mode + ",isPresent=" + isPresent);
+                    if (!isPresent) {
+                        mVideoAction.onTeacherNotPresent(true);
+                    }
+                }
+                if (mIRCMessage != null) {
+                    mIRCMessage.modeChange(mLiveTopic.getMode());
+                }
+                liveVideoBll.onModeChange(mode, isPresent);
+                for (int i = 0; i < businessBlls.size(); i++) {
+                    businessBlls.get(i).onModeChange(oldMode, mode, isPresent);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+        }
+    }
+
+
 
 
     /**
@@ -1879,6 +1898,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
     }
 
 
+    boolean initModeRetried;
     public void grayBusinessControl() {
         if (grayControl != null && mGetInfo != null) {
             LivePluginRequestParam param = new LivePluginRequestParam();
@@ -1897,7 +1917,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
      *
      * @param callBack
      */
-    public void getLivePluingConfigInfo(LivePluginRequestParam param, final AbstractBusinessDataCallBack callBack) {
+    public void getLivePluingConfigInfo(final LivePluginRequestParam param, final AbstractBusinessDataCallBack callBack) {
         mLivePluginRequestParam = param;
 
         mHttpManager.getLivePluginConfigInfo(param, new HttpCallBack(false) {
@@ -1930,19 +1950,43 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
             @Override
             public void onPmFailure(Throwable error, String msg) {
                 //super.onPmFailure(error, msg);
+                onInitModeFail(param, callBack);
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 //super.onPmError(responseEntity);
+                onInitModeFail(param, callBack);
             }
-
-            @Override
-            public void onFailure(Call call, IOException e) {
-                //super.onFailure(call, e);
-            }
-
         });
+    }
+
+    /**
+     * initMode 接口失败重试
+     * @param param
+     * @param callBack
+     */
+    private void onInitModeFail(LivePluginRequestParam param, AbstractBusinessDataCallBack callBack) {
+        if (!initModeRetried) {
+            initModeRetried = true;
+            getLivePluingConfigInfo(param, callBack);
+        } else {
+            ConfirmAlertDialog cancelDialog = new ConfirmAlertDialog(mContext,
+                    ContextManager.getApplication(), false,
+                    VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
+            cancelDialog.setVerifyBtnListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(mContext!= null && mContext instanceof Activity){
+                        ((Activity)mContext).finish();
+                    }
+                }
+            });
+            cancelDialog.setDarkStyle();
+            cancelDialog.setCancelShowText("继续看课").setVerifyShowText("退出直播间")
+                    .initInfo("学习互动模块初始化失败，学习互动功能将无法使用，请退出重进",
+                    VerifyCancelAlertDialog.TITLE_MESSAGE_VERIRY_CANCEL_TYPE).showDialog();
+        }
     }
 
 

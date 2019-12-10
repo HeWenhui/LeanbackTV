@@ -17,7 +17,6 @@ public class XesAtomicInteger {
 
     public XesAtomicInteger(int count) {
         atomicInteger = new AtomicInteger(count);
-        logToFile = new LogToFile(TAG);
     }
 
     public void setContext(Context context) {
@@ -42,7 +41,9 @@ public class XesAtomicInteger {
      */
     public final void set(int newValue, Exception e) {
         if (newValue <= 0) {
-            logToFile.e("set:newValue=" + newValue, e);
+            if (logToFile != null) {
+                logToFile.e("set:newValue=" + newValue, e);
+            }
             newValue = 1;
             if (!small) {
                 small = true;
