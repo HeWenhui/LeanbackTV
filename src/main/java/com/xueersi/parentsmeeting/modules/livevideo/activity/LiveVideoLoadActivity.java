@@ -30,13 +30,11 @@ import com.xueersi.parentsmeeting.modules.livevideo.LiveAssetsLoadUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.CoursewarePreload;
 import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.PreloadStaticStorage;
 import com.xueersi.parentsmeeting.modules.livevideo.config.BigLiveCfg;
-import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
-import com.xueersi.parentsmeeting.modules.livevideo.dispatcher.DispatcherConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
@@ -412,6 +410,27 @@ public class LiveVideoLoadActivity extends BaseActivity {
     }
 
     private void gotoGroupClass(final Bundle bundle) {
+        //需要申请的权限数量
+        int needPermissionCount = -1;
+        boolean storagePermissionHave = XesPermission.checkPermissionHave(this,
+                PermissionConfig.PERMISSION_CODE_STORAGE);
+        if (!storagePermissionHave) {
+            ++needPermissionCount;
+        }
+        boolean cameraPermissionHave = XesPermission.checkPermissionHave(this,
+                PermissionConfig.PERMISSION_CODE_CAMERA);
+        if (!cameraPermissionHave) {
+            ++needPermissionCount;
+        }
+        boolean audioPermissionHave = XesPermission.checkPermissionHave(this,
+                PermissionConfig.PERMISSION_CODE_AUDIO);
+        if (!audioPermissionHave) {
+            ++needPermissionCount;
+        }
+        logger.d("storagePermissionHave=" + storagePermissionHave
+                + ",cameraPermissionHave=" + cameraPermissionHave + ",audioPermissionHave=" + audioPermissionHave);
+
+        final int finalNeedPermissionCount = needPermissionCount;
         boolean have = XesPermission.checkPermission(this, new LiveActivityPermissionCallback() {
 
                     @Override
@@ -421,6 +440,8 @@ public class LiveVideoLoadActivity extends BaseActivity {
 
                     @Override
                     public void onDeny(String permission, int position) {
+                        logger.d("onDeny,permission=" + permission + ",position=" + position
+                                + ",finalNeedPermissionCount=" + finalNeedPermissionCount);
                         LiveMainHandler.post(new Runnable() {
                             @Override
                             public void run() {
@@ -431,19 +452,26 @@ public class LiveVideoLoadActivity extends BaseActivity {
 
                     @Override
                     public void onGuarantee(String permission, int position) {
-                        LiveMainHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                boolean isNeed = LiveAppUserInfo.getInstance().isNeedEnglishName();
-                                if (bundle.getInt("pattern") == 8 && !isNeed) {
-                                    XueErSiRouter.startModule(mContext, "/groupclass/englishname"
-                                            , bundle);
-                                } else {
-                                    com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+                        logger.d("onGuarantee,permission=" + permission + ",position=" + position
+                                + ",finalNeedPermissionCount=" + finalNeedPermissionCount);
+                        if (finalNeedPermissionCount == position) {
+                            LiveMainHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    boolean isNeed =
+                                            LiveAppUserInfo.getInstance().isNeedEnglishName();
+                                    if (bundle.getInt("pattern") == 8 && !isNeed) {
+                                        XueErSiRouter.startModule(mContext, "/groupclass" +
+                                                        "/englishname"
+                                                , bundle);
+                                    } else {
+                                        com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+                                    }
+                                    finish();
                                 }
-                                finish();
-                            }
-                        });
+                            });
+                        }
+
                     }
                 },
                 PermissionConfig.PERMISSION_CODE_CAMERA, PermissionConfig.PERMISSION_CODE_AUDIO,
