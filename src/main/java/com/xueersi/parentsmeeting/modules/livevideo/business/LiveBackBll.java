@@ -993,10 +993,11 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
         } else {
             mData.put("livetype", "" + 3);
         }
+        mData.put("eventid", "" + eventId);
         mData.put("timestamp", "" + System.currentTimeMillis());
 //        Loger.d(mContext, eventId, mData, true);
         setLogParam(mData);
-        UmsAgentManager.umsAgentDebug(activity, appID, eventId, mData);
+        UmsAgentManager.umsAgentOtherBusiness(activity, appID, UmsConstants.uploadSystem, mData);
     }
 
     @Override
