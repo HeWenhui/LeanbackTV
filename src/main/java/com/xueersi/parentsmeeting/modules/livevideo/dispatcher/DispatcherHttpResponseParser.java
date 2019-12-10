@@ -70,11 +70,14 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
         VideoSectionEntity oldSection = null;
         if (entity != null && entity.getMapVideoSectionEntity() != null && entity.getMapVideoSectionEntity().size() > 0) {
             for (String key : entity.getMapVideoSectionEntity().keySet()) {
-                if (!TextUtils.isEmpty(key) && key.endsWith("_t")) {
-                    Map<String, VideoSectionEntity> map = new HashMap<>();
-                    mapSection.put(key, entity.getMapVideoSectionEntity().get(key));
+                if (!TextUtils.isEmpty(key)) {
+                    if (key.endsWith("_t")) {
+                        Map<String, VideoSectionEntity> map = new HashMap<>();
+                        mapSection.put(key, entity.getMapVideoSectionEntity().get(key));
+                    } else {
+                        oldSection = entity.getMapVideoSectionEntity().get(key);
+                    }
                 }
-                oldSection = entity.getMapVideoSectionEntity().get(key);
             }
         }
         JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
