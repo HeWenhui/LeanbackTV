@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="112dp"
+        android:layout_marginLeft="6dp"
+        android:layout_marginRight="6dp"
+        android:background="@drawable/livevideo_lightlive_course_card">
+
+        <TextView
+            android:id="@+id/tv_lightlive_recommend_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/text_font12_212831_style"
+            android:textStyle="bold"
+            android:text="3门推荐课程"
+            android:drawableLeft="@drawable/livevideo_lightlive_recommend_img"
+            android:drawablePadding="3dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="18dp"
+            android:layout_marginLeft="10dp"
+            />
+        <TextView
+            android:id="@+id/tv_lightlive_recommend_more"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="去查看"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="18dp"
+            android:drawablePadding="2dp"
+            android:layout_marginRight="20dp"
+            style="@style/text_font12_212831_style"
+            android:drawableRight="@drawable/livevideo_arrow_right_gray"
+            />
+
+        <ViewFlipper
+            android:id="@+id/vf_lightlive_recommend_courses"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_lightlive_recommend_count"
+            android:layout_marginTop="12dp"
+            >
+
+        </ViewFlipper>
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

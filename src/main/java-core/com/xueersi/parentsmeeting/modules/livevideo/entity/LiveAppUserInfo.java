@@ -178,6 +178,16 @@ public class LiveAppUserInfo {
         return showName;
     }
 
+    public String getName() {
+        String showName = "";
+        if (!StringUtils.isEmpty(LiveAppUserInfo.getInstance().getRealName())) {
+            showName = LiveAppUserInfo.getInstance().getRealName();
+        } else if (!StringUtils.isEmpty(LiveAppUserInfo.getInstance().getNickName())) {
+            showName = LiveAppUserInfo.getInstance().getNickName();
+        }
+        return showName;
+    }
+
     /**
      * 设置磐石key
      *
