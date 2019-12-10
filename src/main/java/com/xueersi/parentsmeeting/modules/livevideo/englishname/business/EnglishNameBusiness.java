@@ -44,7 +44,7 @@ public class EnglishNameBusiness extends BaseBll {
     }
 
     public String getLocalPath(){
-        return  Environment.getExternalStorageDirectory()+EnglishNameConfig.LIVE_UNITI_NET_PATH_L;
+        return  EnglishNameConfig.LIVE_UNITI_NET_PATH_L;
 
     }
 
@@ -65,7 +65,7 @@ public class EnglishNameBusiness extends BaseBll {
      * @param resourceCallback
      */
     public void downloadResource(final Context context ,String url) {
-        String mathGamePath = getLocalPath();
+        String mathGamePath = getLocalPath()+"/generate.txt";
         try {
             if (!TextUtils.isEmpty(mathGamePath)) {
                 File file = new File(mathGamePath);
