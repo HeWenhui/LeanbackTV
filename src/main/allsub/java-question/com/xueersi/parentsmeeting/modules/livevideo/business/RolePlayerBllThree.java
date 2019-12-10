@@ -5,12 +5,12 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
+import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.tal.speech.utils.SpeechUtils;
 import com.xueersi.common.base.BaseBll;
-import com.xueersi.common.business.AppBll;
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.permission.PermissionItem;
@@ -36,6 +36,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpAction;
 import com.xueersi.parentsmeeting.modules.livevideo.http.RolePlayerHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.RolePlayerHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.page.RolePlayerPager;
+import com.xueersi.parentsmeeting.modules.livevideo.page.RolePlayerPagerThree;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RolePlayLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
@@ -57,7 +59,7 @@ import okhttp3.Call;
  * RolePlayer业务类
  * Created by zouhao on 2018/4/12.
  */
-public class RolePlayerBll extends BaseBll implements RolePlayAction {
+public class RolePlayerBllThree extends BaseBll implements RolePlayActionThree {
 
     protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
     protected LogToFile mLogtf;
@@ -108,19 +110,25 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
      */
     private LiveAndBackDebug mLiveBll;
 
-    private RolePlayerPager mRolePlayerPager;
+    private RolePlayerPagerThree mRolePlayerPager;
 
     private RolePlayerHttpManager mRolePlayerHttpManager;
 
     private RolePlayerHttpResponseParser mRolePlayerHttpResponseParser;
 
     private boolean isGoToRobot;//是否开始了人机
+    private boolean isRobot;//true 表示走人机逻辑
+    private RelativeLayout rlQuestionContent;//互动题布局
+    private RelativeLayout.LayoutParams lp;
+    private QuestionBll questionBll;
 
-    public RolePlayerBll(Context context, LiveViewAction liveViewAction, LiveAndBackDebug liveBll, LiveGetInfo liveGetInfo, LiveHttpAction liveHttpAction) {
+    public RolePlayerBllThree(Context context, LiveViewAction liveViewAction, LiveAndBackDebug liveBll, LiveGetInfo liveGetInfo, LiveHttpAction liveHttpAction) {
         super(context);
         this.liveViewAction = liveViewAction;
         this.mLiveBll = liveBll;
         this.mLiveGetInfo = liveGetInfo;
+        mLiveId = mLiveGetInfo.getId();
+        mStuCouId = mLiveGetInfo.getStuCouId();
         mRolePlayerHttpManager = new RolePlayerHttpManager(mContext, liveHttpAction);
         mRolePlayerHttpResponseParser = new RolePlayerHttpResponseParser();
         mLogtf = new LogToFile(context, getClass().getSimpleName());
@@ -198,26 +206,40 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
 
 
     }
-
+    /** roleplay接口失败重试 */
+    public void reTry() {
+        teacherPushTest(videoQuestionLiveEntity,isRobot);
+    }
     /**
      * 教师发题指令
      */
     @Override
-    public void teacherPushTest(VideoQuestionLiveEntity videoQuestionLiveEntity) {
+    public void teacherPushTest(VideoQuestionLiveEntity videoQuestionLiveEntity,boolean isRobot) {
+
         this.videoQuestionLiveEntity = videoQuestionLiveEntity;
+        this.isRobot = isRobot;
+
+        if(mRolePlayerEntity == null){
+            mRolePlayerEntity = new RolePlayerEntity();
+        }
+
         //拉取试题a
         if (videoQuestionLiveEntity.isNewArtsH5Courseware()) {
             requestNewArtsTestInfos();
         } else {
             requestTestInfos();
         }
-        mLogtf.d("teacherPushTest:mRolePlayerEntity=null?" + (mRolePlayerEntity == null));
+        mLogtf.d("teacherPushTest:mRolePlayerEntity=null?" + (mRolePlayerEntity == null)+" isRobot = "+isRobot);
+
         if (mRolePlayerPager == null) {
-            mRolePlayerPager = new RolePlayerPager(mContext, mRolePlayerEntity, true, this, mLiveGetInfo);
-            mRolePlayerPager.initData();
-            if (liveViewAction != null) {
-                liveViewAction.addView(mRolePlayerPager.getRootView());
+            if(!isRobot){
+                mRolePlayerPager = new RolePlayerPagerThree(mContext, mRolePlayerEntity, true, this, mLiveGetInfo,false,questionBll,videoQuestionLiveEntity);
+                mRolePlayerPager.initData();
+                if (liveViewAction != null) {
+                    liveViewAction.addView(mRolePlayerPager.getRootView(), lp);
+                }
             }
+
         }
         //用户弹出答题框
         logger.i("用户弹出答题框,记录日志");
@@ -228,17 +250,34 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
     // 文科新课件平台获取试题信息
     private void requestNewArtsTestInfos() {
         if (mRolePlayerEntity != null) {
-            mRolePlayerHttpManager.requestNewArtsRolePlayTestInfos(mLiveId, mStuCouId, mRolePlayerEntity.getTestId(), mLiveGetInfo.getStuId(), new
+            HttpCallBack httpCallBack =  new
                     HttpCallBack(false) {
                         @Override
                         public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                            mRolePlayerEntity = mRolePlayerHttpResponseParser.parserNewArtsMutRolePlayTestInfos(responseEntity, mRolePlayerEntity);
+                            if(isRobot){
+                                Toast.makeText(mContext,"人机",Toast.LENGTH_SHORT).show();
+                                mRolePlayerEntity = mRolePlayerHttpResponseParser.parserNewRolePlayGroupAndTestInfos(responseEntity);
+                                if(mRolePlayerPager == null){
+                                    mRolePlayerPager = new RolePlayerPagerThree(mContext, mRolePlayerEntity, true, RolePlayerBllThree.this, mLiveGetInfo,true,questionBll,videoQuestionLiveEntity);
+                                    mRolePlayerPager.setEntity(mRolePlayerEntity);
+                                    mRolePlayerPager.initData();
+                                    if (liveViewAction != null) {
+                                        liveViewAction.addView(mRolePlayerPager.getRootView(), lp);
+                                    }
+                                }
+                            }else {
+                                mRolePlayerEntity = mRolePlayerHttpResponseParser.parserNewArtsMutRolePlayTestInfos(responseEntity, mRolePlayerEntity);
+                            }
+
                             if (responseEntity != null && responseEntity.getJsonObject() != null) {
                                 logger.i("多人新课件服务器试题信息返回 " + responseEntity.getJsonObject().toString());
                                 mLogtf.i("多人新课件服务器试题信息返回以后，解析到的角色对话长度 mRolePlayerEntity" +
                                         ".getLstRolePlayerMessage()" +
                                         ".size() = " + mRolePlayerEntity.getLstRolePlayerMessage().size() + "/ " +
                                         mRolePlayerEntity.toString());
+
+
+
                             }
 
                         }
@@ -257,7 +296,12 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                             super.onPmFailure(error, msg);
                             mLogtf.i("onPmFailure:多人新课件" + msg);
                         }
-                    });
+                    };
+            if (videoQuestionLiveEntity.isExper()) {
+                mRolePlayerHttpManager.requestExperNewArtsRolePlayTestInfos(mLiveId, mStuCouId, videoQuestionLiveEntity.id, mLiveGetInfo.getStuId(), httpCallBack);
+            } else {
+                mRolePlayerHttpManager.requestNewArtsRolePlayTestInfos(mLiveId, mStuCouId, videoQuestionLiveEntity.id, mLiveGetInfo.getStuId(), httpCallBack);
+            }
         }
     }
 
@@ -292,7 +336,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
      */
     public void closeCurPage() {
         mLogtf.i("closeCurPage:bottomContent=null?" + (liveViewAction == null) + ",pager=null?" + (mRolePlayerPager == null));
-        if (liveViewAction != null && mRolePlayerPager != null) {
+        if (rlQuestionContent != null && mRolePlayerPager != null) {
             logger.i("onStopQuestion 关闭当前页面 ");
             liveViewAction.removeView(mRolePlayerPager.getRootView());
             mRolePlayerPager.onDestroy();
@@ -321,6 +365,19 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
     }
 
     @Override
+    public void setRlQuestionContent(RelativeLayout rlQuestionContent) {
+        this.rlQuestionContent = rlQuestionContent;
+        lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams
+                .MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT);
+    }
+
+    @Override
+    public void setLivePageBack(QuestionBll questionBll) {
+        this.questionBll = questionBll;
+    }
+
+    @Override
     public void setOnGroupSuc(OnGroupSuc onGroupSuc) {
         this.onGroupSuc = onGroupSuc;
     }
@@ -333,25 +390,25 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
     public void goToRobot() {
         isGoToRobot = true;
         mLogtf.d("进人机");
-        LiveMainHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                //移除roleplay界面，并释放该界面资源
-                if (liveViewAction != null && mRolePlayerPager != null) {
-                    liveViewAction.removeView(mRolePlayerPager.getRootView());
-                    mRolePlayerPager.onDestroy();
-                    mRolePlayerPager = null;
-                    logger.d("移除了原生页面");
-                }
-            }
-        });
-        if (videoQuestionLiveEntity != null) {
-            VideoQuestionLiveEntity oldvideoQuestionLiveEntity = videoQuestionLiveEntity;
-            oldvideoQuestionLiveEntity.multiRolePlay = "0";
-            videoQuestionLiveEntity = null;
-            onError.onError(oldvideoQuestionLiveEntity);
-
-        }
+//        LiveMainHandler.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                //移除roleplay界面，并释放该界面资源
+//                if (liveViewAction != null && mRolePlayerPager != null) {
+//                    liveViewAction.removeView(mRolePlayerPager.getRootView());
+//                    mRolePlayerPager.onDestroy();
+//                    mRolePlayerPager = null;
+//                    logger.d("移除了原生页面");
+//                }
+//            }
+//        });
+//        if (videoQuestionLiveEntity != null) {
+//            VideoQuestionLiveEntity oldvideoQuestionLiveEntity = videoQuestionLiveEntity;
+//            oldvideoQuestionLiveEntity.multiRolePlay = "0";
+//            videoQuestionLiveEntity = null;
+//            onError.onError(oldvideoQuestionLiveEntity);
+//
+//        }
     }
 
     @Override
@@ -694,6 +751,18 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                                         ".size() = " + mRolePlayerEntity.getLstRolePlayerMessage().size() + "/ " +
                                         mRolePlayerEntity.toString());
                             }
+                            if(isRobot){
+                                Toast.makeText(mContext,"人机",Toast.LENGTH_SHORT).show();
+                                mRolePlayerEntity = mRolePlayerHttpResponseParser.parserRolePlayGroupAndTestInfos(responseEntity);
+                                if(mRolePlayerPager == null){
+                                    mRolePlayerPager = new RolePlayerPagerThree(mContext, mRolePlayerEntity, true, RolePlayerBllThree.this, mLiveGetInfo,true,questionBll,videoQuestionLiveEntity);
+                                    mRolePlayerPager.setEntity(mRolePlayerEntity);
+                                    mRolePlayerPager.initData();
+                                    if (liveViewAction != null) {
+                                        liveViewAction.addView(mRolePlayerPager.getRootView(), lp);
+                                    }
+                                }
+                            }
 
                         }
 
@@ -823,6 +892,8 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
             //TODO:
             int i = 1;
             for (RolePlayerEntity.RolePlayerMessage message : mRolePlayerEntity.getLstRolePlayerMessage()) {
+
+
                 if (message.getRolePlayer().isSelfRole()) {
                     JSONObject objAn = new JSONObject();
                     objAn.put("sentenceNum", i);
@@ -1014,12 +1085,12 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
         this.mRolePlayerEntity = entity;
     }
 
-    public void setRolePlayPager(RolePlayerPager pager) {
+    public void setRolePlayPager(RolePlayerPagerThree pager) {
         this.mRolePlayerPager = pager;
     }
 
 
-    public RolePlayerPager getRolePlayPager() {
+    public RolePlayerPagerThree getRolePlayPager() {
         return mRolePlayerPager;
     }
 
