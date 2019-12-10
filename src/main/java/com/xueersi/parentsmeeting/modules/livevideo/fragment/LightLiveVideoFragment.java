@@ -381,6 +381,7 @@ public class LightLiveVideoFragment  extends LiveFragmentBase implements Activit
         }else {
             XrsBury.pageEndBury(activity.getResources().getString(R.string.pv_03_63),1);
         }
+        EventBusUtil.unregister(this);
         super.onDestroy();
     }
 

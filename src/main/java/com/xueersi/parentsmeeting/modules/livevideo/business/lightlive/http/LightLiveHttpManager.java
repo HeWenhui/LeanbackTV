@@ -66,7 +66,7 @@ public class LightLiveHttpManager {
 
     public void reportLogin(String liveid){
         HttpRequestParams params = new HttpRequestParams();
-        params.addBodyParam("lliveId", liveid);
+        params.addBodyParam("liveId", liveid);
         liveHttpManager.sendPost(LiveHttpConfig.URL_LIGHTLIVE_REPORT_LOGIN, params, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
