@@ -1151,8 +1151,8 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 }
                 int left = index + lastSub;
                 int right = left + word.length();
-                subtemText = subtemText.substring(index);
-                lastSub += index;
+                subtemText = subtemText.substring(index + word.length());
+                lastSub += index + word.length();
                 if (lstPhonemeScore.get(i).getScore() > encourageScore) {
                     //显示绿色
                     spannable.setSpan(new ForegroundColorSpan(COLOR_32B16C), left, right, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
