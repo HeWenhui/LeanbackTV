@@ -24,4 +24,7 @@ public class EnglishNameConfig {
 
 
     public static final String LIVE_GROUP_ENGLISH_NAME_NAME_AUDIO = "live_group_english_name_name_audio";
+
+    public static final String  LIVE_UNITI_NET_PATH_L_FILE_URL= "live_uniti_net_path_l_file_url";
+
 }
