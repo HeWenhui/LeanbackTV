@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveOnLineLogs;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.SysLogEntity;
@@ -65,10 +66,14 @@ public class LogToFile {
      * @param value
      */
     public void addCommon(String key, String value) {
-        if (stableLogHashMap == null) {
-            stableLogHashMap = new StableLogHashMap();
+        try {
+            if (stableLogHashMap == null) {
+                stableLogHashMap = new StableLogHashMap();
+            }
+            stableLogHashMap.put(key, value);
+        } catch (Exception e) {
+            LiveCrashReport.postCatchedException(TAG, e);
         }
-        stableLogHashMap.put(key, value);
     }
 
     public void i(String message) {

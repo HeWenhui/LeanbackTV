@@ -543,6 +543,11 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             isAnaswer = false;
             return;
         }
+        try {
+            mLogtf.addCommon("testid", "" + videoQuestionLiveEntity.id);
+        } catch (Exception e) {
+            LiveCrashReport.postCatchedException(TAG, e);
+        }
         logger.e("======> showQuestion 11111");
         //不是语音评测
         if (IS_SCIENCE && !"4".equals(videoQuestionLiveEntity.type)) {
