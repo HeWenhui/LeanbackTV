@@ -337,6 +337,14 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, BaseVo
         }
     }
 
+    private String offMethod = "";
+
+    @Override
+    public void onH5CoursewareMethod(final String status, String offMethod, final VideoQuestionLiveEntity videoQuestionLiveEntity) {
+        this.offMethod = offMethod;
+        onH5Courseware(status, videoQuestionLiveEntity);
+    }
+
     @Override
     public void onH5Courseware(final String status, final VideoQuestionLiveEntity videoQuestionLiveEntity) {
 //        logToFile.i("onH5Courseware:url=" + url + ",status=" + status);
@@ -363,7 +371,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, BaseVo
                                 return;
                             } else {
                                 logToFile.i("onH5Courseware:English=" + h5CoursewarePager.getEnglishH5Entity());
-                                h5CoursewarePager.destroy("getNewEnglishH5");
+                                h5CoursewarePager.destroy("getNewEnglishH5_"+offMethod);
                                 liveViewAction.removeView(h5CoursewarePager.getRootView());
                             }
                         }
@@ -412,8 +420,8 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, BaseVo
                             logToFile.i("onH5Courseware:url_equals:" + h5CoursewarePager.getUrl());
                             return;
                         } else {
-                            logToFile.i("onH5Courseware:url_destroy=" + h5CoursewarePager.getUrl());
-                            h5CoursewarePager.destroy("url_destroy");
+                            logToFile.i("onH5Courseware:url_destroy=" + offMethod + ",url=" + h5CoursewarePager.getUrl());
+                            h5CoursewarePager.destroy("url_destroy_"+offMethod);
                             liveViewAction.removeView(h5CoursewarePager.getRootView());
                         }
                     }
@@ -459,7 +467,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, BaseVo
                     }
                     if (isAnaswer && !havePager && resultView == null) {
                         Log.e("mqtt", "submitData" + "three");
-                        onQuestionShow(null, false, "onH5Courseware:end:status=" + status);
+                        onQuestionShow(null, false, "onH5Courseware:end:status=" + status + ",offMethod=" + offMethod);
                     }
                     isAnaswer = false;
                     if (hasQuestion) {
