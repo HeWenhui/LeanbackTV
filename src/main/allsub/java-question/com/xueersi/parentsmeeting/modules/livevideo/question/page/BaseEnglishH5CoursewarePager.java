@@ -23,7 +23,7 @@ public interface BaseEnglishH5CoursewarePager {
 
     void onBack();
 
-    void destroy();
+    void destroy(String method);
 
     View getRootView();
 

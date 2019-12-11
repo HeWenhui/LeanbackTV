@@ -680,7 +680,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
     }
 
     @Override
-    public void destroy() {
+    public void destroy(String method) {
         super.onDestroy();
         if (mIse != null) {
             mIse.cancel();

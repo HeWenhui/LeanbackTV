@@ -120,9 +120,9 @@ public class GroupGameEmptyPager extends BaseCoursewareNativePager implements Ba
     }
 
     @Override
-    public void destroy() {
+    public void destroy(String method) {
         if (baseEnglishH5CoursewarePager != null) {
-            baseEnglishH5CoursewarePager.destroy();
+            baseEnglishH5CoursewarePager.destroy("Empty:"+method);
         }
     }
 

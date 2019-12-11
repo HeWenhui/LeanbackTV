@@ -31,7 +31,6 @@ import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ContextLiveAndBackDebug;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -696,7 +695,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
     }
 
     @Override
-    public void destroy() {
+    public void destroy(String method) {
         isFinish = true;
         wvSubjectWeb.destroy();
         KeyboardUtil.unRegistKeyboardShowingListener(mKeyboardListener);

@@ -246,7 +246,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, BaseVo
                             if (h5CoursewarePager != null) {
                                 mH5AndBool.add(h5CoursewarePager.getUrl());
                                 h5CoursewarePager.onBack();
-                                h5CoursewarePager.destroy();
+                                h5CoursewarePager.destroy("onClick");
                                 liveViewAction.removeView(h5CoursewarePager.getRootView());
 
                                 WebViewRequest webViewRequest = ProxUtil.getProxUtil().get(context, WebViewRequest.class);
@@ -363,7 +363,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, BaseVo
                                 return;
                             } else {
                                 logToFile.i("onH5Courseware:English=" + h5CoursewarePager.getEnglishH5Entity());
-                                h5CoursewarePager.destroy();
+                                h5CoursewarePager.destroy("getNewEnglishH5");
                                 liveViewAction.removeView(h5CoursewarePager.getRootView());
                             }
                         }
@@ -396,7 +396,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, BaseVo
                         }
                     }
                     if (mH5AndBool.contains(videoQuestionLiveEntity.getUrl())) {
-                        logToFile.i("onH5Courseware:url.contains");
+                        logToFile.i("onH5Courseware:url_contains");
                         return;
                     }
                     if (voiceAnswerPager != null) {
@@ -409,11 +409,11 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, BaseVo
                     }
                     if (h5CoursewarePager != null) {
                         if (h5CoursewarePager.getUrl() != null && h5CoursewarePager.getUrl().equals(videoQuestionLiveEntity.getUrl())) {
-                            logToFile.i("onH5Courseware:url.equals:" + h5CoursewarePager.getUrl());
+                            logToFile.i("onH5Courseware:url_equals:" + h5CoursewarePager.getUrl());
                             return;
                         } else {
-                            logToFile.i("onH5Courseware:url=" + h5CoursewarePager.getUrl());
-                            h5CoursewarePager.destroy();
+                            logToFile.i("onH5Courseware:url_destroy=" + h5CoursewarePager.getUrl());
+                            h5CoursewarePager.destroy("url_destroy");
                             liveViewAction.removeView(h5CoursewarePager.getRootView());
                         }
                     }
@@ -491,7 +491,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, BaseVo
                     h5CoursewarePager.close();
                     //如果重写了close。调用了onClose.onH5ResultClose 方法以后，h5CoursewarePager为空
                     if (h5CoursewarePager != null) {
-                        h5CoursewarePager.destroy();
+                        h5CoursewarePager.destroy("froceClose");
                         liveViewAction.removeView(h5CoursewarePager.getRootView());
                         h5CoursewarePager = null;
                         onQuestionShow(null, false, "forceClose:" + method);
@@ -514,7 +514,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, BaseVo
                 @Override
                 public void run() {
                     if (h5CoursewarePager != null && h5CoursewarePager == curPager) {
-                        h5CoursewarePager.destroy();
+                        h5CoursewarePager.destroy("closePageByTeamPk");
                         liveViewAction.removeView(h5CoursewarePager.getRootView());
                     }
                     isPageOnCloseing = false;
@@ -548,7 +548,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, BaseVo
                 if (!videoQuestionH5Entity.englishH5Entity.getNewEnglishH5()) {
                     saveH5AnswerRecord(videoQuestionH5Entity.getUrl());
                 }
-                baseEnglishH5CoursewarePager.destroy();
+                baseEnglishH5CoursewarePager.destroy("onH5ResultClose");
                 liveViewAction.removeView(baseEnglishH5CoursewarePager.getRootView());
                 logger.d("onH5ResultClose:pager=" + baseEnglishH5CoursewarePager + ",old=" + h5CoursewarePager);
                 if (baseEnglishH5CoursewarePager == h5CoursewarePager) {
@@ -945,7 +945,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, BaseVo
                             if (h5CoursewarePager != null) {
                                 BaseEnglishH5CoursewarePager oldh5CoursewarePager = h5CoursewarePager;
                                 if (h5CoursewarePager == curPager) {
-                                    h5CoursewarePager.destroy();
+                                    h5CoursewarePager.destroy("getFullMarkListH51");
                                     liveViewAction.removeView(h5CoursewarePager.getRootView());
                                     h5CoursewarePager = null;
                                     curPager = null;
@@ -953,7 +953,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, BaseVo
                                         onQuestionShow(null, false, "getFullMarkList");
                                     }
                                 } else if (curPager != null) {
-                                    curPager.destroy();
+                                    curPager.destroy("getFullMarkListH52");
                                     liveViewAction.removeView(curPager.getRootView());
                                     curPager = null;
                                 }
@@ -1329,7 +1329,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, BaseVo
 
     public void destroy() {
         if (h5CoursewarePager != null) {
-            h5CoursewarePager.destroy();
+            h5CoursewarePager.destroy("destroy");
         }
         EventBus.getDefault().unregister(this);
     }
