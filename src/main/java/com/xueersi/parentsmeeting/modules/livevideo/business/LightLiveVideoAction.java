@@ -44,7 +44,7 @@ public class LightLiveVideoAction extends LiveVideoAction {
     protected String mode = LiveTopic.MODE_TRANING;
     private static final String TAG = "HalfBodyLiveVideoAction";
 
-//    private RelativeLayout rlFirstBackgroundContent;
+    //    private RelativeLayout rlFirstBackgroundContent;
     private FrameLayout flFirstBackgroundContent;
 
     /**
@@ -114,7 +114,6 @@ public class LightLiveVideoAction extends LiveVideoAction {
 //            }
 //        }
 //    }
-
     @Override
     public void onLiveInit(LiveGetInfo getInfo) {
         super.onLiveInit(getInfo);
@@ -167,8 +166,8 @@ public class LightLiveVideoAction extends LiveVideoAction {
             LayoutParamsUtil.setViewLayoutParams(ivTeacherNotpresent, params);
         }
 
-        Drawable dwTeacherNotPresent = ResourcesCompat.getDrawable(activity.getResources(), getLoadingBg(), null);
-        rlFirstBackgroundView.setBackground(dwTeacherNotPresent);
+//        Drawable dwTeacherNotPresent = ResourcesCompat.getDrawable(activity.getResources(), getLoadingBg(), null);
+        rlFirstBackgroundView.setBackgroundColor(0xff000000);
         if (mGetInfo != null && mGetInfo.getUseSkin() == HalfBodyLiveConfig.SKIN_TYPE_CH) {
             tvLoadingHint.setTextColor(Color.WHITE);
         } else {
@@ -176,7 +175,7 @@ public class LightLiveVideoAction extends LiveVideoAction {
         }
 
         tvLoadingHint.setVisibility(View.INVISIBLE);
-        ll_course_video_loading.setVisibility(View.VISIBLE);
+//        ll_course_video_loading.setVisibility(View.VISIBLE);
         iv_course_video_loading_bg.setVisibility(View.INVISIBLE);
 
         // logger.e( "=======>showMainTeacherUI:");
@@ -191,8 +190,9 @@ public class LightLiveVideoAction extends LiveVideoAction {
         rlFirstBackgroundView.setVisibility(visible);
         if (visible == View.VISIBLE) {
             setTeacherNotpresent(rlFirstBackgroundView);
-            ivTeacherNotpresent.setVisibility(View.VISIBLE);
-            setTeacherNotpresent(ivTeacherNotpresent);
+//            ivTeacherNotpresent.setVisibility(View.VISIBLE);
+//            setTeacherNotpresent(ivTeacherNotpresent);
+            showVedioLoading(View.VISIBLE);
         }
         if (visible == View.GONE) {
             ivTeacherNotpresent.setVisibility(View.GONE);
@@ -213,19 +213,16 @@ public class LightLiveVideoAction extends LiveVideoAction {
             public void run() {
                 int visibility = rlFirstBackgroundView.getVisibility();
                 mLogtf.d("onTeacherNotPresent:First=" + visibility);
-                if (rlFirstBackgroundView.getVisibility() == View.GONE) {
-                    ivTeacherNotpresent.setVisibility(View.GONE);
-                } else {
-                    if (ivVodeoLoading != null) {
-                        llLoding.setVisibility(View.GONE);
-                        ivVodeoLoading.setVisibility(View.INVISIBLE);
-                    }
-                    ivTeacherNotpresent.setVisibility(View.VISIBLE);
-                    setTeacherNotpresent(ivTeacherNotpresent);
-                    mContentView.findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View
-                            .INVISIBLE);
+                if (ivVodeoLoading != null) {
+                    llLoding.setVisibility(View.GONE);
+                    ivVodeoLoading.setVisibility(View.INVISIBLE);
                 }
+                ivTeacherNotpresent.setVisibility(View.VISIBLE);
+                setTeacherNotpresent(ivTeacherNotpresent);
+                mContentView.findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View
+                        .INVISIBLE);
             }
+
         });
     }
 
@@ -245,14 +242,15 @@ public class LightLiveVideoAction extends LiveVideoAction {
         long now = System.currentTimeMillis() / 1000;
         // loading 视图
         if (view == rlFirstBackgroundView) {
-            Drawable dwTeacherNotPresent = ResourcesCompat.getDrawable(activity.getResources(), getLoadingBg(),
-                    null);
-            view.setBackground(dwTeacherNotPresent);
+//            Drawable dwTeacherNotPresent = ResourcesCompat.getDrawable(activity.getResources(), getLoadingBg(),
+//                    null);
+            view.setBackgroundColor(0xff000000);
         } else {
             if (mGetInfo == null) {
                 view.setBackground(ResourcesCompat.getDrawable(activity.getResources(), getNoTeacherBg(), null));
             } else {
                 if (!videoLoadingShowing()) {
+                    view.setVisibility(View.VISIBLE);
                     if (now < mGetInfo.getsTime()) {
                         // 设置马上开始上课背景图
                         view.setBackground(activity.getResources().getDrawable(R.drawable.livevideo_lightlive_not_start_bg));
@@ -299,7 +297,7 @@ public class LightLiveVideoAction extends LiveVideoAction {
     @Override
     public void onLiveStart(PlayServerEntity server, LiveTopic cacheData, boolean modechange) {
         super.onLiveStart(server, cacheData, modechange);
-        showVedioLoading(View.VISIBLE);
+//        showVedioLoading(View.VISIBLE);
     }
 
     private View bufferView;
@@ -313,8 +311,9 @@ public class LightLiveVideoAction extends LiveVideoAction {
                     llLoding.setVisibility(visible);
                     ivVodeoLoading.setVisibility(visible);
                     if (View.VISIBLE == visible) {
-                        ivTeacherNotpresent.setBackground(ResourcesCompat.getDrawable(activity.getResources(),
-                                getLoadingBg(), null));
+                        ivTeacherNotpresent.setVisibility(View.GONE);
+//                        ivTeacherNotpresent.setBackground(ResourcesCompat.getDrawable(activity.getResources(),
+//                                getLoadingBg(), null));
                     } else {
                         setTeacherNotpresent(ivTeacherNotpresent);
                     }
@@ -368,6 +367,7 @@ public class LightLiveVideoAction extends LiveVideoAction {
     @Override
     public void rePlay(boolean modechange) {
         super.rePlay(modechange);
+        showVedioLoading(View.VISIBLE);
     }
 
     @Override
