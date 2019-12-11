@@ -40,6 +40,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.FullMarkListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -72,6 +73,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.page.ExamQuestionX5
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionWebX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechAssAutoPager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.BigResultLog;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.NewCourseLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.KeyboardPopWindow;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.BigResultLog;
@@ -781,6 +783,12 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                             logger.e("====>" + "type:" + videoQuestionLiveEntity.type);
                             //走新的课件加载
                             if (liveGetInfo.isNewCourse()) {
+                                try {
+                                    String testid = NewCourseLog.getNewCourseTestIdSec(videoQuestionLiveEntity, LiveVideoSAConfig.ART_EN);
+                                    mLogtf.addCommon("testid", "" + testid);
+                                } catch (Exception e) {
+                                    LiveCrashReport.postCatchedException(TAG, e);
+                                }
                                 EnglishH5Entity englishH5Entity = videoQuestionLiveEntity.englishH5Entity;
                                 CoursewareNativePager questionWebPager = new CoursewareNativePager(activity,
                                         videoQuestionLiveEntity, !videoQuestionLiveEntity.isLive(), liveGetInfo.getId(), videoQuestionLiveEntity.id,
