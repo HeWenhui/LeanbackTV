@@ -116,13 +116,13 @@ public class UploadVideoService extends Service {
             logger.i("video upload succes " + videoUrl);
             StorageUtils.setStorageSPKey(liveId, courseWareId, 2);
             latch.countDown();
-            try {
-                latch.await();
+//            try {
+//                latch.await();
 //                courseWeareList.remove(uploadVideoSetKey);
-                uploadSuccess();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            uploadSuccess();
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
         }
 
         @Override

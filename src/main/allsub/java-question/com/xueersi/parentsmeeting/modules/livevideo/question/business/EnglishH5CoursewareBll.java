@@ -38,6 +38,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.EvenDrive
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.FullMarkListEntity;
@@ -55,6 +56,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.entity.CreateAnswer
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseEnglishH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.IntelligentEvaluationH5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.VoiceAnswerPager;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.NewCourseLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ExceptionRunnable;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
@@ -124,6 +126,8 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, BaseVo
     private boolean hasSubmit;
     private LiveVideoSAConfig liveVideoSAConfig;
     private boolean IS_SCIENCE = false;
+    /** 还没有赋值 */
+    @Deprecated
     private int isArts;
     private int isplayback = 0;
 
@@ -333,7 +337,6 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, BaseVo
         }
     }
 
-
     @Override
     public void onH5Courseware(final String status, final VideoQuestionLiveEntity videoQuestionLiveEntity) {
 //        logToFile.i("onH5Courseware:url=" + url + ",status=" + status);
@@ -341,6 +344,18 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, BaseVo
             @Override
             public void run() {
                 if ("on".equals(status)) {
+                    try {
+                        if (mGetInfo.isNewCourse()) {
+                            if (isNewCourse(mGetInfo.getIsArts(), videoQuestionLiveEntity)) {
+                                String testid = NewCourseLog.getNewCourseTestIdSec(videoQuestionLiveEntity, mGetInfo.getIsArts());
+                                logToFile.addCommon("testid", "" + testid);
+                            } else {
+                                logToFile.addCommon("testid", "" + videoQuestionLiveEntity.id);
+                            }
+                        }
+                    } catch (Exception e) {
+                        LiveCrashReport.postCatchedException(TAG, e);
+                    }
                     if (LiveVideoConfig.isMulLiveBack || videoQuestionLiveEntity.englishH5Entity.getNewEnglishH5()) {
                         if (h5CoursewarePager != null) {
                             if (LiveVideoConfig.englishH5Entity.equals(videoQuestionLiveEntity.englishH5Entity)) {
@@ -444,7 +459,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, BaseVo
                     }
                     if (isAnaswer && !havePager && resultView == null) {
                         Log.e("mqtt", "submitData" + "three");
-                        onQuestionShow(null, false, "onH5Courseware:end");
+                        onQuestionShow(null, false, "onH5Courseware:end:status=" + status);
                     }
                     isAnaswer = false;
                     if (hasQuestion) {
@@ -1123,7 +1138,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, BaseVo
                 JSONObject answerdetail = new JSONObject();
                 JSONArray blanks = new JSONArray();
                 JSONArray choices = new JSONArray();
-                if (LocalCourseConfig.QUESTION_TYPE_BLANK.equals(videoQuestionLiveEntity1.type)||LiveQueConfig.EN_COURSE_TYPE_18.equals(videoQuestionLiveEntity1.type)) {
+                if (LocalCourseConfig.QUESTION_TYPE_BLANK.equals(videoQuestionLiveEntity1.type) || LiveQueConfig.EN_COURSE_TYPE_18.equals(videoQuestionLiveEntity1.type)) {
                     try {
                         if (isRight) {
                             blanks.put(0, result);
@@ -1341,6 +1356,16 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, BaseVo
         }
         for (QuestionShowAction questionShowAction : questionShowActions) {
             questionShowAction.onQuestionShow(videoQuestionLiveEntity, isShow);
+        }
+    }
+
+    /** 是不是新课件 */
+    public static boolean isNewCourse(int isArts, VideoQuestionLiveEntity videoQuestionLiveEntity) {
+        EnglishH5Entity englishH5Entity = videoQuestionLiveEntity.englishH5Entity;
+        if (isArts == LiveVideoSAConfig.ART_EN) {
+            return englishH5Entity.isArtsNewH5Courseware();
+        } else {
+            return englishH5Entity.getNewEnglishH5();
         }
     }
 
