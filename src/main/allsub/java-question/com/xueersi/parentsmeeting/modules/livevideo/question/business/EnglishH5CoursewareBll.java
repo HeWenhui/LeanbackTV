@@ -126,6 +126,8 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, BaseVo
     private boolean hasSubmit;
     private LiveVideoSAConfig liveVideoSAConfig;
     private boolean IS_SCIENCE = false;
+    /** 还没有赋值 */
+    @Deprecated
     private int isArts;
     private int isplayback = 0;
 
@@ -344,8 +346,8 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, BaseVo
                 if ("on".equals(status)) {
                     try {
                         if (mGetInfo.isNewCourse()) {
-                            if (isNewCourse(isArts, videoQuestionLiveEntity)) {
-                                String testid = NewCourseLog.getNewCourseTestIdSec(videoQuestionLiveEntity, isArts);
+                            if (isNewCourse(mGetInfo.getIsArts(), videoQuestionLiveEntity)) {
+                                String testid = NewCourseLog.getNewCourseTestIdSec(videoQuestionLiveEntity, mGetInfo.getIsArts());
                                 logToFile.addCommon("testid", "" + testid);
                             } else {
                                 logToFile.addCommon("testid", "" + videoQuestionLiveEntity.id);
@@ -457,7 +459,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, BaseVo
                     }
                     if (isAnaswer && !havePager && resultView == null) {
                         Log.e("mqtt", "submitData" + "three");
-                        onQuestionShow(null, false, "onH5Courseware:end:status="+status);
+                        onQuestionShow(null, false, "onH5Courseware:end:status=" + status);
                     }
                     isAnaswer = false;
                     if (hasQuestion) {
