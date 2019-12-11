@@ -2532,7 +2532,7 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction,
         params.addBodyParam("option", option);
         params.addBodyParam("stuIRCId", stuIRCId);
         params.addBodyParam("stuName", stuName);
-        params.addBodyParam("isPlayback", isPlayback);
+        params.addBodyParam("isPlayBack", isPlayback);
         setDefaultParameter(params);
         sendPost(LiveQueHttpConfig.LIVE_SCIENCE_VOTE_SUBMIT, params, requestCallBack);
     }
