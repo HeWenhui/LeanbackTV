@@ -81,8 +81,11 @@ public class LiveVideoLoadActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         EventBus.getDefault().register(this);
         String token = LiveAppUserInfo.getInstance().getTalToken();
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        int liveType = bundle.getInt("type", 0);
         //如果没有token，只能重新点击进入了
-        if (StringUtils.isEmpty(token)) {
+        if (StringUtils.isEmpty(token) && liveType != LiveVideoConfig.LIVE_TYPE_LECTURE) {
             XESToastUtils.showToast(this, "登录信息失效，重新登录");
             StableLogHashMap logHashMap = new StableLogHashMap();
             logHashMap.put("create_times", "" + CREATE_TIMES);
