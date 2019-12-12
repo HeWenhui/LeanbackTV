@@ -205,7 +205,6 @@ final class CacheWebViewClient extends ErrorWebViewClient {
             mCustomWebViewClient.onPageFinished(view, url);
             return;
         }
-        AppMonitor.getInstance().injectX5WebView(view);
         super.onPageFinished(view, url);
     }
 
