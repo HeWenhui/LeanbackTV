@@ -10,6 +10,7 @@ import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.are.RunningEnvironment;
 import com.xueersi.parentsmeeting.modules.livevideo.LiveAssetsLoadUtil;
 
+import java.util.Calendar;
 import java.util.HashMap;
 
 /**
@@ -413,5 +414,5 @@ public class LiveVideoConfig {
     /** 默认英文名-女 */
     public static final String ENGLISH_NAME_DEFAULT_GRIL = "Alice";
     /** 是否需要设置英文名 */
-    public static final String LIVE_GOUP_1V2_ENGLISH_CHECK = "live_goup_1v2_english_name_check";
+    public static final String LIVE_GOUP_1V2_ENGLISH_CHECK = "live_goup_1v2_english_name_check"+Calendar.getInstance().get(Calendar.MONTH);
 }

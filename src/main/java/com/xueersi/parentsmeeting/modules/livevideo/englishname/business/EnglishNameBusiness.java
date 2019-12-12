@@ -17,6 +17,7 @@ import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.englishname.config.EnglishNameConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.englishname.entity.EngLishNameEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -24,6 +25,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import io.agora.rtc.internal.RtcEngineMessage;
@@ -49,6 +51,9 @@ public class EnglishNameBusiness extends BaseBll {
     }
 
     public void getFilePath(final Context context){
+        if(LiveAppUserInfo.getInstance().isNeedEnglishName()) {
+            return;
+        }
         mSettingEnglishNameHttpManager.getDownLoadPath(new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
@@ -150,7 +155,9 @@ public class EnglishNameBusiness extends BaseBll {
     }
 
     public void checkName(){
-        mShareDataManager.put(LiveVideoConfig.LIVE_GOUP_1V2_ENGLISH_CHECK,false,ShareDataManager.SHAREDATA_USER);
+        if(LiveAppUserInfo.getInstance().isNeedEnglishName()) {
+           return;
+        }
         String userName = UserBll.getInstance().getMyUserInfoEntity().getEnglishName();
         if(TextUtils.isEmpty(userName)) {
             return;
