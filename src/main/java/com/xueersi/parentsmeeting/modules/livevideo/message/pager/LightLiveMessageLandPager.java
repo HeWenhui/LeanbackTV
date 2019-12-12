@@ -443,7 +443,7 @@ public class LightLiveMessageLandPager extends BaseLiveMessagePager {
             }
             if (LiveMessageEntity.MESSAGE_TIP == data.getType()) {
                 drawable = dwSysIcon;
-            } else if (LiveMessageEntity.MESSAGE_TEACHER == data.getType()) {
+            } else if (LiveMessageEntity.MESSAGE_TEACHER == data.getType() && data.getSender().startsWith(LiveMessageConfig.TEACHER_PREFIX)) {
                 drawable = dwTeacherIcon;
             }
             if (drawable != null) {
