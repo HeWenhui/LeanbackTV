@@ -32,7 +32,7 @@ public class IntelligentEvaluationH5Pager implements BaseEnglishH5CoursewarePage
     }
 
     @Override
-    public void destroy() {
+    public void destroy(String method) {
 
     }
 

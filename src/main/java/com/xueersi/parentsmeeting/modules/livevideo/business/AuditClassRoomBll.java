@@ -11,11 +11,13 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.log.Loger;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.AuditRoomConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AuditClassRoomEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveCourseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.http.AuditClassRoomHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.AuditClassRoomHttpResponseParser;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.ui.dataload.DataLoadEntity;
 
 import org.json.JSONException;
@@ -27,6 +29,7 @@ import org.json.JSONObject;
  */
 
 public class AuditClassRoomBll extends BaseBll {
+    private Logger logger = LiveLoggerFactory.getLogger("AuditClassRoomBll");
     private AuditClassRoomHttpManager mAuditClassRoomHttpManager;
     private AuditClassRoomHttpResponseParser mAudtiClassRoomHttpResponseParser;
     Activity activity;
@@ -59,10 +62,41 @@ public class AuditClassRoomBll extends BaseBll {
 
             @Override
             public void onPmFailure(Throwable error, String msg) {
+                logger.d("getLiveCourseUserScoreDetail:onPmFailure" + msg);
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
+                logger.d("getLiveCourseUserScoreDetail:onPmError" + responseEntity.getErrorMsg());
+            }
+        });
+    }
+
+    /**
+     * 旁听课堂数据-大班
+     *
+     * @param liveId
+     * @param auditClassRoomRequestCallBack
+     * @param dataLoadEntity
+     */
+    public void getBigLiveCourseUserScoreDetail(String liveId, String stuCouId, int classId, int teamId, final AbstractBusinessDataCallBack auditClassRoomRequestCallBack, final DataLoadEntity dataLoadEntity) {
+        mAuditClassRoomHttpManager.getBigLiveCourseUserScoreDetail(liveId, stuCouId, classId, teamId, new HttpCallBack(dataLoadEntity) {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) {
+                AuditClassRoomEntity entity = mAudtiClassRoomHttpResponseParser.parserAuditClassRoomUserScore(responseEntity);
+                if (!isEmpty(entity, dataLoadEntity)) {
+                    auditClassRoomRequestCallBack.onDataSucess(entity);
+                }
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                logger.d("getBigLiveCourseUserScoreDetail:onPmFailure" + msg);
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                logger.d("getBigLiveCourseUserScoreDetail:onPmError" + responseEntity.getErrorMsg());
             }
         });
     }

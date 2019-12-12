@@ -42,7 +42,7 @@ public class LiveAndBackDebugIml implements LiveAndBackDebug, LiveDebugGetInfo {
             return;
         }
         setLogParam(eventId, mData);
-        UmsAgentManager.umsAgentDebug(mContext, appID, eventId, mData);
+        UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadSystem, mData);
     }
 
     @Override

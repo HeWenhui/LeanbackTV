@@ -16,5 +16,7 @@ public interface EnglishH5CoursewareAction {
      */
     void onH5Courseware(String status, VideoQuestionLiveEntity videoQuestionLiveEntity);
 
+    void onH5CoursewareMethod(final String status,String offMethod, final VideoQuestionLiveEntity videoQuestionLiveEntity);
+
     void onNetWorkChange(int netWorkType);
 }

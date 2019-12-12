@@ -24,6 +24,7 @@ import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
@@ -96,6 +97,7 @@ public class ScienceVoteBll extends LiveBaseBll implements NoticeAction, TopicAc
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                LiveCrashReport.postCatchedException(TAG, e);
             }
         }
     }
@@ -173,6 +175,7 @@ public class ScienceVoteBll extends LiveBaseBll implements NoticeAction, TopicAc
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
+                    LiveCrashReport.postCatchedException(TAG, e);
                 }
             }
 

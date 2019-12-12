@@ -2,9 +2,9 @@ package com.xueersi.parentsmeeting.modules.livevideo.enteampk.tcp;
 
 import android.content.Context;
 import android.os.Handler;
-import android.os.Looper;
 
 import com.xueersi.lib.framework.are.ContextManager;
+import com.xueersi.lib.framework.utils.AppUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.component.cloud.XesCloudUploadBusiness;
@@ -165,6 +165,12 @@ public class TcpDispatch {
                 jsonObject.put("live_id", live_id);
                 jsonObject.put("class_id", class_id);
                 jsonObject.put("device_id", "1");
+                try {
+                    jsonObject.put("device_version", "" + AppUtils.getAppVersionCode(ContextManager.getContext()));
+                    jsonObject.put("os_version", "" + android.os.Build.VERSION.SDK_INT);
+                }catch (Exception e){
+                    LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+                }
 //                jsonObject.put("gt", gt);
 //                jsonObject.put("pid", pid);
 //                jsonObject.put("iid", iid);

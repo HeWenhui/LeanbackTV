@@ -77,100 +77,110 @@ public class QuestionWebCache {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                         QuestionParse questionParse = new QuestionParse();
-                        ArrayList<String> list = questionParse.parseQueCache(responseEntity);
-                        final AtomicInteger atomicInteger = new AtomicInteger(0);
-                        for (int i = 0; i < list.size(); i++) {
-                            final String url = list.get(i);
-                            if (!url.startsWith("http")) {
-                                continue;
-                            }
-                            String filename = null;
-                            int index = url.lastIndexOf("/");
-                            if (index != 1) {
-                                filename = url.substring(index + 1);
-                            }
-                            if (filename == null) {
-                                continue;
-                            }
-                            String name = MD5Utils.getMD5(url) + "_" + filename;
-                            final File saveFile = new File(mMorecacheout, name);
-                            if (saveFile.exists()) {
-                                continue;
-                            }
-                            //删除旧文件，MathJax只留一个
-                            if (filename.contains("MathJax")) {
-                                File zipFile = new File(mMorecacheout, "MathJax");
-                                if (zipFile.exists()) {
-                                    FileUtils.deleteDir(zipFile);
-                                }
-                            } else {
-                                int dotindex = filename.indexOf(".");
-                                if (dotindex != -1) {
-                                    String zipName = filename.substring(0, dotindex);
-                                    File zipFile = new File(mMorecacheout, zipName);
-                                    if (zipFile.exists()) {
-                                        FileUtils.deleteDir(zipFile);
-                                    }
-                                }
-                            }
-                            final File saveFileTmp = new File(mMorecacheout, name + ".tmp");
-                            if (saveFileTmp.exists()) {
-                                saveFileTmp.delete();
-                            }
-                            int get = atomicInteger.getAndIncrement();
-                            logger.d("startCache:get=" + get);
-                            final String finalName = name;
-                            final String finalFilename = filename;
-                            liveHttpManager.download(url, saveFileTmp.getPath(), new DownloadCallBack() {
-                                @Override
-                                protected void onDownloadSuccess() {
-                                    int get = atomicInteger.getAndDecrement();
-                                    boolean rename = saveFileTmp.renameTo(saveFile);
-                                    logger.d("startCache:onDownloadSuccess:url=" + url + ",rename=" + rename + ",get=" + get);
-                                    File out;
-                                    if (finalName.contains("MathJax")) {
-                                        out = new File(mMorecacheout, "MathJax");
-                                    } else {
-                                        out = mMorecacheout;
-                                    }
-                                    QueZipExtractorTask zipExtractorTask = new QueZipExtractorTask(saveFile.getPath(), out.getPath(), true);
-                                    zipExtractorTask.executeOnExecutor(executos);
-                                    if (get == 1) {
-                                        zipEnd();
-                                    }
-                                }
-
-                                @Override
-                                protected void onDownloadFailed() {
-                                    int get = atomicInteger.getAndDecrement();
-                                    logger.d("startCache:onDownloadFailed:url=" + url + ",get=" + get);
-                                    if (get == 1) {
-                                        zipEnd();
-                                    }
-                                }
-
-                                private void zipEnd() {
-                                    logger.d("zipEnd:start");
-                                    executos.shutdown();
-                                    new Thread() {
-                                        @Override
-                                        public void run() {
-                                            try {
-                                                executos.awaitTermination(320, TimeUnit.SECONDS);
-                                            } catch (InterruptedException e) {
-                                                e.printStackTrace();
-                                            }
-                                            logger.d("zipEnd:end");
-                                            startLoad = false;
+                        final ArrayList<String> list = questionParse.parseQueCache(responseEntity);
+                        threadPoolExecutor.execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    final AtomicInteger atomicInteger = new AtomicInteger(0);
+                                    for (int i = 0; i < list.size(); i++) {
+                                        final String url = list.get(i);
+                                        if (!url.startsWith("http")) {
+                                            continue;
                                         }
-                                    }.start();
+                                        String filename = null;
+                                        int index = url.lastIndexOf("/");
+                                        if (index != 1) {
+                                            filename = url.substring(index + 1);
+                                        }
+                                        if (filename == null) {
+                                            continue;
+                                        }
+                                        String name = MD5Utils.getMD5(url) + "_" + filename;
+                                        final File saveFile = new File(mMorecacheout, name);
+                                        if (saveFile.exists()) {
+                                            continue;
+                                        }
+                                        //删除旧文件，MathJax只留一个
+                                        if (filename.contains("MathJax")) {
+                                            File zipFile = new File(mMorecacheout, "MathJax");
+                                            if (zipFile.exists()) {
+                                                FileUtils.deleteDir(zipFile);
+                                            }
+                                        } else {
+                                            int dotindex = filename.indexOf(".");
+                                            if (dotindex != -1) {
+                                                String zipName = filename.substring(0, dotindex);
+                                                File zipFile = new File(mMorecacheout, zipName);
+                                                if (zipFile.exists()) {
+                                                    FileUtils.deleteDir(zipFile);
+                                                }
+                                            }
+                                        }
+                                        final File saveFileTmp = new File(mMorecacheout, name + ".tmp");
+                                        if (saveFileTmp.exists()) {
+                                            saveFileTmp.delete();
+                                        }
+                                        int get = atomicInteger.getAndIncrement();
+                                        logger.d("startCache:get=" + get);
+                                        final String finalName = name;
+                                        final String finalFilename = filename;
+                                        liveHttpManager.download(url, saveFileTmp.getPath(), new DownloadCallBack() {
+                                            @Override
+                                            protected void onDownloadSuccess() {
+                                                int get = atomicInteger.getAndDecrement();
+                                                boolean rename = saveFileTmp.renameTo(saveFile);
+                                                logger.d("startCache:onDownloadSuccess:url=" + url + ",rename=" + rename + ",get=" + get);
+                                                File out;
+                                                if (finalName.contains("MathJax")) {
+                                                    out = new File(mMorecacheout, "MathJax");
+                                                } else {
+                                                    out = mMorecacheout;
+                                                }
+                                                QueZipExtractorTask zipExtractorTask = new QueZipExtractorTask(saveFile.getPath(), out.getPath(), true);
+                                                zipExtractorTask.executeOnExecutor(executos);
+                                                if (get == 1) {
+                                                    zipEnd();
+                                                }
+                                            }
+
+                                            @Override
+                                            protected void onDownloadFailed() {
+                                                int get = atomicInteger.getAndDecrement();
+                                                logger.d("startCache:onDownloadFailed:url=" + url + ",get=" + get);
+                                                if (get == 1) {
+                                                    zipEnd();
+                                                }
+                                            }
+
+                                            private void zipEnd() {
+                                                logger.d("zipEnd:start");
+                                                executos.shutdown();
+                                                new Thread() {
+                                                    @Override
+                                                    public void run() {
+                                                        try {
+                                                            executos.awaitTermination(320, TimeUnit.SECONDS);
+                                                        } catch (InterruptedException e) {
+                                                            e.printStackTrace();
+                                                        }
+                                                        logger.d("zipEnd:end");
+                                                        startLoad = false;
+                                                    }
+                                                }.start();
+                                            }
+                                        });
+                                    }
+                                    logger.d("startCache:onPmSuccess:list=" + list.size() + ",down=" + atomicInteger.get());
+                                    if (atomicInteger.get() == 0) {
+                                        startLoad = false;
+                                    }
+                                } catch (Exception e) {
+                                    startLoad = false;
+                                    LiveCrashReport.postCatchedException(TAG, e);
                                 }
-                            });
-                        }
-                        logger.d("startCache:onPmSuccess:list=" + list.size() + ",down=" + atomicInteger.get());
-                        if (atomicInteger.get() == 0) {
-                            startLoad = false;
-                        }
+                            }
+                        });
                     }
 
                     @Override

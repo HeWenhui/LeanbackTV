@@ -16,6 +16,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.fasterxml.jackson.core.io.JsonEOFException;
 import com.tal.speech.config.SpeechConfig;
 import com.tal.speech.speechrecognizer.EvaluatorListenerWithPCM;
 import com.tal.speech.speechrecognizer.ResultCode;
@@ -1659,7 +1660,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
     }
 
     @Override
-    public void destroy() {
+    public void destroy(String method) {
         onDestroy();
     }
 
@@ -1844,10 +1845,10 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                     }
                 }
                 createSpeechContent("getCourseWareTests", lastTime < 0);
-                if (TextUtils.equals("2", getProtocal())) {
-                    wvSubjectWeb.loadUrl(testEntity.getPreviewPath() + "?cw_platform=android");
-                } else {
+                if (TextUtils.isEmpty(getProtocal())||TextUtils.equals("0", getProtocal())||TextUtils.equals("1", getProtocal())) {
                     wvSubjectWeb.loadUrl(testEntity.getPreviewPath());
+                }else {
+                    wvSubjectWeb.loadUrl(testEntity.getPreviewPath()+"?cw_platform=android");
                 }
                 int type = newCourseCache.loadCourseWareUrl(testEntity.getPreviewPath());
                 if (type != 0) {
@@ -2349,7 +2350,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         @Override
         public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
             String url = request.getUrl() + "";
-            if (!TextUtils.equals("2", getProtocal())) {
+            if (TextUtils.isEmpty(getProtocal())||TextUtils.equals("0", getProtocal())||TextUtils.equals("1", getProtocal())) {
                 if (url.contains(".html")) {
                     if (!addJs) {
                         addJs = true;

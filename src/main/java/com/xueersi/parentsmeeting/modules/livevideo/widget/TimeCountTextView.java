@@ -15,6 +15,10 @@ public class TimeCountTextView extends android.support.v7.widget.AppCompatTextVi
 
     private TimeCountTask mTask;
 
+    private static final String TIMEPREFIXDEFSTR = "用时: ";
+
+    private String timePrefixStr;
+
     public TimeCountTextView(Context context) {
         super(context);
     }
@@ -25,6 +29,11 @@ public class TimeCountTextView extends android.support.v7.widget.AppCompatTextVi
 
     public TimeCountTextView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+    }
+
+
+    public void setTimePrefixStr(String timePrefixStr) {
+        this.timePrefixStr = timePrefixStr;
     }
 
     class TimeCountTask implements Runnable {
@@ -42,14 +51,13 @@ public class TimeCountTextView extends android.support.v7.widget.AppCompatTextVi
                 sb.delete(0, sb.length());
                 int min = mTime / 60;
                 int second = mTime % 60;
-                sb.append("用时: ").append(min).append("分");
+                sb.append(timePrefixStr == null?TIMEPREFIXDEFSTR:timePrefixStr).append(min).append("分");
                 if(second > 0){
                     sb.append(second).append("秒");
                 }
             } else {
                 sb.delete(0, sb.length());
-                sb.append("用时: ")
-                        .append(mTime).append("秒");
+                sb.append(timePrefixStr == null?TIMEPREFIXDEFSTR:timePrefixStr).append(mTime).append("秒");
             }
             TimeCountTextView.this.setText(sb.toString());
             postDelayed(this, 1000);

@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveOnLineLogs;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.SysLogEntity;
@@ -16,8 +17,6 @@ import java.util.Locale;
 public class LogToFile {
     String TAG;
     private static SimpleDateFormat dateFormat;
-    /** 静态唯一 */
-    public static LiveOnLineLogs auditClassLiveBll;
     public LiveOnLineLogs liveOnLineLogs;
     protected Logger logger = LoggerFactory.getLogger("LogToFile");
     private StableLogHashMap stableLogHashMap;
@@ -29,9 +28,6 @@ public class LogToFile {
     public LogToFile(String tag) {
         logger = LiveLoggerFactory.getLogger(tag);
         this.TAG = "OL:" + tag;
-        if (auditClassLiveBll != null) {
-            liveOnLineLogs = auditClassLiveBll;
-        }
     }
 
     public LogToFile(String tag, LiveOnLineLogs liveOnLineLogs) {
@@ -70,10 +66,14 @@ public class LogToFile {
      * @param value
      */
     public void addCommon(String key, String value) {
-        if (stableLogHashMap == null) {
-            stableLogHashMap = new StableLogHashMap();
+        try {
+            if (stableLogHashMap == null) {
+                stableLogHashMap = new StableLogHashMap();
+            }
+            stableLogHashMap.put(key, value);
+        } catch (Exception e) {
+            LiveCrashReport.postCatchedException(TAG, e);
         }
-        stableLogHashMap.put(key, value);
     }
 
     public void i(String message) {

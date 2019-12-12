@@ -332,18 +332,21 @@ public class TeamPkPraiseLayout extends FrameLayout {
         String lottieResPath = ANIM_RES_DIR + "loop/images";
         String lottieJsonPath = ANIM_RES_DIR + "loop/data.json";
         final LottieEffectInfo effectInfo = new LottieEffectInfo(lottieResPath, lottieJsonPath);
-        loopAnimationView.setAnimationFromJson(effectInfo.getJsonStrFromAssets(getContext()),LOTTIE_CACHE_KEY_PRAISE_LOOP);
-        loopAnimationView.useHardwareAcceleration(true);
-        loopAnimationView.setRepeatCount(-1);
-        loopAnimationView.setImageAssetDelegate(new ImageAssetDelegate() {
-            @Override
-            public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
-                return effectInfo.fetchBitmapFromAssets(loopAnimationView, lottieImageAsset.getFileName(),
-                        lottieImageAsset.getId(), lottieImageAsset.getWidth(), lottieImageAsset.getHeight(),
-                        getContext());
-            }
-        });
-        loopAnimationView.playAnimation();
+        String animJson = effectInfo.getJsonStrFromAssets(getContext());
+        if(animJson != null){
+            loopAnimationView.setAnimationFromJson(animJson,LOTTIE_CACHE_KEY_PRAISE_LOOP);
+            loopAnimationView.useHardwareAcceleration(true);
+            loopAnimationView.setRepeatCount(-1);
+            loopAnimationView.setImageAssetDelegate(new ImageAssetDelegate() {
+                @Override
+                public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
+                    return effectInfo.fetchBitmapFromAssets(loopAnimationView, lottieImageAsset.getFileName(),
+                            lottieImageAsset.getId(), lottieImageAsset.getWidth(), lottieImageAsset.getHeight(),
+                            getContext());
+                }
+            });
+            loopAnimationView.playAnimation();
+        }
     }
 
 

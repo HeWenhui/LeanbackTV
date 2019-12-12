@@ -44,7 +44,7 @@ public class EnglishNameBusiness extends BaseBll {
     }
 
     public String getLocalPath(){
-        return  Environment.getExternalStorageDirectory()+EnglishNameConfig.LIVE_UNITI_NET_PATH_L;
+        return  EnglishNameConfig.LIVE_UNITI_NET_PATH_L;
 
     }
 
@@ -52,8 +52,13 @@ public class EnglishNameBusiness extends BaseBll {
         mSettingEnglishNameHttpManager.getDownLoadPath(new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                String localUrl = mShareDataManager.getString(EnglishNameConfig.LIVE_UNITI_NET_PATH_L_FILE_URL,"",ShareDataManager.SHAREDATA_USER);
                 String url = mEnlishNameParser.parseDownLoadUrl(responseEntity);
-                downloadResource(context,url);
+                if(!TextUtils.equals(url,localUrl)) {
+                    mShareDataManager.put(EnglishNameConfig.LIVE_UNITI_NET_PATH_L_FILE_URL,url,ShareDataManager.SHAREDATA_USER);
+                    downloadResource(context,url);
+                }
+
             }
         });
     }
@@ -65,7 +70,7 @@ public class EnglishNameBusiness extends BaseBll {
      * @param resourceCallback
      */
     public void downloadResource(final Context context ,String url) {
-        String mathGamePath = getLocalPath();
+        String mathGamePath = getLocalPath()+"/generate.txt";
         try {
             if (!TextUtils.isEmpty(mathGamePath)) {
                 File file = new File(mathGamePath);

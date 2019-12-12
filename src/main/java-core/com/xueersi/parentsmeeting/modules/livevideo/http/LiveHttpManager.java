@@ -27,6 +27,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoChConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoHttpEnConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.BigLiveEnterParam;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LivePostEntity;
@@ -333,6 +334,8 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction,
         if(stuCould > 0){
             param.setStuCouId(stuCould);
         }
+        addHeaderParams("planId",planId+"");
+        addHeaderParams("bizId",bizId+"");
         sendJsonPost(LiveIntegratedCfg.LIVE_ENTER,param,requestCallBack);
     }
 
@@ -1031,6 +1034,29 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction,
         setDefaultParameter(params);
         requestCallBack.url = liveVideoSAConfigInner.URL_LIVE_STUDY_INFO;
         sendPost(requestCallBack.url, params, requestCallBack);
+    }
+
+    public void getBigStudentLiveInfo(String mStuCouId, String liveId, String classId, String teamId, HttpCallBack
+            requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        JSONObject jsonObject = new JSONObject();
+        setDefaultHeaderParams(params);
+        try {
+            jsonObject.put("bizId", LiveVideoConfig.BIGLIVE_BIZID_LIVE);
+            jsonObject.put("stuCouId", Integer.parseInt(mStuCouId));
+            jsonObject.put("planId", Integer.parseInt(liveId));
+            jsonObject.put("classId", Integer.parseInt(classId));
+            jsonObject.put("teamId", Integer.parseInt(teamId));
+            jsonObject.put("sourceId", 1);
+            params.setJson(jsonObject.toString());
+            setDefBusinessParams(params);
+            requestCallBack.url = LiveHttpConfig.URL_LIVE_STUDY_INFO;
+            sendJsonPost(requestCallBack.url, params, requestCallBack);
+        } catch (Exception e) {
+            LiveCrashReport.postCatchedException(TAG, e);
+            requestCallBack.onPmFailure(e, e.toString());
+        }
+
     }
 
     /**
@@ -2506,7 +2532,7 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction,
         params.addBodyParam("option", option);
         params.addBodyParam("stuIRCId", stuIRCId);
         params.addBodyParam("stuName", stuName);
-        params.addBodyParam("isPlayback", isPlayback);
+        params.addBodyParam("isPlayBack", isPlayback);
         setDefaultParameter(params);
         sendPost(LiveQueHttpConfig.LIVE_SCIENCE_VOTE_SUBMIT, params, requestCallBack);
     }

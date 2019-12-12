@@ -14,6 +14,7 @@ import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.tencent.smtt.sdk.WebViewClient;
+import com.xueersi.lib.monitor.AppMonitor;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ErrorWebViewClient;
 
@@ -201,6 +202,7 @@ final class CacheWebViewClient extends ErrorWebViewClient {
             webSettings.setBlockNetworkImage(false);
         }
         if (mCustomWebViewClient != null) {
+            AppMonitor.getInstance().injectX5WebView(view);
             mCustomWebViewClient.onPageFinished(view, url);
             return;
         }

@@ -7,6 +7,7 @@ import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
+import com.xueersi.lib.framework.utils.JsonUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveIntegratedCfg;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.BigLiveEnterParam;
 
@@ -54,7 +55,13 @@ public class DispatcherHttpManager extends BaseHttpBusiness {
         param.setPlanId(planId);
         param.setStuCouId(stuCouId);
         param.setAcceptPlanVersion(acceptPlanVersion);
-        sendJsonPost(LiveIntegratedCfg.LIVE_PLAY_BACK_ENTER,param,requestCallBack);
+        HttpRequestParams requestParams = new HttpRequestParams();
+
+        requestParams.setJson(JsonUtil.toJson(param));
+        requestParams.getHeaderParams().put("planId",planId+"");
+        requestParams.getHeaderParams().put("bizId",bizId+"");
+
+        sendJsonPost(LiveIntegratedCfg.LIVE_PLAY_BACK_ENTER,requestParams,requestCallBack);
     }
 
     /**
