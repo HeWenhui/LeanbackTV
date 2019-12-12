@@ -202,10 +202,10 @@ final class CacheWebViewClient extends ErrorWebViewClient {
             webSettings.setBlockNetworkImage(false);
         }
         if (mCustomWebViewClient != null) {
+            AppMonitor.getInstance().injectX5WebView(view);
             mCustomWebViewClient.onPageFinished(view, url);
             return;
         }
-        AppMonitor.getInstance().injectX5WebView(view);
         super.onPageFinished(view, url);
     }
 
