@@ -852,11 +852,9 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
             classId = studentLiveInfo.getClassId();
         }
         if (TextUtils.isEmpty(eChannel) || LiveTopic.MODE_CLASS.equals(getMode())) {
-            mIRCMessage = new NewIRCMessage(mBaseActivity, nickname, mGetInfo.getId(), classId, channel);
             channel = "#" + channel;
             mIRCMessage = new NewIRCMessage(mBaseActivity, nickname, mGetInfo.getId(), classId, channel);
         } else {
-            mIRCMessage = new NewIRCMessage(mBaseActivity, nickname, mGetInfo.getId(), classId, channel, eChannel);
             channel = "#" + channel;
             eChannel = "#" + eChannel;
             mIRCMessage = new NewIRCMessage(mBaseActivity, nickname, mGetInfo.getId(), classId, channel, eChannel);
