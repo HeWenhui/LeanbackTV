@@ -384,7 +384,7 @@ public class VideoChatBll implements VideoChatAction {
                     @Override
                     public void run() {
                         if (isRun.get()) {
-                            XrsCrashReport.d(TAG,"Runnable");
+                            XrsCrashReport.d(TAG, "Runnable");
                             return;
                         }
                         isRun.set(true);
@@ -451,6 +451,10 @@ public class VideoChatBll implements VideoChatAction {
                                             if (finalRaiseHandDialog == raiseHandDialog) {
                                                 finalRaiseHandDialog.cancelDialog("onClick3");
                                                 raiseHandDialog = null;
+                                            } else {
+                                                XrsCrashReport.d(TAG,"onClick3_f");
+                                                mLogtf.d("cancelDialog onClick3_f");
+                                                finalRaiseHandDialog.cancelDialog("onClick3_f");
                                             }
                                         }
                                     }, 3000);
@@ -476,6 +480,10 @@ public class VideoChatBll implements VideoChatAction {
                                             if (finalRaiseHandDialog == psraiseHandDialog) {
                                                 finalRaiseHandDialog.cancelDialog();
                                                 psraiseHandDialog = null;
+                                            }else {
+                                                XrsCrashReport.d(TAG,"isPrimary_f");
+                                                mLogtf.d("cancelDialog isPrimary_f");
+                                                finalRaiseHandDialog.cancelDialog();
                                             }
                                         }
                                     }, 3000);
@@ -501,6 +509,10 @@ public class VideoChatBll implements VideoChatAction {
                                             if (finalRaiseHandDialog == raiseHandDialog) {
                                                 finalRaiseHandDialog.cancelDialog("onClick5");
                                                 raiseHandDialog = null;
+                                            } else {
+                                                XrsCrashReport.d(TAG,"onClick5_f");
+                                                mLogtf.d("cancelDialog onClick5_f");
+                                                finalRaiseHandDialog.cancelDialog("onClick5_f");
                                             }
                                         }
                                     }, 3000);
@@ -527,6 +539,10 @@ public class VideoChatBll implements VideoChatAction {
                                         if (finalSmallEnglishMicTipDialog == smallEnglishDialog) {
                                             finalSmallEnglishMicTipDialog.cancelDialog();
                                             raiseHandDialog = null;
+                                        }else {
+                                            XrsCrashReport.d(TAG,"smallEnglis_f");
+                                            mLogtf.d("cancelDialog smallEnglis_f");
+                                            finalSmallEnglishMicTipDialog.cancelDialog();
                                         }
                                     }
                                 }, 3000);
