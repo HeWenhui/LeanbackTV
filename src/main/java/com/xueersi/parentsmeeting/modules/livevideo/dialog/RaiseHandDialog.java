@@ -42,7 +42,7 @@ public class RaiseHandDialog extends BaseAlertDialog {
         super(context, application, false);
     }
 
-    private static int showCount = 0;
+    public static int showCount = 0;
 
     @Override
     public void showDialog() {
