@@ -792,9 +792,9 @@ public class VideoChatBll implements VideoChatAction {
                         if (videoChatInter != null) {
                             View vMediacontrolBottom = baseLiveMediaControllerBottom.findViewById(R.id
                                     .v_livevideo_mediacontrol_bottom);
-                            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) vMediacontrolBottom
-                                    .getLayoutParams();
                             if (vMediacontrolBottom != null) {
+                                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) vMediacontrolBottom
+                                        .getLayoutParams();
                                 int height = 1;
                                 if (lp.height != height) {
                                     lp.height = height;
@@ -819,9 +819,9 @@ public class VideoChatBll implements VideoChatAction {
                     if (videoChatInter != null) {
                         View vMediacontrolBottom = baseLiveMediaControllerBottom.findViewById(R.id
                                 .v_livevideo_mediacontrol_bottom);
-                        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) vMediacontrolBottom
-                                .getLayoutParams();
                         if (vMediacontrolBottom != null) {
+                            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) vMediacontrolBottom
+                                    .getLayoutParams();
                             int height = 1;
                             if (lp.height != height) {
                                 lp.height = height;
