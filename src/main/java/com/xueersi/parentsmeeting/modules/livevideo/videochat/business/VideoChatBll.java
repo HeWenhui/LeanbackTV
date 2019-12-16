@@ -11,7 +11,6 @@ import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.os.Build;
 import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,22 +18,17 @@ import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 
-import com.airbnb.lottie.L;
 import com.xueersi.common.base.XrsCrashReport;
-import com.xueersi.lib.framework.are.ContextManager;
-import com.xueersi.lib.framework.utils.listener.OnUnDoubleClickListener;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
-import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
-import com.umeng.analytics.MobclickAgent;
-import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.common.permission.PermissionItem;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.lib.framework.utils.listener.OnUnDoubleClickListener;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
@@ -43,13 +37,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
-import com.xueersi.parentsmeeting.modules.livevideo.dialog.MicTipPsDialog;
-import com.xueersi.parentsmeeting.modules.livevideo.dialog.PsRaiseHandDialog;
-import com.xueersi.parentsmeeting.modules.livevideo.dialog.SmallEnglishMicTipDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoChatAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoChatInter;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.MicTipDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.MicTipPsDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.PsRaiseHandDialog;
@@ -352,13 +345,15 @@ public class VideoChatBll implements VideoChatAction {
                             View vMediacontrolBottom = baseLiveMediaControllerBottom.findViewById(R.id
                                     .v_livevideo_mediacontrol_bottom);
                             rootView.getViewTreeObserver().removeOnPreDrawListener(this);
-                            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) vMediacontrolBottom
-                                    .getLayoutParams();
-                            int height = rootView.getHeight();
-                            if (lp.height != height) {
-                                lp.height = height;
+                            if (vMediacontrolBottom != null) {
+                                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) vMediacontrolBottom
+                                        .getLayoutParams();
+                                int height = rootView.getHeight();
+                                if (lp.height != height) {
+                                    lp.height = height;
 //                        vMediacontrolBottom.setLayoutParams(lp);
-                                LayoutParamsUtil.setViewLayoutParams(vMediacontrolBottom, lp);
+                                    LayoutParamsUtil.setViewLayoutParams(vMediacontrolBottom, lp);
+                                }
                             }
                             return false;
                         }
@@ -799,11 +794,13 @@ public class VideoChatBll implements VideoChatAction {
                                     .v_livevideo_mediacontrol_bottom);
                             RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) vMediacontrolBottom
                                     .getLayoutParams();
-                            int height = 1;
-                            if (lp.height != height) {
-                                lp.height = height;
+                            if (vMediacontrolBottom != null) {
+                                int height = 1;
+                                if (lp.height != height) {
+                                    lp.height = height;
 //                                vMediacontrolBottom.setLayoutParams(lp);
-                                LayoutParamsUtil.setViewLayoutParams(vMediacontrolBottom, lp);
+                                    LayoutParamsUtil.setViewLayoutParams(vMediacontrolBottom, lp);
+                                }
                             }
                             liveViewAction.removeView(videoChatInter.getRootView());
                             stopRecord();
@@ -824,11 +821,13 @@ public class VideoChatBll implements VideoChatAction {
                                 .v_livevideo_mediacontrol_bottom);
                         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) vMediacontrolBottom
                                 .getLayoutParams();
-                        int height = 1;
-                        if (lp.height != height) {
-                            lp.height = height;
+                        if (vMediacontrolBottom != null) {
+                            int height = 1;
+                            if (lp.height != height) {
+                                lp.height = height;
 //                            vMediacontrolBottom.setLayoutParams(lp);
-                            LayoutParamsUtil.setViewLayoutParams(vMediacontrolBottom, lp);
+                                LayoutParamsUtil.setViewLayoutParams(vMediacontrolBottom, lp);
+                            }
                         }
                         liveViewAction.removeView(videoChatInter.getRootView());
                         stopRecord();
@@ -1577,13 +1576,15 @@ public class VideoChatBll implements VideoChatAction {
                 if (videoChatInter != null) {
                     View vMediacontrolBottom = baseLiveMediaControllerBottom.findViewById(R.id
                             .v_livevideo_mediacontrol_bottom);
-                    RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) vMediacontrolBottom
-                            .getLayoutParams();
-                    int height = 1;
-                    if (lp.height != height) {
-                        lp.height = height;
+                    if (vMediacontrolBottom != null) {
+                        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) vMediacontrolBottom
+                                .getLayoutParams();
+                        int height = 1;
+                        if (lp.height != height) {
+                            lp.height = height;
 //                        vMediacontrolBottom.setLayoutParams(lp);
-                        LayoutParamsUtil.setViewLayoutParams(vMediacontrolBottom, lp);
+                            LayoutParamsUtil.setViewLayoutParams(vMediacontrolBottom, lp);
+                        }
                     }
                     liveViewAction.removeView(videoChatInter.getRootView());
                     stopRecord();
