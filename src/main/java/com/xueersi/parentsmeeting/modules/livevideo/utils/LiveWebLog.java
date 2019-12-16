@@ -36,41 +36,6 @@ public class LiveWebLog {
                 XrsBroswer.XrsTbsLogClient tbsLogClient = XrsBroswer.getTbsLogClient();
                 if (tbsLogClient != null) {
                     File dir = LiveCacheFile.geCacheFile(ContextManager.getContext(), "tbslog");
-                    File uploadfile = new File(dir, "uploald_" + System.currentTimeMillis() + ".txt");
-                    File[] files = dir.listFiles();
-                    if (files != null) {
-                        for (int i = 0; i < files.length; i++) {
-                            try {
-                                File file = files[i];
-                                if (!file.getName().startsWith("uploald")) {
-                                    FileOutputStream fileOutputStream = new FileOutputStream(uploadfile, true);
-                                    List<String> stringList = FileUtils.readFile2List(file, "utf-8");
-                                    if (stringList != null) {
-                                        fileOutputStream.write((file.getName() + "---------------\n").getBytes());
-                                        for (int j = 0; j < stringList.size(); j++) {
-                                            fileOutputStream.write((stringList.get(j) + "\n").getBytes());
-                                        }
-                                    }
-                                    file.delete();
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                    files = dir.listFiles();
-                    if (files != null) {
-                        for (int i = 0; i < files.length; i++) {
-                            try {
-                                File file = files[i];
-                                if (file.getName().startsWith("uploald")) {
-                                    uploadCreashFile(ContextManager.getContext(), file);
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
                     int index = 0;
                     File file = new File(dir, "tbslog_" + liveid + "_" + index + ".txt");
                     while (file.exists()) {
@@ -83,10 +48,55 @@ public class LiveWebLog {
         });
     }
 
-    public void stop() {
+    public static void stop() {
         XrsBroswer.XrsTbsLogClient tbsLogClient = XrsBroswer.getTbsLogClient();
         if (tbsLogClient != null) {
             tbsLogClient.setLogFile(null);
+        }
+        LiveThreadPoolExecutor.getInstance().execute(new Runnable() {
+            @Override
+            public void run() {
+                upload();
+            }
+        });
+    }
+
+    private static void upload() {
+        File dir = LiveCacheFile.geCacheFile(ContextManager.getContext(), "tbslog");
+        File uploadfile = new File(dir, "uploald_" + System.currentTimeMillis() + ".txt");
+        File[] files = dir.listFiles();
+        if (files != null) {
+            for (int i = 0; i < files.length; i++) {
+                try {
+                    File file = files[i];
+                    if (!file.getName().startsWith("uploald")) {
+                        FileOutputStream fileOutputStream = new FileOutputStream(uploadfile, true);
+                        List<String> stringList = FileUtils.readFile2List(file, "utf-8");
+                        if (stringList != null) {
+                            fileOutputStream.write((file.getName() + "---------------\n").getBytes());
+                            for (int j = 0; j < stringList.size(); j++) {
+                                fileOutputStream.write((stringList.get(j) + "\n").getBytes());
+                            }
+                        }
+                        file.delete();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        files = dir.listFiles();
+        if (files != null) {
+            for (int i = 0; i < files.length; i++) {
+                try {
+                    File file = files[i];
+                    if (file.getName().startsWith("uploald")) {
+                        uploadCreashFile(ContextManager.getContext(), file);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
