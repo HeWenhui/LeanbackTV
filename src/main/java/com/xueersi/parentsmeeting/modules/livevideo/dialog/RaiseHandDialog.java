@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.tencent.bugly.crashreport.BuglyLog;
 import com.xueersi.common.base.XrsCrashReport;
+import com.xueersi.lib.framework.utils.AppMainHandler;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -42,7 +43,7 @@ public class RaiseHandDialog extends BaseAlertDialog {
         super(context, application, false);
     }
 
-    private static int showCount = 0;
+    public static int showCount = 0;
 
     @Override
     public void showDialog() {
@@ -56,6 +57,12 @@ public class RaiseHandDialog extends BaseAlertDialog {
         if (showCount > 1) {
             XrsCrashReport.postCatchedException(new Exception());
         }
+        AppMainHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                cancelDialog("showDialog");
+            }
+        },3000);
     }
 
     @Override

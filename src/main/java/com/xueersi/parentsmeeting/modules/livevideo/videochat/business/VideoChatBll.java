@@ -20,7 +20,9 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 
 import com.airbnb.lottie.L;
+import com.xueersi.common.base.XrsCrashReport;
 import com.xueersi.lib.framework.are.ContextManager;
+import com.xueersi.lib.framework.utils.listener.OnUnDoubleClickListener;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.umeng.analytics.MobclickAgent;
@@ -69,6 +71,7 @@ import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 //import com.xueersi.parentsmeeting.modules.livevideo.page.LicodeVideoChatPager;
 
@@ -370,15 +373,21 @@ public class VideoChatBll implements VideoChatAction {
     }
 
     // 老师开启举手功能后，手机这边点击举手，会调用这里的已举手1，已举手5也会调用
-    View.OnClickListener btRaiseHandsListener = new View.OnClickListener() {
+    private OnUnDoubleClickListener btRaiseHandsListener = new OnUnDoubleClickListener() {
         @Override
-        public void onClick(View v) {
+        public void onUnDoubleClick(View v) {
             baseLiveMediaControllerBottom.onChildViewClick(v);
             if (btRaiseHands.getAlpha() == 1.0f && videoChatInter == null && isHasPermission && (!isSuccess &&
                     !isFail)) {
+                final AtomicBoolean isRun = new AtomicBoolean(false);
                 final Runnable runnable = new Runnable() {
                     @Override
                     public void run() {
+                        if (isRun.get()) {
+                            XrsCrashReport.d(TAG, "Runnable");
+                            return;
+                        }
+                        isRun.set(true);
                         String nonce = StableLogHashMap.creatNonce();
                         VideoChatLog.sno4(liveAndBackDebug, nonce);
                         raisehand = true;
@@ -442,11 +451,22 @@ public class VideoChatBll implements VideoChatAction {
                                             if (finalRaiseHandDialog == raiseHandDialog) {
                                                 finalRaiseHandDialog.cancelDialog("onClick3");
                                                 raiseHandDialog = null;
+                                            } else {
+                                                XrsCrashReport.d(TAG, "onClick3_f");
+                                                mLogtf.d("cancelDialog onClick3_f");
+                                                finalRaiseHandDialog.cancelDialog("onClick3_f");
                                             }
                                         }
                                     }, 3000);
                                 }
                             } else if (LiveVideoConfig.isPrimary) {
+                                if (psraiseHandDialog != null) {
+                                    try {
+                                        psraiseHandDialog.cancelDialog();
+                                    } catch (Exception e) {
+                                        LiveCrashReport.postCatchedException(TAG, e);
+                                    }
+                                }
                                 psraiseHandDialog = new PsRaiseHandDialog(activity, baseApplication);
                                 psraiseHandDialog.setRaiseHandGiveup(raisepsHandGiveup);
                                 psraiseHandDialog.setDefault(raiseHandCount);
@@ -460,11 +480,22 @@ public class VideoChatBll implements VideoChatAction {
                                             if (finalRaiseHandDialog == psraiseHandDialog) {
                                                 finalRaiseHandDialog.cancelDialog();
                                                 psraiseHandDialog = null;
+                                            } else {
+                                                XrsCrashReport.d(TAG, "isPrimary_f");
+                                                mLogtf.d("cancelDialog isPrimary_f");
+                                                finalRaiseHandDialog.cancelDialog();
                                             }
                                         }
                                     }, 3000);
                                 }
                             } else {
+                                if (raiseHandDialog != null) {
+                                    try {
+                                        raiseHandDialog.cancelDialog("onClick4");
+                                    } catch (Exception e) {
+                                        LiveCrashReport.postCatchedException(TAG, e);
+                                    }
+                                }
                                 raiseHandDialog = new RaiseHandDialog(activity, baseApplication);
                                 raiseHandDialog.setRaiseHandGiveup(raiseHandGiveup);
                                 raiseHandDialog.setRaiseHandsCount(raiseHandCount);
@@ -478,12 +509,23 @@ public class VideoChatBll implements VideoChatAction {
                                             if (finalRaiseHandDialog == raiseHandDialog) {
                                                 finalRaiseHandDialog.cancelDialog("onClick5");
                                                 raiseHandDialog = null;
+                                            } else {
+                                                XrsCrashReport.d(TAG, "onClick5_f");
+                                                mLogtf.d("cancelDialog onClick5_f");
+                                                finalRaiseHandDialog.cancelDialog("onClick5_f");
                                             }
                                         }
                                     }, 3000);
                                 }
                             }
                         } else {
+                            if (smallEnglishDialog != null) {
+                                try {
+                                    smallEnglishDialog.cancelDialog();
+                                } catch (Exception e) {
+                                    LiveCrashReport.postCatchedException(TAG, e);
+                                }
+                            }
                             smallEnglishDialog = new SmallEnglishMicTipDialog(activity);
 //                            dialog.setText("点击举手参与\n语音互动吧!");
                             smallEnglishDialog.setText("已举手，现在有" + raiseHandCount + "位小朋友在排队哦~");
@@ -497,6 +539,10 @@ public class VideoChatBll implements VideoChatAction {
                                         if (finalSmallEnglishMicTipDialog == smallEnglishDialog) {
                                             finalSmallEnglishMicTipDialog.cancelDialog();
                                             raiseHandDialog = null;
+                                        } else {
+                                            XrsCrashReport.d(TAG, "smallEnglis_f");
+                                            mLogtf.d("cancelDialog smallEnglis_f");
+                                            finalSmallEnglishMicTipDialog.cancelDialog();
                                         }
                                     }
                                 }, 3000);
@@ -1590,6 +1636,7 @@ public class VideoChatBll implements VideoChatAction {
             rl_livevideo_agora_content = null;
         }
         chatStatusChanges.clear();
+        RaiseHandDialog.showCount = 0;
     }
 
     /**
