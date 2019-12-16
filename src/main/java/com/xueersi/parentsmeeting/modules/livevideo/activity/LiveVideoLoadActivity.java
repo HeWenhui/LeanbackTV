@@ -160,9 +160,13 @@ public class LiveVideoLoadActivity extends BaseActivity {
             public void fail(int errorCode, String errorMsg) {
                 if (!LiveAssetsLoadUtil.planB("livevdieo", LiveVideoLoadActivity.this)) {
                     XESToastUtils.showToast(LiveVideoLoadActivity.this, "加载失败,  请重试");
+                    mDataLoadEntity.webDataSuccess();
+                    DataLoadManager.newInstance().loadDataStyle(LiveVideoLoadActivity.this,
+                            mDataLoadEntity);
+                    finish();
                 }
                 UmsAgentManager.umsAgentDebug(LiveVideoLoadActivity.this, ModuleHandler.TAG,
-                        "直播加载assets 失败,内部0 ！");
+                        "fail:errorCode="+errorCode+",errorMsg="+errorMsg);
             }
         });
 
