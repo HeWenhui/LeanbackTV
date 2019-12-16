@@ -639,7 +639,10 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                             mRoomAction.onMessage(target, sourceNick, "", "", object.getString("msg"), teacherImg);
                         } else {
                             name = "辅导老师";
-                            String teamId = mGetInfo.getStudentLiveInfo().getTeamId();
+                            String teamId = "";
+                            if(mGetInfo != null && mGetInfo.getStudentLiveInfo() != null){
+                                teamId = mGetInfo.getStudentLiveInfo().getTeamId();
+                            }
                             String to = object.optString("to", "All");
                             if ("All".equals(to) || teamId.equals(to)) {
                                 String teacherIMG = mGetInfo.getTeacherIMG();
