@@ -8,11 +8,14 @@ import android.util.Log;
 import android.view.View;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
-import com.xueersi.common.route.XueErSiRouter;
+import com.xueersi.common.route.module.ModuleHandler;
+import com.xueersi.common.route.module.entity.Module;
+import com.xueersi.common.route.module.entity.ModuleData;
 import com.xueersi.lib.framework.utils.string.Base64;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
@@ -227,7 +230,17 @@ public class EnglishH5ExperienceBll extends LiveBackBaseBll {
                     intelligentRecognitionRecord.setMaterialId(videoQuestionLiveEntity.id);
                     intelligentRecognitionRecord.setIsPlayBack("1");
                     bundle.putParcelable(PROCESS_RECORD_SIGN, intelligentRecognitionRecord);
-                    XueErSiRouter.startModule(activity, "/aievaluation/intelligent_recognition", bundle);
+
+                    String moduleName = "aievaluation";
+                    Module m = AppBll.getInstance().getModuleByModuleName(moduleName);
+                    if (m == null) {
+                        m = new Module();
+                        m.moduleName = moduleName;
+                        m.version = "1.0.1";
+                        m.title = "智能英语评测";
+                        m.moduleType = 0;
+                    }
+                    ModuleHandler.start(activity, new ModuleData(m, bundle));
                     return;
                 }
             }
