@@ -288,7 +288,7 @@ public class ScienceVoteBll extends LiveBaseBll implements NoticeAction, TopicAc
                 if ("img_0.png".equals(fileName) && gold > 0) {
                     return createMsgBitmap(width, height, "+" + gold);
                 }
-                return super.fetchTargetBitMap(animationView, fileName, bitmapId, width, height);
+                return getBitMapFromAssets(fileName,mContext);
             }
         };
         lottieAnimationView.setAnimationFromJson(bubbleEffectInfo.getJsonStrFromAssets(mContext));
