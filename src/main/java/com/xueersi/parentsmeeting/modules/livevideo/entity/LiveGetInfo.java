@@ -1909,6 +1909,10 @@ public class LiveGetInfo {
     private boolean bigLive;
 
 
+    /**大班小学**/
+    private boolean bigLivePrimarySchool = true;
+
+
     public String getMainTeacherVieo() {
         return mainTeacherVieo;
     }
@@ -2142,5 +2146,9 @@ public class LiveGetInfo {
 
     public void setCreatTime(long creatTime) {
         this.creatTime = creatTime;
+    }
+
+    public boolean isBigLivePrimarySchool() {
+        return bigLivePrimarySchool;
     }
 }
