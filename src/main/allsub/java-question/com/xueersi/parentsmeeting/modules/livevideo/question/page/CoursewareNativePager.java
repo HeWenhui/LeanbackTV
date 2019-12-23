@@ -20,7 +20,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xueersi.common.base.XrsCrashReport;
-import com.xueersi.common.config.AppConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.tencent.smtt.export.external.interfaces.ConsoleMessage;
@@ -42,7 +41,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.SysLogLable;
-import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
@@ -61,8 +59,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.UserAnswer
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.CourseMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.dialog.CourseTipDialog;
-import com.xueersi.parentsmeeting.modules.livevideo.question.entity.BigResultEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.question.entity.BigResultItemEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.NewCourseSec;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.PrimaryScienceAnswerResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.MiddleResult;
@@ -837,8 +833,8 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     }
 
     @Override
-    public void destroy() {
-        mLogtf.d("destroy:isFinish=" + isFinish);
+    public void destroy(String method) {
+        mLogtf.d("destroy:method="+method+",isFinish=" + isFinish);
         isFinish = true;
         wvSubjectWeb.destroy();
     }
@@ -1050,7 +1046,12 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     if (detailInfo.isExper()) {
                         userAnswer.put("times", answer.optInt("times", -1));
                     } else {
-                        userAnswer.put("times", "" + answer.optInt("times", -1));
+                        JSONArray times = answer.getJSONArray("times");
+                        if(times.length()>0){
+                            userAnswer.put("times", "" + times.optInt(0));
+                        }else {
+                            userAnswer.put("times", -1);
+                        }
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -1152,6 +1153,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     artsAnswerResultEvent.setDetailInfo(detailInfo);
                     artsAnswerResultEvent.setIspreload(ispreload);
                     artsAnswerResultEvent.setExper(detailInfo.isExper());
+                    artsAnswerResultEvent.setInteractType(baseVideoQuestionEntity.getInteractType());
                     EventBus.getDefault().post(artsAnswerResultEvent);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -1340,6 +1342,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             artsAnswerResultEvent.setDetailInfo(detailInfo);
             artsAnswerResultEvent.setIspreload(ispreload);
             artsAnswerResultEvent.setExper(detailInfo.isExper());
+            artsAnswerResultEvent.setInteractType(baseVideoQuestionEntity.getInteractType());
             if (TextUtils.equals(LiveQueConfig.EN_COURSE_TYPE_21, detailInfo.getArtType())) {
                 if (isPlayBack) {
                     ViewGroup group = (ViewGroup) mView.getParent();
@@ -1497,7 +1500,6 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                             detailInfo.setArtType(test.getTestType());
                         }
                     }
-                    newCourseCache.add(newCourseCache.new FutureCourse());
                     showControl();
                     if (quesJson != null) {
                         for (int i = 0; i < tests.size(); i++) {

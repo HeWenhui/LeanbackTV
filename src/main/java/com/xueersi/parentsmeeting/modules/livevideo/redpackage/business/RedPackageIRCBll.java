@@ -10,10 +10,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateA
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PScienceRedPackageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.bll.LightLiveRedPackageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChatIRCBll;
@@ -56,6 +58,9 @@ public class RedPackageIRCBll extends LiveBaseBll implements NoticeAction {
         } else if (redPackageAction instanceof RedPackageBll) {
             RedPackageBll redPackageBll = (RedPackageBll) redPackageAction;
             redPackageBll.initView(mRootView, getLiveViewAction());
+        } else if (redPackageAction instanceof LightLiveRedPackageBll){
+            LightLiveRedPackageBll redPackageBll = (LightLiveRedPackageBll) redPackageAction;
+            redPackageBll.initView(mRootView, mContentView,mIsLand);
         }
     }
 
@@ -93,6 +98,38 @@ public class RedPackageIRCBll extends LiveBaseBll implements NoticeAction {
             redPackageStandBll.setVSectionID(getInfo.getId());
             redPackageStandBll.initView(mRootView, getLiveViewAction());
             redPackageAction = redPackageStandBll;
+        } else if (mGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_GROUP_CLASS) {
+            RedPackageStandBll redPackageStandBll = new RedPackageStandBll(activity, false, contextLiveAndBackDebug);
+            redPackageStandBll.setGroupClass(true);
+            redPackageStandBll.setReceiveGold(new RedPackageAction.ReceiveGoldStand() {
+                @Override
+                public void getReceiveGoldTeamStatus(int operateId, AbstractBusinessDataCallBack callBack) {
+                    RedPackageIRCBll.this.getReceiveGoldTeamStatus(operateId, callBack);
+                }
+
+                @Override
+                public void getReceiveGoldTeamRank(int operateId, AbstractBusinessDataCallBack callBack) {
+                    RedPackageIRCBll.this.getReceiveGoldTeamRank(operateId, callBack);
+                }
+
+                @Override
+                public void onReceiveGold() {
+                    UpdateAchievement updateAchievement = ProxUtil.getProxUtil().get(mContext, UpdateAchievement.class);
+                    if (updateAchievement != null) {
+                        updateAchievement.getStuGoldCount("onReceiveGold", UpdateAchievement.GET_TYPE_RED);
+                    }
+                }
+
+                @Override
+                public void sendReceiveGold(int operateId, String liveId, AbstractBusinessDataCallBack callBack) {
+                    RedPackageIRCBll.this.sendReceiveGold(operateId, liveId, callBack);
+                }
+            });
+            redPackageStandBll.setUserName(LiveAppUserInfo.getInstance().getEnglishNameProcess());
+            redPackageStandBll.setHeadUrl(getInfo.getHeadImgPath());
+            redPackageStandBll.setVSectionID(getInfo.getId());
+            redPackageStandBll.initView(mRootView, getLiveViewAction());
+            redPackageAction = redPackageStandBll;
         } else {
             //
             if (LiveVideoConfig.isPrimary && !LiveVideoConfig.isSmallChinese) {
@@ -106,7 +143,18 @@ public class RedPackageIRCBll extends LiveBaseBll implements NoticeAction {
                     }
                 });
                 redPackageAction = redPackageBll;
-            } else {
+            } else if (LiveVideoConfig.isLightLive )  {
+                LightLiveRedPackageBll redPackageBll = new LightLiveRedPackageBll(activity,getInfo);
+                redPackageBll.setVSectionID(mLiveId);
+                redPackageBll.initView(mRootView, mContentView,mIsLand);
+                redPackageBll.setReceiveGold(new RedPackageAction.ReceiveGold() {
+                    @Override
+                    public void sendReceiveGold(int operateId, String liveId, AbstractBusinessDataCallBack callBack) {
+                        RedPackageIRCBll.this.sendReceiveGold(operateId, liveId, callBack);
+                    }
+                });
+                redPackageAction = redPackageBll;
+            }else {
                 RedPackageBll redPackageBll = new RedPackageBll(activity, mGetInfo, true);
                 redPackageBll.setVSectionID(mLiveId);
                 redPackageBll.initView(mRootView, getLiveViewAction());
@@ -123,7 +171,7 @@ public class RedPackageIRCBll extends LiveBaseBll implements NoticeAction {
 
     public void sendReceiveGold(final int operateId, String liveId, final AbstractBusinessDataCallBack callBack) {
         mLogtf.d("sendReceiveGold:operateId=" + operateId + ",liveId=" + liveId);
-        getHttpManager().sendReceiveGold(mLiveType, operateId, liveId, new HttpCallBack() {
+        getHttpManager().sendReceiveGold(mLiveType, mGetInfo.getPattern(), operateId, liveId, new HttpCallBack() {
 
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {

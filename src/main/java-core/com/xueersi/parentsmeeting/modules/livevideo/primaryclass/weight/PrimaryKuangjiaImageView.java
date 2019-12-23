@@ -2,7 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.primaryclass.weight;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -95,21 +94,23 @@ public class PrimaryKuangjiaImageView extends ImageView {
         if (add) {
             onSizeChanges.add(onSizeChange);
         }
-        Drawable drawable = getDrawable();
+        final Drawable drawable = getDrawable();
         if (drawable == null) {
             return;
         }
-        final Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
+
         getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
             public boolean onPreDraw() {
                 if (logToFile == null) {
                     logToFile = new LogToFile(getContext(), TAG);
                 }
+                int drawableW = drawable.getIntrinsicWidth();
+                int drawableH = drawable.getIntrinsicHeight();
                 getViewTreeObserver().removeOnPreDrawListener(this);
                 RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) getLayoutParams();
 //            lp.height = bitmap.getHeight();
-                float radio = (float) bitmap.getWidth() / (float) bitmap.getHeight();
+                float radio = (float) drawableW / (float) drawableH;
                 LiveVideoPoint point = LiveVideoPoint.getInstance();
                 int screenHeight = point.screenHeight - (lp.topMargin * 2);
                 float viewRadio = (float) point.screenWidth / (float) screenHeight;
@@ -117,7 +118,7 @@ public class PrimaryKuangjiaImageView extends ImageView {
                 int height;
                 if (viewRadio > radio) {
                     height = screenHeight;
-                    width = (int) ((float) height / (float) bitmap.getHeight() * (float) bitmap.getWidth());
+                    width = (int) ((float) height / (float) drawableH * (float) drawableW);
                     if (lp.width != width || lp.height != height) {
                         lp.width = width;
                         lp.height = height;
@@ -126,7 +127,7 @@ public class PrimaryKuangjiaImageView extends ImageView {
                     }
                 } else {
                     width = point.screenWidth;
-                    height = (int) ((float) width / (float) bitmap.getWidth() * (float) bitmap.getHeight());
+                    height = (int) ((float) width / (float) drawableW * (float) drawableH);
                     if (lp.width != width || lp.height != height) {
                         lp.width = width;
                         lp.height = height;

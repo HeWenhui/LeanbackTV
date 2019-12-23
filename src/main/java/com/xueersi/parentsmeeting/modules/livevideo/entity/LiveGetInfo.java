@@ -6,6 +6,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEnti
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuSegmentEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LiveModuleConfigInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LivePlugin;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.SubGroupEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.SubMemberEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.entity.LPWeChatEntity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -393,6 +396,47 @@ public class LiveGetInfo {
     private String getMetadataUrl;
     private int isFlatfish=1;
 
+    /** 轻直播公告*/
+    private String gentlyNotice;
+    /** 是否是轻直播 0否 1是*/
+    private boolean isGently;
+
+    private LPWeChatEntity lpWeChatEntity;
+    /** 聊天人数增加开关 1开 0关*/
+    private int chatSwitch;
+
+    public String getGentlyNotice() {
+        return gentlyNotice;
+    }
+
+    public void setGentlyNotice(String gentlyNotice) {
+        this.gentlyNotice = gentlyNotice;
+    }
+
+    public boolean isGently() {
+        return isGently;
+    }
+
+    public void setIsGently(boolean isGently) {
+        this.isGently = isGently;
+    }
+
+    public LPWeChatEntity getLpWeChatEntity() {
+        return lpWeChatEntity;
+    }
+
+    public void setLpWeChatEntity(LPWeChatEntity lpWeChatEntity) {
+        this.lpWeChatEntity = lpWeChatEntity;
+    }
+
+    public int getChatSwitch() {
+        return chatSwitch;
+    }
+
+    public void setChatSwitch(int chatSwitch) {
+        this.chatSwitch = chatSwitch;
+    }
+
     public LiveStatus getLiveStatus() {
         return liveStatus;
     }
@@ -514,6 +558,13 @@ public class LiveGetInfo {
      */
     LiveModuleConfigInfo liveModuleConfigInfo;
 
+    /** 分组信息 */
+    SubGroupEntity subGroupEntity;
+
+    /** 英语1v2小组课*/
+    private RecordStandliveEntity recordStandliveEntity;
+    /** getinfo创建时间*/
+    private long creatTime;
 
     public VideoConfigEntity getVideoConfigEntity() {
         return videoConfigEntity;
@@ -1974,6 +2025,13 @@ public class LiveGetInfo {
         }
     }
 
+    public RecordStandliveEntity getRecordStandliveEntity() {
+        return recordStandliveEntity;
+    }
+
+    public void setRecordStandliveEntity(RecordStandliveEntity recordStandliveEntity) {
+        this.recordStandliveEntity = recordStandliveEntity;
+    }
 
     /**
      * 根据moduleId 查找 Plugin
@@ -2068,5 +2126,21 @@ public class LiveGetInfo {
 
     public void setGradeIds(String gradeIds) {
         this.gradeIds = gradeIds;
+    }
+
+    public SubGroupEntity getSubGroupEntity() {
+        return subGroupEntity;
+    }
+
+    public void setSubGroupEntity(SubGroupEntity subGroupEntity) {
+        this.subGroupEntity = subGroupEntity;
+    }
+
+    public long getCreatTime() {
+        return creatTime;
+    }
+
+    public void setCreatTime(long creatTime) {
+        this.creatTime = creatTime;
     }
 }

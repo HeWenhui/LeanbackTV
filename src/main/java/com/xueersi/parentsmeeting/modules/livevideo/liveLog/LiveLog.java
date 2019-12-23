@@ -2,13 +2,14 @@ package com.xueersi.parentsmeeting.modules.livevideo.liveLog;
 
 import android.os.Process;
 
+import com.dianping.logan.Logan;
+import com.dianping.logan.LoganConfig;
+import com.dianping.logan.SendLogRunnable;
 import com.google.gson.Gson;
-import com.hwl.log.LogConfig;
-import com.hwl.log.xrsLog.UpdateParamInterface;
-import com.hwl.log.xrsLog.XrsLogPublicParam;
-import com.hwl.logan.Logan;
-import com.hwl.logan.LoganConfig;
-import com.hwl.logan.SendLogRunnable;
+import com.xrs.bury.ThreadPool;
+import com.xrs.log.LogConfig;
+import com.xrs.log.xrsLog.UpdateParamInterface;
+import com.xrs.log.xrsLog.XrsLogPublicParam;
 import com.xueersi.common.logerhelper.matrix.ApmBill;
 
 import java.text.SimpleDateFormat;
@@ -66,6 +67,7 @@ public class LiveLog {
             param.processId = Process.myPid();
         }
 
+
         getLoganInstance().wObject(log, 7);
     }
 
@@ -119,11 +121,17 @@ public class LiveLog {
         mSendLogRunnable = sendLogRunnabl;
     }
 
-    public static void sendLog() {
+    public synchronized static void sendLog() {
         SimpleDateFormat dataFormat = new SimpleDateFormat("yyyy-MM-dd");
         String d = dataFormat.format(new Date(System.currentTimeMillis()));
-        String[] temp = new String[]{d};
-        getLoganInstance().s(temp, mSendLogRunnable);
+        final String[] temp = new String[]{d};
+        ThreadPool.execSingle(new Runnable() {
+            @Override
+            public void run() {
+                getLoganInstance().s(temp, mSendLogRunnable);
+            }
+        });
+
     }
 
     public static void stopLog() {

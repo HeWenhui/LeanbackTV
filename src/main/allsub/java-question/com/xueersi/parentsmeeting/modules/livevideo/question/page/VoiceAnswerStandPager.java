@@ -10,6 +10,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
@@ -1031,6 +1032,11 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
         param.setLocalSavePath(saveVideoFile.getPath());
         param.setStrEvaluator(assess_ref.toString());
         param.setMultRef(multRef);
+        //添加试题信息
+        Bundle extra = new Bundle();
+        extra.putString("testid", "" + baseVideoQuestionEntity.id);
+        extra.putString("creattime", "" + creattime);
+        param.setExtraBundle(extra);
         mIse.startRecog(param, listener);
 //        mIse.startEnglishEvaluatorOffline(assess_ref.toString(), saveVideoFile.getPath(), multRef, listener);
     }

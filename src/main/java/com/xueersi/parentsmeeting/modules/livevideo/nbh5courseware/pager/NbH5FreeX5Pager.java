@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.pager;
 
 import android.content.Context;
+import android.support.v7.widget.PagerSnapHelper;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -908,6 +909,11 @@ public class NbH5FreeX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
 
     @Override
     public void destroy() {
+
+        if(wvSubjectWeb != null){
+            wvSubjectWeb.destroy();
+        }
+
         this.onDestroy();
     }
 }

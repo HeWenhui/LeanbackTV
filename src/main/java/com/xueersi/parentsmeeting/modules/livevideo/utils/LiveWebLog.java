@@ -29,7 +29,7 @@ public class LiveWebLog {
     static String TAG = "LiveWebLog";
     static Logger logger = LoggerFactory.getLogger(TAG);
 
-    public static void init(final Context context, final String liveid) {
+    public static void init(final String liveid) {
         LiveThreadPoolExecutor.getInstance().execute(new Runnable() {
             @Override
             public void run() {
@@ -64,7 +64,7 @@ public class LiveWebLog {
                             try {
                                 File file = files[i];
                                 if (file.getName().startsWith("uploald")) {
-                                    uploadCreashFile(context, file);
+                                    uploadCreashFile(ContextManager.getContext(), file);
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -81,6 +81,13 @@ public class LiveWebLog {
                 }
             }
         });
+    }
+
+    public void stop() {
+        XrsBroswer.XrsTbsLogClient tbsLogClient = XrsBroswer.getTbsLogClient();
+        if (tbsLogClient != null) {
+            tbsLogClient.setLogFile(null);
+        }
     }
 
     /**

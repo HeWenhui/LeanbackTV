@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<!-->说明: 点击直播间课程推荐位去查看按钮</!-->
+	<string name="click_03_63_012">{"buryId":\"click_03_63_012\","levelone":\"03\","leveltwo":\"63\","levelthree":\"012\","businessinfo$json":{}}</string>
+	<!-->说明: 点击直播间课程推荐位的立即报名按钮
+         参数: 推荐位所推荐课程id</!-->
+	<string name="click_03_63_011">{"buryId":\"click_03_63_011\","levelone":\"03\","leveltwo":\"63\","levelthree":\"011\","businessinfo$json":{"recommendid":\"%1$s\"}}</string>
+	<!-->说明: 点击课程推荐卡片的课程
+         参数: 推荐课程id【ID+课程】</!-->
+	<string name="click_03_63_007">{"buryId":\"click_03_63_007\","levelone":\"03\","leveltwo":\"63\","levelthree":\"007\","businessinfo$json":{"courseid":\"%1$s\"}}</string>
+	<!-->说明:点击课程推荐卡片的关闭按钮</!-->
+	<string name="click_03_63_008">{"buryId":\"click_03_63_008\","levelone":\"03\","leveltwo":\"63\","levelthree":\"008\","businessinfo$json":{}}</string>
+	<!-->说明: 点击优惠券展示位</!-->
+	<string name="click_03_63_025">{"buryId":\"click_03_63_025\","levelone":\"03\","leveltwo":\"63\","levelthree":\"025\","businessinfo$json":{}}</string>
+	<!-->说明: 点击优惠券弹窗的关闭按钮</!-->
+	<string name="click_03_63_022">{"buryId":\"click_03_63_022\","levelone":\"03\","leveltwo":\"63\","levelthree":\"022\","businessinfo$json":{}}</string>
+	<!-->说明: 点击优惠券弹窗-立即领取
+         参数: 优惠券id；优惠券获取id【0：成功 1：失败】</!-->
+	<string name="click_03_63_023">{"buryId":\"click_03_63_023\","levelone":\"03\","leveltwo":\"63\","levelthree":\"023\","businessinfo$json":{"couponid":\"%1$s\","getid":\"%2$s\"}}</string>
+	<!-->说明: 点击联系老师按钮</!-->
+	<string name="click_03_63_013">{"buryId":\"click_03_63_013\","levelone":\"03\","leveltwo":\"63\","levelthree":\"013\","businessinfo$json":{}}</string>
+	<!-->说明: 点击联系老师卡片-复制微信号按钮</!-->
+	<string name="click_03_63_014">{"buryId":\"click_03_63_014\","levelone":\"03\","leveltwo":\"63\","levelthree":\"014\","businessinfo$json":{}}</string>
+	<!-->说明: 点击班级群按钮</!-->
+	<string name="click_03_63_001">{"buryId":\"click_03_63_001\","levelone":\"03\","leveltwo":\"63\","levelthree":\"001\","businessinfo$json":{}}</string>
+	<!-->说明: 点击班级群卡片-复制按钮</!-->
+	<string name="click_03_63_002">{"buryId":\"click_03_63_002\","levelone":\"03\","leveltwo":\"63\","levelthree":\"002\","businessinfo$json":{}}</string>
+	<!-->说明: 点击直播间全屏按钮</!-->
+	<string name="click_03_63_020">{"buryId":\"click_03_63_020\","levelone":\"03\","leveltwo":\"63\","levelthree":\"020\","businessinfo$json":{}}</string>
+	<!-->说明: 点击屏蔽老师按钮
+         参数: 屏蔽按钮id【0：关闭屏蔽 1：打开屏蔽】</!-->
+	<string name="click_03_63_016">{"buryId":\"click_03_63_016\","levelone":\"03\","leveltwo":\"63\","levelthree":\"016\","businessinfo$json":{"blockid":\"%1$s\"}}</string>
+	<!-->说明: 点击清屏按钮</!-->
+	<string name="click_03_63_017">{"buryId":\"click_03_63_017\","levelone":\"03\","leveltwo":\"63\","levelthree":\"017\","businessinfo$json":{}}</string>
+	<!-->说明: 点击清屏弹窗确定按钮</!-->
+	<string name="click_03_63_019">{"buryId":\"click_03_63_019\","levelone":\"03\","leveltwo":\"63\","levelthree":\"019\","businessinfo$json":{}}</string>
+	<!-->说明: 点击清屏弹窗取消按钮</!-->
+	<string name="click_03_63_018">{"buryId":\"click_03_63_018\","levelone":\"03\","leveltwo":\"63\","levelthree":\"018\","businessinfo$json":{}}</string>
+	<!-->说明: 点击领取红包</!-->
+	<string name="click_03_63_015">{"buryId":\"click_03_63_015\","levelone":\"03\","leveltwo":\"63\","levelthree":\"015\","businessinfo$json":{}}</string>
+	<!-->说明: 点击关闭红包</!-->
+	<string name="click_03_63_003">{"buryId":\"click_03_63_003\","levelone":\"03\","leveltwo":\"63\","levelthree":\"003\","businessinfo$json":{}}</string>
+</resources>

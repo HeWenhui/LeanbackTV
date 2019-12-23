@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="476dp"
+    android:layout_alignParentBottom="true"
+    android:clickable="true">
+
+    <RelativeLayout
+        android:id="@+id/rl_lightlive_discount_coupon"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/shape_lightlive_wechat_bg">
+
+        <TextView
+            android:id="@+id/iv_livevideo_lightlive_coupon_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="16dp"
+            android:text="限时福利"
+            android:textColor="@color/COLOR_212831"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/iv_livevideo_lightlive_coupon_close"
+            android:layout_width="52dp"
+            android:layout_height="52dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:padding="16dp"
+            android:src="@drawable/livevideo_lightlive_circle_close" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_livevideo_lightlive_coupon_data_detail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/iv_livevideo_lightlive_coupon_title"
+            android:layout_marginTop="16dp"
+            android:background="@color/COLOR_FDFDFF"
+            android:divider="@color/transparent"
+            android:listSelector="@color/transparent"
+            android:paddingBottom="5dp">
+
+        </android.support.v7.widget.RecyclerView>
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -8,6 +8,7 @@ import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
+import com.xueersi.lib.monitor.AppMonitor;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.tencent.smtt.sdk.CookieManager;
 import com.tencent.smtt.sdk.ValueCallback;
@@ -222,6 +223,7 @@ public class CacheWebView extends WebView {
         webSettings.setDefaultTextEncodingName("UTF-8");
 
         webSettings.setTextZoom(100);
+        AppMonitor.getInstance().showUpX5WebView(this);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             webSettings.setAllowFileAccessFromFileURLs(true);

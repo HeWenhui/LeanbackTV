@@ -28,6 +28,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -41,6 +42,7 @@ public class WebInstertJs {
     Logger logger;
     Context context;
     File cacheDir;
+    File innerFile;
     static long saveTime;
     private LogToFile logToFile;
     OnHttpCode onHttpCode;
@@ -57,9 +59,13 @@ public class WebInstertJs {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
         Date date = new Date();
         final String today = dateFormat.format(date);
-        cacheDir = LiveCacheFile.geCacheFile(context, "webviewCache/" + today);
+        cacheDir = LiveCacheFile.getCacheDir(context, "webviewCache/" + today);
         if (!cacheDir.exists()) {
             cacheDir.mkdirs();
+        }
+        innerFile = new File(context.getCacheDir(), "webviewCache/" + today);
+        if (!innerFile.exists()) {
+            innerFile.mkdirs();
         }
         if (saveTime == 0) {
             saveTime = System.currentTimeMillis() / 60000;
@@ -74,7 +80,7 @@ public class WebInstertJs {
         this.onHttpCode = onHttpCode;
     }
 
-    private InputStream insertJs(String url, InputStream inputStream) throws Exception {
+    private InputStream insertJs(String url, File cacheDir, InputStream inputStream) throws Exception {
         String fileName = "index_" + url.hashCode() + "_" + saveTime + ".html";
         File saveFile = new File(cacheDir, fileName);
         logToFile.d("insertJs:fileName=" + saveFile + ",exists=" + saveFile.exists());
@@ -103,7 +109,7 @@ public class WebInstertJs {
                         line = line.substring(0, index + findStr.length()) + "\n" + indexJs + "\n" + line.substring(index + findStr.length());
                     }
                     logToFile.d("httpRequest:insertJs=" + line);
-                    XrsCrashReport.d(TAG,"httpRequest:insertJs=" + line);
+                    XrsCrashReport.d(TAG, "httpRequest:insertJs=" + line);
                     addJs = true;
                 }
             }
@@ -116,12 +122,97 @@ public class WebInstertJs {
         return new FileInputStream(saveFile);
     }
 
+    private InputStream insertJs(String url, InputStream inputStream) throws Exception {
+        return insertJs(url, cacheDir, inputStream);
+    }
+
     public InputStream readFile(String url, File file) {
         try {
             FileInputStream fileInputStream = new FileInputStream(file);
             return insertJs(url, fileInputStream);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        return null;
+    }
+
+    public InputStream httpRequestTry(String url, AtomicBoolean islocal) {
+        String fileName = "index_" + url.hashCode() + "_" + saveTime + ".html";
+        ArrayList<File> cacheDirs = new ArrayList<>();
+        cacheDirs.add(cacheDir);
+        cacheDirs.add(innerFile);
+        //文件失败，需要换路径
+        boolean fileError = false;
+        for (int i = 0; i < cacheDirs.size(); i++) {
+            File dir = cacheDirs.get(i);
+            if (i == 1) {
+                if (fileError) {
+                    dir = cacheDirs.get(i);
+                } else {
+                    dir = cacheDirs.get(0);
+                }
+            }
+            File saveFile = new File(dir, fileName);
+            logToFile.d("httpRequestTry:i=" + i + ",fileError=" + fileError + ",fileName=" + saveFile + ",exists=" + saveFile.exists());
+            if (saveFile.exists()) {
+                try {
+                    if (islocal != null) {
+                        islocal.set(true);
+                    }
+                    return new FileInputStream(saveFile);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+            HttpURLConnection httpURLConnection = null;
+            boolean isFail = false;
+            Exception dnsException = new Exception();
+            try {
+                WebTrustVerifier.trustVerifier();
+                URL oldUrl = new URL(url);
+                URL urlRequest = new URL(url);
+                httpURLConnection = (HttpURLConnection) urlRequest.openConnection();
+                httpURLConnection.setRequestMethod("GET");
+                httpURLConnection.setUseCaches(false);
+                httpURLConnection.setConnectTimeout(30000);
+                httpURLConnection.setReadTimeout(30000);
+
+                httpURLConnection.connect();
+                int responseCode = httpURLConnection.getResponseCode();
+                Log.d(TAG, "httpRequest:responseCode=" + responseCode);
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    InputStream inputStream = httpURLConnection.getInputStream();
+                    return insertJs(url, dir, inputStream);
+//                return null;
+                } else {
+                    if (onHttpCode != null) {
+                        onHttpCode.onHttpCode(url, responseCode);
+                    }
+                    dnsException = new Exception("responseCode=" + responseCode);
+                }
+            } catch (MalformedURLException e) {
+                dnsException = e;
+                e.printStackTrace();
+            } catch (UnknownHostException e) {
+                dnsException = e;
+                e.printStackTrace();
+            } catch (IOException e) {
+                dnsException = e;
+                e.printStackTrace();
+            } catch (Exception e) {
+                dnsException = e;
+                e.printStackTrace();
+            } finally {
+
+            }
+            if (dnsException instanceof UnknownHostException) {
+                logToFile.d("httpRequestTry:i=" + i + ",UnknownHostException");
+            } else {
+                logToFile.e("httpRequestTry:i=" + i, dnsException);
+                if (dnsException instanceof java.io.FileNotFoundException) {
+                    fileError = true;
+                }
+            }
         }
         return null;
     }
@@ -181,7 +272,11 @@ public class WebInstertJs {
         } finally {
 
         }
-        logToFile.e("httpRequest", dnsException);
+        if (dnsException instanceof UnknownHostException) {
+            logToFile.d("httpRequest:UnknownHostException");
+        } else {
+            logToFile.e("httpRequest", dnsException);
+        }
         return null;
     }
 

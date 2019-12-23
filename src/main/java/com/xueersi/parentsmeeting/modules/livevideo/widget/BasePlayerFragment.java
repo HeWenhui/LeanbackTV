@@ -12,7 +12,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.OrientationEventListener;
 import android.view.SurfaceHolder;
 import android.view.View;
@@ -49,6 +51,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoConfigEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.liveLog.LiveLogBill;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.utils.PlayerLogUtils;
+import com.xueersi.parentsmeeting.widget.LiveNetCheckTip;
 
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -171,6 +174,8 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
     /** 录播，使用{@link PSIJK#playFile(String, int)} */
     public final static int PLAY_TUTORIAL = 2;
 
+    //自检提醒
+    private LiveNetCheckTip mLiveNetCheckTip;
     public void playNewVideo() {
         if (mUri != null && mDisplayName != null) {
             playNewVideo(mUri, mDisplayName);
@@ -355,6 +360,24 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         return false;
     }
 
+    /**
+     * 是否静音模式
+     */
+    private boolean muteMode;
+
+    public void setMuteMode(boolean muteMode) {
+        this.muteMode = muteMode;
+        if (muteMode){
+            setVolume(0, 0);
+        }else {
+            setVolume(VP.DEFAULT_STEREO_VOLUME, VP.DEFAULT_STEREO_VOLUME);
+        }
+    }
+
+    public boolean isMuteMode() {
+        return muteMode;
+    }
+
     protected boolean handleMessage(Message msg) {
         return false;
     }
@@ -518,6 +541,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                     LiveLogBill.getInstance().liveANRLog();
                     setVideoLoadingLayoutVisibility(View.VISIBLE);
                     vPlayerHandler.sendEmptyMessageDelayed(BUFFER_PROGRESS, 1000);
+                    mLiveNetCheckTip.showTips(activity);
                     break;
                 case BUFFER_PROGRESS:
                     // 视频缓冲中进行进度更新
@@ -569,6 +593,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
             return true;
         }
     };
+
     protected WeakHandler vPlayerHandler = new WeakHandler(callback);
 
     @Nullable
@@ -581,6 +606,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         videoView.initialize(activity, this, mIsHWCodec); // 初始化播放器所在的画布
         tvVideoLoadingText = viewRoot.findViewById(R.id.tv_course_video_loading_tip); // 加载进度文字框
         videoLoadingLayout = viewRoot.findViewById(R.id.rl_course_video_loading); // 加载进度动画
+        mLiveNetCheckTip = new LiveNetCheckTip();
         return viewRoot;
     }
 
@@ -613,7 +639,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
 
     protected void setVideoConfig() {
         if (videoConfigEntity != null) {
-            vPlayer.enableAutoSpeedPlay(videoConfigEntity.getWaterMark(), videoConfigEntity.getDuration());
+            vPlayer.enableAutoSpeedPlay(videoConfigEntity.getPsIjkParameter());
         }
     }
 
@@ -690,7 +716,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
     public void enableAutoSpeedPlay(VideoConfigEntity videoConfigEntity) {
         if (vPlayer != null && videoConfigEntity != null) {
             this.videoConfigEntity = videoConfigEntity;
-            vPlayer.enableAutoSpeedPlay(videoConfigEntity.getWaterMark(), videoConfigEntity.getDuration());
+            vPlayer.enableAutoSpeedPlay(videoConfigEntity.getPsIjkParameter());
         }
     }
 
@@ -872,6 +898,9 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                     LiveCrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
                 }
             }
+            if (activity != null) {
+                VideoPlayDebugUtils.umsIfVideoViewIsNotVisible(activity, activity.findViewById(R.id.vv_course_video_video));
+            }
         }
 
         /** 视频打开失败 */
@@ -1035,7 +1064,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
     }
 
     /** 当前视频播放完毕 */
-    protected void playComplete() {
+    public void playComplete() {
 
     }
 

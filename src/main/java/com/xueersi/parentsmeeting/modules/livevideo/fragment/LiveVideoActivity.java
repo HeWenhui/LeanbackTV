@@ -94,6 +94,15 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements Activity
             } catch (Exception e) {
                 LiveCrashReport.postCatchedException(TAG, e);
             }
+        } else if(pattern == LiveVideoConfig.LIVE_PATTERN_GROUP_CLASS){
+            //英语1V2小组课
+            try{
+                String fname = "com.xueersi.parentsmeeting.modules.groupclass.fragment.GroupClassLiveFragment";
+                LiveVideoFragmentBase fragmentBase = (LiveVideoFragmentBase) Fragment.instantiate(this, fname);
+                return fragmentBase;
+            } catch (Exception e){
+                LiveCrashReport.postCatchedException(TAG,e);
+            }
         }
 
         return new LiveVideoFragment();
@@ -182,7 +191,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements Activity
             VPlayerListenerReg reg = ProxUtil.getProxUtil().get(mContext, VPlayerListenerReg.class);
             if (reg != null) {
                 logger.i("开始播放");
-                reg.playVideo();
+                reg.playVideoWithViewVisible();
             }
         }
     }

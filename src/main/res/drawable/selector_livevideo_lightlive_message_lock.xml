@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:drawable="@drawable/bg_livevideo_lightlive_message_port_teacher" android:state_pressed="true" />
+    <item android:drawable="@drawable/bg_livevideo_lightlive_message_port_teacher" android:state_checked="true" />
+    <item android:drawable="@drawable/bg_livevideo_lightlive_message_port_teacher_normal" />
+
+</selector>

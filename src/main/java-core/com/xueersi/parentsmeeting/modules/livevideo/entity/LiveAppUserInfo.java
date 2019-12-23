@@ -1,10 +1,16 @@
 package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
+import com.xueersi.common.base.BaseActivity;
+import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.business.AppBll;
+import com.xueersi.common.business.LoginRegistersConfig;
 import com.xueersi.common.business.UserBll;
+import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.englishname.config.EnglishNameConfig;
 
 import java.security.PrivateKey;
 
@@ -15,7 +21,10 @@ public class LiveAppUserInfo {
     private String mPsimId;
     private String mPsimPwd;
     private String mIrcNick;
-
+    ShareDataManager mShareDataManager;
+    private LiveAppUserInfo(){
+        init();
+    }
     public static synchronized LiveAppUserInfo getInstance() {
         if (mInstance == null) {
             synchronized (LiveAppUserInfo.class) {
@@ -26,7 +35,10 @@ public class LiveAppUserInfo {
         }
         return mInstance;
     }
-
+    public void init(){
+        BaseApplication  mBaseApplication = (BaseApplication) BaseApplication.getContext().getApplicationContext();
+        mShareDataManager = mBaseApplication.getShareDataManager();
+    }
     public String getStuId() {
         return UserBll.getInstance().getMyUserInfoEntity().getStuId();
     }
@@ -166,6 +178,16 @@ public class LiveAppUserInfo {
         return showName;
     }
 
+    public String getName() {
+        String showName = "";
+        if (!StringUtils.isEmpty(LiveAppUserInfo.getInstance().getRealName())) {
+            showName = LiveAppUserInfo.getInstance().getRealName();
+        } else if (!StringUtils.isEmpty(LiveAppUserInfo.getInstance().getNickName())) {
+            showName = LiveAppUserInfo.getInstance().getNickName();
+        }
+        return showName;
+    }
+
     /**
      * 设置磐石key
      *
@@ -221,4 +243,32 @@ public class LiveAppUserInfo {
         return mIrcNick;
     }
 
+    public String getEnglishNameProcess() {
+        return mShareDataManager.getString(LoginRegistersConfig.SP_USER_ENGLISH_NAME, "",
+                ShareDataManager.SHAREDATA_USER);
+    }
+    public int getSexProcess() {
+        return mShareDataManager.getInt(LoginRegistersConfig.SP_USER_SEX, 3,
+                ShareDataManager.SHAREDATA_USER);
+    }
+    public String getHeadImageProcess(){
+       return mShareDataManager.getString(LoginRegistersConfig.SP_USER_MOBILE_PHONE, "",
+               ShareDataManager
+                       .SHAREDATA_USER);
+    }
+
+    public String getEnglishNameAudio() {
+        return mShareDataManager.getString(LoginRegistersConfig.SP_USER_ENGLISH_NAME_AUDIO_PATH, "",
+                ShareDataManager
+                        .SHAREDATA_USER);
+    }
+
+    public void setEnglishNameAudio(String englishNameAudio) {
+        UserBll.getInstance().saveUserNameAudio(englishNameAudio);
+    }
+
+    public boolean isNeedEnglishName(){
+        return mShareDataManager.getBoolean(LiveVideoConfig.LIVE_GOUP_1V2_ENGLISH_CHECK, false,
+                ShareDataManager.SHAREDATA_USER);
+    }
 }

@@ -2,18 +2,21 @@ package com.xueersi.parentsmeeting.modules.livevideo.liveLog;
 
 
 import android.content.Context;
+import android.os.Process;
+import android.util.Log;
 
-import com.hwl.bury.xrsbury.BuryPublicParam;
-import com.hwl.log.LogConfig;
-import com.hwl.log.xrsLog.UpdateParamInterface;
-import com.hwl.log.xrsLog.XrsLogPublicParam;
+
+import com.alibaba.fastjson.JSON;
+import com.xrs.bury.xrsbury.BuryPublicParam;
+import com.xrs.log.LogConfig;
+import com.xrs.log.xrsLog.UpdateParamInterface;
+import com.xrs.log.xrsLog.XrsLogPublicParam;
 import com.xueersi.common.base.XueErSiRunningEnvironment;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.entity.LiveRemoteConfigInfo;
 import com.xueersi.common.entity.MyUserInfoEntity;
 import com.xueersi.common.http.NetUtil;
-import com.xueersi.common.logerhelper.LogBill;
 import com.xueersi.common.logerhelper.network.PingInfo;
 import com.xueersi.lib.analytics.umsagent.CommonUtil;
 import com.xueersi.lib.analytics.umsagent.DeviceInfo;
@@ -53,7 +56,7 @@ public class LiveLogBill {
 
     public static LiveLogBill getInstance() {
         if (mInstance == null) {
-            synchronized (LogBill.class) {
+            synchronized (LiveLogBill.class) {
                 if (mInstance == null) {
                     mInstance = new LiveLogBill(XueErSiRunningEnvironment.sAppContext);
                 }
@@ -65,7 +68,7 @@ public class LiveLogBill {
 
     public static LiveLogBill getInstance(Context context) {
         if (mInstance == null) {
-            synchronized (LogBill.class) {
+            synchronized (LiveLogBill.class) {
                 if (mInstance == null) {
                     mInstance = new LiveLogBill(context);
                 }
@@ -424,12 +427,64 @@ public class LiveLogBill {
                     log.pridata = pridata;
                     pridata.dnsinfo = pingMap;
                 }
+                String s = JSON.toJSONString(log);
+                LiveMonitorDebug.dLog(s);
+                //LiveLog.sendLog();
                 LiveLog.log(log);
-                LiveLog.sendLog();
+                LiveMonitorSender.send(s);
                 isRunning = false;
 
             }
         }.start();
 
+    }
+
+    public void sendStuckLog() {
+//        livebaseLog(3);
+
+        new Thread() {
+            @Override
+            public void run() {
+                LiveLogEntity log = new LiveLogEntity();
+                log.pri = 3;
+                if (LiveLogBill.param != null) {
+                    log.liveid = LiveLogBill.param.liveid;
+                }
+                log.processId = Process.myPid();
+                log.reason = "3";
+                if (myUserInfoEntity == null) {
+                    myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+                }
+                if (myUserInfoEntity != null) {
+                    log.psId = myUserInfoEntity.getPsimId();
+                }
+
+                if ("wifi".equals(DeviceInfo.getNetworkTypeWIFI2G3G())) {
+                    log.net = 5;
+                } else {
+                    log.net = 9;
+                }
+                List<String> domainList = mLiveRemoteConfigInfo.liveRemoteDomainConfigInfo;
+                Pridata pridata = new Pridata();
+                pridata.ping = new HashMap<String, PingInfo>();
+                Map<String, String> pingMap = new HashMap<String, String>();
+                if (!ListUtil.isEmpty(domainList)) {
+                    for (int i = 0; i < domainList.size(); i++) {
+                        PingInfo info = NetUtil.ping(domainList.get(i));
+                        pridata.ping.put(domainList.get(i), info);
+                        pingMap.put(domainList.get(i), info.ip);
+                    }
+                    log.pridata = pridata;
+                    pridata.dnsinfo = pingMap;
+                }
+
+                String s = JSON.toJSONString(log);
+                LiveMonitorDebug.dLog(s);
+                //LiveLog.sendLog();
+                LiveLog.log(log);
+                LiveMonitorSender.send(s);
+                Log.d("testttttttttttttttt", "log: ");
+            }
+        }.start();
     }
 }

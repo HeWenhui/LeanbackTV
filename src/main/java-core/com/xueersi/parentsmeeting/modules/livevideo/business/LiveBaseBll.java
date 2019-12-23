@@ -2,7 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
 import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.CallSuper;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +15,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveEnvironment;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpAction;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
@@ -58,14 +58,24 @@ public class LiveBaseBll extends BaseBll implements LiveViewAction {
     protected LiveViewAction liveViewAction;
 
     protected int pluginId = -1;
+    /**
+     * notice 辅导标识
+     **/
+    protected static final String NOTICE_KEY_F = "f";
+
 
     public LiveBaseBll(Activity context, LiveBll2 liveBll) {
         super(context);
         this.activity = context;
         contextLiveAndBackDebug = ProxUtil.getProxUtil().get(context, LiveAndBackDebug.class);
         mLiveBll = liveBll;
-        mLiveId = liveBll.getLiveId();
-        mLiveType = liveBll.getLiveType();
+        if (liveBll != null) {
+            mLiveId = liveBll.getLiveId();
+            mLiveType = liveBll.getLiveType();
+        } else {
+            mLiveId = "0";
+            mLiveType = 3;
+        }
         mLogtf = new LogToFile(context, TAG);
     }
 
@@ -92,7 +102,7 @@ public class LiveBaseBll extends BaseBll implements LiveViewAction {
         contextLiveAndBackDebug = ProxUtil.getProxUtil().get(context, LiveAndBackDebug.class);
         this.mLiveId = liveId;
         this.mLiveType = liveType;
-        mLogtf = new LogToFile(context,TAG);
+        mLogtf = new LogToFile(context, TAG);
     }
 
     /**
@@ -116,14 +126,18 @@ public class LiveBaseBll extends BaseBll implements LiveViewAction {
     }
 
 
-    public View getContentView(){
+    public View getContentView() {
         return mRootView;
     }
+
     /**
      * 获取网络请求对象
      */
     protected final LiveHttpAction getLiveHttpAction() {
-        LiveHttpAction liveHttpAction = mLiveBll.getLiveHttpAction();
+        LiveHttpAction liveHttpAction = null;
+        if (mLiveBll != null) {
+            liveHttpAction = mLiveBll.getLiveHttpAction();
+        }
         return liveHttpAction;
     }
 
@@ -144,6 +158,16 @@ public class LiveBaseBll extends BaseBll implements LiveViewAction {
         } else {
             return null;
         }
+    }
+
+
+    /**
+     * 是否是辅导态
+     *
+     * @return
+     */
+    protected boolean isInTraningMode() {
+        return LiveTopic.MODE_TRANING.equals(mLiveBll != null ? mLiveBll.getMode() : "");
     }
 
 

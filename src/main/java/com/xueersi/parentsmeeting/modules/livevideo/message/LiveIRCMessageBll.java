@@ -170,6 +170,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             }
         });
         mRoomAction.setLiveBll(new LiveIRCState());
+        mRoomAction.setLiveHttpManager(mHttpManager);
         BaseLiveMediaControllerTop controllerTop = getInstance(BaseLiveMediaControllerTop.class);
         setLiveMediaControllerTop(controllerTop);
         BaseLiveMediaControllerBottom baseLiveMediaControllerBottom = getInstance(BaseLiveMediaControllerBottom.class);
@@ -458,10 +459,10 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             }
         } else {
             if (mRoomAction != null) {
-//                    if (sender.startsWith(LiveBll.TEACHER_PREFIX) || sender.startsWith(COUNTTEACHER_PREFIX)) {
-//                        //老师不计算在内
-//                        return;
-//                    }
+                if (sender.startsWith("p")) {
+                    //旁听不计算在内
+                    return;
+                }
                 boolean isMyTeam = isMyTeam(sender);
                 if (isMyTeam || isSeniorOfHighSchool()) {
                     mRoomAction.onJoin(target, sender, login, hostname);
@@ -490,11 +491,10 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             }
         } else {
             if (mRoomAction != null) {
-//                    if (sourceNick.startsWith(LiveBll.TEACHER_PREFIX) || sourceNick.startsWith(LiveBll
-// .COUNTTEACHER_PREFIX)) {
-//                        //老师不计算在内
-//                        return;
-//                    }
+                if (sourceNick.startsWith("p")) {
+                    //旁听不计算在内
+                    return;
+                }
                 boolean isMyTeam = isMyTeam(sourceNick);
                 if (isMyTeam || isSeniorOfHighSchool()) {
                     mRoomAction.onQuit(sourceNick, sourceLogin, sourceHostname, reason);
@@ -639,7 +639,10 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                             mRoomAction.onMessage(target, sourceNick, "", "", object.getString("msg"), teacherImg);
                         } else {
                             name = "辅导老师";
-                            String teamId = mGetInfo.getStudentLiveInfo().getTeamId();
+                            String teamId = "";
+                            if(mGetInfo != null && mGetInfo.getStudentLiveInfo() != null){
+                                teamId = mGetInfo.getStudentLiveInfo().getTeamId();
+                            }
                             String to = object.optString("to", "All");
                             if ("All".equals(to) || teamId.equals(to)) {
                                 String teacherIMG = mGetInfo.getTeacherIMG();

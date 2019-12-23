@@ -3,15 +3,14 @@ package com.xueersi.parentsmeeting.modules.livevideo.entity;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.Typeface;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.xueersi.lib.framework.drawable.DrawableHelper;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
 
@@ -142,7 +141,7 @@ public class TeamPkResultLottieEffectInfo extends LottieEffectInfo {
                 @Override
                 public void onSuccess(Drawable drawable) {
                     Bitmap resultBitmap = null;
-                    Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
+                    Bitmap bitmap = DrawableHelper.drawable2bitmap(drawable);
                     if(bitmap != null){
                         float ratio = width / (float)bitmap.getWidth();
                         resultBitmap = scaleBitmap(bitmap,ratio);
@@ -158,7 +157,7 @@ public class TeamPkResultLottieEffectInfo extends LottieEffectInfo {
             ImageLoader.with(animationView.getContext()).load(url).asBitmap(new SingleConfig.BitmapListener() {
                 @Override
                 public void onSuccess(Drawable drawable) {
-                    Bitmap resultBitmap = ((BitmapDrawable) drawable).getBitmap();
+                    Bitmap resultBitmap = DrawableHelper.drawable2bitmap(drawable);
                     Bitmap tempBitmap = circleBitmap(resultBitmap, Math.min(width, height) / 2);
                     animationView.updateBitmap(bitmapId, tempBitmap);
                 }
