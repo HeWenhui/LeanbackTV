@@ -53,6 +53,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/ll_button"
         android:layout_alignParentLeft="true"
-        android:background="@color/COLOR_FFFFFF"
+        android:background="@color/COLOR_DCDCDC"
         ></android.support.v7.widget.RecyclerView>
 </RelativeLayout>
