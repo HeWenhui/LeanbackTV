@@ -536,6 +536,9 @@ public class LiveVideoLoadActivity extends BaseActivity {
                             finish();
                             return;
                         }
+
+                        // 传递皮肤属性
+                        bundle.putInt("skinType", mGetInfo.getSkinType());
                         String stuId = LiveAppUserInfo.getInstance().getStuId();
                         getInfos.put(liveType + "-" + stuId + "-" + vSectionID, mGetInfo);
                         com.xueersi.parentsmeeting.modules.livevideo.fragment.BigLiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);

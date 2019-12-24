@@ -1909,9 +1909,21 @@ public class LiveGetInfo {
     private boolean bigLive;
 
 
-    /**大班小学**/
+    /**大班整合小学**/
     private boolean bigLivePrimarySchool = true;
 
+    public int getSkinType() {
+        return skinType;
+    }
+
+    public void setSkinType(int skinType) {
+        this.skinType = skinType;
+    }
+
+    /**
+     * 大班整合 皮肤类型
+     */
+    private int skinType;
 
     public String getMainTeacherVieo() {
         return mainTeacherVieo;

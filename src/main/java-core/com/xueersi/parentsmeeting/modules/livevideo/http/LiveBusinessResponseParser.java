@@ -165,6 +165,7 @@ public class LiveBusinessResponseParser extends HttpResponseParser {
             //解析一级配置信息
             if (data.has("configs")) {
                 JSONObject cfgJsonObj = data.getJSONObject("configs");
+                liveGetInfo.setSkinType(cfgJsonObj.optInt("skinType"));
                 liveGetInfo.setMainTeacherVieo(cfgJsonObj.optString("mainTeacherVideo"));
                 liveGetInfo.setCounselorTeacherVideo(cfgJsonObj.optString("counselorTeacherVideo"));
                 liveGetInfo.setIrcNick(cfgJsonObj.optString("stuIrcId"));
