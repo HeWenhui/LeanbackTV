@@ -226,7 +226,6 @@ public class LightLiveBackVideoFragment extends LiveBackVideoFragmentBase implem
         Intent intent = activity.getIntent();
 
         mVideoMainEntity = (VideoLivePlayBackEntity) intent.getExtras().getSerializable("videoliveplayback");
-//        mVideoMainEntity.seturl
         mVideoMainEntity.setVideoPath("https://replayqn.wangxiao.eaydu.com/ll/12077/9da63786302394b95c62f146a7087aa1.flv.mp4");
         videoPlayStatus = intent.getIntExtra("teacherVideoStatus", 0);
         changeLandAndPort();
@@ -744,8 +743,12 @@ public class LightLiveBackVideoFragment extends LiveBackVideoFragmentBase implem
         ProxUtil.getProxUtil().clear(activity);
     }
 
+    /**
+     * 视频播放结束退出
+     */
     @Override
     protected void resultComplete() {
+        mIsEnd = true;
         onUserBackPressed();
     }
 

@@ -493,12 +493,16 @@ public class LiveVideoEnter {
 
                     start1v2PlayBack(context, bundle, where);
                 } else {
-                    com.xueersi.parentsmeeting.modules.livevideo.fragment.LightlivePlaybackVideoActivity.intentTo(context, bundle,
+                    boolean isGently = bundle.getBoolean("isGently");
+                    if (isGently){
+                        com.xueersi.parentsmeeting.modules.livevideo.fragment.
+                                LightlivePlaybackVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
+                    }else {
+                        com.xueersi.parentsmeeting.modules.livevideo.fragment.
+                                LivePlaybackVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
+                    }
 
-                            where, VIDEO_REQUEST);
-//                    com.xueersi.parentsmeeting.modules.livevideo.fragment.LivePlaybackVideoActivity.intentTo(context, bundle,
-//
-//                            where, VIDEO_REQUEST);
+
                 }
             }
 
