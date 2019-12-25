@@ -243,4 +243,7 @@ public class InfoUtils {
         UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, eventId, hashMap.getData());
     }
 
+    public static <VM> boolean checkoutNone(List<VM> list) {
+        return list == null || list.size() == 0;
+    }
 }

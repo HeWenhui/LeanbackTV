@@ -16,6 +16,24 @@ public class CoursewareInfoEntity {
     List<String> ips = new ArrayList<>();
     /** 字体公式资源 */
     List<String> resources = new ArrayList<>();
+    List<CoursewareInfoEntity.GroupClassVideoInfo> courses;
+
+    public List<LiveCourseware> getCoursewareList() {
+        return coursewareList;
+    }
+
+    public void setCoursewareList(List<LiveCourseware> coursewareList) {
+        this.coursewareList = coursewareList;
+    }
+
+    public List<GroupClassVideoInfo> getCourses() {
+        return courses;
+    }
+
+    public void setCourses(List<GroupClassVideoInfo> courses) {
+        this.courses = courses;
+    }
+
     /** 加载页资源 */
 //    List<String> loadpages = new ArrayList<>();
     /** 静态资源 */
@@ -137,6 +155,83 @@ public class CoursewareInfoEntity {
 
         public void setCoursewareInfos(List<ItemCoursewareInfo> coursewareInfos) {
             this.coursewareInfos = coursewareInfos;
+        }
+    }
+
+    public static class GroupClassVideoInfo {
+
+        List<String> host;
+        //直播id
+        String liveId;
+        //学生id
+        String stuId;
+        //暂时没有md5
+        String md5;
+        List<GroupClassPath> groupClassPaths;
+
+        public List<GroupClassPath> getGroupClassPaths() {
+            return groupClassPaths;
+        }
+
+        public void setGroupClassPaths(List<GroupClassPath> groupClassPaths) {
+            this.groupClassPaths = groupClassPaths;
+        }
+
+        public static class GroupClassPath {
+            //路径名
+            String path;
+
+            //存储在本地文件名
+            String fileName;
+
+            public String getPath() {
+                return path;
+            }
+
+            public void setPath(String path) {
+                this.path = path;
+            }
+
+            public String getFileName() {
+                return fileName;
+            }
+
+            public void setFileName(String fileName) {
+                this.fileName = fileName;
+            }
+        }
+
+
+        public List<String> getHost() {
+            return host;
+        }
+
+        public void setHost(List<String> host) {
+            this.host = host;
+        }
+
+        public String getLiveId() {
+            return liveId;
+        }
+
+        public void setLiveId(String liveId) {
+            this.liveId = liveId;
+        }
+
+        public String getStuId() {
+            return stuId;
+        }
+
+        public void setStuId(String stuId) {
+            this.stuId = stuId;
+        }
+
+        public String getMd5() {
+            return md5;
+        }
+
+        public void setMd5(String md5) {
+            this.md5 = md5;
         }
     }
 
