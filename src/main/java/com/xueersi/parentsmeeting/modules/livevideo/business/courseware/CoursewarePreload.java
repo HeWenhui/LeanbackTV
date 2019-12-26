@@ -2,8 +2,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.business.courseware;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
@@ -108,7 +108,7 @@ public class CoursewarePreload {
         try {
             File cacheFile = LiveCacheFile.geCacheFile(ContextManager.getContext(), "webviewCache");
             long nSDFreeSize = cacheFile.getFreeSpace() / 1024L / 1024L;
-            Log.d("CoursewarePreload", "getFreeSize:nSDFreeSize=" + nSDFreeSize);
+//            Log.d("CoursewarePreload", "getFreeSize:nSDFreeSize=" + nSDFreeSize);
             return nSDFreeSize;
         } catch (Exception e) {
             LiveCrashReport.postCatchedException("CoursewarePreload", e);
@@ -611,7 +611,7 @@ public class CoursewarePreload {
     private void downLiveIdGroupVideo(String itemLiveId) {
         for (int i = 0; i < courseWareInfos.size(); i++) {
             List<CoursewareInfoEntity.GroupClassVideoInfo> groupClassVideoInfos = courseWareInfos.get(i).getCourses();
-            if (groupClassVideoInfos == null) {
+            if (InfoUtils.checkoutNone(groupClassVideoInfos)) {
                 continue;
             }
             for (CoursewareInfoEntity.GroupClassVideoInfo groupClassVideoInfo : groupClassVideoInfos) {
@@ -628,19 +628,24 @@ public class CoursewarePreload {
      * 下载所有没有下载过的视频
      */
     private void doExeAllGroupVideo() {
-
-        for (int i = 0; i < courseWareInfos.size(); i++) {
-            List<CoursewareInfoEntity.GroupClassVideoInfo> groupClassVideoInfos = courseWareInfos.get(i).getCourses();
-            if (groupClassVideoInfos == null) {
-                continue;
-            }
-            for (CoursewareInfoEntity.GroupClassVideoInfo groupClassVideoInfo : groupClassVideoInfos) {
-                if (!groupClassVideoInfo.isDown()) {
-                    exeDownGroupClassVideoPath(groupClassVideoInfo);
-                    groupClassVideoInfo.setDown(true);
+        executos.execute(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < courseWareInfos.size(); i++) {
+                    List<CoursewareInfoEntity.GroupClassVideoInfo> groupClassVideoInfos = courseWareInfos.get(i).getCourses();
+                    if (InfoUtils.checkoutNone(groupClassVideoInfos)) {
+                        continue;
+                    }
+                    for (CoursewareInfoEntity.GroupClassVideoInfo groupClassVideoInfo : groupClassVideoInfos) {
+                        if (!groupClassVideoInfo.isDown()) {
+                            exeDownGroupClassVideoPath(groupClassVideoInfo);
+                            groupClassVideoInfo.setDown(true);
+                        }
+                    }
                 }
             }
-        }
+        });
+
     }
 
     private void exeDownGroupClassVideoPath(CoursewareInfoEntity.GroupClassVideoInfo videoInfo) {
@@ -661,12 +666,13 @@ public class CoursewarePreload {
         String path = groupClassPath.getPath();
 
         String fileName = groupClassPath.getFileName();
-        File todayLiveCacheDir = new File(todayCacheDir, videoInfo.getLiveId());
-        File mMorecacheout = new File(todayLiveCacheDir, videoInfo.getLiveId() + "child");
+//        File todayLiveCacheDir = new File(todayCacheDir, videoInfo.getLiveId());
+        File mMorecacheout;// = new File(todayLiveCacheDir, videoInfo.getLiveId() + "child");
         mMorecacheout = LiveCacheFile.getGroupClassFile(mContext, videoInfo.getLiveId());
         if (!mMorecacheout.exists()) {
             mMorecacheout.mkdirs();
         }
+        fileName = fileName + ".mp4";
 //        final File mMorecachein = new File(path, videoInfo.getLiveId());
         DownLoadInfo downLoadInfo = DownLoadInfo.createFileInfo(host + path,
                 mMorecacheout.getAbsolutePath(), fileName, null);
@@ -1318,14 +1324,9 @@ public class CoursewarePreload {
 
         @Override
         public void onSuccess(String folderPath, String fileName) {
-            logger.d("download ttf success");
-
-//            StableLogHashMap hashMap = new StableLogHashMap();
-//            hashMap.put("logtype", "endPreload");
-//            hashMap.put("preloadid", md5);
-//            hashMap.put("loadurl", url);
-//            hashMap.put("sno", "2");
-//            hashMap.put("status", "true");
+            if (AppConfig.DEBUG) {
+                logger.d("download " + fileName + " success");
+            }
             StringBuilder sb = new StringBuilder();
             if (ips.size() > 0) {
                 sb = new StringBuilder(ips.get(0));
@@ -1333,13 +1334,6 @@ public class CoursewarePreload {
             for (int i = 1; i < downTryCount.get() && i < ips.size(); i++) {
                 sb.append("," + ips.get(i));
             }
-
-//            hashMap.put("failurl", downTryCount.get() != 0 ? sb.toString() : "");
-
-//            hashMap.put("liveid", "");
-//            hashMap.put("resourcetype", resourcetype);
-//            UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig
-// .PRE_LOAD_START, hashMap.getData());
 
             if (!NbCourseWareConfig.RESOURSE_TYPE_NB.equals(resourcetype)) {
 
@@ -1381,14 +1375,21 @@ public class CoursewarePreload {
         @Override
         public void onFail(int errorCode) {
 //            String ip = "http://" + ips.get((cdnPos.getAndIncrement()) % cdnLength.get());
-            int oldPos = downTryCount.get() % ipLength.get();
+            int allHostNum = 0;
+            if (ips != null) {
+                allHostNum += ips.size();
+            }
+            if (cdns != null) {
+                allHostNum += cdns.size();
+            }
+            int oldPos = downTryCount.get() % allHostNum;
             String oldIP = "";
             if (oldPos < ips.size()) {
                 oldIP = ips.get(oldPos);
             }
-            logger.d("fail url path:  " + oldIP + url + "   file name:" + mFileName + ".nozip");
+            logger.d("nozip fail url path:  (" + oldIP + url + ")   file name:" + mFileName + ".nozip");
             downTryCount.getAndIncrement();
-            int newPos = downTryCount.get() % ipLength.get();
+            int newPos = downTryCount.get() % allHostNum;
             String tempIP = "";
             if (newPos < ips.size()) {
                 tempIP = ips.get(newPos);

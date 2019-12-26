@@ -2427,6 +2427,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             for (int i = 0; i < videoHost.length(); i++) {
                 hostList.add((String) videoHost.get(i));
             }
+            groupClassVideoInfo.setHost(hostList);
         } catch (JSONException e) {
             e.printStackTrace();
             logger.e(Log.getStackTraceString(e));
