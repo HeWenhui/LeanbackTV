@@ -37,7 +37,6 @@ import org.xutils.xutils.common.util.MD5;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -591,24 +590,57 @@ public class CoursewarePreload {
                     String itemLiveId = liveCourseware.getLiveId();
                     downloadCourseware(todayLiveCacheDir, itemCoursewareInfos, ips, cdns, itemLiveId);
 //                    String liveCoursewareNowDown = liveCourseware.getLiveId();
-                    for (int i = 0; i < courseWareInfos.size(); i++) {
-                        List<CoursewareInfoEntity.GroupClassVideoInfo> groupClassVideoInfos = new ArrayList<>();
-                        if (groupClassVideoInfos == null) {
-                            return;
-                        }
-                        for (CoursewareInfoEntity.GroupClassVideoInfo groupClassVideoInfo : groupClassVideoInfos) {
-                            if (itemLiveId != null && itemLiveId.equals(groupClassVideoInfo.getLiveId())) {
-                                exeDownGroupClassVideoPath(groupClassVideoInfo);
-                                break;
-                            }
-                        }
-                    }
+
+                    downLiveIdGroupVideo(itemLiveId);
+                    //如果没有课件预加载，需要直接走视频预加载,也就是再把视频url添加一般，底层会过滤
+
                 }
             });
         }
+        doExeAllGroupVideo();
         logger.d("exeDownLoadCourseware:size=" + liveCoursewares.size() + ",time=" + (System.currentTimeMillis() - before));
         ShareDataManager shareDataManager = ShareDataManager.getInstance();
         shareDataManager.put(ShareDataConfig.SP_PRELOAD_COURSEWARE, liveIds.toString(), ShareDataManager.SHAREDATA_USER);
+    }
+
+    /**
+     * 下载指定liveId的视频
+     *
+     * @param itemLiveId
+     */
+    private void downLiveIdGroupVideo(String itemLiveId) {
+        for (int i = 0; i < courseWareInfos.size(); i++) {
+            List<CoursewareInfoEntity.GroupClassVideoInfo> groupClassVideoInfos = courseWareInfos.get(i).getCourses();
+            if (groupClassVideoInfos == null) {
+                continue;
+            }
+            for (CoursewareInfoEntity.GroupClassVideoInfo groupClassVideoInfo : groupClassVideoInfos) {
+                if (itemLiveId != null && itemLiveId.equals(groupClassVideoInfo.getLiveId())) {
+                    exeDownGroupClassVideoPath(groupClassVideoInfo);
+                    groupClassVideoInfo.setDown(true);
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
+     * 下载所有没有下载过的视频
+     */
+    private void doExeAllGroupVideo() {
+
+        for (int i = 0; i < courseWareInfos.size(); i++) {
+            List<CoursewareInfoEntity.GroupClassVideoInfo> groupClassVideoInfos = courseWareInfos.get(i).getCourses();
+            if (groupClassVideoInfos == null) {
+                continue;
+            }
+            for (CoursewareInfoEntity.GroupClassVideoInfo groupClassVideoInfo : groupClassVideoInfos) {
+                if (!groupClassVideoInfo.isDown()) {
+                    exeDownGroupClassVideoPath(groupClassVideoInfo);
+                    groupClassVideoInfo.setDown(true);
+                }
+            }
+        }
     }
 
     private void exeDownGroupClassVideoPath(CoursewareInfoEntity.GroupClassVideoInfo videoInfo) {
@@ -631,6 +663,10 @@ public class CoursewarePreload {
         String fileName = groupClassPath.getFileName();
         File todayLiveCacheDir = new File(todayCacheDir, videoInfo.getLiveId());
         File mMorecacheout = new File(todayLiveCacheDir, videoInfo.getLiveId() + "child");
+        mMorecacheout = LiveCacheFile.getGroupClassFile(mContext, videoInfo.getLiveId());
+        if (!mMorecacheout.exists()) {
+            mMorecacheout.mkdirs();
+        }
 //        final File mMorecachein = new File(path, videoInfo.getLiveId());
         DownLoadInfo downLoadInfo = DownLoadInfo.createFileInfo(host + path,
                 mMorecacheout.getAbsolutePath(), fileName, null);
@@ -1440,6 +1476,7 @@ public class CoursewarePreload {
         public void onFinish() {
 //            logger.i("no zip download finish");
         }
+
     }
 
 

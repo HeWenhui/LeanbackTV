@@ -75,15 +75,15 @@ public class LiveCacheFile {
     /**
      * 注意不可并发调用
      *
-     * @param context
-     * @param fileName
+     * @param mContext
+     * @param liveId
      * @return
      */
     public static File getGroupClassFile(Context mContext, String liveId) {
         Date date = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
         final String today = dateFormat.format(date);
-        cacheFile = LiveCacheFile.geCacheFile(mContext, "webviewCache");
+        File cacheFile = LiveCacheFile.geCacheFile(mContext, "webviewCache");
 //        final File mPublicCacheout = new File(cacheFile, mPublicCacheoutName);
         File todayCacheDir = new File(cacheFile, today);
         File mMorecacheout = new File(todayCacheDir, liveId + "child");

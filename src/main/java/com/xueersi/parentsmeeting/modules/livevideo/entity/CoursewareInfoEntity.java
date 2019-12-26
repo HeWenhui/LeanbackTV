@@ -168,6 +168,16 @@ public class CoursewareInfoEntity {
         //暂时没有md5
         String md5;
         List<GroupClassPath> groupClassPaths;
+        //是否已经下载过
+        boolean isDown;
+
+        public boolean isDown() {
+            return isDown;
+        }
+
+        public void setDown(boolean down) {
+            isDown = down;
+        }
 
         public List<GroupClassPath> getGroupClassPaths() {
             return groupClassPaths;
