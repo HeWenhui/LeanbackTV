@@ -104,7 +104,7 @@ public class LightLiveBackVideoFragment extends LiveBackVideoFragmentBase implem
     private int videoPlayStatus;
     private String mSectionName;
     private String where;
-    private VideoLoadingImgView ivLoading;
+    private ImageView ivLoading;
     private RelativeLayout rlFirstBackgroundView;
     private ImageView ivBack;
     private String mWebPath;
@@ -177,6 +177,7 @@ public class LightLiveBackVideoFragment extends LiveBackVideoFragmentBase implem
         otherContent.setVisibility(View.VISIBLE);
         contentLayout = mContentView.findViewById(R.id.rl_course_video_live_content);
         liveViewAction = new LiveViewActionIml(activity, mContentView, rlQuestionContent);
+        updateLoadingImage();
     }
 
     @Override
@@ -259,9 +260,9 @@ public class LightLiveBackVideoFragment extends LiveBackVideoFragmentBase implem
         liveBackVideoBll.setSectionName(mSectionName);
 
         // 如果加载不出来
-//        if (tvLoadingContent != null) {
-//            tvLoadingContent.setText("正在获取视频资源，请稍候");
-//        }
+        if (tvLoadingContent != null) {
+            tvLoadingContent.setText("正在获取视频资源，请稍候");
+        }
         // 设置播放进度
         setmLastVideoPositionKey(mVideoEntity.getVideoCacheKey());
         // mCourseBll.getQuestionLivePlay(section);
@@ -400,7 +401,7 @@ public class LightLiveBackVideoFragment extends LiveBackVideoFragmentBase implem
 
     /** 扫描是否有需要弹出的互动题 */
     public void scanQuestion(long position) {
-        if (!mIsLand.get() || vPlayer == null || !vPlayer.isPlaying()) {
+        if (vPlayer == null || !vPlayer.isPlaying()) {
             // 如果不为横屏，没有正在播放，或正在显示互动题都退出扫描
             return;
         }
@@ -434,13 +435,13 @@ public class LightLiveBackVideoFragment extends LiveBackVideoFragmentBase implem
 
     //添加功能模块
     protected void addBusiness(Activity activity) {
-//        ArrayList<BllConfigEntity> bllConfigEntities = AllBackBllConfig.getLiveBackBusiness();
-//        for (int i = 0; i < bllConfigEntities.size(); i++) {
-//            LiveBackBaseBll liveBaseBll = creatBll(bllConfigEntities.get(i));
-//            if (liveBaseBll != null) {
-//                liveBackBll.addBusinessBll(liveBaseBll);
-//            }
-//        }
+        ArrayList<BllConfigEntity> bllConfigEntities = AllBackBllConfig.getLightliveBackBusiness();
+        for (int i = 0; i < bllConfigEntities.size(); i++) {
+            LiveBackBaseBll liveBaseBll = creatBll(bllConfigEntities.get(i));
+            if (liveBaseBll != null) {
+                liveBackBll.addBusinessBll(liveBaseBll);
+            }
+        }
     }
 
     protected LiveBackBaseBll creatBll(BllConfigEntity bllConfigEntity) {
@@ -614,6 +615,20 @@ public class LightLiveBackVideoFragment extends LiveBackVideoFragmentBase implem
         if (rlFirstBackgroundView != null) {
             rlFirstBackgroundView.setVisibility(visibility);
             ivLoading.setVisibility(visibility);
+        }
+
+    }
+
+    protected void updateLoadingImage() {
+        FooterIconEntity footerIconEntity = ShareDataManager.getInstance().getCacheEntity(FooterIconEntity.class,
+                false, ShareBusinessConfig.SP_EFFICIENT_FOOTER_ICON, ShareDataManager.SHAREDATA_NOT_CLEAR);
+        if (footerIconEntity != null) {
+            String loadingNoClickUrl = footerIconEntity.getNoClickUrlById("6");
+            if (loadingNoClickUrl != null && !"".equals(loadingNoClickUrl)) {
+                ImageLoader.with(activity).load(loadingNoClickUrl).placeHolder(R.drawable
+                        .livevideo_cy_moren_logo_normal).error(R.drawable.livevideo_cy_moren_logo_normal).into
+                        (ivLoading);
+            }
         }
     }
 

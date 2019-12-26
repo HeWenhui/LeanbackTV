@@ -57,12 +57,13 @@ public class LightlivePlaybackMediaController extends MediaController2 {
         this.mIsLand = mIsLand;
         activity = (Activity) context;
         addBottom();
+        onAttach(mIsLand);
     }
 
     protected void addBottom() {
         mediaControllerBottom = new LightlivePlayBackMediaControllerBottom(activity, this, mPlayer);
-        rlKeyPoints = (RelativeLayout) mediaControllerBottom.findViewById(com.xueersi.parentsmeeting.module.player.R.id.rl_video_mediacontroller_keypoints);
-        rlKeytip = (RelativeLayout) mediaControllerBottom.findViewById(com.xueersi.parentsmeeting.module.player.R.id.rl_video_mediacontroller_keytip);
+        rlKeyPoints = (RelativeLayout) mediaControllerBottom.findViewById(R.id.rl_video_mediacontroller_keypoints);
+        rlKeytip = (RelativeLayout) mediaControllerBottom.findViewById(R.id.rl_video_mediacontroller_keytip);
         setControllerBottom(mediaControllerBottom);
     }
 
@@ -80,9 +81,11 @@ public class LightlivePlaybackMediaController extends MediaController2 {
         if (isLand){
             allView.setVisibility(GONE);
             mGestures.setTouchListener(mTouchListener, true);
+            mediaControllerBottom.setAutoOrientation(true);
         }else {
             allView.setVisibility(VISIBLE);
             mGestures.setTouchListener(mTouchListener ,false);
+            mediaControllerBottom.setAutoOrientation(false);
         }
 //        if (isLand != mIsLand) {
 //            mIsLand = isLand;

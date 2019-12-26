@@ -75,5 +75,12 @@ public class LightLiveHttpManager {
         });
     }
 
+    public void getLiveBackMessage(String liveId,String startTime,HttpCallBack httpCallBack){
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("startTime", startTime);
+        liveHttpManager.sendPost(LiveHttpConfig.URL_LIGHTLIVE_GET_MESSAGE,params,httpCallBack);
+    }
+
 
 }

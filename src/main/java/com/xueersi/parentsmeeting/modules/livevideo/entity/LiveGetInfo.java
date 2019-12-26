@@ -405,6 +405,8 @@ public class LiveGetInfo {
     /** 聊天人数增加开关 1开 0关*/
     private int chatSwitch;
 
+    private String streamTimes;
+
     public String getGentlyNotice() {
         return gentlyNotice;
     }
@@ -427,6 +429,14 @@ public class LiveGetInfo {
 
     public void setLpWeChatEntity(LPWeChatEntity lpWeChatEntity) {
         this.lpWeChatEntity = lpWeChatEntity;
+    }
+
+    public String getStreamTimes() {
+        return streamTimes;
+    }
+
+    public void setStreamTimes(String streamTimes) {
+        this.streamTimes = streamTimes;
     }
 
     public int getChatSwitch() {

@@ -69,7 +69,7 @@ import cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout;
  * @ProjectName: xueersiwangxiao
  * @Package: com.xueersi.parentsmeeting.modules.livevideo.message.pager
  * @ClassName: LightLiveMessagePortPager
- * @Description: java类作用描述
+ * @Description: 轻直播竖屏聊天
  * @Author: WangDe
  * @CreateDate: 2019/11/22 16:43
  * @UpdateUser: 更新者

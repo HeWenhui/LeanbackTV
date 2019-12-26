@@ -60,8 +60,19 @@ public class LightlivePlayBackMediaControllerBottom extends MediaControllerBotto
     }
 
     @Override
-    public void setAutoOrientation(boolean autoOrientation) {
+    public void setAutoOrientation(final boolean autoOrientation) {
 //        super.setAutoOrientation(autoOrientation);
+        post(new Runnable() {
+            @Override
+            public void run() {
+                if(autoOrientation){
+                    mSetSpeed.setVisibility(VISIBLE);
+                }else{
+                    mSetSpeed.setVisibility(GONE);
+                }
+            }
+        });
+
     }
 
     @Override
@@ -88,4 +99,6 @@ public class LightlivePlayBackMediaControllerBottom extends MediaControllerBotto
             rl_video_mediacontroller_speeds.setVisibility(INVISIBLE);
         }
     }
+
+
 }

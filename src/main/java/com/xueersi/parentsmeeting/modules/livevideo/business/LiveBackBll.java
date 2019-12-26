@@ -383,7 +383,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
         liveGetInfo.setTeacherId(mVideoEntity.getTutorTeacherId());
         liveGetInfo.setTeacherName(mVideoEntity.getTutorTeacherName());
         liveGetInfo.setTeacherIMG(mVideoEntity.getTutorTeacherImg());
-
+        liveGetInfo.setStreamTimes(mVideoEntity.getStreamTimes());
         liveGetInfo.setsTime(mVideoEntity.getsTime());
         liveGetInfo.seteTime(mVideoEntity.geteTime());
         liveGetInfo.setBigLive(mVideoEntity.isBigLive());
@@ -392,6 +392,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
         liveGetInfo.setGetChatRecordUrl(mVideoEntity.getGetChatRecordUrl());
         liveGetInfo.setGetMetadataUrl(mVideoEntity.getGetMetadataUrl());
         liveGetInfo.setIrcRoomsJson(mVideoEntity.getIrcRoomsJson());
+
       /*  Log.e("ckTrac","=======>liveBackBll_onCreate:"+liveGetInfo.getInitModuleUrl()
                 +":"+liveGetInfo.getGetChatRecordUrl()+":"+liveGetInfo.getGetMetadataUrl());*/
         try {

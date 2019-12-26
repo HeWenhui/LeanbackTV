@@ -265,6 +265,8 @@ public class LiveHttpConfig {
     public final static String URL_LIGHTLIVE_GET_WECHAT= AppConfig.HTTP_HOST_EXPAPI + "/operation/mobile/diversionLecture";
     /** 轻直播获取推荐课列表*/
     public final static String URL_LIGHTLIVE_REPORT_LOGIN= AppConfig.HTTP_HOST_LECTUREPIE + "/exp/loginReport";
+    /** 轻直播获取推荐课列表*/
+    public final static String URL_LIGHTLIVE_GET_MESSAGE= AppConfig.HTTP_HOST_LECTUREPIE + "/LiveLecture/getHistoryMsg";
     /** 直播辅导献花 */
     @Deprecated
     public final static String URL_LIVE_TUTORIAL_PRAISE_TEACHER = LiveVideoConfig.HTTP_HOST +

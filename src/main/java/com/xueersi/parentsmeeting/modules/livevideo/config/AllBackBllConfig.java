@@ -25,10 +25,22 @@ public class AllBackBllConfig {
             "com.xueersi.parentsmeeting.modules.livevideo.leclearnreport.business.LecLearnReportIRCBll",
     };
 
+    private static String[] lightbackClassPath = {
+            "com.xueersi.parentsmeeting.modules.livevideo.message.business.LightLiveMsgBackBll",
+    };
+
     public static ArrayList<BllConfigEntity> getLiveBackBusiness() {
         ArrayList<BllConfigEntity> arrayList = new ArrayList<>();
         for (int i = 0; i < backClassPath.length; i++) {
             arrayList.add(new BllConfigEntity(backClassPath[i]));
+        }
+        return arrayList;
+    }
+
+    public static ArrayList<BllConfigEntity> getLightliveBackBusiness() {
+        ArrayList<BllConfigEntity> arrayList = new ArrayList<>();
+        for (int i = 0; i < lightbackClassPath.length; i++) {
+            arrayList.add(new BllConfigEntity(lightbackClassPath[i]));
         }
         return arrayList;
     }

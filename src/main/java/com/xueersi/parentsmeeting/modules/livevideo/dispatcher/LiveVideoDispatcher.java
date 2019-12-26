@@ -412,7 +412,7 @@ public class LiveVideoDispatcher extends AbsDispatcher {
         if (publicLiveCourseEntity.isGently()){
             bundle.putString("gentlyNotice",publicLiveCourseEntity.getGentlyNotice());
             if (publicLiveCourseEntity.getLpWeChatEntity() != null){
-                bundle.putString("tipType",publicLiveCourseEntity.getLpWeChatEntity().getTipInfo());
+                bundle.putInt("tipType",publicLiveCourseEntity.getLpWeChatEntity().getTipType());
             }
         }
         if ("720P".equals(publicLiveCourseEntity.getRadioType())) {
