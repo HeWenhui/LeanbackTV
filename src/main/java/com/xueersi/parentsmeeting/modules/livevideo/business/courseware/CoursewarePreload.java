@@ -627,6 +627,7 @@ public class CoursewarePreload {
             return;
         }
         String path = groupClassPath.getPath();
+
         String fileName = groupClassPath.getFileName();
         File todayLiveCacheDir = new File(todayCacheDir, videoInfo.getLiveId());
         File mMorecacheout = new File(todayLiveCacheDir, videoInfo.getLiveId() + "child");

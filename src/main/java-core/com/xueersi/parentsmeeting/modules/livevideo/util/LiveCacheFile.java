@@ -8,6 +8,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by linyuqiang on 2018/8/17.
@@ -67,5 +70,23 @@ public class LiveCacheFile {
             alldir.mkdirs();
         }
         return alldir;
+    }
+
+    /**
+     * 注意不可并发调用
+     *
+     * @param context
+     * @param fileName
+     * @return
+     */
+    public static File getGroupClassFile(Context mContext, String liveId) {
+        Date date = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
+        final String today = dateFormat.format(date);
+        cacheFile = LiveCacheFile.geCacheFile(mContext, "webviewCache");
+//        final File mPublicCacheout = new File(cacheFile, mPublicCacheoutName);
+        File todayCacheDir = new File(cacheFile, today);
+        File mMorecacheout = new File(todayCacheDir, liveId + "child");
+        return mMorecacheout;
     }
 }
