@@ -567,18 +567,18 @@ public class CoursewarePreload {
      * @param cdns
      * @param ips
      */
-    private void exeDownLoadCourseware(List<CoursewareInfoEntity.LiveCourseware> liveCoursewares, final List<String> cdns, final List<String> ips) {
+    private void exeDownLoadCourseware(final List<CoursewareInfoEntity.LiveCourseware> liveCoursewares, final List<String> cdns, final List<String> ips) {
+        executos.execute(new Runnable() {
+            @Override
+            public void run() {
+                StringBuilder liveIds = new StringBuilder("");
+                long before = System.currentTimeMillis();
+                for (final CoursewareInfoEntity.LiveCourseware liveCourseware : liveCoursewares) {
+                    //课件列表
+                    liveIds.append(liveCourseware.getLiveId() + ",");
 
-        StringBuilder liveIds = new StringBuilder("");
-        long before = System.currentTimeMillis();
-        for (final CoursewareInfoEntity.LiveCourseware liveCourseware : liveCoursewares) {
-            //课件列表
-            liveIds.append(liveCourseware.getLiveId() + ",");
+                    PreloadStaticStorage.preloadLiveId.add(liveCourseware.getLiveId());
 
-            PreloadStaticStorage.preloadLiveId.add(liveCourseware.getLiveId());
-            executos.execute(new Runnable() {
-                @Override
-                public void run() {
                     List<CoursewareInfoEntity.ItemCoursewareInfo> itemCoursewareInfos = liveCourseware.getCoursewareInfos();
                     File todayLiveCacheDir = new File(todayCacheDir, liveCourseware.getLiveId());
                     boolean exists = todayLiveCacheDir.exists();
@@ -595,12 +595,13 @@ public class CoursewarePreload {
                     //如果没有课件预加载，需要直接走视频预加载,也就是再把视频url添加一般，底层会过滤
 
                 }
-            });
-        }
-        doExeAllGroupVideo();
-        logger.d("exeDownLoadCourseware:size=" + liveCoursewares.size() + ",time=" + (System.currentTimeMillis() - before));
-        ShareDataManager shareDataManager = ShareDataManager.getInstance();
-        shareDataManager.put(ShareDataConfig.SP_PRELOAD_COURSEWARE, liveIds.toString(), ShareDataManager.SHAREDATA_USER);
+                doExeAllGroupVideo();
+                logger.d("exeDownLoadCourseware:size=" + liveCoursewares.size() + ",time=" + (System.currentTimeMillis() - before));
+                ShareDataManager shareDataManager = ShareDataManager.getInstance();
+                shareDataManager.put(ShareDataConfig.SP_PRELOAD_COURSEWARE, liveIds.toString(), ShareDataManager.SHAREDATA_USER);
+            }
+        });
+
     }
 
     /**
@@ -1387,7 +1388,7 @@ public class CoursewarePreload {
             if (oldPos < ips.size()) {
                 oldIP = ips.get(oldPos);
             }
-            logger.d("nozip fail url path:  (" + oldIP + url + ")   file name:" + mFileName + ".nozip");
+            logger.w("nozip fail url path:  (" + oldIP + url + ")   file name:" + mFileName + ".nozip");
             downTryCount.getAndIncrement();
             int newPos = downTryCount.get() % allHostNum;
             String tempIP = "";

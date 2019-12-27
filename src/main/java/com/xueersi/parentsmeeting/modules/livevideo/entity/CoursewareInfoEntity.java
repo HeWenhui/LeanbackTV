@@ -171,6 +171,16 @@ public class CoursewareInfoEntity {
         //是否已经下载过
         boolean isDown;
 
+        private String recordPlanId;
+
+        public String getRecordPlanId() {
+            return recordPlanId;
+        }
+
+        public void setRecordPlanId(String recordPlanId) {
+            this.recordPlanId = recordPlanId;
+        }
+
         public boolean isDown() {
             return isDown;
         }

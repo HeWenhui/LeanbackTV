@@ -86,7 +86,7 @@ public class LiveCacheFile {
         File cacheFile = LiveCacheFile.geCacheFile(mContext, "webviewCache");
 //        final File mPublicCacheout = new File(cacheFile, mPublicCacheoutName);
         File todayCacheDir = new File(cacheFile, today);
-        File mMorecacheout = new File(todayCacheDir, liveId + "child");
+        File mMorecacheout = new File(todayCacheDir, liveId + "mp4");
         return mMorecacheout;
     }
 }

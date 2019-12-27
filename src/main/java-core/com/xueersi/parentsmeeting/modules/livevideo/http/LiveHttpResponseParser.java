@@ -2380,7 +2380,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         return result;
     }
 
-    CoursewareInfoEntity.GroupClassVideoInfo parseGroupClassVideoInfo(JSONObject liveJson) {
+    CoursewareInfoEntity.GroupClassVideoInfo parseGroupClassVideoInfo(JSONObject liveJson, String liveId) {
 //        JSONObject jsonObject = liveJson.optJSONObject("videoInfo");
         if (liveJson == null) {
             logger.e("group class data error");
@@ -2389,7 +2389,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
 
         CoursewareInfoEntity.GroupClassVideoInfo groupClassVideoInfo = new CoursewareInfoEntity.GroupClassVideoInfo();
         try {
-            groupClassVideoInfo.setLiveId(liveJson.optString("recordPlanId"));
+            groupClassVideoInfo.setRecordPlanId(liveJson.optString("recordPlanId"));
+            groupClassVideoInfo.setLiveId(liveId);
             groupClassVideoInfo.setStuId("recordStuId");
             {
                 JSONObject videoPath = liveJson.optJSONObject("videoPath");
@@ -2449,14 +2450,15 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     try {
                         CoursewareInfoEntity.LiveCourseware liveCourseware = new CoursewareInfoEntity.LiveCourseware();
                         JSONObject liveJson = liveCoursewareArray.getJSONObject(i);
+                        String liveId = liveJson.optString("liveId");
                         {
-                            CoursewareInfoEntity.GroupClassVideoInfo itemVideoInfo = parseGroupClassVideoInfo(liveJson.optJSONObject("videoInfo"));
+                            CoursewareInfoEntity.GroupClassVideoInfo itemVideoInfo = parseGroupClassVideoInfo(liveJson.optJSONObject("videoInfo"), liveId);
                             if (itemVideoInfo != null) {
                                 groupClassVideoInfoList.add(itemVideoInfo);
                             }
                         }
 
-                        liveCourseware.setLiveId(liveJson.getString("liveId"));
+                        liveCourseware.setLiveId(liveId);
                         liveCourseware.setStime(liveJson.optLong("stime", System.currentTimeMillis() / 1000));
                         if (liveJson.has("infos")) {
                             JSONArray coursewareArray = liveJson.getJSONArray("infos");
