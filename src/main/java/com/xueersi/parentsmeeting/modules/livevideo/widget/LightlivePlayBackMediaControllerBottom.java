@@ -62,16 +62,6 @@ public class LightlivePlayBackMediaControllerBottom extends MediaControllerBotto
     @Override
     public void setAutoOrientation(final boolean autoOrientation) {
 //        super.setAutoOrientation(autoOrientation);
-        post(new Runnable() {
-            @Override
-            public void run() {
-                if(autoOrientation){
-                    mSetSpeed.setVisibility(VISIBLE);
-                }else{
-                    mSetSpeed.setVisibility(GONE);
-                }
-            }
-        });
 
     }
 

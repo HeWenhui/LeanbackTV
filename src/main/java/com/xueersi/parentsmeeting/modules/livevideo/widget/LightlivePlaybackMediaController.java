@@ -57,7 +57,6 @@ public class LightlivePlaybackMediaController extends MediaController2 {
         this.mIsLand = mIsLand;
         activity = (Activity) context;
         addBottom();
-        onAttach(mIsLand);
     }
 
     protected void addBottom() {
@@ -81,11 +80,11 @@ public class LightlivePlaybackMediaController extends MediaController2 {
         if (isLand){
             allView.setVisibility(GONE);
             mGestures.setTouchListener(mTouchListener, true);
-            mediaControllerBottom.setAutoOrientation(true);
+            mediaControllerBottom.setSetSpeedVisable(true);
         }else {
             allView.setVisibility(VISIBLE);
             mGestures.setTouchListener(mTouchListener ,false);
-            mediaControllerBottom.setAutoOrientation(false);
+            mediaControllerBottom.setSetSpeedVisable(false);
         }
 //        if (isLand != mIsLand) {
 //            mIsLand = isLand;

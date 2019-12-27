@@ -516,14 +516,7 @@ public class LightLiveBackVideoFragment extends LiveBackVideoFragmentBase implem
             rl_course_video_live_controller_content.addView(mPlayBackMediaController, new ViewGroup.LayoutParams
                         (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
-            // 设置播放器横竖屏切换按钮不显示
-//            mMediaController.setAutoOrientation(false);
-            // 播放下一个按钮不显示
-//            mMediaController.setPlayNextVisable(false);
-            // 设置速度按钮显示
-            mMediaController.setSetSpeedVisable(true);
-
-//            mMediaController.setVideoStatus(MediaPlayer.VIDEO_BOTTOM_CONTROL_CODE_TEACHER, videoPlayStatus, "");
+            mMediaController.setSetSpeedVisable(false);
 
             if (mIsLand.get()) {
                 RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rl_course_video_live_controller_content
