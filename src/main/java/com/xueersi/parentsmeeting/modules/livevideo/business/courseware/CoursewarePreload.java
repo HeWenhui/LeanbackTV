@@ -660,37 +660,39 @@ public class CoursewarePreload {
             return;
         }
         String host = hostList.get(0);
-        CoursewareInfoEntity.GroupClassVideoInfo.GroupClassPath groupClassPath = groupClassPathList.get(0);
-        if (groupClassPath == null) {
-            return;
-        }
-        String path = groupClassPath.getPath();
+        for (int i = 0; i < groupClassPathList.size(); i++) {
+            CoursewareInfoEntity.GroupClassVideoInfo.GroupClassPath groupClassPath = groupClassPathList.get(i);
+            if (groupClassPath == null) {
+                return;
+            }
+            String path = groupClassPath.getPath();
 
-        String fileName = groupClassPath.getFileName();
+            String fileName = groupClassPath.getFileName();
 //        File todayLiveCacheDir = new File(todayCacheDir, videoInfo.getLiveId());
-        File mMorecacheout;// = new File(todayLiveCacheDir, videoInfo.getLiveId() + "child");
-        mMorecacheout = LiveCacheFile.getGroupClassFile(mContext, videoInfo.getLiveId());
-        if (!mMorecacheout.exists()) {
-            mMorecacheout.mkdirs();
-        }
-        fileName = fileName + ".mp4";
+            File mMorecacheout;// = new File(todayLiveCacheDir, videoInfo.getLiveId() + "child");
+            mMorecacheout = LiveCacheFile.getGroupClassFile(mContext, videoInfo.getLiveId());
+            if (!mMorecacheout.exists()) {
+                mMorecacheout.mkdirs();
+            }
+            fileName = fileName + ".mp4";
 //        final File mMorecachein = new File(path, videoInfo.getLiveId());
-        DownLoadInfo downLoadInfo = DownLoadInfo.createFileInfo(host + path,
-                mMorecacheout.getAbsolutePath(), fileName, null);
-        PreLoadDownLoaderManager.DownLoadInfoAndListener infoListener =
-                new PreLoadDownLoaderManager.DownLoadInfoAndListener(downLoadInfo,
-                        new NoZipDownloadListener(
-                                mMorecacheout,
-                                mMorecacheout,
-                                fileName,
-                                videoInfo.getHost(),
-                                null,
-                                path,
-                                "",
-                                new AtomicInteger(1),
-                                "4"),
-                        videoInfo.getLiveId());
-        PreLoadDownLoaderManager.addToAutoDownloadPool(infoListener);
+            DownLoadInfo downLoadInfo = DownLoadInfo.createFileInfo(host + path,
+                    mMorecacheout.getAbsolutePath(), fileName, null);
+            PreLoadDownLoaderManager.DownLoadInfoAndListener infoListener =
+                    new PreLoadDownLoaderManager.DownLoadInfoAndListener(downLoadInfo,
+                            new NoZipDownloadListener(
+                                    mMorecacheout,
+                                    mMorecacheout,
+                                    fileName,
+                                    videoInfo.getHost(),
+                                    null,
+                                    path,
+                                    "",
+                                    new AtomicInteger(1),
+                                    "4"),
+                            videoInfo.getLiveId());
+            PreLoadDownLoaderManager.addToAutoDownloadPool(infoListener);
+        }
     }
 
     /**
