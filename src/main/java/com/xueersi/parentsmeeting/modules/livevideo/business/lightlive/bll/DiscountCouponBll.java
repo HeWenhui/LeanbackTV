@@ -197,6 +197,21 @@ public class DiscountCouponBll extends LiveBaseBll {
                 }
             }
         });
+        if (!mIsLand.get()){
+            middleLayout.setOnHierarchyChangeListener(new ViewGroup.OnHierarchyChangeListener() {
+                @Override
+                public void onChildViewAdded(View parent, View child) {
+                    if (child != discountCouponPager.getRootView()){
+                        discountCouponPager.setLineVisible(false);
+                    }
+                }
+
+                @Override
+                public void onChildViewRemoved(View parent, View child) {
+
+                }
+            });
+        }
     }
 
     /** 获取优惠券列表*/
@@ -247,7 +262,7 @@ public class DiscountCouponBll extends LiveBaseBll {
 
     @Override
     public void onDestroy() {
-        EventBusUtil.unregister(toString());
+        EventBusUtil.unregister(this);
         super.onDestroy();
     }
 

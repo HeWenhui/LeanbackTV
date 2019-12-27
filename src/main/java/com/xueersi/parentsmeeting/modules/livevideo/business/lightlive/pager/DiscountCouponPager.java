@@ -39,6 +39,7 @@ public class DiscountCouponPager extends BasePager {
     private List<CouponEntity> mData;
     private MoreCouponClickListener listener;
     private RelativeLayout rlCoupon;
+    private View vLine;
 
     public DiscountCouponPager(Activity activity) {
         super(activity);
@@ -51,6 +52,7 @@ public class DiscountCouponPager extends BasePager {
         rlCoupon = mView.findViewById(R.id.rl_iv_livevideo_lightlive_coupon);
         llCoupon = mView.findViewById(R.id.ll_livevideo_lightlive_coupon_data);
         ivMore = mView.findViewById(R.id.iv_livevideo_lightlive_coupon_more);
+        vLine = mView.findViewById(R.id.v_livevideo_lightlive_coupon_line);
         mView.setVisibility(View.GONE);
         initListener();
         return mView;
@@ -109,5 +111,13 @@ public class DiscountCouponPager extends BasePager {
 
     public interface MoreCouponClickListener {
         void onClick();
+    }
+
+    public void setLineVisible(boolean isShow){
+        if (isShow){
+            vLine.setVisibility(View.VISIBLE);
+        } else {
+            vLine.setVisibility(View.GONE);
+        }
     }
 }
