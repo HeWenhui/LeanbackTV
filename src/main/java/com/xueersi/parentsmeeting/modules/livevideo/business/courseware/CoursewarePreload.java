@@ -684,7 +684,7 @@ public class CoursewarePreload {
                                     mMorecacheout,
                                     mMorecacheout,
                                     fileName,
-                                    videoInfo.getHost(),
+                                    hostList,
                                     null,
                                     path,
                                     "",
@@ -737,88 +737,94 @@ public class CoursewarePreload {
         long before = System.currentTimeMillis();
         for (CoursewareInfoEntity.ItemCoursewareInfo coursewareInfo : itemCoursewareInfos) {
             {
-                //下载课件资源
-                final String resourceName = MD5.md5(coursewareInfo.getResourceUrl()) + ".zip";
-                File resourceSave = new File(mMorecachein, resourceName);
-                boolean equals = false;
-                if (InfoUtils.fileIsExists(resourceSave.getAbsolutePath())) {
-                    String filemd5 = FileUtils.getFileMD5ToString(resourceSave);
-                    equals = coursewareInfo.getResourceMd5().equalsIgnoreCase(filemd5);
-                }
-                if (!InfoUtils.fileIsExists(resourceSave.getAbsolutePath()) || (InfoUtils.fileIsExists(resourceSave.getAbsolutePath()) && !equals)) {
-                    DownLoadInfo resourceDownLoadInfo = DownLoadInfo.createFileInfo(
-                            ip + coursewareInfo.getResourceUrl(),
-                            mMorecachein.getAbsolutePath(),
-                            resourceName + ".temp",
-                            coursewareInfo.getResourceMd5());
-                    if (isIP) {
-                        resourceDownLoadInfo.setHost(cdn);
+                if (!TextUtils.isEmpty(coursewareInfo.getResourceUrl())) {
+                    //下载课件资源
+                    final String resourceName = MD5.md5(coursewareInfo.getResourceUrl()) + ".zip";
+                    File resourceSave = new File(mMorecachein, resourceName);
+                    boolean equals = false;
+                    if (InfoUtils.fileIsExists(resourceSave.getAbsolutePath())) {
+                        String filemd5 = FileUtils.getFileMD5ToString(resourceSave);
+                        equals = coursewareInfo.getResourceMd5().equalsIgnoreCase(filemd5);
                     }
+                    if (!InfoUtils.fileIsExists(resourceSave.getAbsolutePath()) || (InfoUtils.fileIsExists(resourceSave.getAbsolutePath()) && !equals)) {
+                        DownLoadInfo resourceDownLoadInfo = DownLoadInfo.createFileInfo(
+                                ip + coursewareInfo.getResourceUrl(),
+                                mMorecachein.getAbsolutePath(),
+                                resourceName + ".temp",
+                                coursewareInfo.getResourceMd5());
+                        if (isIP) {
+                            resourceDownLoadInfo.setHost(cdn);
+                        }
 //                DownLoader resourceDownLoader = new DownLoader(mContext, resourceDownLoadInfo);
 //                resourceDownLoader.setDownloadThreadCount(mDownloadThreadCount);
 //                    logger.d("courseware url path:  " + ip + coursewareInfo.getResourceUrl() + "   file name:" + resourceName + ".zip");
 //                resourceDownLoader.start(new ZipDownloadListener(mMorecachein, mMorecacheout, resourceName, ips, cdns, coursewareInfo.getResourceUrl(), coursewareInfo.getMd5(), new AtomicInteger()));
-                    PreLoadDownLoaderManager.DownLoadInfoAndListener infoListener =
-                            new PreLoadDownLoaderManager.DownLoadInfoAndListener(resourceDownLoadInfo,
-                                    new ZipDownloadListener(
-                                            mMorecachein,
-                                            mMorecacheout,
-                                            resourceName,
-                                            ips,
-                                            cdns,
-                                            coursewareInfo.getResourceUrl(),
-                                            coursewareInfo.getResourceMd5(),
-                                            new AtomicInteger(0),
-                                            itemLiveId,
-                                            "1"),
-                                    itemLiveId);
+                        PreLoadDownLoaderManager.DownLoadInfoAndListener infoListener =
+                                new PreLoadDownLoaderManager.DownLoadInfoAndListener(resourceDownLoadInfo,
+                                        new ZipDownloadListener(
+                                                mMorecachein,
+                                                mMorecacheout,
+                                                resourceName,
+                                                ips,
+                                                cdns,
+                                                coursewareInfo.getResourceUrl(),
+                                                coursewareInfo.getResourceMd5(),
+                                                new AtomicInteger(0),
+                                                itemLiveId,
+                                                "1"),
+                                        itemLiveId);
 
-                    if (!isPrecise.get()) {
-                        PreLoadDownLoaderManager.addToAutoDownloadPool(infoListener);
-                    } else {
-                        PreLoadDownLoaderManager.addUrgentInfo(infoListener);
+                        if (!isPrecise.get()) {
+                            PreLoadDownLoaderManager.addToAutoDownloadPool(infoListener);
+                        } else {
+                            PreLoadDownLoaderManager.addUrgentInfo(infoListener);
+                        }
+                        documentNum.getAndIncrement();
                     }
-                    documentNum.getAndIncrement();
                 }
             }
             {
-                //下载模板资源
-                final String templateName = MD5.md5(coursewareInfo.getTemplateUrl()) + ".zip";
-                File templateSave = new File(mMorecachein, templateName);
-                if (!InfoUtils.fileIsExists(templateSave.getAbsolutePath())) {
+                if (!TextUtils.isEmpty(coursewareInfo.getTemplateUrl())) {
+
+
+                    //下载模板资源
+                    final String templateName = MD5.md5(coursewareInfo.getTemplateUrl()) + ".zip";
+                    File templateSave = new File(mMorecachein, templateName);
+                    if (!InfoUtils.fileIsExists(templateSave.getAbsolutePath())) {
 //                templateSave.mkdirs();
-                    DownLoadInfo templateDownLoadInfo = DownLoadInfo.createFileInfo(
-                            ip + coursewareInfo.getTemplateUrl(),
-                            mMorecachein.getAbsolutePath(),
-                            templateName + ".temp",
-                            coursewareInfo.getTemplateMd5());
+                        DownLoadInfo templateDownLoadInfo = DownLoadInfo.createFileInfo(
+                                ip + coursewareInfo.getTemplateUrl(),
+                                mMorecachein.getAbsolutePath(),
+                                templateName + ".temp",
+                                coursewareInfo.getTemplateMd5());
 //                    logger.d("template url path:  " + ip + coursewareInfo.getTemplateUrl() + "   file name:" + templateName + ".zip");
-                    if (isIP) {
-                        templateDownLoadInfo.setHost(cdn);
-                    }
+                        if (isIP) {
+                            templateDownLoadInfo.setHost(cdn);
+                        }
 //                DownLoader templateDownLoader = new DownLoader(mContext, templateDownLoadInfo);
 //                templateDownLoader.setDownloadThreadCount(mDownloadThreadCount);
 //                templateDownLoader.start(new ZipDownloadListener(mMorecachein, mMorecacheout, templateName, ips, cdns, coursewareInfo.getTemplateUrl(), coursewareInfo.getMd5(), new AtomicInteger()));
-                    PreLoadDownLoaderManager.DownLoadInfoAndListener infoListener = new PreLoadDownLoaderManager.DownLoadInfoAndListener(
-                            templateDownLoadInfo,
-                            new ZipDownloadListener(
-                                    mMorecachein,
-                                    mMorecacheout,
-                                    templateName,
-                                    ips,
-                                    cdns,
-                                    coursewareInfo.getTemplateUrl(),
-                                    coursewareInfo.getTemplateMd5(),
-                                    new AtomicInteger(0),
-                                    itemLiveId,
-                                    "1"),
-                            itemLiveId);
-                    if (!isPrecise.get()) {
-                        PreLoadDownLoaderManager.addToAutoDownloadPool(infoListener);
-                    } else {
-                        PreLoadDownLoaderManager.addUrgentInfo(infoListener);
+                        PreLoadDownLoaderManager.DownLoadInfoAndListener infoListener = new PreLoadDownLoaderManager.DownLoadInfoAndListener(
+                                templateDownLoadInfo,
+                                new ZipDownloadListener(
+                                        mMorecachein,
+                                        mMorecacheout,
+                                        templateName,
+                                        ips,
+                                        cdns,
+                                        coursewareInfo.getTemplateUrl(),
+                                        coursewareInfo.getTemplateMd5(),
+                                        new AtomicInteger(0),
+                                        itemLiveId,
+                                        "1"),
+                                itemLiveId);
+                        if (!isPrecise.get()) {
+                            PreLoadDownLoaderManager.addToAutoDownloadPool(infoListener);
+                        } else {
+                            PreLoadDownLoaderManager.addUrgentInfo(infoListener);
+                        }
+                        documentNum.getAndIncrement();
                     }
-                    documentNum.getAndIncrement();
                 }
             }
             //英语智能测评预加载
@@ -1118,14 +1124,15 @@ public class CoursewarePreload {
         @Override
         public void onFail(int errorCode) {
             logger.e("zip download error:" + errorCode);
-            int oldPos = downTryCount.get() % ipLength.get();
+            int ipLength = ips.size();
+            int oldPos = downTryCount.get() % ipLength;
             String oldIP = "";
             if (oldPos < ips.size()) {
                 oldIP = ips.get(oldPos);
             }
             logger.i("fail url path:  " + oldIP + url + "   file name:" + mFileName + ".zip path in:" + mMorecachein.getAbsolutePath() + " out:" + mMorecacheout.getAbsolutePath());
             downTryCount.getAndIncrement();
-            int newPos = downTryCount.get() % ipLength.get();
+            int newPos = downTryCount.get() % ipLength;
             String tempIP = "";
             if (newPos < ips.size()) {
                 tempIP = ips.get(newPos);
