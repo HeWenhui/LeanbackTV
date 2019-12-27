@@ -50,9 +50,11 @@ public class RecommendCourseDetailPager extends BasePager {
     List<CourseEntity> mCourseEntities;
     private CourseDetailAdapter adapter;
     private CloseClickListener listener;
+    private boolean isPlayback;
 
-    public RecommendCourseDetailPager(Context context){
+    public RecommendCourseDetailPager(Context context,boolean isPlayback){
         super(context);
+        this.isPlayback = isPlayback;
         mCourseEntities = new ArrayList<>();
         initData();
     }
@@ -119,7 +121,9 @@ public class RecommendCourseDetailPager extends BasePager {
 //                    bundle.putString("classId", mData.get(position).getClassID());
                     //采用ARouter来跳转
                     XueErSiRouter.startModule(mContext, "/xesmallCourseDetail/xrsmodule", bundle);
-                    XrsBury.clickBury(mContext.getResources().getString(R.string.click_03_63_007),mData.get(position).getCourseId());
+                    if (!isPlayback){
+                        XrsBury.clickBury(mContext.getResources().getString(R.string.click_03_63_007),mData.get(position).getCourseId());
+                    }
                 }
             });
         }

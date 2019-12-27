@@ -873,10 +873,11 @@ public class LightLiveBackVideoFragment extends LiveBackVideoFragmentBase implem
                 lp2.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
                 content.addView(rlQuestionContent,lp2);
 
-//                RelativeLayout.LayoutParams lp3 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
-//                        .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-//                contentLayout.setBackground(activity.getResources().getDrawable(R.color.COLOR_00000000));
-//                content.addView(contentLayout,lp3);
+                content.removeView(contentLayout);
+                RelativeLayout.LayoutParams lp3 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
+                        .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+                contentLayout.setBackground(activity.getResources().getDrawable(R.color.COLOR_00000000));
+                content.addView(contentLayout,lp3);
 
                 logger.d("changeLandAndPort:time3=" + (System.currentTimeMillis() - before));
                 before = System.currentTimeMillis();

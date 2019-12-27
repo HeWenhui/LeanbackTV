@@ -28,6 +28,7 @@ public class AllBackBllConfig {
     private static String[] lightbackClassPath = {
             "com.xueersi.parentsmeeting.modules.livevideo.message.business.LightLiveMsgBackBll",
             "com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.bll.DiscountCouponBackBll",
+            "com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.bll.RecommendCourseBackBll",
     };
 
     public static ArrayList<BllConfigEntity> getLiveBackBusiness() {

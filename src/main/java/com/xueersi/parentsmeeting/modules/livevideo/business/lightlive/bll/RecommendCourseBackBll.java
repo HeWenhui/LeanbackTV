@@ -6,37 +6,38 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-
 import com.xrs.bury.xrsbury.XrsBury;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.SizeUtils;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.entity.CourseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.http.LightLiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.http.LightLiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.pager.RecommendCourseDetailPager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.pager.RecommendCoursePager;
-import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
  * @ProjectName: xueersiwangxiao
  * @Package: com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.bll
- * @ClassName: RecommendCourseBll
- * @Description: 推荐课程
+ * @ClassName: RecommendCourseBackBll
+ * @Description: 轻直播回放推荐课程
  * @Author: WangDe
- * @CreateDate: 2019/11/28 14:36
+ * @CreateDate: 2019/12/27 11:08
  * @UpdateUser: 更新者
- * @UpdateDate: 2019/11/28 14:36
+ * @UpdateDate: 2019/12/27 11:08
  * @UpdateRemark: 更新说明
  * @Version: 1.0
  */
-public class RecommendCourseBll extends LiveBaseBll {
+public class RecommendCourseBackBll extends LiveBackBaseBll {
 
     RecommendCoursePager mCoursePager;
     RecommendCourseDetailPager mDetailPager;
@@ -49,48 +50,25 @@ public class RecommendCourseBll extends LiveBaseBll {
     private LightLiveHttpManager mHttpManager;
     private LightLiveHttpResponseParser mHttpResponseParser;
 
-    public RecommendCourseBll(Activity context, LiveBll2 liveBll) {
-        super(context, liveBll);
+    public RecommendCourseBackBll(Activity activity, LiveBackBll liveBackBll){
+        super(activity,liveBackBll);
         courseEntities = new ArrayList<>();
-        mCoursePager = new RecommendCoursePager(context,false);
-        mDetailPager = new RecommendCourseDetailPager(context,false);
-        mHttpManager = new LightLiveHttpManager(getHttpManager());
+        mCoursePager = new RecommendCoursePager(activity,true);
+        mDetailPager = new RecommendCourseDetailPager(activity,true);
+        mHttpManager = new LightLiveHttpManager(getmHttpManager());
         mHttpResponseParser = new LightLiveHttpResponseParser();
-//        for (int i = 0; i < 10; i++) {
-//            CourseEntity entity = new CourseEntity();
-//            entity.setCourseName(i+"世界冠军王鹰豪-魔方课开课了"+i);
-//            entity.setCourseId("787897");
-//            entity.setChapterCount("2");
-//            entity.setClassID("444"+i);
-//            entity.setCoursePrice(500);
-//            entity.setCourseOrignPrice(1000);
-//            entity.setDeadTime("2019.12.2");
-//            entity.setCourseDifficulity(i+1);
-//            entity.setIsFull("0");
-//            entity.setGroupon(false);
-//            entity.setSubjectName("语文");
-//            entity.setSecondTitle("清华大学");
-//            entity.setLiveShowTime("三期：2月9日-2月12日 每天 13:00-14:00 · 共45讲");
-//            entity.setRemainPeople(""+30+i);
-//            ArrayList<CourseTeacherEntity> teacherEntities = new ArrayList<>();
-//            CourseTeacherEntity entity1 = new CourseTeacherEntity("张三" + i);
-//            entity1.setTeacherHint("dd");
-//            teacherEntities.add(entity1);
-//            entity.setLstMainTeacher(teacherEntities);
-//            courseEntities.add(entity);
-//        }
     }
 
     @Override
-    public void onLiveInited(LiveGetInfo getInfo) {
-        super.onLiveInited(getInfo);
+    public void onCreate(VideoLivePlayBackEntity mVideoEntity, LiveGetInfo liveGetInfo, HashMap<String, Object> businessShareParamMap) {
+        super.onCreate(mVideoEntity, liveGetInfo, businessShareParamMap);
         getCourseList();
     }
 
     @Override
     public void initView() {
-        middleLayout = mContentView.findViewById(R.id.ll_course_video_live_other_content);
-        contentLayout = mContentView.findViewById(R.id.rl_course_video_live_content);
+        middleLayout = getLiveViewAction().findViewById(R.id.ll_course_video_live_other_content);
+        contentLayout = getLiveViewAction().findViewById(R.id.rl_course_video_live_content);
         if (contentLayout != null){
             contentLayout.setClickable(false);
         }
@@ -122,7 +100,6 @@ public class RecommendCourseBll extends LiveBaseBll {
             @Override
             public void onClick() {
                 if (!isDetailShow){
-                    XrsBury.clickBury(mContext.getResources().getString(R.string.click_03_63_012));
                     contentLayout.addView(mDetailPager.getRootView());
                     RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mDetailPager.getRootView().getLayoutParams();
                     params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
@@ -131,7 +108,6 @@ public class RecommendCourseBll extends LiveBaseBll {
                     contentLayout.setBackground(mContext.getResources().getDrawable(R.color.COLOR_80000000));
                     contentLayout.setClickable(true);
                     mDetailPager.updataView(courseEntities);
-                    XrsBury.showBury(mContext.getResources().getString(R.string.show_03_63_009));
                 }
                 isDetailShow = true;
             }
@@ -143,12 +119,12 @@ public class RecommendCourseBll extends LiveBaseBll {
                 contentLayout.setBackground(mContext.getResources().getDrawable(R.color.COLOR_00000000));
                 contentLayout.setClickable(false);
                 isDetailShow = false;
-                XrsBury.clickBury(mContext.getResources().getString(R.string.click_03_63_008));
             }
         });
     }
+
     private void getCourseList(){
-        mHttpManager.getCourseList(mGetInfo.getId(), new HttpCallBack(false) {
+        mHttpManager.getCourseList(liveGetInfo.getId(), new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 courseEntities = mHttpResponseParser.parserCourseList(responseEntity);

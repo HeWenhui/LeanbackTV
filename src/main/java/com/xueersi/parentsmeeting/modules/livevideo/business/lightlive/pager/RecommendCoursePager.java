@@ -32,9 +32,11 @@ public class RecommendCoursePager extends BasePager {
     ViewFlipper vfCourses;
     MoreCouponClickListener listener;
     private final int ANIMATION_TIME = 20 * 1000;
+    private boolean isPlayback;
 
-    public RecommendCoursePager(Context context){
+    public RecommendCoursePager(Context context,boolean isPlayback){
         super(context);
+        this.isPlayback = isPlayback;
     }
 
     @Override
@@ -65,7 +67,9 @@ public class RecommendCoursePager extends BasePager {
         if (courseEntities != null && !courseEntities.isEmpty()){
             initData();
             mView.setVisibility(View.VISIBLE);
-            XrsBury.showBury(mContext.getResources().getString(R.string.show_03_63_010));
+            if(!isPlayback){
+                XrsBury.showBury(mContext.getResources().getString(R.string.show_03_63_010));
+            }
         }else {
             mView.setVisibility(View.GONE);
         }
