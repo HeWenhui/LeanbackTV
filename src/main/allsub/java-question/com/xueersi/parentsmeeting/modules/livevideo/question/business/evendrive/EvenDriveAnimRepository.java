@@ -57,7 +57,9 @@ public class EvenDriveAnimRepository implements TasksDataSource {
         INIT_EVEN_NUM,
         QUES_TYPE_ENGLISH_NEW_PLATFORM,
         QUES_TYPE_CHS_SELF_UPLOAD,
-        QUES_TYPE_CHS_NEW_PLAYFROM
+        QUES_TYPE_CHS_NEW_PLAYFROM,
+        /** 投票 */
+        VOTE
     }
 
     private void getResultSuccess(final EvenDriveQuestionType question_type, String testId,
