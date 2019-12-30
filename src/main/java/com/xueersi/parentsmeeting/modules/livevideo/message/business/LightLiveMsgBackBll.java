@@ -2,11 +2,14 @@ package com.xueersi.parentsmeeting.modules.livevideo.message.business;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.CountDownTimer;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
@@ -19,6 +22,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LightLiveBackMsgLandPager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LightLiveBackMsgPortPager;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,6 +31,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -78,14 +83,6 @@ public class LightLiveMsgBackBll extends LiveBackBaseBll {
         super(activity, liveBackBll);
         Intent intent = activity.getIntent();
         tipType = intent.getIntExtra("tipType",0);
-        liveBackMsgLandPager = new LightLiveBackMsgLandPager(mContext);
-        liveBackMsgPortPager = new LightLiveBackMsgPortPager(mContext, tipType == LPWeChatEntity.TEACHER_WECHAT);
-        liveMessageEntitiesAll = new ArrayList<>();
-        liveMessageEntities = new ArrayList<>();
-        messageHttp = new LightLiveHttpManager(liveBackBll.getmHttpManager());
-        liveBackMsgPortPager.setIGetLPInfo(lpInfo);
-        liveBackMsgPortPager.setMessageStatus(messageStatus);
-
 //        EventBus.getDefault().register(this);
 
     }
@@ -101,11 +98,23 @@ public class LightLiveMsgBackBll extends LiveBackBaseBll {
                 view.removeView(liveBackMsgLandPager.getRootView());
             }
             mRootViewBottom.addView(liveBackMsgLandPager.getRootView());
+            liveBackMsgLandPager.onAttach();
+//            liveBackMsgLandPager.justShowTeacher(justShowTeacher);
 //            LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
 //            liveVideoPoint.addVideoSizeChangeAndCall(mContext, new LiveVideoPoint.VideoSizeChange() {
 //                @Override
 //                public void videoSizeChange(LiveVideoPoint liveVideoPoint) {
-//                    setVideoLayout(liveVideoPoint);
+//                    RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams) liveBackMsgLandPager.getRootView().getLayoutParams();
+//                    param.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+//                    param.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+//                    int bottomMargin = liveVideoPoint.screenHeight - liveVideoPoint.y4;
+//                    int rightMargin = liveVideoPoint.screenWidth - liveVideoPoint.x4;
+//                    if (rightMargin >= 0){
+//                        param.rightMargin = rightMargin + SizeUtils.Dp2Px(mContext,15);
+//                    }
+//                    if (bottomMargin >= 0){
+//                        param.bottomMargin = bottomMargin + SizeUtils.Dp2Px(mContext,50);
+//                    }
 //                }
 //            });
         } else {
@@ -123,45 +132,22 @@ public class LightLiveMsgBackBll extends LiveBackBaseBll {
     @Override
     public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
         //监听页面布局变化动态设置 页面尺寸信息
-//        if (liveBackMsgPager != null) {
-//            RelativeLayout viewGroup = (RelativeLayout) liveBackMsgPager.getRootView();
-//            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) viewGroup.getLayoutParams();
-//            int wradio = liveVideoPoint.x4 - liveVideoPoint.x3;
-//            if (wradio != params.width || params.rightMargin != liveVideoPoint.screenWidth - liveVideoPoint.x4) {
-//                params.width = wradio;
-//                params.rightMargin = liveVideoPoint.screenWidth - liveVideoPoint.x4;
-//                LayoutParamsUtil.setViewLayoutParams(viewGroup, params);
-//            }
-//            int topMargin = liveVideoPoint.y3;
-//            if (topMargin != params.topMargin) {
-//                params.topMargin = topMargin;
-//                LayoutParamsUtil.setViewLayoutParams(viewGroup, params);
-//            }
-//        }
+
     }
 
     @Override
     public void onCreate(VideoLivePlayBackEntity mVideoEntity, LiveGetInfo liveGetInfo, HashMap<String, Object> businessShareParamMap) {
         super.onCreate(mVideoEntity, liveGetInfo, businessShareParamMap);
         this.liveGetInfo = liveGetInfo;
-        try {
-            if (liveGetInfo.getStreamTimes() != null){
-                JSONArray streamTimes = new JSONArray(liveGetInfo.getStreamTimes());
-                for (int i = 0; i < streamTimes.length(); i++) {
-                    JSONObject data = streamTimes.getJSONObject(i);
-                    if (data != null){
-                        int category = data.optInt("category");
-                        if (category == 6){
-                            videoStartTime = data.optLong("begintime");
-                            break;
-                        }
-                    }
-
-                }
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        liveBackMsgLandPager = new LightLiveBackMsgLandPager(mContext);
+        liveBackMsgPortPager = new LightLiveBackMsgPortPager(mContext, tipType == LPWeChatEntity.TEACHER_WECHAT);
+        liveMessageEntitiesAll = new ArrayList<>();
+        liveMessageEntities = new ArrayList<>();
+        messageHttp = new LightLiveHttpManager(liveBackBll.getmHttpManager());
+        liveBackMsgPortPager.setIGetLPInfo(lpInfo);
+        liveBackMsgPortPager.setMessageStatus(messageStatus);
+        videoStartTime = mVideoEntity.getGotoClassTime();
+//        videoStartTime =1577261005;
     }
 
     @Override
@@ -235,6 +221,7 @@ public class LightLiveMsgBackBll extends LiveBackBaseBll {
         //获取直播时历史消息
         if (!isStartGetMessage) {
             isStartGetMessage = true;
+
             messageHttp.getLiveBackMessage(liveGetInfo.getId(),String.valueOf(startTime), new HttpCallBack(false) {
                 @Override
                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
@@ -289,12 +276,14 @@ public class LightLiveMsgBackBll extends LiveBackBaseBll {
      * @param position
      */
     private void showLiveMsg(long position) {
+        List<LiveBackMsgEntity> tempList = new ArrayList<>();
         Iterator<LiveBackMsgEntity> it=liveMessageEntities.iterator();
         while (it.hasNext()){
             LiveBackMsgEntity entity = it.next();
             if ((videoStartTime + position) * 1000 >= entity.getId()) {
                 if (LiveBackMsgEntity.MESSAGE_TYPE.equals(entity.getType())) {
                     logger.i("time: " + entity.getId() + "  msg:" + entity.getText());
+                    tempList.add(entity);
                     liveBackMsgPortPager.addMsg(entity);
                     liveBackMsgLandPager.addMsg(entity);
                 }
@@ -313,6 +302,7 @@ public class LightLiveMsgBackBll extends LiveBackBaseBll {
         }
     };
 
+    boolean justShowTeacher;
     LightLiveBackMsgPortPager.IMessageStatus messageStatus = new LightLiveBackMsgPortPager.IMessageStatus() {
         @Override
         public void clearMessage() {
@@ -321,6 +311,7 @@ public class LightLiveMsgBackBll extends LiveBackBaseBll {
 
         @Override
         public void justShowTeacher(boolean isShow) {
+            justShowTeacher = isShow;
             liveBackMsgLandPager.justShowTeacher(isShow);
         }
     };
@@ -333,4 +324,8 @@ public class LightLiveMsgBackBll extends LiveBackBaseBll {
         }
     }
 
+    @Override
+    public void onStartPlayer() {
+        super.onStartPlayer();
+    }
 }

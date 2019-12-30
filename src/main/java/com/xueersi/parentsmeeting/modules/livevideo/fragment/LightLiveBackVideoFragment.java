@@ -56,6 +56,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.BllConfigEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppBll;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.FeedbackTeacherLiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBackBll;
@@ -223,11 +224,12 @@ public class LightLiveBackVideoFragment extends LiveBackVideoFragmentBase implem
         createTime = System.currentTimeMillis();
         LiveAppBll.getInstance().registerAppEvent(this);
         // 设置不可自动横竖屏
-        setAutoOrientation(true);
+        setAutoOrientation(false);
         Intent intent = activity.getIntent();
 
         mVideoMainEntity = (VideoLivePlayBackEntity) intent.getExtras().getSerializable("videoliveplayback");
-        mVideoMainEntity.setVideoPath("https://replayqn.wangxiao.eaydu.com/ll/12077/9da63786302394b95c62f146a7087aa1.flv.mp4");
+        //测试代码
+//        mVideoMainEntity.setVideoPath("https://replayqn.wangxiao.eaydu.com/ll/12077/9da63786302394b95c62f146a7087aa1.flv.mp4");
         videoPlayStatus = intent.getIntExtra("teacherVideoStatus", 0);
         changeLandAndPort();
         startNewVideo();
@@ -304,6 +306,7 @@ public class LightLiveBackVideoFragment extends LiveBackVideoFragmentBase implem
             }
         });
 
+
     }
 
     @Override
@@ -323,7 +326,10 @@ public class LightLiveBackVideoFragment extends LiveBackVideoFragmentBase implem
         if (rlFirstBackgroundView != null) {
             rlFirstBackgroundView.setVisibility(View.GONE);
         }
+        setAutoOrientation(true);
         attachMediaController();
+        ArrayList list = liveBackBll.getLiveBackBaseBlls();
+
     }
 
     @Override
@@ -516,8 +522,8 @@ public class LightLiveBackVideoFragment extends LiveBackVideoFragmentBase implem
             rl_course_video_live_controller_content.addView(mPlayBackMediaController, new ViewGroup.LayoutParams
                         (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
-            mMediaController.setSetSpeedVisable(false);
-
+            mMediaController.setSetSpeedVisable(mIsLand.get());
+            ((LightlivePlaybackMediaController)mMediaController).onAttach(mIsLand.get());
             if (mIsLand.get()) {
                 RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rl_course_video_live_controller_content
                         .getLayoutParams();
@@ -568,7 +574,7 @@ public class LightLiveBackVideoFragment extends LiveBackVideoFragmentBase implem
 
         setLoaidngUlVisibility(View.GONE);
         setLoadResultUlVisibility(View.VISIBLE);
-        TextView errorInfo = videoBackgroundRefresh.findViewById(R.id.tv_course_video_errortip);
+        TextView errorInfo = videoBackgroundRefresh.findViewById(R.id.tv_course_video_errorinfo);
         videoBackgroundRefresh.findViewById(R.id.tv_course_video_errortip).setVisibility(View.GONE);
         MediaErrorInfo mediaErrorInfo = liveBackPlayVideoFragment.getMediaErrorInfo();
         errorInfo.setVisibility(View.VISIBLE);

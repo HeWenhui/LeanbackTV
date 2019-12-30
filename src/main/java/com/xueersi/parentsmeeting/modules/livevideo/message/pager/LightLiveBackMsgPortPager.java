@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.message.pager;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -94,6 +95,7 @@ public class LightLiveBackMsgPortPager extends BasePager implements IBackMsgpage
     public LightLiveBackMsgPortPager(Context context, boolean isShowWeChat) {
         super(context);
         this.isShowWeChat = isShowWeChat;
+        LiveMainHandler.getMainHandler();
         liveMessageEntities = new ArrayList<>();
         teacherMessageEntities = new ArrayList<>();
         if (isShowWeChat) {
@@ -111,7 +113,7 @@ public class LightLiveBackMsgPortPager extends BasePager implements IBackMsgpage
         ivMessageClean = (ImageView) mView.findViewById(R.id.iv_livevideo_message_clean);
         tvTeacherWeChat = mView.findViewById(R.id.tv_livevideo_teacher_wechat);
         msgListView = mView.findViewById(R.id.lv_livevideo_message);
-        msgListView.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, true));
+        msgListView.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
         return mView;
     }
 
@@ -180,6 +182,8 @@ public class LightLiveBackMsgPortPager extends BasePager implements IBackMsgpage
 
     @Override
     public void initData() {
+        nameColors = new int[]{mContext.getResources().getColor(R.color.COLOR_FF5E50), mContext.getResources().getColor(R.color.COLOR_FF5E50),
+                mContext.getResources().getColor(R.color.COLOR_666666), mContext.getResources().getColor(R.color.COLOR_FE9B43)};
         initMsgRcyclView();
     }
 
@@ -188,6 +192,20 @@ public class LightLiveBackMsgPortPager extends BasePager implements IBackMsgpage
         mMsgAdapter = new LiveMsgAdapter(liveMessageEntities);
         mTeacherMsgAdapter = new LiveMsgAdapter(teacherMessageEntities);
         msgListView.setAdapter(mMsgAdapter);
+        msgListView.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+                int itemPosition = parent.getChildAdapterPosition(view);
+                int left = 0;
+                int right = 0;
+                int top = 0;
+                int bottom = 0;
+                if (itemPosition > 0) {
+                    top = SizeUtils.Dp2Px(mContext, 8);
+                }
+                outRect.set(left, top, right, bottom);
+            }
+        });
     }
 
     @Override
@@ -195,22 +213,26 @@ public class LightLiveBackMsgPortPager extends BasePager implements IBackMsgpage
         SpannableStringBuilder sBuilder = LiveMessageEmojiParser.convertToHtml(RegexUtils
                 .chatSendContentDeal(entity.getText().toString()), mContext, SizeUtils.Dp2Px(mContext, 12));
         entity.setText(sBuilder);
-        if (liveMessageEntities.size() > 29) {
-            liveMessageEntities.remove(0);
-        }
         liveMessageEntities.add(entity);
         if (LiveBackMsgEntity.MESSAGE_TEACHER == entity.getFrom() || LiveBackMsgEntity.MESSAGE_MINE == entity.getFrom()){
             teacherMessageEntities.add(entity);
         }
-        if (mMsgAdapter != null) {
-            LiveMainHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    mMsgAdapter.notifyDataSetChanged();
-                    mTeacherMsgAdapter.notifyDataSetChanged();
+        notifyDataSetChanged();
+    }
+
+    private void notifyDataSetChanged(){
+        LiveMainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                mMsgAdapter.notifyDataSetChanged();
+                mTeacherMsgAdapter.notifyDataSetChanged();
+                if (cbMessageTeacher.isChecked() && !teacherMessageEntities.isEmpty()){
+                    msgListView.scrollToPosition(mTeacherMsgAdapter.getItemCount()-1);
+                }else if (!cbMessageTeacher.isChecked() && !liveMessageEntities.isEmpty()) {
+                    msgListView.scrollToPosition(mMsgAdapter.getItemCount()-1);
                 }
-            });
-        }
+            }
+        });
     }
 
     @Override
@@ -262,14 +284,23 @@ public class LightLiveBackMsgPortPager extends BasePager implements IBackMsgpage
         }
 
         public void bindData(LiveBackMsgEntity entity) {
-            String sender = entity.getSender();
-            SpannableString spanttt = new SpannableString(sender + ": ");
+            String sender = entity.getName();
+            SpannableString spanttt;
+            if (entity.getFrom() == LiveBackMsgEntity.MESSAGE_MINE){
+                sender = "我";
+            }else if (entity.getFrom() == LiveBackMsgEntity.MESSAGE_TEACHER){
+                sender = "主讲老师";
+            } else if (entity.getFrom() == LiveBackMsgEntity.MESSAGE_TIP) {
+                sender = "系统提示";
+            }
+            spanttt = new SpannableString(sender + ": ");
+
             int color;
             switch (entity.getFrom()) {
-                case LiveMessageEntity.MESSAGE_MINE:
-                case LiveMessageEntity.MESSAGE_TEACHER:
-                case LiveMessageEntity.MESSAGE_TIP:
-                case LiveMessageEntity.MESSAGE_CLASS:
+                case LiveBackMsgEntity.MESSAGE_MINE:
+                case LiveBackMsgEntity.MESSAGE_TEACHER:
+                case LiveBackMsgEntity.MESSAGE_TIP:
+                case LiveBackMsgEntity.MESSAGE_CLASS:
                     color = nameColors[entity.getFrom()];
                     break;
                 default:
@@ -288,8 +319,6 @@ public class LightLiveBackMsgPortPager extends BasePager implements IBackMsgpage
             } else {
                 tvMsg.append(entity.getText());
             }
-
-
         }
     }
 
@@ -308,8 +337,7 @@ public class LightLiveBackMsgPortPager extends BasePager implements IBackMsgpage
 
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-            int dataIndex = (mData.size() - 1) - position;
-            ((MsgItemHolder) holder).bindData(mData.get(dataIndex));
+            ((MsgItemHolder) holder).bindData(mData.get(position));
         }
 
         @Override

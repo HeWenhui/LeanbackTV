@@ -18,6 +18,7 @@ import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.config.BurySourceIds;
@@ -64,7 +65,6 @@ public class LightLiveRedPackageBll implements RedPackageAction, Handler.Callbac
      * 直播id
      */
     private String mVSectionID;
-    private RelativeLayout mContentView;
     /**
      * 红包的布局
      */
@@ -75,10 +75,13 @@ public class LightLiveRedPackageBll implements RedPackageAction, Handler.Callbac
     LightLiveRedPackageView lightLiveRedPackageView;
     AtomicBoolean mIsLand;
     private boolean isGetPagClick;
+    private boolean isLive;
+    LiveViewAction mContentView;
 
-    public LightLiveRedPackageBll(Activity activity, LiveGetInfo liveGetInfo) {
+    public LightLiveRedPackageBll(Activity activity, LiveGetInfo liveGetInfo,boolean isLive) {
         mLogtf = new LogToFile(activity, TAG);
         mLogtf.clear();
+        this.isLive = isLive;
         this.activity = activity;
     }
 
@@ -118,7 +121,7 @@ public class LightLiveRedPackageBll implements RedPackageAction, Handler.Callbac
         rlRedpacketContent.removeAllViews();
     }
 
-    public void initView(RelativeLayout bottomContent, RelativeLayout mContentView, AtomicBoolean mIsLand) {
+    public void initView(RelativeLayout bottomContent, LiveViewAction mContentView, AtomicBoolean mIsLand) {
         this.mContentView = mContentView;
         this.mIsLand = mIsLand;
         if (rlRedpacketContent == null) {
@@ -207,7 +210,9 @@ public class LightLiveRedPackageBll implements RedPackageAction, Handler.Callbac
                 // 广播 领取红包成功事件
                 int gold = entity.getGoldNum();
                 onRedPackageSend.onReceiveGold(gold);
-                XrsBury.showBury(activity.getResources().getString(R.string.show_03_63_006));
+                if(isLive){
+                    XrsBury.showBury(activity.getResources().getString(R.string.show_03_63_006));
+                }
                 EventBus.getDefault().post(new RedPackageEvent(mVSectionID, entity.getGoldNum(),
                         operateId + "", RedPackageEvent.STATE_CODE_SUCCESS));
             }
@@ -216,9 +221,10 @@ public class LightLiveRedPackageBll implements RedPackageAction, Handler.Callbac
             public void onDataFail(int errStatus, String failMsg) {
                 super.onDataFail(errStatus, failMsg);
                 isGetPagClick = false;
-                XESToastUtils.showToastAtCenter("红包领取失败，请重试");
-                onRedPackageSend.onReceiveFail();
-
+                if (isLive){
+                    XESToastUtils.showToastAtCenter("红包领取失败，请重试");
+                    onRedPackageSend.onReceiveFail();
+                }
             }
 
             @Override

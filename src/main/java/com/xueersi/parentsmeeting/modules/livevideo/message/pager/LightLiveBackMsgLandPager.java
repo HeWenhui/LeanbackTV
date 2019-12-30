@@ -24,6 +24,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveBackMsgEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
 import com.xueersi.parentsmeeting.modules.livevideo.message.config.LiveMessageConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
@@ -65,6 +66,10 @@ public class LightLiveBackMsgLandPager extends BasePager implements IBackMsgpage
     LiveMsgAdapter mTeacherMsgAdapter;
     private Drawable dwSysIcon;
     private Drawable dwTeacherIcon;
+    private LiveBackMsgEntity mLastMsg;
+    private boolean isJustShowTea;
+    private int rightMargin = -1;
+    private int bottomMargin = -1;
 
     public LightLiveBackMsgLandPager(Context context) {
         super(context);
@@ -84,6 +89,7 @@ public class LightLiveBackMsgLandPager extends BasePager implements IBackMsgpage
     @Override
     public void initData() {
         initMsgRcyclView();
+//        initReclItemState();
     }
 
     /**
@@ -94,22 +100,14 @@ public class LightLiveBackMsgLandPager extends BasePager implements IBackMsgpage
         int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoConfig.VIDEO_WIDTH);
         int minisize = wradio / 13;
         messageSize = Math.max((int) (ScreenUtils.getScreenDensity() * 12), minisize);
+        mLastMsg = null;
 
+//        if(liveMessageEntities != null && liveMessageEntities.size() > 0){
+//            mLastMsg = liveMessageEntities.remove((liveMessageEntities.size()-1));
+//        }
         mMsgAdapter = new LiveMsgAdapter(liveMessageEntities);
-        msgListView.setAdapter(mMsgAdapter);
         mTeacherMsgAdapter = new LiveMsgAdapter(teacherMessageEntities);
-
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) msgListView.getLayoutParams();
-        Point point = new Point();
-        ((Activity) mContext).getWindowManager().getDefaultDisplay().getSize(point);
-        int screenHeight = Math.min(point.x, point.y);
-        int height = (int) (screenHeight * 0.573);
-        int width = (int) (screenWidth * 0.45f);
-        params.height = height;
-        params.width = width;
-        params.bottomMargin = (int) (screenHeight * 0.14f);
-        msgListView.setLayoutParams(params);
-
+        msgListView.setAdapter(mMsgAdapter);
         msgListView.addItemDecoration(new RecyclerView.ItemDecoration() {
             @Override
             public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
@@ -125,40 +123,34 @@ public class LightLiveBackMsgLandPager extends BasePager implements IBackMsgpage
             }
         });
 
-        //监听 item淡出动画  动画结束后 清空数据源
-        msgListView.setItemFadeAnimListener(new HalfBodyLiveMsgRecycelView.ItemFadeAnimListener() {
-            @Override
-            public void onAllItemFadeOut() {
-                liveMessageEntities.clear();
-                mMsgAdapter.notifyDataSetChanged();
-            }
-        });
 
         dwSysIcon = mView.getResources().getDrawable(R.drawable.icon_live_sys_msg);
         dwTeacherIcon = mView.getResources().getDrawable(R.drawable.icon_live_teacher_msg);
     }
 
+
     @Override
     public void addMsg(LiveBackMsgEntity entity) {
         SpannableStringBuilder sBuilder = LiveMessageEmojiParser.convertToHtml(RegexUtils
-                .chatSendContentDeal(entity.getText().toString()), mContext, SizeUtils.Dp2Px(mContext,12));
+                .chatSendContentDeal(entity.getText().toString()), mContext, SizeUtils.Dp2Px(mContext, 12));
         entity.setText(sBuilder);
-        if (liveMessageEntities.size() > 29) {
-            liveMessageEntities.remove(0);
-        }
-        liveMessageEntities.add(entity);
-        if (LiveBackMsgEntity.MESSAGE_TEACHER == entity.getFrom() || LiveBackMsgEntity.MESSAGE_MINE == entity.getFrom()){
+
+        if (LiveBackMsgEntity.MESSAGE_TEACHER == entity.getFrom() || LiveBackMsgEntity.MESSAGE_MINE == entity.getFrom()) {
             teacherMessageEntities.add(entity);
         }
-        if (mMsgAdapter != null) {
-            LiveMainHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    mMsgAdapter.notifyDataSetChanged();
-                    mTeacherMsgAdapter.notifyDataSetChanged();
+        liveMessageEntities.add(entity);
+        LiveMainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (isJustShowTea){
+                    mTeacherMsgAdapter.notifyItemInserted(0);
+                }else {
+                    mMsgAdapter.notifyItemInserted(0);
                 }
-            });
-        }
+                msgListView.scrollToPosition(0);
+            }
+        });
+
 
     }
 
@@ -178,9 +170,9 @@ public class LightLiveBackMsgLandPager extends BasePager implements IBackMsgpage
     @Override
     public void removeOverMsg(long pos) {
         Iterator<LiveBackMsgEntity> iterator = liveMessageEntities.iterator();
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
             LiveBackMsgEntity entity = iterator.next();
-            if(entity.getId() > pos){
+            if (entity.getId() > pos) {
                 iterator.remove();
             }
         }
@@ -194,12 +186,11 @@ public class LightLiveBackMsgLandPager extends BasePager implements IBackMsgpage
         LiveMainHandler.post(new Runnable() {
             @Override
             public void run() {
-                mMsgAdapter.notifyDataSetChanged();
-                mTeacherMsgAdapter.notifyDataSetChanged();
+                mMsgAdapter.notifyItemRangeChanged(0, liveMessageEntities.size());
+                mTeacherMsgAdapter.notifyItemRangeChanged(0, teacherMessageEntities.size());
             }
         });
     }
-
 
     private class MsgItemHolder extends RecyclerView.ViewHolder {
         private TextView tvMsg;
@@ -243,7 +234,7 @@ public class LightLiveBackMsgLandPager extends BasePager implements IBackMsgpage
             } else {
                 tvSysMsg.setVisibility(View.INVISIBLE);
                 tvMsg.setVisibility(View.VISIBLE);
-                tvMsg.setText(data.getSender() + "：");
+                tvMsg.setText(data.getName() + "：");
                 tvMsg.append(data.getText());
             }
         }
@@ -274,11 +265,71 @@ public class LightLiveBackMsgLandPager extends BasePager implements IBackMsgpage
         }
     }
 
-   public void justShowTeacher(boolean isShow){
-        if (isShow){
+    public void onAttach() {
+        LiveMainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                RelativeLayout.LayoutParams mViewParams = (RelativeLayout.LayoutParams) mView.getLayoutParams();
+                if (rightMargin != mViewParams.rightMargin && bottomMargin != mViewParams.bottomMargin) {
+                    int screenWidth = ScreenUtils.getScreenWidth();
+                    LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
+                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) msgListView.getLayoutParams();
+                    Point point = new Point();
+                    ((Activity) mContext).getWindowManager().getDefaultDisplay().getSize(point);
+                    int screenHeight = Math.min(point.x, point.y);
+                    int height = (int) (screenHeight * 0.573);
+                    int width = (int) (screenWidth * 0.45f);
+                    params.height = height;
+                    params.width = width;
+                    msgListView.setLayoutParams(params);
+                    rightMargin = liveVideoPoint.screenWidth - liveVideoPoint.x4 + SizeUtils.Dp2Px(mContext, 15);
+                    bottomMargin = SizeUtils.Dp2Px(mContext, 50) + liveVideoPoint.screenHeight - liveVideoPoint.y4;
+                    mViewParams.rightMargin = rightMargin;
+                    mViewParams.bottomMargin = bottomMargin;
+                    mView.setLayoutParams(mViewParams);
+                }
+                if (isJustShowTea){
+                    msgListView.setAdapter(mTeacherMsgAdapter);
+                }else {
+                    msgListView.setAdapter(mMsgAdapter);
+                }
+                //进行一个延迟处理隐藏聊天记录
+                LiveMainHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (msgListView != null && msgListView.getChildCount() > 0){
+                            for (int i = 0; i < msgListView.getChildCount(); i++) {
+                                msgListView.addAnimationInit(msgListView.findViewHolderForLayoutPosition(i));
+                            }
+                            msgListView.fadeOutAll();
+                        }
+
+                    }
+                },100);
+                //监听 item淡出动画  动画结束后 清空数据源
+                msgListView.setItemFadeAnimListener(new HalfBodyLiveMsgRecycelView.ItemFadeAnimListener() {
+                    @Override
+                    public void onAllItemFadeOut() {
+//                        liveMessageEntities.clear();
+//                        mMsgAdapter.notifyDataSetChanged();
+                    }
+                });
+            }
+        });
+
+
+    }
+
+    public void justShowTeacher(boolean isShow) {
+        isJustShowTea = isShow;
+        if (isShow) {
             msgListView.setAdapter(mTeacherMsgAdapter);
-        }else {
+            mTeacherMsgAdapter.notifyItemRangeInserted(0, teacherMessageEntities.size());
+        } else {
+
             msgListView.setAdapter(mMsgAdapter);
+            mMsgAdapter.notifyItemRangeChanged(0,teacherMessageEntities.size());
         }
-   }
+
+    }
 }

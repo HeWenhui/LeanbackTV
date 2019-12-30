@@ -1030,6 +1030,7 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
             JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
             VideoQuestionEntity questionEntity = null;
             if (jsonObject != null) {
+                MediaPlayer.setIsNewIJK(true);
                 MediaPlayer.setIsNewIJK("1".equals(jsonObject.optString("isNewSDK")) && "1".equals(jsonObject.optString("isNewIRC")));
                 publicLiveCourseEntity.setOnlineNums(jsonObject.optString("onlineNums", "[]"));
                 List<VideoQuestionEntity> questionLst = new ArrayList();
@@ -1121,6 +1122,8 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
                     }
                     publicLiveCourseEntity.setLpWeChatEntity(lpEntity);
                 }
+                publicLiveCourseEntity.setGotoClassTime(jsonObject.optLong("gotoClassTime"));
+
             }
         } catch (Exception e) {
             MobAgent.httpResponseParserError(TAG, "publicLiveCourseQuestionParser", e.getMessage());

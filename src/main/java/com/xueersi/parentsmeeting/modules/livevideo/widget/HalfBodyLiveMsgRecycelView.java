@@ -52,7 +52,7 @@ public class HalfBodyLiveMsgRecycelView extends RecyclerView implements MsgItemA
         return false;
     }
 
-    private void initItemAnimator() {
+    public void initItemAnimator() {
         mItemAnimator = new MsgItemAnimator();
         mItemAnimator.setAddDuration(400);
         mItemAnimator.setMoveDuration(400);
@@ -87,5 +87,17 @@ public class HalfBodyLiveMsgRecycelView extends RecyclerView implements MsgItemA
          */
         void onAllItemFadeOut();
     }
+
+    public void addAnimationInit(RecyclerView.ViewHolder holder){
+        if (mItemAnimator != null){
+            mItemAnimator.addAnimationInit(holder);
+        }
+    }
+    public void fadeOutAll(){
+        if (mItemAnimator!= null){
+            mItemAnimator.startItemsFadeOut();
+        }
+    }
+
 
 }

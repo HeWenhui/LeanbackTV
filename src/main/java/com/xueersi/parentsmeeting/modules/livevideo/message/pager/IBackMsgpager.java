@@ -4,6 +4,8 @@ import android.view.View;
 
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveBackMsgEntity;
 
+import java.util.List;
+
 /**
  * @ProjectName: xueersiwangxiao
  * @Package: com.xueersi.parentsmeeting.modules.livevideo.message.pager
@@ -27,6 +29,7 @@ public interface IBackMsgpager {
      */
     void addMsg(LiveBackMsgEntity entity);
 
+
     /**
      * 移除所有消息展示
      */
@@ -37,6 +40,7 @@ public interface IBackMsgpager {
      * @param pos
      */
     void removeOverMsg(long pos);
+
 
     /**
      * 获取根布局

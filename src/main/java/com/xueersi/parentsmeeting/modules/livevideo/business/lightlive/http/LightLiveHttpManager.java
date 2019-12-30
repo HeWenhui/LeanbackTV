@@ -82,5 +82,14 @@ public class LightLiveHttpManager {
         liveHttpManager.sendPost(LiveHttpConfig.URL_LIGHTLIVE_GET_MESSAGE,params,httpCallBack);
     }
 
+    public void getLiveBackRedpackage(String liveId,String operateId,HttpCallBack httpCallBack){
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("operateId", operateId);
+        liveHttpManager.sendPost(LiveHttpConfig.URL_LIGHTLIVE_GET_PLAYBACK_REDPACKAGE,params,httpCallBack);
+    }
+
+
+
 
 }

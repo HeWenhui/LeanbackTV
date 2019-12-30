@@ -29,6 +29,7 @@ public class AllBackBllConfig {
             "com.xueersi.parentsmeeting.modules.livevideo.message.business.LightLiveMsgBackBll",
             "com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.bll.DiscountCouponBackBll",
             "com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.bll.RecommendCourseBackBll",
+            "com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.bll.LightliveRedpackgeBackBll",
     };
 
     public static ArrayList<BllConfigEntity> getLiveBackBusiness() {
