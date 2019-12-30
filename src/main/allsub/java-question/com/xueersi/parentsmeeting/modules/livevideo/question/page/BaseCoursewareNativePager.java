@@ -17,6 +17,7 @@ import com.tencent.smtt.sdk.WebView;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.common.logerhelper.UmsAgentUtil;
+import com.xueersi.common.util.XrsBroswer;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentTrayPreference;
 import com.xueersi.lib.framework.are.ContextManager;
@@ -79,6 +80,7 @@ public class BaseCoursewareNativePager extends LiveBasePager {
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
             super.onProgressChanged(view, newProgress);
+            XrsBroswer.writeLog("onProgressChanged:newProgress="+newProgress);
             BaseCoursewareNativePager.this.onProgressChanged(view, newProgress);
         }
 
@@ -147,6 +149,8 @@ public class BaseCoursewareNativePager extends LiveBasePager {
                 mLogtf.debugSave("onConsoleMessage:level=" + consoleMessage.messageLevel() + ",sourceId=" + consoleMessage.sourceId()
                         + ",lineNumber=" + consoleMessage.lineNumber() + ",message=" + consoleMessage.message());
             }
+            XrsBroswer.writeLog("onConsoleMessage:level=" + consoleMessage.messageLevel() + ",sourceId=" + consoleMessage.sourceId()
+                    + ",lineNumber=" + consoleMessage.lineNumber() + ",message=" + consoleMessage.message());
             return super.onConsoleMessage(consoleMessage);
         }
 
