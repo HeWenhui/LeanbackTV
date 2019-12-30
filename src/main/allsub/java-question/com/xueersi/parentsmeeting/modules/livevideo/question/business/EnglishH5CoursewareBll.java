@@ -573,16 +573,16 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, BaseVo
                 if (!videoQuestionH5Entity.englishH5Entity.getNewEnglishH5()) {
                     saveH5AnswerRecord(videoQuestionH5Entity.getUrl());
                 }
-                baseEnglishH5CoursewarePager.destroy("onH5ResultClose");
+                baseEnglishH5CoursewarePager.destroy("onH5ResultClose:method="+method);
                 liveViewAction.removeView(baseEnglishH5CoursewarePager.getRootView());
                 logToFile.d("onH5ResultClose:pager=" + baseEnglishH5CoursewarePager + ",old=" + h5CoursewarePager + ",method=" + method);
                 if (baseEnglishH5CoursewarePager == h5CoursewarePager) {
                     h5CoursewarePager = null;
                 }
                 if (!isAnaswer) {
-                    onQuestionShow(null, false, "onH5ResultClose");
+                    onQuestionShow(null, false, "onH5ResultClose:method="+method);
                 }
-                mLiveBll.getStuGoldCount("showH5Paper");
+                mLiveBll.getStuGoldCount("showH5Paper:method="+method);
 
                 WebViewRequest webViewRequest = ProxUtil.getProxUtil().get(context, WebViewRequest.class);
                 if (webViewRequest != null) {
