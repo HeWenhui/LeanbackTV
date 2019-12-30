@@ -40,6 +40,7 @@ public class WebViewObserve {
             logHashMap.put("url", url);
             //是不是x5浏览器
             logHashMap.put("isx5", webView.getX5WebViewExtension() != null ? "true" : "false");
+            logHashMap.put("freememory", "" + Runtime.getRuntime().freeMemory());
             logHashMap.getData().putAll(common);
             UmsAgentManager.umsAgentDebug(ContextManager.getContext(), enentId, logHashMap.getData());
         } catch (Exception e) {
@@ -51,6 +52,7 @@ public class WebViewObserve {
         try {
             StableLogHashMap logHashMap = new StableLogHashMap("destory");
             logHashMap.put("url", url);
+            logHashMap.put("freememory", "" + Runtime.getRuntime().freeMemory());
             logHashMap.getData().putAll(common);
             UmsAgentManager.umsAgentDebug(ContextManager.getContext(), enentId, logHashMap.getData());
         } catch (Exception e) {
