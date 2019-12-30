@@ -494,10 +494,21 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, BaseVo
             @Override
             public void run() {
                 if (h5CoursewarePager != null) {
-                    if (basePager instanceof CoursewareNativePager) {
-                        if (h5CoursewarePager != basePager) {
-                            logToFile.d("forceClose:noclose_method=" + method);
+                    try {
+                        if (basePager instanceof CoursewareNativePager) {
+                            if (h5CoursewarePager != basePager) {
+                                CoursewareNativePager coursewareNativePager = (CoursewareNativePager) basePager;
+                                BaseVideoQuestionEntity baseVideoQuestionEntity = coursewareNativePager.getBaseVideoQuestionEntity();
+                                if (baseVideoQuestionEntity != null) {
+                                    String testid = NewCourseLog.getNewCourseTestIdSec((VideoQuestionLiveEntity) baseVideoQuestionEntity, mGetInfo.getIsArts());
+                                    logToFile.d("forceClose:noclose_method=" + method + ",id=" + testid);
+                                } else {
+                                    logToFile.d("forceClose:noclose_method=" + method);
+                                }
+                            }
                         }
+                    } catch (Exception e) {
+                        LiveCrashReport.postCatchedException(TAG, e);
                     }
                     if (mLiveBll != null) {
                         mLiveBll.getStuGoldCount("forceClose:method=" + method);
