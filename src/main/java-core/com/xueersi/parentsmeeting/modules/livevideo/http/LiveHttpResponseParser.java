@@ -2982,6 +2982,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         }
         subGroupEntity.setVirStuInfo(memberEntity);
         subGroupEntity.setVideoJson(jsonObject.optJSONObject("videoList"));
+        subGroupEntity.setVideoPathJson(jsonObject.optJSONObject("videoPath"));
         subGroupEntity.setDataJson(dataJson);
         return subGroupEntity;
     }
