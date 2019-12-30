@@ -43,6 +43,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.LivePlu
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LiveModuleConfigInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LivePlugin;
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LivePluginRequestParam;
+import com.xueersi.parentsmeeting.modules.livevideo.utils.LiveWebLog;
 import com.xueersi.parentsmeeting.share.business.biglive.config.BigLiveCfg;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveActivityState;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveCoreConfig;
@@ -218,6 +219,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         ProxUtil.getProxUtil().put(context, LiveOnLineLogs.class, liveLog);
         mLogtf = new LogToFile(context, TAG);
         allLiveBasePagerIml = new AllLiveBasePagerIml(context);
+        LiveWebLog.init(vSectionID);
     }
 
     /**
@@ -1708,7 +1710,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
             mTimerTask.cancel();
             mTimerTask = null;
         }
-
+        LiveWebLog.stop();
     }
 
     public void onIRCmessageDestory() {

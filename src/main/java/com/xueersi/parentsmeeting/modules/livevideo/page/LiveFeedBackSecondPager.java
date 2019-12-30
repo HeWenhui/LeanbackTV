@@ -36,6 +36,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.CoursewareNativePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.util.WebViewObserve;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.evaluateteacher.bussiness.FeedBackTeacherInterface;
 
 import org.json.JSONObject;
@@ -307,6 +308,7 @@ public class LiveFeedBackSecondPager extends LiveBasePager {
             isShow = feedBackTeacherInterface.showPager();
             if (isShow) {
                 webView.loadUrl(mUrl);
+                WebViewObserve.getInstance().loadUrl(webView, mUrl);
             }
 
         } else {
@@ -348,6 +350,7 @@ public class LiveFeedBackSecondPager extends LiveBasePager {
         if (onGlobalLayoutListener != null) {
             KeyboardUtil.detach((Activity)mContext,onGlobalLayoutListener);
         }
+        WebViewObserve.getInstance().destory(webView);
     }
     CountDownTimer timer = new CountDownTimer(2000, 1000) {
         @Override
