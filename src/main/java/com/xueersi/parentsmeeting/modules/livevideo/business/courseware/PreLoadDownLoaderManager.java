@@ -69,7 +69,7 @@ class PreLoadDownLoaderManager {
         }
     }
 
-    public static void addUrgentInfo(DownLoadInfoAndListener downLoadInfo) {
+    public static synchronized void addUrgentInfo(DownLoadInfoAndListener downLoadInfo) {
         if (!isUrgent.get()) {
             isUrgent.set(true);
         }
@@ -230,7 +230,7 @@ class PreLoadDownLoaderManager {
     /**
      * 添加到自动下载池，并启动下载
      */
-    public static void addToAutoDownloadPool(final DownLoadInfoAndListener info) {
+    public static synchronized void addToAutoDownloadPool(final DownLoadInfoAndListener info) {
         if (info == null || TextUtils.isEmpty(info.getDownLoadInfo().getUrl())) {
             return;
         }
