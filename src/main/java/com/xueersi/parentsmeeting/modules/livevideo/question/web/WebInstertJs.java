@@ -7,6 +7,7 @@ import com.airbnb.lottie.AssertUtil;
 import com.xueersi.common.base.XrsCrashReport;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
+import com.xueersi.parentsmeeting.modules.livevideo.config.SysLogLable;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
@@ -118,7 +119,11 @@ public class WebInstertJs {
         }
         bufferedWriter.flush();
         boolean renameTo = saveFileTmp.renameTo(saveFile);
-        logToFile.d("insertJs:fileName=" + fileName + ",renameTo=" + renameTo);
+        if (!addJs || !renameTo) {
+            logToFile.d(SysLogLable.instertJsError, "insertJs:fileName=" + fileName + ",renameTo=" + renameTo + ",addJs=" + addJs);
+        } else {
+            logToFile.d("insertJs:fileName=" + fileName + ",renameTo=" + renameTo);
+        }
         return new FileInputStream(saveFile);
     }
 
