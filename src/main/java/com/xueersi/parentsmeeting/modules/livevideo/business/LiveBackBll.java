@@ -912,6 +912,14 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
                     index = i;
                     break;
                 }
+            }else if (LocalCourseConfig.CATEGORY_MOUDLE_VOTE == videoQuestionEntity.getvCategory()) {
+                //roleplay
+                if (startTime <= playPosition && playPosition < endTime) {
+                    mQuestionEntity = videoQuestionEntity;
+                    hasQuestionShow = true;
+                    index = i;
+                    break;
+                }
             }
         }
         if (mQuestionEntity != null) {
