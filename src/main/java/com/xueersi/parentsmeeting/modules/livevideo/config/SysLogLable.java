@@ -41,6 +41,8 @@ public class SysLogLable {
     public static SysLogEntity courseMessage = new SysLogEntity(ShellingScienceWebViewLog, "courseMessage");
     /** 切换加载在线课件 */
     public static SysLogEntity changeToOnlineLoad = new SysLogEntity(ShellingScienceWebViewLog, "changeToOnlineLoad");
+    /** 课件过快关闭 */
+    public static SysLogEntity fastOnClose = new SysLogEntity(ShellingScienceWebViewLog, "fastOnClose");
     /** 提交答案失败 */
     public static SysLogEntity submitAnswertFailed = new SysLogEntity(ShellingScienceWebViewLog, "submitAnswertFailed");
     /** 提交答案成功 */

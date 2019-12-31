@@ -302,8 +302,12 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             @Override
             public void onViewDetachedFromWindow(View v) {
                 if (mLogtf != null) {
-                    mLogtf.d("onViewDetachedFromWindow:time=" + (System
-                            .currentTimeMillis() - before));
+                    long time = System.currentTimeMillis() - before;
+                    if (time < 1000) {
+                        mLogtf.d(SysLogLable.fastOnClose, "onViewDetachedFromWindow:time=" + time);
+                    } else {
+                        mLogtf.d("onViewDetachedFromWindow:time=" + time);
+                    }
                 }
                 if (isArts == LiveVideoSAConfig.ART_EN) {
                     LiveRoomH5CloseEvent event = new LiveRoomH5CloseEvent(mGoldNum, mEnergyNum, LiveRoomH5CloseEvent
