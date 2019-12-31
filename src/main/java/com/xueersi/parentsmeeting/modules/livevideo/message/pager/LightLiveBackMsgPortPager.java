@@ -143,11 +143,12 @@ public class LightLiveBackMsgPortPager extends BasePager implements IBackMsgpage
                 if (isChecked) {
                     XESToastUtils.showToastAtCenter("只看老师消息");
                     msgListView.setAdapter(mTeacherMsgAdapter);
-                    messageStatus.justShowTeacher(isChecked);
+                    msgListView.scrollToPosition(mTeacherMsgAdapter.getItemCount()-1);
                 } else {
 //                    BuryManager.permission = true;
                     XESToastUtils.showToastAtCenter("接收全部消息");
                     msgListView.setAdapter(mMsgAdapter);
+                    msgListView.scrollToPosition(mMsgAdapter.getItemCount()-1);
                 }
                 messageStatus.justShowTeacher(isChecked);
             }
