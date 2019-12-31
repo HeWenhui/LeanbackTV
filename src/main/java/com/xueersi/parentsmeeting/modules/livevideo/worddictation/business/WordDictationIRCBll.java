@@ -3,6 +3,10 @@ package com.xueersi.parentsmeeting.modules.livevideo.worddictation.business;
 import android.app.Activity;
 import android.widget.RelativeLayout;
 
+import com.xueersi.common.business.AppBll;
+import com.xueersi.common.route.module.ModuleHandler;
+import com.xueersi.common.route.module.entity.Module;
+import com.xueersi.common.route.module.entity.ModuleData;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
@@ -38,7 +42,17 @@ public class WordDictationIRCBll extends LiveBaseBll implements NoticeAction, To
 //                RecognizeFlow recognizeFlow = new RecognizeFlow("1111", "1313", "", "3021", answer);
 //                bundle.putSerializable("data", recognizeFlow);
 //                bundle.putString("what","MiddleLaunch");
-//                XueErSiRouter.startModule(activity, "/dictation/MiddleLaunch", bundle);
+//
+//                String moduleName = "endictation";
+//                Module m = AppBll.getInstance().getModuleByModuleName(moduleName);
+//                if (m == null) {
+//                    m = new Module();
+//                    m.moduleName = moduleName;
+//                    m.version = "1.0.1";
+//                    m.title = "英语单词听写";
+//                    m.moduleType = 0;
+//                }
+//                ModuleHandler.start(activity, new ModuleData(m, bundle));
 //            }
 //        },5000);
     }
