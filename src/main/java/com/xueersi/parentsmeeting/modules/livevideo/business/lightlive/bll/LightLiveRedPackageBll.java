@@ -169,12 +169,16 @@ public class LightLiveRedPackageBll implements RedPackageAction, Handler.Callbac
             @Override
             public void sendReceiveGold(int operateId, OnRedPackageSend onRedPackageSend) {
                 if(!isGetPagClick){
-                    XrsBury.clickBury(activity.getResources().getString(R.string.click_03_63_015));
+                    if (isLive){
+                        XrsBury.clickBury(activity.getResources().getString(R.string.click_03_63_015));
+                    }
                     isGetPagClick = true;
                     if (AppBll.getInstance().isAlreadyLogin()) {
                         LightLiveRedPackageBll.this.sendReceiveGold(operateId, mVSectionID, onRedPackageSend);
                     } else {
-                        XrsBury.showBury(activity.getResources().getString(R.string.show_03_63_005), BurySourceIds.LIGHT_LIVE_RED_PAGERAGE_SOURCEID);
+                        if (isLive){
+                            XrsBury.showBury(activity.getResources().getString(R.string.show_03_63_005), BurySourceIds.LIGHT_LIVE_RED_PAGERAGE_SOURCEID);
+                        }
                         LoginEnter.openLogin(activity, false, null);
                         isGetPagClick = false;
                     }
@@ -199,7 +203,9 @@ public class LightLiveRedPackageBll implements RedPackageAction, Handler.Callbac
         rlRedpacketContent.bringToFront();
         activity.getWindow().getDecorView().requestLayout();
         activity.getWindow().getDecorView().invalidate();
-        XrsBury.showBury(activity.getResources().getString(R.string.show_03_63_004));
+        if (isLive){
+            XrsBury.showBury(activity.getResources().getString(R.string.show_03_63_004));
+        }
     }
 
     private void sendReceiveGold(final int operateId, String sectionID, final OnRedPackageSend onRedPackageSend) {
@@ -224,6 +230,11 @@ public class LightLiveRedPackageBll implements RedPackageAction, Handler.Callbac
                 if (isLive){
                     XESToastUtils.showToastAtCenter("红包领取失败，请重试");
                     onRedPackageSend.onReceiveFail();
+                }else {
+                    if (lightLiveRedPackageView != null) {
+                        rlRedpacketContent.removeView(lightLiveRedPackageView.getRootView());
+                        lightLiveRedPackageView = null;
+                    }
                 }
             }
 

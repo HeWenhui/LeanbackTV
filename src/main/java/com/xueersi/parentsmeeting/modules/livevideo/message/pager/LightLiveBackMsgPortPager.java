@@ -185,6 +185,13 @@ public class LightLiveBackMsgPortPager extends BasePager implements IBackMsgpage
         nameColors = new int[]{mContext.getResources().getColor(R.color.COLOR_FF5E50), mContext.getResources().getColor(R.color.COLOR_FF5E50),
                 mContext.getResources().getColor(R.color.COLOR_666666), mContext.getResources().getColor(R.color.COLOR_FE9B43)};
         initMsgRcyclView();
+//        weChatEntity = new LPWeChatEntity();
+//        weChatEntity.setTipInfo("tipinfo");
+//        weChatEntity.setTeacherWx("00000");
+//        weChatEntity.setExistWx(1);
+//        weChatEntity.setWxQrUrl("555");
+//        weChatEntity.setTeacherName("2222");
+//        weChatEntity.setTipType(2);
     }
 
     private void initMsgRcyclView() {

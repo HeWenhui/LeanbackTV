@@ -222,8 +222,10 @@ public class RoomInfoIRCMessageBll extends LiveBaseBll implements MessageAction,
                 String notice = data.optString("notice");
                 if (notice != null){
                     mNotice = notice;
-                    lightLiveRoomInfoPager.setHasClose(false);
-                    lightLiveRoomInfoPager.setTvNotice(mNotice);
+                    if (lightLiveRoomInfoPager != null){
+                        lightLiveRoomInfoPager.setHasClose(false);
+                        lightLiveRoomInfoPager.setTvNotice(mNotice);
+                    }
                 }
                 break;
             }

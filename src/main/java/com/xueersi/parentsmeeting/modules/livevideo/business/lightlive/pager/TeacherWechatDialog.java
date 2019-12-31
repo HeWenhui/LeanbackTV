@@ -4,8 +4,12 @@ import android.app.Application;
 import android.app.Dialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
@@ -19,14 +23,22 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
+import com.tal100.chatsdk.utils.ToastUtils;
 import com.xrs.bury.xrsbury.XrsBury;
+import com.xueersi.common.config.AppConfig;
+import com.xueersi.common.config.FileConfig;
+import com.xueersi.common.util.ScreenShot;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.FrameAnimation;
 import com.xueersi.ui.dialog.BaseAlertDialog;
 import com.xueersi.ui.dialog.BaseDialog;
+
+import java.io.File;
 
 /**
  * @ProjectName: xueersiwangxiao
@@ -114,7 +126,6 @@ public class TeacherWechatDialog extends BaseAlertDialog {
                 alertView,
                 new ViewGroup.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
                         type == TYPE_WITH_HEAD ? SizeUtils.Dp2Px(mContext, 246) : SizeUtils.Dp2Px(mContext, 400)));
-
     }
 
     private void setAlertDialog(Dialog alertDialog) {
@@ -135,6 +146,28 @@ public class TeacherWechatDialog extends BaseAlertDialog {
         btWechatCopy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+//                try{
+//                    int defaultHeadImg = R.drawable.bg_tutor_default_head_imge;
+//                    ivQrcode.setImageDrawable(mContext.getResources().getDrawable(defaultHeadImg));
+//                    Bitmap bitmap = ((BitmapDrawable)ivQrcode.getDrawable()).getBitmap();
+//                    File dir = FileUtils.createOrExistsSDCardDirForFile(FileConfig.savePathImageDir);
+//                    String filePath = "";
+//                    if (dir != null && dir.exists()) {
+//                        String filename = "a"+System.currentTimeMillis() + ".jpg";
+//                        File path = FileUtils.getFileByPath(dir.getPath() + File.separator + filename);
+//                        if (path != null) {
+//                            if (path.exists()) {
+//                                path.delete();
+//                            }
+//                            filePath =  path.getPath();
+//                            ScreenShot.saveToGallery(mContext, bitmap, path.getAbsolutePath(), Bitmap.CompressFormat.JPEG, filename, filename);
+//                        }
+//                    }
+//                    openScanner();
+//                }catch (Exception e){
+//                    XESToastUtils.showToast("微信未安装");
+//                }
+
 
                 ClipboardManager cm = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
 
@@ -149,6 +182,17 @@ public class TeacherWechatDialog extends BaseAlertDialog {
                 }
             }
         });
+    }
+    private void openScanner(){
+        String WECHAT_APP_PACKAGE = "com.tencent.mm" ;
+        String WECHAT_LAUNCHER_UI_CLASS = "com.tencent.mm.ui.LauncherUI" ;
+        String WECHAT_OPEN_SCANER_NAME = "LauncherUI.From.Scaner.Shortcut" ;
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setComponent(new ComponentName(WECHAT_APP_PACKAGE,WECHAT_LAUNCHER_UI_CLASS));
+        intent.putExtra(WECHAT_OPEN_SCANER_NAME,true);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP );
+        mContext.startActivity(intent);
+
     }
 
     private void initView() {
