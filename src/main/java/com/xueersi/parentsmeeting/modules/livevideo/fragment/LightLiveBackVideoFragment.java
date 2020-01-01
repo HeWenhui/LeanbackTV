@@ -111,6 +111,7 @@ public class LightLiveBackVideoFragment extends LiveBackVideoFragmentBase implem
     private String mWebPath;
     private RelativeLayout contentLayout;
     private LinearLayout otherContent;
+//    private LectureLivePlayBackBll lectureLivePlayBackBll;
 
     {
         /** 布局默认资源 */
@@ -261,6 +262,9 @@ public class LightLiveBackVideoFragment extends LiveBackVideoFragmentBase implem
         liveBackVideoBll.setvPlayer(vPlayer);
         liveBackVideoBll.setSectionName(mSectionName);
 
+//        lectureLivePlayBackBll = new LectureLivePlayBackBll(activity,stuCourId);
+//        lectureLivePlayBackBll.setLiveVideoSAConfig(new LiveVideoSAConfig(ShareBusinessConfig.LIVE_SCIENCE, true));
+
         // 如果加载不出来
         if (tvLoadingContent != null) {
             tvLoadingContent.setText("正在获取视频资源，请稍候");
@@ -380,6 +384,7 @@ public class LightLiveBackVideoFragment extends LiveBackVideoFragmentBase implem
 
     @Override
     protected void sendPlayVideo() {
+//        lectureLivePlayBackBll.sendLiveCourseVisitTime(stuCourId,mVideoEntity.getLiveId(),mVideoEntity.getHbTime(),sendPlayVideoHandler,1000);
         super.sendPlayVideo();
     }
 

@@ -402,7 +402,7 @@ public class LiveVideoDispatcher extends AbsDispatcher {
         videoEntity.setOnlineNums(publicLiveCourseEntity.getOnlineNums());
         videoEntity.setStreamTimes(publicLiveCourseEntity.getStreamTimes());
         //测试代码
-        publicLiveCourseEntity.setGently(true);
+//        publicLiveCourseEntity.setGently(true);
 
         Bundle bundle = new Bundle();
         bundle.putSerializable("videoliveplayback", videoEntity);
