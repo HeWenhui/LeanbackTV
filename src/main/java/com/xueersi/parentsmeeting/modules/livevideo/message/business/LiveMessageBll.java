@@ -425,7 +425,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
             if (liveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {
                 if(LiveVideoConfig.isLightLive){
                     BaseLiveMessagePager liveMessagePager = new LightLiveMessageLandPager(activity, this,
-                            null, baseLiveMediaControllerBottom, liveMessageLandEntities, liveMessagePortEntities);
+                            null, baseLiveMediaControllerBottom, liveMessageLandEntities, liveMessagePortEntities,isCloseChat);
                     mLiveMessagePager = liveMessagePager;
                 }else {
                     LiveMessagePager liveMessagePager =

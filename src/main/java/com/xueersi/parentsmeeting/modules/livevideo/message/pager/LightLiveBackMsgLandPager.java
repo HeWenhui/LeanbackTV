@@ -288,24 +288,19 @@ public class LightLiveBackMsgLandPager extends BasePager implements IBackMsgpage
                     mViewParams.bottomMargin = bottomMargin;
                     mView.setLayoutParams(mViewParams);
                 }
+                mLastMsg = null;
+
                 if (isJustShowTea){
+                    if(teacherMessageEntities != null && teacherMessageEntities.size() > 0){
+                        mLastMsg = teacherMessageEntities.remove((teacherMessageEntities.size()-1));
+                    }
                     msgListView.setAdapter(mTeacherMsgAdapter);
                 }else {
+                    if(liveMessageEntities != null && liveMessageEntities.size() > 0){
+                        mLastMsg = liveMessageEntities.remove((liveMessageEntities.size()-1));
+                    }
                     msgListView.setAdapter(mMsgAdapter);
                 }
-                //进行一个延迟处理隐藏聊天记录
-                LiveMainHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (msgListView != null && msgListView.getChildCount() > 0){
-                            for (int i = 0; i < msgListView.getChildCount(); i++) {
-                                msgListView.addAnimationInit(msgListView.findViewHolderForLayoutPosition(i));
-                            }
-                            msgListView.fadeOutAll();
-                        }
-
-                    }
-                },100);
                 //监听 item淡出动画  动画结束后 清空数据源
                 msgListView.setItemFadeAnimListener(new HalfBodyLiveMsgRecycelView.ItemFadeAnimListener() {
                     @Override
@@ -314,12 +309,33 @@ public class LightLiveBackMsgLandPager extends BasePager implements IBackMsgpage
 //                        mMsgAdapter.notifyDataSetChanged();
                     }
                 });
+                initReclItemState();
             }
         });
 
 
     }
+    /**
+     * 初始化 item 初始状态
+     */
+    private void initReclItemState() {
+        //FIXME: 2018/11/10  解决从同步辅导态消息后  item显示异常
+        if(mLastMsg != null){
+            LiveMainHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (isJustShowTea){
+                        teacherMessageEntities.add(mLastMsg);
+                        mTeacherMsgAdapter.notifyItemInserted(0);
+                    }else {
+                        liveMessageEntities.add(mLastMsg);
+                        mMsgAdapter.notifyItemInserted(0);
+                    }
 
+                }
+            },100);
+        }
+    }
     public void justShowTeacher(boolean isShow) {
         isJustShowTea = isShow;
         if (isShow) {

@@ -239,7 +239,7 @@ public class RoomInfoIRCMessageBll extends LiveBaseBll implements MessageAction,
 
     public void setShowCount(int from){
         if ( NUM_FROM_USERLIST== from){
-            if (userListNum > peopleCount.get()){
+            if (userListNum >= peopleCount.get()){
                 peopleCount.set(userListNum,new Exception());
                 lightLiveRoomInfoPager.setTvCount("人气值" + peopleCount.get());
             }
@@ -248,12 +248,25 @@ public class RoomInfoIRCMessageBll extends LiveBaseBll implements MessageAction,
                 if (lastCountDownTimer != null){
                     lastCountDownTimer.cancel();
                 }
-                lastCountDownTimer = new RoomInfoCountDownTimer(TOTAL_TIME/noticeNum);
-                lastCountDownTimer.start();
+                post(new Runnable() {
+                    @Override
+                    public void run() {
+                        lastCountDownTimer = new RoomInfoCountDownTimer(TOTAL_TIME/noticeNum);
+                        lastCountDownTimer.start();
+                    }
+                });
             }
         }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (lastCountDownTimer != null){
+            lastCountDownTimer.cancel();
+            lastCountDownTimer = null;
+        }
+    }
 
     /**
      * 58S缓慢增加人数
