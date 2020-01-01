@@ -20,6 +20,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -319,5 +322,16 @@ public class TeacherWechatDialog extends BaseAlertDialog {
         return this;
     }
 
-
+    @Override
+    public void showDialog() {
+        super.showDialog();
+        if (type == TYPE_WITH_QRCODE) {
+            ScaleAnimation animation =  new ScaleAnimation(0.95f, 1.05f, 0.95f, 1.05f,
+                    Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+            animation.setDuration(1100);
+            animation.setRepeatCount(Animation.INFINITE);
+            animation.setRepeatMode(Animation.REVERSE);
+            btWechatCopy.startAnimation(animation);
+        }
+    }
 }
