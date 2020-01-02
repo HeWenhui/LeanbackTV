@@ -302,6 +302,7 @@ public class RoomInfoIRCMessageBll extends LiveBaseBll implements MessageAction,
 
         public RoomInfoCountDownTimer(long countDownInterval) {
             super(TOTAL_TIME, countDownInterval);
+            this.millisInFuture = TOTAL_TIME;
         }
 
         @Override
