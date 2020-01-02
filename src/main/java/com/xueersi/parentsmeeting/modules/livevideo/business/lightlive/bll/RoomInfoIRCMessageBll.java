@@ -171,7 +171,6 @@ public class RoomInfoIRCMessageBll extends LiveBaseBll implements MessageAction,
         }
         userListNum = this.users.size();
         setShowCount(NUM_FROM_USERLIST);
-
     }
 
     @Override
@@ -303,6 +302,7 @@ public class RoomInfoIRCMessageBll extends LiveBaseBll implements MessageAction,
         public RoomInfoCountDownTimer(long countDownInterval) {
             super(TOTAL_TIME, countDownInterval);
             this.millisInFuture = TOTAL_TIME;
+            this.countDownInterval = countDownInterval;
         }
 
         @Override
@@ -313,10 +313,7 @@ public class RoomInfoIRCMessageBll extends LiveBaseBll implements MessageAction,
 
         @Override
         public void onFinish() {
-            if (millisInFuture % countDownInterval != 0){
-                peopleCount.set(peopleCount.get() + 1, new Exception());
-                lightLiveRoomInfoPager.setTvCount("人气值" + peopleCount.get());
-            }
+
         }
     }
 
