@@ -164,9 +164,13 @@ public class LiveVideoLoadActivity extends BaseActivity {
                     DataLoadManager.newInstance().loadDataStyle(LiveVideoLoadActivity.this,
                             mDataLoadEntity);
                     finish();
+                } else {
+                    mDataLoadEntity.webDataSuccess();
+                    DataLoadManager.newInstance().loadDataStyle(LiveVideoLoadActivity.this,
+                            mDataLoadEntity);
                 }
                 UmsAgentManager.umsAgentDebug(LiveVideoLoadActivity.this, ModuleHandler.TAG,
-                        "fail:errorCode="+errorCode+",errorMsg="+errorMsg);
+                        "fail:errorCode=" + errorCode + ",errorMsg=" + errorMsg);
             }
         });
 

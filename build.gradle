@@ -167,3 +167,5 @@ dependencies {
     }
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.talaccsdk)
 }
+apply from: rootDir.absolutePath + '/buildscript/module_secure_check.gradle'
+apply from: rootDir.absolutePath + '/buildscript/module_replace_image.gradle'
