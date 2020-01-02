@@ -581,7 +581,7 @@ public class LightLiveBackVideoFragment extends LiveBackVideoFragmentBase implem
 
     @Override
     protected void showRefresyLayout(int arg1, int arg2) {
-        super.showRefresyLayout(arg1, arg2);
+//        super.showRefresyLayout(arg1, arg2);
 
         setLoaidngUlVisibility(View.GONE);
         setLoadResultUlVisibility(View.VISIBLE);

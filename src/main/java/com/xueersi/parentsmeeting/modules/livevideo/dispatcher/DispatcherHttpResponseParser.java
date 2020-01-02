@@ -1031,7 +1031,7 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
             VideoQuestionEntity questionEntity = null;
             if (jsonObject != null) {
                 MediaPlayer.setIsNewIJK(true);
-                MediaPlayer.setIsNewIJK("1".equals(jsonObject.optString("isNewSDK")) && "1".equals(jsonObject.optString("isNewIRC")));
+//                MediaPlayer.setIsNewIJK("1".equals(jsonObject.optString("isNewSDK")) && "1".equals(jsonObject.optString("isNewIRC")));
                 publicLiveCourseEntity.setOnlineNums(jsonObject.optString("onlineNums", "[]"));
                 List<VideoQuestionEntity> questionLst = new ArrayList();
                 String videoPath = jsonObject.optString("videoPath");
