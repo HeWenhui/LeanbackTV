@@ -178,6 +178,7 @@ public class TeacherWechatDialog extends BaseAlertDialog {
                                 }
                             }
 
+
                             @Override
                             public void onFail() {
                                 XESToastUtils.showToast("二维码下载失败");
@@ -236,7 +237,7 @@ public class TeacherWechatDialog extends BaseAlertDialog {
                 filePath = path.getPath();
                 boolean isSuccess = ScreenShot.saveToGallery(mContext, bitmap, path.getAbsolutePath(), Bitmap.CompressFormat.JPEG, filename, filename);
                 if (isSuccess) {
-                    XESToastUtils.showToastAtCenter("二维码截图已保存到相册");
+                    XESToastUtils.showToastAtCenter("已成功保存到相册\n请用微信扫一扫进群");
                 } else {
                     XESToastUtils.showToastAtCenter("二维码保存失败");
                 }
@@ -311,6 +312,7 @@ public class TeacherWechatDialog extends BaseAlertDialog {
                 @Override
                 public void onFail() {
                     isLoadSuccess = false;
+                    XESToastUtils.showToastAtCenter("班级群码丢啦，再次打开弹窗试试吧~");
                 }
             });
         }
