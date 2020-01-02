@@ -56,10 +56,12 @@ public class WebInstertJs {
     File innerFile;
     static long saveTime;
     private LogToFile logToFile;
-    OnHttpCode onHttpCode;
+    private OnHttpCode onHttpCode;
+    private String testid;
 
     public WebInstertJs(Context context, String testid) {
         logToFile = new LogToFile(context, TAG);
+        this.testid = testid;
         try {
             logToFile.addCommon("testid", testid);
         } catch (Exception e) {
@@ -326,7 +328,14 @@ public class WebInstertJs {
     public void uploadHtmlFile(final Context context, final File saveFile) {
         logger.d("uploadHtmlFile:saveFile=" + saveFile + ",length=" + saveFile.length());
         if (saveFile.length() == 0) {
-            saveFile.delete();
+            try {
+                StableLogHashMap stableLogHashMap = new StableLogHashMap("length0");
+                stableLogHashMap.put("savefile", "" + saveFile);
+                stableLogHashMap.put("testid", ""+testid);
+                UmsAgentManager.umsAgentDebug(context, LogConfig.LIVE_JS_ERROR_LOG, stableLogHashMap.getData());
+            } catch (Exception e) {
+                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+            }
             return;
         }
         XesCloudUploadBusiness xesCloudUploadBusiness = new XesCloudUploadBusiness(ContextManager.getContext());
@@ -348,11 +357,12 @@ public class WebInstertJs {
                     StableLogHashMap stableLogHashMap = new StableLogHashMap("uploadsuc");
                     stableLogHashMap.put("savefile", "" + saveFile);
                     stableLogHashMap.put("httppath", httpPath);
+                    stableLogHashMap.put("testid", ""+testid);
                     UmsAgentManager.umsAgentDebug(context, LogConfig.LIVE_JS_ERROR_LOG, stableLogHashMap.getData());
                 } catch (Exception e) {
                     LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 }
-                saveFile.delete();
+//                saveFile.delete();
             }
 
             @Override
@@ -363,6 +373,7 @@ public class WebInstertJs {
                     stableLogHashMap.put("savefile", "" + saveFile);
                     stableLogHashMap.put("errorCode", "" + result.getErrorCode());
                     stableLogHashMap.put("errorMsg", "" + result.getErrorMsg());
+                    stableLogHashMap.put("testid", ""+testid);
                     UmsAgentManager.umsAgentDebug(context, LogConfig.LIVE_JS_ERROR_LOG, stableLogHashMap.getData());
                 } catch (Exception e) {
                     LiveCrashReport.postCatchedException(new LiveException(TAG, e));
