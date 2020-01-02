@@ -289,8 +289,11 @@ public class RoomInfoIRCMessageBll extends LiveBaseBll implements MessageAction,
          * @param countDownInterval The interval along the way to receive
          *                          {@link #onTick(long)} callbacks.
          */
+        long millisInFuture, countDownInterval;
         public RoomInfoCountDownTimer(long millisInFuture, long countDownInterval) {
             super(millisInFuture, countDownInterval);
+            this.millisInFuture = millisInFuture;
+            this.countDownInterval = countDownInterval;
         }
 
         public RoomInfoCountDownTimer(long countDownInterval) {
@@ -305,6 +308,10 @@ public class RoomInfoIRCMessageBll extends LiveBaseBll implements MessageAction,
 
         @Override
         public void onFinish() {
+            if (millisInFuture % countDownInterval != 0){
+                peopleCount.set(peopleCount.get() + 1, new Exception());
+                lightLiveRoomInfoPager.setTvCount("人气值" + peopleCount.get());
+            }
         }
     }
 
