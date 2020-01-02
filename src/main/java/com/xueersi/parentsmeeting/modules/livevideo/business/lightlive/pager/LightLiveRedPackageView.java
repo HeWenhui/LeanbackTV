@@ -162,12 +162,12 @@ public class LightLiveRedPackageView extends LiveBasePager implements IRedPackag
 
                 @Override
                 public void onReceiveFail() {
-                    lvBusiRedPackRed.setOnClickListener(onClickListener);
+//                    lvBusiRedPackRed.setOnClickListener(onClickListener);
                 }
 
                 @Override
                 public void onReceiveError(int errStatus, String failMsg, int code) {
-                    lvBusiRedPackRed.setOnClickListener(onClickListener);
+//                    lvBusiRedPackRed.setOnClickListener(onClickListener);
                 }
 
                 @Override

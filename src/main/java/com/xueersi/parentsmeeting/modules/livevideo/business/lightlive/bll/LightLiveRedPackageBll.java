@@ -163,6 +163,7 @@ public class LightLiveRedPackageBll implements RedPackageAction, Handler.Callbac
                     rlRedpacketContent.removeView(basePager.getRootView());
                     lightLiveRedPackageView = null;
                 }
+                isGetPagClick = false;
             }
         });
         lightLiveRedPackageView.setReceiveGold(new com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.mvp.ReceiveGold() {
@@ -219,6 +220,7 @@ public class LightLiveRedPackageBll implements RedPackageAction, Handler.Callbac
                 if(isLive){
                     XrsBury.showBury(activity.getResources().getString(R.string.show_03_63_006));
                 }
+                isGetPagClick = false;
                 EventBus.getDefault().post(new RedPackageEvent(mVSectionID, entity.getGoldNum(),
                         operateId + "", RedPackageEvent.STATE_CODE_SUCCESS));
             }
@@ -241,9 +243,9 @@ public class LightLiveRedPackageBll implements RedPackageAction, Handler.Callbac
             @Override
             public void onDataFail(int errStatus, String failMsg, int code) {
                 super.onDataFail(errStatus, failMsg, code);
+                isGetPagClick = false;
                 if (CODE_60411 == code) {
                     XESToastUtils.showToastAtCenter("" + failMsg);
-                    isGetPagClick = false;
                     onRedPackageSend.onReceiveError(errStatus, failMsg, code);
                 } else if (CODE_60410 == code) {
                     onRedPackageSend.onHaveReceiveGold();
