@@ -260,7 +260,11 @@ public class RoomInfoIRCMessageBll extends LiveBaseBll implements MessageAction,
                         if (num <= 0) {
                             num = 1;
                         }
-                        lastCountDownTimer = new RoomInfoCountDownTimer(TOTAL_TIME / num);
+                        long countDownInterval = TOTAL_TIME / num;
+                        if (countDownInterval == 0){
+                            countDownInterval = 1;
+                        }
+                        lastCountDownTimer = new RoomInfoCountDownTimer(countDownInterval);
                         lastCountDownTimer.start();
                     }
                 });
