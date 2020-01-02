@@ -130,18 +130,18 @@ public class LightLiveBackMsgLandPager extends BasePager implements IBackMsgpage
 
 
     @Override
-    public void addMsg(LiveBackMsgEntity entity) {
-        SpannableStringBuilder sBuilder = LiveMessageEmojiParser.convertToHtml(RegexUtils
-                .chatSendContentDeal(entity.getText().toString()), mContext, SizeUtils.Dp2Px(mContext, 12));
-        entity.setText(sBuilder);
-
-        if (LiveBackMsgEntity.MESSAGE_TEACHER == entity.getFrom() || LiveBackMsgEntity.MESSAGE_MINE == entity.getFrom()) {
-            teacherMessageEntities.add(entity);
-        }
-        liveMessageEntities.add(entity);
+    public void addMsg(final LiveBackMsgEntity entity) {
         LiveMainHandler.post(new Runnable() {
             @Override
             public void run() {
+                SpannableStringBuilder sBuilder = LiveMessageEmojiParser.convertToHtml(RegexUtils
+                        .chatSendContentDeal(entity.getText().toString()), mContext, SizeUtils.Dp2Px(mContext, 12));
+                entity.setText(sBuilder);
+
+                if (LiveBackMsgEntity.MESSAGE_TEACHER == entity.getFrom() || LiveBackMsgEntity.MESSAGE_MINE == entity.getFrom()) {
+                    teacherMessageEntities.add(entity);
+                }
+                liveMessageEntities.add(entity);
                 if (isJustShowTea){
                     mTeacherMsgAdapter.notifyItemInserted(0);
                 }else {
@@ -156,11 +156,11 @@ public class LightLiveBackMsgLandPager extends BasePager implements IBackMsgpage
 
     @Override
     public void removeAllMsg() {
-        liveMessageEntities.clear();
-        teacherMessageEntities.clear();
         LiveMainHandler.post(new Runnable() {
             @Override
             public void run() {
+                liveMessageEntities.clear();
+                teacherMessageEntities.clear();
                 mMsgAdapter.notifyDataSetChanged();
                 mTeacherMsgAdapter.notifyDataSetChanged();
             }
@@ -168,24 +168,24 @@ public class LightLiveBackMsgLandPager extends BasePager implements IBackMsgpage
     }
 
     @Override
-    public void removeOverMsg(long pos) {
-        Iterator<LiveBackMsgEntity> iterator = liveMessageEntities.iterator();
-        while (iterator.hasNext()) {
-            LiveBackMsgEntity entity = iterator.next();
-            if (entity.getId() > pos) {
-                iterator.remove();
-            }
-        }
-        Iterator<LiveBackMsgEntity> itTeacher = teacherMessageEntities.iterator();
-        while (itTeacher.hasNext()) {
-            LiveBackMsgEntity entity = itTeacher.next();
-            if (entity.getId() > pos) {
-                itTeacher.remove();
-            }
-        }
+    public void removeOverMsg(final long pos) {
         LiveMainHandler.post(new Runnable() {
             @Override
             public void run() {
+                Iterator<LiveBackMsgEntity> iterator = liveMessageEntities.iterator();
+                while (iterator.hasNext()) {
+                    LiveBackMsgEntity entity = iterator.next();
+                    if (entity.getId() > pos) {
+                        iterator.remove();
+                    }
+                }
+                Iterator<LiveBackMsgEntity> itTeacher = teacherMessageEntities.iterator();
+                while (itTeacher.hasNext()) {
+                    LiveBackMsgEntity entity = itTeacher.next();
+                    if (entity.getId() > pos) {
+                        itTeacher.remove();
+                    }
+                }
                 mMsgAdapter.notifyItemRangeChanged(0, liveMessageEntities.size());
                 mTeacherMsgAdapter.notifyItemRangeChanged(0, teacherMessageEntities.size());
             }

@@ -217,39 +217,40 @@ public class LightLiveBackMsgPortPager extends BasePager implements IBackMsgpage
     }
 
     @Override
-    public void addMsg(LiveBackMsgEntity entity) {
-        SpannableStringBuilder sBuilder = LiveMessageEmojiParser.convertToHtml(RegexUtils
-                .chatSendContentDeal(entity.getText().toString()), mContext, SizeUtils.Dp2Px(mContext, 12));
-        entity.setText(sBuilder);
-        liveMessageEntities.add(entity);
-        if (LiveBackMsgEntity.MESSAGE_TEACHER == entity.getFrom() || LiveBackMsgEntity.MESSAGE_MINE == entity.getFrom()){
-            teacherMessageEntities.add(entity);
-        }
-        notifyDataSetChanged();
-    }
-
-    private void notifyDataSetChanged(){
+    public void addMsg(final LiveBackMsgEntity entity) {
         LiveMainHandler.post(new Runnable() {
             @Override
             public void run() {
-                mMsgAdapter.notifyDataSetChanged();
-                mTeacherMsgAdapter.notifyDataSetChanged();
-                if (cbMessageTeacher.isChecked() && !teacherMessageEntities.isEmpty()){
-                    msgListView.scrollToPosition(mTeacherMsgAdapter.getItemCount()-1);
-                }else if (!cbMessageTeacher.isChecked() && !liveMessageEntities.isEmpty()) {
-                    msgListView.scrollToPosition(mMsgAdapter.getItemCount()-1);
+                SpannableStringBuilder sBuilder = LiveMessageEmojiParser.convertToHtml(RegexUtils
+                        .chatSendContentDeal(entity.getText().toString()), mContext, SizeUtils.Dp2Px(mContext, 12));
+                entity.setText(sBuilder);
+                liveMessageEntities.add(entity);
+                if (LiveBackMsgEntity.MESSAGE_TEACHER == entity.getFrom() || LiveBackMsgEntity.MESSAGE_MINE == entity.getFrom()){
+                    teacherMessageEntities.add(entity);
                 }
+                notifyDataSetChanged();
             }
         });
+
+    }
+
+    private void notifyDataSetChanged() {
+        mMsgAdapter.notifyDataSetChanged();
+        mTeacherMsgAdapter.notifyDataSetChanged();
+        if (cbMessageTeacher.isChecked() && !teacherMessageEntities.isEmpty()) {
+            msgListView.scrollToPosition(mTeacherMsgAdapter.getItemCount() - 1);
+        } else if (!cbMessageTeacher.isChecked() && !liveMessageEntities.isEmpty()) {
+            msgListView.scrollToPosition(mMsgAdapter.getItemCount() - 1);
+        }
     }
 
     @Override
     public void removeAllMsg() {
-        liveMessageEntities.clear();
-        teacherMessageEntities.clear();
         LiveMainHandler.post(new Runnable() {
             @Override
             public void run() {
+                liveMessageEntities.clear();
+                teacherMessageEntities.clear();
                 mMsgAdapter.notifyDataSetChanged();
                 mTeacherMsgAdapter.notifyDataSetChanged();
             }
@@ -257,24 +258,25 @@ public class LightLiveBackMsgPortPager extends BasePager implements IBackMsgpage
     }
 
     @Override
-    public void removeOverMsg(long pos) {
-        Iterator<LiveBackMsgEntity> iterator = liveMessageEntities.iterator();
-        while (iterator.hasNext()) {
-            LiveBackMsgEntity entity = iterator.next();
-            if (entity.getId() > pos) {
-                iterator.remove();
-            }
-        }
-        Iterator<LiveBackMsgEntity> itTeacher = teacherMessageEntities.iterator();
-        while (itTeacher.hasNext()) {
-            LiveBackMsgEntity entity = itTeacher.next();
-            if (entity.getId() > pos) {
-                itTeacher.remove();
-            }
-        }
+    public void removeOverMsg(final long pos) {
+
         LiveMainHandler.post(new Runnable() {
             @Override
             public void run() {
+                Iterator<LiveBackMsgEntity> iterator = liveMessageEntities.iterator();
+                while (iterator.hasNext()) {
+                    LiveBackMsgEntity entity = iterator.next();
+                    if (entity.getId() > pos) {
+                        iterator.remove();
+                    }
+                }
+                Iterator<LiveBackMsgEntity> itTeacher = teacherMessageEntities.iterator();
+                while (itTeacher.hasNext()) {
+                    LiveBackMsgEntity entity = itTeacher.next();
+                    if (entity.getId() > pos) {
+                        itTeacher.remove();
+                    }
+                }
                 mMsgAdapter.notifyDataSetChanged();
                 mTeacherMsgAdapter.notifyDataSetChanged();
             }
