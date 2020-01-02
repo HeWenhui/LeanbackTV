@@ -548,7 +548,13 @@ public class LightLiveBackVideoFragment extends LiveBackVideoFragmentBase implem
                 mMediaController.release();
                 logger.d("attachMediaController:release:isShowQuestion");
             } else {
-                showLongMediaController();
+                LiveMainHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        ((LightlivePlaybackMediaController) mMediaController).hide();
+                    }
+                },5000);
+
             }
             List<VideoQuestionEntity> lstVideoQuestion = mVideoEntity.getLstVideoQuestion();
             if (lstVideoQuestion == null || lstVideoQuestion.size() == 0) {
