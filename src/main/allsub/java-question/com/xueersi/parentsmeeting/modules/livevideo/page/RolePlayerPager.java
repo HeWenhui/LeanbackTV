@@ -641,8 +641,7 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
         try {
             lvReadList.setAdapter(mRolePlayerAdapter);
             lvReadList.setVisibility(View.VISIBLE);
-//            lvReadList.setDividerHeight(SizeUtils.Dp2Px
-//                    (mContext, 5));
+            lvReadList.setDividerHeight(SizeUtils.Dp2Px(mContext, 5));
             vHead = new View(mContext);
             //修改类型转换异常
             ListView.LayoutParams lp = new ListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, SizeUtils.Dp2Px
@@ -1311,26 +1310,26 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
                 vwvSpeechVolume.setVolume(volume * 3);
             }
 
-                    @Override
-                    public void onRecordPCMData(short[] shorts, int readSize) {
-                        // Loger.i("RolePlayerDemoTest", "通过声网走");
-                        //通过声网走
-                        byte[] dest = new byte[readSize * 2];
-                        int count = readSize;
-                        for (int i = 0; i < count; i++) {
-                            dest[i * 2] = (byte) (shorts[i]);
-                            dest[i * 2 + 1] = (byte) (shorts[i] >> 8);
-                        }
-                        rtcEngine = mWorkerThread.getRtcEngine();
-                        if (rtcEngine != null) {
-                            logger.i("agora rtcEngine through");
-                            rtcEngine.pushExternalAudioFrame(dest, System.currentTimeMillis());
-                            rtcEngine.adjustRecordingSignalVolume(400);
-                        }
+            @Override
+            public void onRecordPCMData(short[] shorts, int readSize) {
+                // Loger.i("RolePlayerDemoTest", "通过声网走");
+                //通过声网走
+                byte[] dest = new byte[readSize * 2];
+                int count = readSize;
+                for (int i = 0; i < count; i++) {
+                    dest[i * 2] = (byte) (shorts[i]);
+                    dest[i * 2 + 1] = (byte) (shorts[i] >> 8);
+                }
+                rtcEngine = mWorkerThread.getRtcEngine();
+                if (rtcEngine != null) {
+                    logger.i("agora rtcEngine through");
+                    rtcEngine.pushExternalAudioFrame(dest, System.currentTimeMillis());
+                    rtcEngine.adjustRecordingSignalVolume(400);
+                }
 
-                    }
+            }
 
-                });
+        });
     }
 
     /**
