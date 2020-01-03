@@ -46,11 +46,13 @@ import com.xueersi.lib.framework.utils.image.ImageUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FrameAnimation;
 import com.xueersi.ui.dialog.BaseAlertDialog;
 import com.xueersi.ui.dialog.BaseDialog;
 
 import java.io.File;
+import java.lang.ref.SoftReference;
 
 /**
  * @ProjectName: xueersiwangxiao
@@ -84,6 +86,7 @@ public class TeacherWechatDialog extends BaseAlertDialog {
     private String imgQrcodeURL;
     private boolean isLoadSuccess;
     private Bitmap bitmap;
+//    private SoftReference<Bitmap> bitmapSoftReference;
     IWXAPI mApi;
     public TeacherWechatDialog(Context context, Application application, int type) {
         super(context, application, false, type);
@@ -169,15 +172,13 @@ public class TeacherWechatDialog extends BaseAlertDialog {
                         ImageLoader.with(ContextManager.getContext()).load(imgQrcodeURL).asBitmap(new SingleConfig.BitmapListener() {
                             @Override
                             public void onSuccess(Drawable drawable) {
-                                bitmap = ImageUtils.drawable2Bitmap(drawable);
-                                if(bitmap != null){
-                                    saveBitmap(bitmap);
+                                if(drawable != null){
+                                    saveBitmap(ImageUtils.drawable2Bitmap(drawable));
                                     openScanner();
                                 }else {
                                     XESToastUtils.showToast("二维码下载失败");
                                 }
                             }
-
 
                             @Override
                             public void onFail() {
@@ -207,6 +208,7 @@ public class TeacherWechatDialog extends BaseAlertDialog {
             mApi.registerApp(AppConfig.SHARE_WX_APP_ID);
         }
         if (mApi.isWXAppInstalled()){
+//            cancelDialog();
             String WECHAT_APP_PACKAGE = "com.tencent.mm";
             String WECHAT_LAUNCHER_UI_CLASS = "com.tencent.mm.ui.LauncherUI";
             String WECHAT_OPEN_SCANER_NAME = "LauncherUI.From.Scaner.Shortcut";
@@ -216,7 +218,13 @@ public class TeacherWechatDialog extends BaseAlertDialog {
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             mContext.startActivity(intent);
         }else {
-            XESToastUtils.showToastAtCenter("你的设备还未安装微信客户端");
+            LiveMainHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    XESToastUtils.showToastAtCenter("你的设备还未安装微信客户端");
+                }
+            },3000);
+
         }
     }
 
@@ -235,7 +243,8 @@ public class TeacherWechatDialog extends BaseAlertDialog {
                     path.delete();
                 }
                 filePath = path.getPath();
-                boolean isSuccess = ScreenShot.saveToGallery(mContext, bitmap, path.getAbsolutePath(), Bitmap.CompressFormat.JPEG, filename, filename);
+
+                boolean isSuccess = ScreenShot.saveToGallery(mContext, bitmap, path.getAbsolutePath(), Bitmap.CompressFormat.JPEG, filename, filename,false);
                 if (isSuccess) {
                     XESToastUtils.showToastAtCenter("已成功保存到相册\n请用微信扫一扫进群");
                 } else {

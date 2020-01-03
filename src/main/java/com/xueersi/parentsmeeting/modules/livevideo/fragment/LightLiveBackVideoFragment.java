@@ -25,6 +25,7 @@ import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.framework.utils.EventBusUtil;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
@@ -47,6 +48,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewActionIml;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIml;
+import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.http.LightLiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.liveback.SuperSpeakerBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.AllBackBllConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -69,6 +71,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.LightLiveMediaControl
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LightlivePlaybackMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlaybackMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VideoLoadingImgView;
+import com.xueersi.parentsmeeting.share.business.login.LoginActionEvent;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import org.greenrobot.eventbus.EventBus;
@@ -224,6 +227,7 @@ public class LightLiveBackVideoFragment extends LiveBackVideoFragmentBase implem
         super.onVideoCreate(savedInstanceState);
         createTime = System.currentTimeMillis();
         LiveAppBll.getInstance().registerAppEvent(this);
+        EventBusUtil.register(this);
         // 设置不可自动横竖屏
         setAutoOrientation(false);
         Intent intent = activity.getIntent();
@@ -680,6 +684,16 @@ public class LightLiveBackVideoFragment extends LiveBackVideoFragmentBase implem
         stopShowRefresyLayout();
     }
 
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public void onAnswerResult(LoginActionEvent event) {
+        if (event.isAlreadyLogin()){
+            if (liveBackBll != null && liveBackBll.getmHttpManager()!= null && mVideoEntity != null){
+                LightLiveHttpManager manager = new LightLiveHttpManager(liveBackBll.getmHttpManager());
+                manager.reportLogin(mVideoEntity.getLiveId());
+            }
+
+        }
+    }
     /** 是否允许移动数据播放 */
     private boolean allowMobilePlayVideo = false;
 
