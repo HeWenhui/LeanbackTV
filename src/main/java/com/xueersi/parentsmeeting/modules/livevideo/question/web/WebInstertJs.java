@@ -5,10 +5,21 @@ import android.util.Log;
 
 import com.airbnb.lottie.AssertUtil;
 import com.xueersi.common.base.XrsCrashReport;
+import com.xueersi.component.cloud.XesCloudUploadBusiness;
+import com.xueersi.component.cloud.config.CloudDir;
+import com.xueersi.component.cloud.config.XesCloudConfig;
+import com.xueersi.component.cloud.entity.CloudUploadEntity;
+import com.xueersi.component.cloud.entity.XesCloudResult;
+import com.xueersi.component.cloud.listener.XesStsUploadListener;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.SysLogLable;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.util.WebTrustVerifier;
@@ -45,10 +56,12 @@ public class WebInstertJs {
     File innerFile;
     static long saveTime;
     private LogToFile logToFile;
-    OnHttpCode onHttpCode;
+    private OnHttpCode onHttpCode;
+    private String testid;
 
     public WebInstertJs(Context context, String testid) {
         logToFile = new LogToFile(context, TAG);
+        this.testid = testid;
         try {
             logToFile.addCommon("testid", testid);
         } catch (Exception e) {
@@ -93,11 +106,15 @@ public class WebInstertJs {
         BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
         StringBuilder stringBuilder = new StringBuilder();
         String line;
+        //是否插入成功
         boolean addJs = false;
 //                final String indexJs = "<script type=text/javascript crossorigin=anonymous src=" + "file://" + saveIndex().getPath() + "></script>";
         final String indexJs = "<script type=text/javascript src=." + indexStr() + "></script>";
         String findStr = "</script>";
+        //代码行数
+        int lineCount = 0;
         while ((line = br.readLine()) != null) {
+            lineCount++;
 //                    outputStream.write(line.getBytes());
             //找到第一个script标签。在后面添加自己的js
             if (!addJs) {
@@ -118,7 +135,19 @@ public class WebInstertJs {
         }
         bufferedWriter.flush();
         boolean renameTo = saveFileTmp.renameTo(saveFile);
-        logToFile.d("insertJs:fileName=" + fileName + ",renameTo=" + renameTo);
+        if (!addJs || !renameTo) {
+            logToFile.d(SysLogLable.instertJsError, "insertJs:fileName=" + fileName + ",renameTo=" + renameTo + ",addJs=" + addJs + ",lineCount=" + lineCount);
+            if (!addJs) {
+                //没有插入成功，但是文件重命名成功
+                if (renameTo) {
+                    uploadHtmlFile(context, saveFile);
+                } else {
+                    uploadHtmlFile(context, saveFileTmp);
+                }
+            }
+        } else {
+            logToFile.d("insertJs:fileName=" + fileName + ",renameTo=" + renameTo + ",lineCount=" + lineCount);
+        }
         return new FileInputStream(saveFile);
     }
 
@@ -294,6 +323,63 @@ public class WebInstertJs {
 
     public static String indexStr() {
         return "/android/courseware/index.js";
+    }
+
+    public void uploadHtmlFile(final Context context, final File saveFile) {
+        logger.d("uploadHtmlFile:saveFile=" + saveFile + ",length=" + saveFile.length());
+        if (saveFile.length() == 0) {
+            try {
+                StableLogHashMap stableLogHashMap = new StableLogHashMap("length0");
+                stableLogHashMap.put("savefile", "" + saveFile);
+                stableLogHashMap.put("testid", ""+testid);
+                UmsAgentManager.umsAgentDebug(context, LogConfig.LIVE_JS_ERROR_LOG, stableLogHashMap.getData());
+            } catch (Exception e) {
+                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+            }
+            return;
+        }
+        XesCloudUploadBusiness xesCloudUploadBusiness = new XesCloudUploadBusiness(ContextManager.getContext());
+        CloudUploadEntity uploadEntity = new CloudUploadEntity();
+        uploadEntity.setFilePath(saveFile.getPath());
+        uploadEntity.setType(XesCloudConfig.UPLOAD_OTHER);
+        uploadEntity.setCloudPath(CloudDir.CLOUD_TEST);
+        xesCloudUploadBusiness.asyncUpload(uploadEntity, new XesStsUploadListener() {
+            @Override
+            public void onProgress(XesCloudResult result, int percent) {
+
+            }
+
+            @Override
+            public void onSuccess(XesCloudResult result) {
+                try {
+                    String httpPath = result.getHttpPath();
+                    logger.d("asyncUpload:onSuccess=" + httpPath);
+                    StableLogHashMap stableLogHashMap = new StableLogHashMap("uploadsuc");
+                    stableLogHashMap.put("savefile", "" + saveFile);
+                    stableLogHashMap.put("httppath", httpPath);
+                    stableLogHashMap.put("testid", ""+testid);
+                    UmsAgentManager.umsAgentDebug(context, LogConfig.LIVE_JS_ERROR_LOG, stableLogHashMap.getData());
+                } catch (Exception e) {
+                    LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+                }
+//                saveFile.delete();
+            }
+
+            @Override
+            public void onError(XesCloudResult result) {
+                logger.d("asyncUpload:onError=" + result.getErrorCode() + "," + result.getErrorMsg());
+                try {
+                    StableLogHashMap stableLogHashMap = new StableLogHashMap("uploaderror");
+                    stableLogHashMap.put("savefile", "" + saveFile);
+                    stableLogHashMap.put("errorCode", "" + result.getErrorCode());
+                    stableLogHashMap.put("errorMsg", "" + result.getErrorMsg());
+                    stableLogHashMap.put("testid", ""+testid);
+                    UmsAgentManager.umsAgentDebug(context, LogConfig.LIVE_JS_ERROR_LOG, stableLogHashMap.getData());
+                } catch (Exception e) {
+                    LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+                }
+            }
+        });
     }
 }
 

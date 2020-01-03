@@ -195,6 +195,7 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
                 mLogtf.d("onViewDetachedFromWindow");
                 LiveRoomH5CloseEvent event = new LiveRoomH5CloseEvent(mGoldNum, mEnergyNum, LiveRoomH5CloseEvent.H5_TYPE_EXAM, num);
                 if (teacherClose != null) {
+                    event.setBasePager(ExamQuestionX5Pager.this);
                     event.setCloseByTeahcer(teacherClose.isWebViewCloseByTeacher());
                     teacherClose.setWebViewCloseByTeacher(false);
                 }

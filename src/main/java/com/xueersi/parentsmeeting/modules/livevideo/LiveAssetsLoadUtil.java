@@ -188,6 +188,7 @@ public class LiveAssetsLoadUtil {
                     } catch (Exception e) {
                         LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                     }
+                    ((Activity) context).finish();
                 }
             });
 
@@ -202,6 +203,7 @@ public class LiveAssetsLoadUtil {
                     } catch (Exception e) {
                         LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                     }
+                    ((Activity) context).finish();
                 }
             });
 

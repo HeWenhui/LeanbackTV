@@ -14,6 +14,7 @@ import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.tencent.smtt.sdk.WebViewClient;
+import com.xueersi.common.util.XrsBroswer;
 import com.xueersi.lib.monitor.AppMonitor;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ErrorWebViewClient;
@@ -184,6 +185,7 @@ final class CacheWebViewClient extends ErrorWebViewClient {
 
     @Override
     public void onPageStarted(WebView view, String url, Bitmap favicon) {
+        XrsBroswer.writeLog("onPageStarted:url=" + url);
         if (mIsBlockImageLoad) {
             WebSettings webSettings = view.getSettings();
             webSettings.setBlockNetworkImage(true);
@@ -197,6 +199,7 @@ final class CacheWebViewClient extends ErrorWebViewClient {
 
     @Override
     public void onPageFinished(WebView view, String url) {
+        XrsBroswer.writeLog("onPageFinished:url=" + url);
         if (mIsBlockImageLoad) {
             WebSettings webSettings = view.getSettings();
             webSettings.setBlockNetworkImage(false);
@@ -211,6 +214,7 @@ final class CacheWebViewClient extends ErrorWebViewClient {
 
     @Override
     public void onLoadResource(WebView view, String url) {
+        XrsBroswer.writeLog("onLoadResource:url=" + url);
         if (mCustomWebViewClient != null) {
             mCustomWebViewClient.onLoadResource(view, url);
             return;
@@ -270,7 +274,7 @@ final class CacheWebViewClient extends ErrorWebViewClient {
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
-
+        XrsBroswer.writeLog("shouldInterceptRequest:url=" + request.getUrl());
         WebResourceResponse webResourceResponse = null;
         if (mCustomWebViewClient != null) {
             webResourceResponse = mCustomWebViewClient.shouldInterceptRequest(view, request);

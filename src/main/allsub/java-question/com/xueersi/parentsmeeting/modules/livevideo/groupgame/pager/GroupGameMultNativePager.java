@@ -16,7 +16,6 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.fasterxml.jackson.core.io.JsonEOFException;
 import com.tal.speech.config.SpeechConfig;
 import com.tal.speech.speechrecognizer.EvaluatorListenerWithPCM;
 import com.tal.speech.speechrecognizer.ResultCode;
@@ -1645,7 +1644,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
     }
 
     @Override
-    public void close() {
+    public void close(String method) {
 
     }
 
@@ -1772,7 +1771,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 mGroupGameTestInfosEntity = (GroupGameTestInfosEntity) objData[0];
                 if (mGroupGameTestInfosEntity.isAnswered()) {
                     XESToastUtils.showToast(mContext, "你已作答过此题");
-                    onClose.onH5ResultClose(GroupGameMultNativePager.this, detailInfo);
+                    onClose.onH5ResultClose(GroupGameMultNativePager.this, detailInfo, "");
                     return;
                 }
                 tests = mGroupGameTestInfosEntity.getTestInfoList();
@@ -2177,14 +2176,14 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                 @Override
                                 public void onClose(LiveBasePager basePager) {
                                     ((ViewGroup) mView).removeView(basePager.getRootView());
-                                    onClose.onH5ResultClose(GroupGameMultNativePager.this, detailInfo);
+                                    onClose.onH5ResultClose(GroupGameMultNativePager.this, detailInfo, "");
                                 }
                             });
                             if (LiveQueConfig.isTypeOfCannon(gameType)) {
                                 mLog.sno6(liveAndBackDebug, detailInfo.id, "" + entities.size(), 1);
                             }
                         } else {
-                            onClose.onH5ResultClose(GroupGameMultNativePager.this, detailInfo);
+                            onClose.onH5ResultClose(GroupGameMultNativePager.this, detailInfo, "");
                         }
                     }
 

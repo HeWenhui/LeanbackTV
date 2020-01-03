@@ -98,9 +98,9 @@ public class GroupGameEmptyPager extends BaseCoursewareNativePager implements Ba
     }
 
     @Override
-    public void close() {
+    public void close(String method) {
         if (baseEnglishH5CoursewarePager != null) {
-            baseEnglishH5CoursewarePager.close();
+            baseEnglishH5CoursewarePager.close("GroupGameEmptyPager:method="+method);
         }
     }
 
@@ -147,7 +147,7 @@ public class GroupGameEmptyPager extends BaseCoursewareNativePager implements Ba
         if (baseEnglishH5CoursewarePager != null) {
             baseEnglishH5CoursewarePager.submitData();
         } else {
-            onClose.onH5ResultClose(this, detailInfo);
+            onClose.onH5ResultClose(this, detailInfo, "submitData");
         }
     }
 
@@ -202,7 +202,7 @@ public class GroupGameEmptyPager extends BaseCoursewareNativePager implements Ba
                 GroupGameTestInfosEntity mGroupGameTestInfosEntity = (GroupGameTestInfosEntity) objData[0];
                 List<GroupGameTestInfosEntity.TestInfoEntity> tests = mGroupGameTestInfosEntity.getTestInfoList();
                 if (mGroupGameTestInfosEntity.isAnswered() || tests.isEmpty()) {
-                    onClose.onH5ResultClose(GroupGameEmptyPager.this, baseVideoQuestionEntity);
+                    onClose.onH5ResultClose(GroupGameEmptyPager.this, baseVideoQuestionEntity, "getCourseWareTests");
                     return;
                 }
 //                mGroupGameTestInfosEntity.setAnswered(true);
@@ -212,13 +212,13 @@ public class GroupGameEmptyPager extends BaseCoursewareNativePager implements Ba
                 if (gameModel == LiveQueConfig.GAME_MODEL_2) {
                     GroupGameMultNativePager groupGameMultNativePager = new GroupGameMultNativePager(mContext, gameOrder, liveGetInfo, detailInfo, englishH5Entity, new EnglishH5CoursewareBll.OnH5ResultClose() {
                         @Override
-                        public void onH5ResultClose(BaseEnglishH5CoursewarePager baseEnglishH5CoursewarePager, BaseVideoQuestionEntity baseVideoQuestionEntity) {
+                        public void onH5ResultClose(BaseEnglishH5CoursewarePager baseEnglishH5CoursewarePager, BaseVideoQuestionEntity baseVideoQuestionEntity, String method) {
                             //延迟remove，否则会卡住界面
                             mainHandler.post(new Runnable() {
                                 @Override
                                 public void run() {
                                     group.removeAllViews();
-                                    onClose.onH5ResultClose(GroupGameEmptyPager.this, detailInfo);
+                                    onClose.onH5ResultClose(GroupGameEmptyPager.this, detailInfo, "");
                                 }
                             });
                         }
@@ -264,9 +264,9 @@ public class GroupGameEmptyPager extends BaseCoursewareNativePager implements Ba
         mLogtf.d("gotoSignal:method=" + method);
         GroupGameNativePager groupGameNativePager = new GroupGameNativePager(mContext, false, liveGetInfo, detailInfo, englishH5Entity, new EnglishH5CoursewareBll.OnH5ResultClose() {
             @Override
-            public void onH5ResultClose(BaseEnglishH5CoursewarePager baseEnglishH5CoursewarePager, BaseVideoQuestionEntity baseVideoQuestionEntity) {
+            public void onH5ResultClose(BaseEnglishH5CoursewarePager baseEnglishH5CoursewarePager, BaseVideoQuestionEntity baseVideoQuestionEntity, String method) {
                 group.removeAllViews();
-                onClose.onH5ResultClose(GroupGameEmptyPager.this, baseVideoQuestionEntity);
+                onClose.onH5ResultClose(GroupGameEmptyPager.this, baseVideoQuestionEntity, "");
             }
         });
         groupGameNativePager.setLivePagerBack(livePagerBack);
