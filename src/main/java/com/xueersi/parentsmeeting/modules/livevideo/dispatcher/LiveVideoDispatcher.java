@@ -68,6 +68,7 @@ public class LiveVideoDispatcher extends AbsDispatcher {
     private int variety;
     String teacherId;
     String gotoClassTime;
+    private long offset;
     private DispatcherBll dispatcherBll;
     /**
      * 讲座是否是大班 灰度状态
@@ -149,6 +150,8 @@ public class LiveVideoDispatcher extends AbsDispatcher {
                 type = jsonObject.optInt("variety");
                 teacherId = jsonObject.optString("teacherId");
                 gotoClassTime = jsonObject.optString("stime");
+                //视频标记点位置
+                offset = jsonObject.optLong("offset");
                 // 大班灰度状态
                 big_live_type = jsonObject.optInt("bigLiveStatus", big_live_type);
                 planVersion = jsonObject.optInt("planVersion",
@@ -492,6 +495,7 @@ public class LiveVideoDispatcher extends AbsDispatcher {
         videoEntity.setPlayVideoId(entity.getPlanInfo().getId());
         videoEntity.setPlayVideoName(entity.getPlanInfo().getName());
         videoEntity.setNowTime(entity.getNowTime());
+        videoEntity.setOffset(offset);
 
         if (entity.getConfigs() != null) {
             videoEntity.setVideoPath(entity.getConfigs().getVideoFile());
