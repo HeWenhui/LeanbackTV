@@ -96,6 +96,10 @@ public class ScienceVoteBll extends LiveBaseBll implements NoticeAction, TopicAc
                                     submitResult();
                                 } else {
                                     closeView();
+                                    // 用户没有结果时，收题后需要主动中断连对
+                                    handleShowEvenDriveAnim(mContext, mGetInfo, getHttpManager(), getLiveViewAction(),
+                                            EvenDriveAnimRepository.EvenDriveQuestionType.VOTE,
+                                            null);
                                 }
                             }
                         }
@@ -252,12 +256,9 @@ public class ScienceVoteBll extends LiveBaseBll implements NoticeAction, TopicAc
 
 
     public void submitSuccess(final int type, final int gold) {
-        // 只针对三分屏添加投票连对, 投票功能不需要testId， 不进行传递。
-        if (mGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_COMMON) {
-            handleShowEvenDriveAnim(mContext, mGetInfo, getHttpManager(), getLiveViewAction(),
-                    EvenDriveAnimRepository.EvenDriveQuestionType.VOTE,
-                    null);
-        }
+        handleShowEvenDriveAnim(mContext, mGetInfo, getHttpManager(), getLiveViewAction(),
+                EvenDriveAnimRepository.EvenDriveQuestionType.VOTE,
+                null);
         //更新金币
         LiveMainHandler.getMainHandler().postDelayed(new Runnable() {
             @Override
@@ -348,7 +349,8 @@ public class ScienceVoteBll extends LiveBaseBll implements NoticeAction, TopicAc
     }
 
     /**
-     * 显示投票提交成功后的连对激励动画
+     * 连对激励逻辑
+     * 触发条件，投票结果提交成功。或用户没有选择结果，但老师收题。
      *
      * @param context
      * @param getInfo
@@ -357,30 +359,34 @@ public class ScienceVoteBll extends LiveBaseBll implements NoticeAction, TopicAc
      */
     private void handleShowEvenDriveAnim(Context context, LiveGetInfo getInfo, LiveHttpManager liveHttpManager,
                                          LiveViewAction liveViewAction, EvenDriveAnimRepository.EvenDriveQuestionType questionType, String testId) {
-        if (animRepo == null) {
-            animRepo = new EvenDriveAnimRepository(context, getInfo, liveHttpManager, liveViewAction);
-        }
-        animRepo.getDataSource(questionType, testId, new TasksDataSource.LoadAnimCallBack() {
-            @Override
-            public void onDataNotAvailable(String msg) {
-
+        // 只针对三分屏添加投票连对, 投票功能不需要testId， 不进行传递。
+        if (mGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_COMMON) {
+            if (animRepo == null) {
+                animRepo = new EvenDriveAnimRepository(context, getInfo, liveHttpManager, liveViewAction);
             }
+            animRepo.getDataSource(questionType, testId, new TasksDataSource.LoadAnimCallBack() {
+                @Override
+                public void onDataNotAvailable(String msg) {
 
-            @Override
-            public void onDatasLoaded(String num, boolean numChange) {
-                final AllLiveBasePagerInter liveBasePagerInter = mLiveBll.getAllLiveBasePagerIml();
-                if (liveBasePagerInter != null) {
-                    liveBasePagerInter.addViewRemoveObserver(new AllLiveBasePagerInter.ViewRemoveObserver() {
-                        @Override
-
-                        public boolean removeViewCallBack(LiveBasePager basePager) {
-                            animRepo.removeViewAndAnima();
-                            return true;
-                        }
-                    });
                 }
-            }
-        });
+
+                @Override
+                public void onDatasLoaded(String num, boolean numChange) {
+                    final AllLiveBasePagerInter liveBasePagerInter = mLiveBll.getAllLiveBasePagerIml();
+                    if (liveBasePagerInter != null) {
+                        liveBasePagerInter.addViewRemoveObserver(new AllLiveBasePagerInter.ViewRemoveObserver() {
+                            @Override
+
+                            public boolean removeViewCallBack(LiveBasePager basePager) {
+                                animRepo.removeViewAndAnima();
+                                return true;
+                            }
+                        });
+                    }
+                }
+            });
+
+        }
 
     }
 
