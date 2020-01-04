@@ -166,7 +166,7 @@ public class LightLiveBackMsgPortPager extends BasePager implements IBackMsgpage
                 } else {
                     VerifyCancelAlertDialog goLoginDialog = new VerifyCancelAlertDialog(mContext, mBaseApplication, false, VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
                     //立即登录，查看你的%s，还有丰富福利哦
-                    String message = String.format("立即登录，查看你的%s", weChatEntity.getTipType() == LPWeChatEntity.WECHAT_GROUP ? "专属班级群" : "专属班主任");
+                    String message = String.format("立即登录，查看你的专属班主任");
                     goLoginDialog.initInfo(message);
                     goLoginDialog.setVerifyBtnListener(new View.OnClickListener() {
                         @Override

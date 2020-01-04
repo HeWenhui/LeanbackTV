@@ -67,14 +67,7 @@ public class LightlivePlaybackVideoActivity extends LiveBackVideoActivityBase {
                     "videoliveplayback");
             if (serializable != null) {
                 HashMap<String, String> hashMap = new HashMap();
-                if (serializable.getvLivePlayBackType() == LocalCourseConfig.LIVETYPE_RECORDED) {
-                    hashMap.put("logtype", "recorded");
-                } else if (serializable.getvLivePlayBackType() == LocalCourseConfig.LIVETYPE_LECTURE) {
-                    hashMap.put("logtype", "lecplayback");
-                    hashMap.put("isBigLive", bundle.getBoolean("isBigLive") + "");
-                } else {
-                    hashMap.put("logtype", "liveplayback");
-                }
+                hashMap.put("logtype", "lightplayback");
                 hashMap.put("where", "" + where);
                 hashMap.put("contextname", "" + context.getClass().getSimpleName());
                 hashMap.put("bundle", "" + bundle);
