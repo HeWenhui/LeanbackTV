@@ -40,6 +40,10 @@ public class BigLivePlayBackEntity extends BaseEntity {
     /** 统计视频播放key */
     private String visitTimeKey;
 
+    /**皮肤类型**/
+    private int skinType;
+
+
 
     public long getNowTime() {
         return nowTime;
@@ -111,6 +115,14 @@ public class BigLivePlayBackEntity extends BaseEntity {
 
     public void setVisitTimeKey(String visitTimeKey) {
         this.visitTimeKey = visitTimeKey;
+    }
+
+    public int getSkinType() {
+        return skinType;
+    }
+
+    public void setSkinType(int skinType) {
+        this.skinType = skinType;
     }
 
 

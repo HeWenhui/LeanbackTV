@@ -496,6 +496,7 @@ public class LiveVideoDispatcher extends AbsDispatcher {
         videoEntity.setPlayVideoName(entity.getPlanInfo().getName());
         videoEntity.setNowTime(entity.getNowTime());
         videoEntity.setOffset(offset);
+        videoEntity.setSkinType(entity.getSkinType());
 
         if (entity.getConfigs() != null) {
             videoEntity.setVideoPath(entity.getConfigs().getVideoFile());
@@ -542,6 +543,7 @@ public class LiveVideoDispatcher extends AbsDispatcher {
         bundle.putSerializable("videoliveplayback", videoEntity);
         bundle.putInt("type", LocalCourseConfig.LIVETYPE_LIVE);
         bundle.putBoolean("isBigLive", true);
+        bundle.putInt("skinType",entity.getSkinType());
         LiveVideoEnter.intentTo(activity, bundle, activity.getClass().getSimpleName());
     }
 

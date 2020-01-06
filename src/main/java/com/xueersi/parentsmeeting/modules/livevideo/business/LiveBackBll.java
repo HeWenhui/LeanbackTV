@@ -392,6 +392,8 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
         liveGetInfo.setGetChatRecordUrl(mVideoEntity.getGetChatRecordUrl());
         liveGetInfo.setGetMetadataUrl(mVideoEntity.getGetMetadataUrl());
         liveGetInfo.setIrcRoomsJson(mVideoEntity.getIrcRoomsJson());
+        //设置皮肤类型
+        liveGetInfo.setSkinType(mVideoEntity.getSkinType());
       /*  Log.e("ckTrac","=======>liveBackBll_onCreate:"+liveGetInfo.getInitModuleUrl()
                 +":"+liveGetInfo.getGetChatRecordUrl()+":"+liveGetInfo.getGetMetadataUrl());*/
         try {
