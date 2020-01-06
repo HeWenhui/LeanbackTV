@@ -203,7 +203,13 @@ public class ScienceVoteBll extends LiveBaseBll implements NoticeAction, TopicAc
     }
 
     private void submitResult() {
-        getHttpManager().ScienceVoteCommit("0", mLiveId, mGetInfo.getLiveType(), mGetInfo.getStudentLiveInfo().getClassId(), interactionId, getUserAnswer(), mLiveBll.getNickname(), mGetInfo.getStuName(), new HttpCallBack(true) {
+        // FIXME: 封版后需求，加强异常检查。后续可以重新评估异常可能，去掉判断。
+        String teamId = "";
+        if(mGetInfo != null && mGetInfo.getStudentLiveInfo() != null && !TextUtils.isEmpty(mGetInfo.getStudentLiveInfo().getTeamId())){
+            teamId = mGetInfo.getStudentLiveInfo().getTeamId();
+        }
+        getHttpManager().ScienceVoteCommit("0", mLiveId, mGetInfo.getLiveType(), mGetInfo.getStudentLiveInfo().getClassId(), interactionId, getUserAnswer(),
+                mLiveBll.getNickname(), mGetInfo.getStuName(), teamId, new HttpCallBack(true) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 logger.d("ScienceVoteCommit:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());

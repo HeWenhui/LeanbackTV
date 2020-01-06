@@ -71,16 +71,16 @@ public class LiveVideoPoint {
         return info;
     }
 
-    private static boolean min = true;
+    private static boolean min = false;
 
     static {
         try {
             ArrayList<String> devices = new ArrayList<>();
-            devices.add("PCAM10");//oppo
+//            devices.add("PCAM10");//oppo
             String model = DeviceUtils.getModel();
             for (int i = 0; i < devices.size(); i++) {
                 if (TextUtils.equals(model, devices.get(i))) {
-                    min = false;
+                    min = true;
                     break;
                 }
             }
