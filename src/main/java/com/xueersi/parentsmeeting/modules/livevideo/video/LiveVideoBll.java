@@ -441,7 +441,6 @@ public class LiveVideoBll implements VPlayerListenerReg, ProgressAction {
         public void onOpenSuccess() {
             isPlay = true;
             if (isGroupClass()) {
-                vPlayer.seekToAccurate();
                 if (isClassEnd()) {
                     videoFragment.release();
                     mHandler.post(new Runnable() {
