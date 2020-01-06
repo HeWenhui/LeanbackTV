@@ -204,13 +204,9 @@ public class ScienceVoteBll extends LiveBaseBll implements NoticeAction, TopicAc
 
     private void submitResult() {
         // FIXME: 封版后需求，加强异常检查。后续可以重新评估异常可能，去掉判断。
-        int teamId = 0;
+        String teamId = "";
         if(mGetInfo != null && mGetInfo.getStudentLiveInfo() != null && !TextUtils.isEmpty(mGetInfo.getStudentLiveInfo().getTeamId())){
-            try{
-                teamId = Integer.parseInt(mGetInfo.getStudentLiveInfo().getTeamId());
-            }catch (Exception e){
-                logger.d("投票提交teamId存在但异常，teamId:"+ mGetInfo.getStudentLiveInfo().getTeamId());
-            }
+            teamId = mGetInfo.getStudentLiveInfo().getTeamId();
         }
         getHttpManager().ScienceVoteCommit("0", mLiveId, mGetInfo.getLiveType(), mGetInfo.getStudentLiveInfo().getClassId(), interactionId, getUserAnswer(),
                 mLiveBll.getNickname(), mGetInfo.getStuName(), teamId, new HttpCallBack(true) {
