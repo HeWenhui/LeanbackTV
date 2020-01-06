@@ -101,6 +101,12 @@ public class TcpConstants {
     /** 业务类型，1v2小组互动 互踢 业务类型 */
     public final static short TYPE_KICK_OUT= 16;
 
+    //战队pk分组消息
+    public final static short TYPE_TEAMPK_GROUP_DATA= 15;
+
+    //战队pk推送分组数据
+    public final static int OP_TYPE_TEAMPK_GROUP_DATA= 3;
+
     public interface Body {
         int ROLE_PLAY_CUSTOM_MESSAGE = 4;
         int ROLE_PLAY_DZ = 100;
