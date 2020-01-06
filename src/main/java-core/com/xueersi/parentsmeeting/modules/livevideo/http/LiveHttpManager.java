@@ -2540,7 +2540,8 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction,
      *
      * @param requestCallBack
      */
-    public void ScienceVoteCommit(String isPlayback, String planId, int bizId, String classId, String interactionId, String option, String stuIRCId, String stuName, HttpCallBack requestCallBack) {
+    public void ScienceVoteCommit(String isPlayback, String planId, int bizId, String classId,
+                                  String interactionId, String option, String stuIRCId, String stuName,int teamId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("bizId", String.valueOf(bizId));
         params.addBodyParam("planId", planId);
@@ -2550,6 +2551,7 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction,
         params.addBodyParam("stuIRCId", stuIRCId);
         params.addBodyParam("stuName", stuName);
         params.addBodyParam("isPlayBack", isPlayback);
+        params.addBodyParam("teamId", isPlayback);
         setDefaultParameter(params);
         sendPost(LiveQueHttpConfig.LIVE_SCIENCE_VOTE_SUBMIT, params, requestCallBack);
     }
