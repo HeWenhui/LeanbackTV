@@ -282,8 +282,8 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     }
 
     @Override
-    public void close() {
-        onClose.onH5ResultClose(this, getBaseVideoQuestionEntity());
+    public void close(String method) {
+        onClose.onH5ResultClose(this, getBaseVideoQuestionEntity(), "close:method=" + method);
         onBack();
     }
 
@@ -295,7 +295,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
 
         reloadurl = url;
         if (url.contains("baidu.com")) {
-            onClose.onH5ResultClose(this, getBaseVideoQuestionEntity());
+            onClose.onH5ResultClose(this, getBaseVideoQuestionEntity(), "shouldOverrideUrlLoading:url=" + url);
             StableLogHashMap logHashMap = new StableLogHashMap("coursewareClose");
             logHashMap.put("coursewareid", id);
             logHashMap.put("coursewaretype", courseware_type);
@@ -667,6 +667,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                 LiveRoomH5CloseEvent event = new LiveRoomH5CloseEvent(mGoldNum, mEnergyNum, LiveRoomH5CloseEvent
                         .H5_TYPE_COURSE, id);
                 if (mEnglishH5CoursewareBll != null) {
+                    event.setBasePager(EnglishH5CoursewareX5Pager.this);
                     event.setCloseByTeahcer(mEnglishH5CoursewareBll.isWebViewCloseByTeacher());
                     mEnglishH5CoursewareBll.setWebViewCloseByTeacher(false);
                 }

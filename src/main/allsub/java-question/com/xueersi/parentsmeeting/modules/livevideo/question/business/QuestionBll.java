@@ -76,7 +76,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.stablelog.BigResultLog;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.NewCourseLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.KeyboardPopWindow;
-import com.xueersi.parentsmeeting.modules.livevideo.stablelog.BigResultLog;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import org.greenrobot.eventbus.EventBus;
@@ -800,7 +799,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                                         englishH5Entity, "", "", new EnglishH5CoursewareBll.OnH5ResultClose() {
                                     @Override
                                     public void onH5ResultClose(BaseEnglishH5CoursewarePager
-                                                                        baseEnglishH5CoursewarePager, BaseVideoQuestionEntity baseVideoQuestionEntity) {
+                                                                        baseEnglishH5CoursewarePager, BaseVideoQuestionEntity baseVideoQuestionEntity, String method) {
                                         rlQuestionContent.removeView(baseEnglishH5CoursewarePager.getRootView());
                                     }
                                 }, "0", LiveVideoSAConfig.ART_EN, false, liveViewAction);

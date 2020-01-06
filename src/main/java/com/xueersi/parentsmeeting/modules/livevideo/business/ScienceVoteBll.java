@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.animation.Animator;
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -22,15 +23,21 @@ import com.xueersi.common.util.FontCache;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.event.UpdatePkState;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.evendrive.EvenDriveAnimRepository;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.evendrive.TasksDataSource;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
@@ -46,6 +53,7 @@ public class ScienceVoteBll extends LiveBaseBll implements NoticeAction, TopicAc
     private String interactionId;
     private boolean hasNotice = false;
     private boolean isAnswer = false;
+    private EvenDriveAnimRepository animRepo;
     ScienceVotePager scienceVotePager;
     BaseLiveMediaControllerBottom liveMediaControllerBottom;
     private ContextLiveAndBackDebug liveAndBackDebug;
@@ -88,6 +96,10 @@ public class ScienceVoteBll extends LiveBaseBll implements NoticeAction, TopicAc
                                     submitResult();
                                 } else {
                                     closeView();
+                                    // 用户没有结果时，收题后需要主动中断连对
+                                    handleShowEvenDriveAnim(mContext, mGetInfo, getHttpManager(), getLiveViewAction(),
+                                            EvenDriveAnimRepository.EvenDriveQuestionType.VOTE,
+                                            null);
                                 }
                             }
                         }
@@ -191,7 +203,13 @@ public class ScienceVoteBll extends LiveBaseBll implements NoticeAction, TopicAc
     }
 
     private void submitResult() {
-        getHttpManager().ScienceVoteCommit("0", mLiveId, mGetInfo.getLiveType(), mGetInfo.getStudentLiveInfo().getClassId(), interactionId, getUserAnswer(), mLiveBll.getNickname(), mGetInfo.getStuName(), new HttpCallBack(true) {
+        // FIXME: 封版后需求，加强异常检查。后续可以重新评估异常可能，去掉判断。
+        String teamId = "";
+        if(mGetInfo != null && mGetInfo.getStudentLiveInfo() != null && !TextUtils.isEmpty(mGetInfo.getStudentLiveInfo().getTeamId())){
+            teamId = mGetInfo.getStudentLiveInfo().getTeamId();
+        }
+        getHttpManager().ScienceVoteCommit("0", mLiveId, mGetInfo.getLiveType(), mGetInfo.getStudentLiveInfo().getClassId(), interactionId, getUserAnswer(),
+                mLiveBll.getNickname(), mGetInfo.getStuName(), teamId, new HttpCallBack(true) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 logger.d("ScienceVoteCommit:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
@@ -244,6 +262,9 @@ public class ScienceVoteBll extends LiveBaseBll implements NoticeAction, TopicAc
 
 
     public void submitSuccess(final int type, final int gold) {
+        handleShowEvenDriveAnim(mContext, mGetInfo, getHttpManager(), getLiveViewAction(),
+                EvenDriveAnimRepository.EvenDriveQuestionType.VOTE,
+                null);
         //更新金币
         LiveMainHandler.getMainHandler().postDelayed(new Runnable() {
             @Override
@@ -288,7 +309,7 @@ public class ScienceVoteBll extends LiveBaseBll implements NoticeAction, TopicAc
                 if ("img_0.png".equals(fileName) && gold > 0) {
                     return createMsgBitmap(width, height, "+" + gold);
                 }
-                return getBitMapFromAssets(fileName,mContext);
+                return getBitMapFromAssets(fileName, mContext);
             }
         };
         lottieAnimationView.setAnimationFromJson(bubbleEffectInfo.getJsonStrFromAssets(mContext));
@@ -331,6 +352,48 @@ public class ScienceVoteBll extends LiveBaseBll implements NoticeAction, TopicAc
 
             }
         });
+    }
+
+    /**
+     * 连对激励逻辑
+     * 触发条件，投票结果提交成功。或用户没有选择结果，但老师收题。
+     *
+     * @param context
+     * @param getInfo
+     * @param liveHttpManager
+     * @param liveViewAction
+     */
+    private void handleShowEvenDriveAnim(Context context, LiveGetInfo getInfo, LiveHttpManager liveHttpManager,
+                                         LiveViewAction liveViewAction, EvenDriveAnimRepository.EvenDriveQuestionType questionType, String testId) {
+        // 只针对三分屏添加投票连对, 投票功能不需要testId， 不进行传递。
+        if (mGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_COMMON) {
+            if (animRepo == null) {
+                animRepo = new EvenDriveAnimRepository(context, getInfo, liveHttpManager, liveViewAction);
+            }
+            animRepo.getDataSource(questionType, testId, new TasksDataSource.LoadAnimCallBack() {
+                @Override
+                public void onDataNotAvailable(String msg) {
+
+                }
+
+                @Override
+                public void onDatasLoaded(String num, boolean numChange) {
+                    final AllLiveBasePagerInter liveBasePagerInter = mLiveBll.getAllLiveBasePagerIml();
+                    if (liveBasePagerInter != null) {
+                        liveBasePagerInter.addViewRemoveObserver(new AllLiveBasePagerInter.ViewRemoveObserver() {
+                            @Override
+
+                            public boolean removeViewCallBack(LiveBasePager basePager) {
+                                animRepo.removeViewAndAnima();
+                                return true;
+                            }
+                        });
+                    }
+                }
+            });
+
+        }
+
     }
 
     /**

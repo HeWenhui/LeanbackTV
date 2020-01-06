@@ -28,6 +28,7 @@ public class EvenDriveAnimDataSource implements TasksDataSource {
 
     @Override
     public void getDataSource(EvenDriveAnimRepository.EvenDriveQuestionType question_type, String testId, final LoadAnimCallBack callBack) {
+        // 注意，投票逻辑中没有传递testId，这个参数，新增逻辑请做好null判断。
         if (EvenDriveUtils.isOpenStimulation(getInfo)) {
 //            if () {
             if (getInfo.getIsArts() == LiveVideoSAConfig.ART_EN) {
@@ -87,6 +88,34 @@ public class EvenDriveAnimDataSource implements TasksDataSource {
             } else if (question_type == EvenDriveAnimRepository.EvenDriveQuestionType.QUES_TYPE_CHS_NEW_PLAYFROM) {
                 liveHttpManager.getNewPlatformEvenDriveNum(
                         getInfo.getIsArts(),
+                        getInfo.getStudentLiveInfo().getClassId(),
+                        getInfo.getId(),
+                        getInfo.getStudentLiveInfo().getTeamId(),
+                        getInfo.getStuId(),
+                        new HttpCallBack() {
+                            @Override
+                            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                                parseEvenDriveNum(responseEntity, callBack, url);
+                            }
+
+                            @Override
+                            public void onPmError(ResponseEntity responseEntity) {
+                                super.onPmError(responseEntity);
+                                if (callBack != null) {
+                                    callBack.onDataNotAvailable(responseEntity.getErrorMsg());
+                                }
+                            }
+
+                            @Override
+                            public void onPmFailure(Throwable error, String msg) {
+                                super.onPmFailure(error, msg);
+                                if (callBack != null) {
+                                    callBack.onDataNotAvailable(msg);
+                                }
+                            }
+                        });
+            }  else if (question_type == EvenDriveAnimRepository.EvenDriveQuestionType.VOTE) {
+                liveHttpManager.getVoteEvenDriveNum(
                         getInfo.getStudentLiveInfo().getClassId(),
                         getInfo.getId(),
                         getInfo.getStudentLiveInfo().getTeamId(),

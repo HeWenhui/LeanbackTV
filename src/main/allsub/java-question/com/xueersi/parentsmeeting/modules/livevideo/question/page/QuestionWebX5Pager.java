@@ -318,6 +318,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
                 LiveRoomH5CloseEvent event = new LiveRoomH5CloseEvent(mGoldNum, mEngerNum, LiveRoomH5CloseEvent.H5_TYPE_INTERACTION, testId);
                 if (teacherClose != null) {
                     logger.e("=======> postEvent closeByTeacher:" + teacherClose.isWebViewCloseByTeacher());
+                    event.setBasePager(QuestionWebX5Pager.this);
                     event.setCloseByTeahcer(teacherClose.isWebViewCloseByTeacher());
                     teacherClose.setWebViewCloseByTeacher(false);
                 }

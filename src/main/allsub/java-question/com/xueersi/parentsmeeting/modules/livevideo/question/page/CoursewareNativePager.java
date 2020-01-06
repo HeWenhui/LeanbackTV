@@ -302,13 +302,18 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             @Override
             public void onViewDetachedFromWindow(View v) {
                 if (mLogtf != null) {
-                    mLogtf.d("onViewDetachedFromWindow:time=" + (System
-                            .currentTimeMillis() - before));
+                    long time = System.currentTimeMillis() - before;
+                    if (time < 1000) {
+                        mLogtf.d(SysLogLable.fastOnClose, "onViewDetachedFromWindow:time=" + time);
+                    } else {
+                        mLogtf.d("onViewDetachedFromWindow:time=" + time);
+                    }
                 }
                 if (isArts == LiveVideoSAConfig.ART_EN) {
                     LiveRoomH5CloseEvent event = new LiveRoomH5CloseEvent(mGoldNum, mEnergyNum, LiveRoomH5CloseEvent
                             .H5_TYPE_COURSE, id);
                     if (mEnglishH5CoursewareBll != null) {
+                        event.setBasePager(CoursewareNativePager.this);
                         event.setCloseByTeahcer(mEnglishH5CoursewareBll.isWebViewCloseByTeacher());
                         mEnglishH5CoursewareBll.setWebViewCloseByTeacher(false);
                     }
@@ -321,6 +326,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                         LiveRoomH5CloseEvent event = new LiveRoomH5CloseEvent(gold, energy, LiveRoomH5CloseEvent
                                 .H5_TYPE_COURSE, id);
                         if (mEnglishH5CoursewareBll != null) {
+                            event.setBasePager(CoursewareNativePager.this);
                             event.setCloseByTeahcer(mEnglishH5CoursewareBll.isWebViewCloseByTeacher());
                             mEnglishH5CoursewareBll.setWebViewCloseByTeacher(false);
                         }
@@ -482,8 +488,8 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     }
 
     @Override
-    public void close() {
-        onClose.onH5ResultClose(this, getBaseVideoQuestionEntity());
+    public void close(String method) {
+        onClose.onH5ResultClose(this, getBaseVideoQuestionEntity(), "close:method=" + method);
     }
 
     @Override
@@ -834,7 +840,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
 
     @Override
     public void destroy(String method) {
-        mLogtf.d("destroy:method="+method+",isFinish=" + isFinish);
+        mLogtf.d("destroy:method=" + method + ",isFinish=" + isFinish);
         isFinish = true;
         wvSubjectWeb.destroy();
     }
@@ -1047,9 +1053,9 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                         userAnswer.put("times", answer.optInt("times", -1));
                     } else {
                         JSONArray times = answer.getJSONArray("times");
-                        if(times.length()>0){
+                        if (times.length() > 0) {
                             userAnswer.put("times", "" + times.optInt(0));
-                        }else {
+                        } else {
                             userAnswer.put("times", -1);
                         }
                     }
@@ -1354,12 +1360,12 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
 
                         @Override
                         public void onAutoClose(BasePager basePager) {
-                            onClose.onH5ResultClose(CoursewareNativePager.this, detailInfo);
+                            onClose.onH5ResultClose(CoursewareNativePager.this, detailInfo, "onAutoClose");
                         }
 
                         @Override
                         public void onCloseByUser() {
-                            onClose.onH5ResultClose(CoursewareNativePager.this, detailInfo);
+                            onClose.onH5ResultClose(CoursewareNativePager.this, detailInfo, "onCloseByUser");
                         }
 
                         @Override
@@ -1368,7 +1374,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                         }
                     });
                 } else {
-                    onClose.onH5ResultClose(CoursewareNativePager.this, detailInfo);
+                    onClose.onH5ResultClose(CoursewareNativePager.this, detailInfo, "isPlayBack=false");
                 }
             }
             EventBus.getDefault().post(artsAnswerResultEvent);
@@ -1891,7 +1897,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     @Override
     protected boolean shouldOverrideUrlLoading(WebView view, String url) {
         if (url.contains("baidu.com")) {
-            onClose.onH5ResultClose(this, getBaseVideoQuestionEntity());
+            onClose.onH5ResultClose(this, getBaseVideoQuestionEntity(), "shouldOverrideUrlLoading:url=" + url);
             StableLogHashMap logHashMap = new StableLogHashMap("coursewareClose");
             logHashMap.put("coursewareid", id);
             logHashMap.put("coursewaretype", courseware_type);
@@ -2013,7 +2019,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     PrimaryScienceAnserResultPager primaryScienceAnserResultPager = new PrimaryScienceAnserResultPager(mContext, entity, newCourseSec.getIsGame(), new PrimaryScienceAnserResultPager.OnNativeResultPagerClose() {
                         @Override
                         public void onClose() {
-                            onClose.onH5ResultClose(CoursewareNativePager.this, getBaseVideoQuestionEntity());
+                            onClose.onH5ResultClose(CoursewareNativePager.this, getBaseVideoQuestionEntity(), "PrimaryScienceAnserResultPager");
                         }
                     });
                     ((RelativeLayout) mView).addView(primaryScienceAnserResultPager.getRootView(), new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
@@ -2060,7 +2066,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     experCourseGameResultPager.setOnPagerClose(new OnPagerClose() {
                         @Override
                         public void onClose(LiveBasePager basePager) {
-                            onClose.onH5ResultClose(CoursewareNativePager.this, getBaseVideoQuestionEntity());
+                            onClose.onH5ResultClose(CoursewareNativePager.this, getBaseVideoQuestionEntity(), "ExperCourseGameResultPager");
                         }
                     });
                     basePager = experCourseGameResultPager;
@@ -2069,7 +2075,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     primaryScienceAnserResultPager.setOnPagerClose(new OnPagerClose() {
                         @Override
                         public void onClose(LiveBasePager basePager) {
-                            onClose.onH5ResultClose(CoursewareNativePager.this, getBaseVideoQuestionEntity());
+                            onClose.onH5ResultClose(CoursewareNativePager.this, getBaseVideoQuestionEntity(), "ExperCourseResultPager");
                         }
                     });
                     basePager = primaryScienceAnserResultPager;

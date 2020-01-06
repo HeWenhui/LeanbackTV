@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.event;
 
+import com.xueersi.common.base.BasePager;
 import com.xueersi.common.entity.EnglishH5Entity;
 
 /**
@@ -22,6 +23,8 @@ public class LiveRoomH5CloseEvent {
     private String id;
     /** 是否是老师发起的关闭*/
     private boolean closeByTeacher;
+    /** 页面 */
+    private BasePager basePager;
     /**
      * 是否是理科新课件平台
      */
@@ -105,5 +108,13 @@ public class LiveRoomH5CloseEvent {
 
     public void setmEnergyNum(int mEnergyNum) {
         this.mEnergyNum = mEnergyNum;
+    }
+
+    public void setBasePager(BasePager basePager) {
+        this.basePager = basePager;
+    }
+
+    public BasePager getBasePager() {
+        return basePager;
     }
 }

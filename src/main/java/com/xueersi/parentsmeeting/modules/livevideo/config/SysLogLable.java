@@ -35,10 +35,14 @@ public class SysLogLable {
     public static SysLogEntity didFinishLoadWithReuestURL = new SysLogEntity(ShellingScienceWebViewLog, "didFinishLoadWithReuestURL");
     /** 加载去壳课件失败 */
     public static SysLogEntity didFailLoadWithWithReuestURL = new SysLogEntity(ShellingScienceWebViewLog, "didFailLoadWithWithReuestURL");
+    /** 插入js失败 */
+    public static SysLogEntity instertJsError = new SysLogEntity(ShellingScienceWebViewLog, "instertJsError");
     /** 课件返回数据 */
     public static SysLogEntity courseMessage = new SysLogEntity(ShellingScienceWebViewLog, "courseMessage");
     /** 切换加载在线课件 */
     public static SysLogEntity changeToOnlineLoad = new SysLogEntity(ShellingScienceWebViewLog, "changeToOnlineLoad");
+    /** 课件过快关闭 */
+    public static SysLogEntity fastOnClose = new SysLogEntity(ShellingScienceWebViewLog, "fastOnClose");
     /** 提交答案失败 */
     public static SysLogEntity submitAnswertFailed = new SysLogEntity(ShellingScienceWebViewLog, "submitAnswertFailed");
     /** 提交答案成功 */

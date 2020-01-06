@@ -8,8 +8,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Typeface;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -32,7 +30,6 @@ import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.config.SysLogLable;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
-import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.util.FontCache;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
@@ -49,7 +46,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ScoreRange;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultCplShowEvent;
@@ -685,18 +681,33 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
      * 关闭作答结果页面
      *
      * @param forceSumbmit
+     * @param method
      */
-    public void closeAnswerResult(boolean forceSumbmit) {
+    public void closeAnswerResult(boolean forceSumbmit, String method) {
+        closeAnswerResult(forceSumbmit, null, method);
+    }
+
+    /**
+     * 关闭作答结果页面
+     *
+     * @param forceSumbmit
+     * @param method
+     */
+    public void closeAnswerResult(boolean forceSumbmit, BasePager basePager, String method) {
         //logger.e( "=====>closeAnswerResult:" + forceSumbmit + ":" + mDsipalyer);
         // 已展示过答题结果
         if (mDsipalyer != null) {
             mDsipalyer.close();
-            mLogtf.d(SysLogLable.courseCloseResult, "closeAnswerResult");
+            try {
+                mLogtf.d(SysLogLable.courseCloseResult, "closeAnswerResult:method=" + method + ",basePager=" + basePager);
+            }catch (Exception e){
+                LiveCrashReport.postCatchedException(TAG,e);
+            }
             mDsipalyer = null;
-            EventBus.getDefault().post(new AnswerResultCplShowEvent("closeAnswerResult1"));
+            EventBus.getDefault().post(new AnswerResultCplShowEvent(basePager, "closeAnswerResult:method1=" + method));
         }
         if (mGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_2) {
-            EventBus.getDefault().post(new AnswerResultCplShowEvent("closeAnswerResult2"));
+            EventBus.getDefault().post(new AnswerResultCplShowEvent(basePager, "closeAnswerResult:method2=" + method));
         }
 
         // logger.e("=====>closeAnswerResult:" + forceSumbmit + ":" + this);
@@ -746,6 +757,11 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
     @Override
     public void onCompeletShow() {
         //logger.e( "=======onCompeletShow called:" + forceSumbmit + ":" + this);
+        try {
+            mLogtf.d("onCompeletShow:forceSumbmit=" + forceSumbmit+"，mDsipalyer="+mDsipalyer);
+        } catch (Exception e) {
+            LiveCrashReport.postCatchedException(TAG, e);
+        }
         if (forceSumbmit) {
             postDelayed(new Runnable() {
                 @Override
@@ -759,6 +775,11 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
 
     @Override
     public void onAutoClose(BasePager basePager) {
+        try {
+            mLogtf.d("onAutoClose:mDsipalyer=" + mDsipalyer);
+        } catch (Exception e) {
+            LiveCrashReport.postCatchedException(TAG, e);
+        }
         if (mDsipalyer != null) {
             removeView(mDsipalyer.getRootLayout());
             mLogtf.d(SysLogLable.courseCloseResult, "onAutoClose");
@@ -769,7 +790,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
 
     @Override
     public void onCloseByUser() {
-        closeAnswerResult(false);
+        closeAnswerResult(false, "onCloseByUser");
     }
 
     @Override
@@ -1002,7 +1023,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                     });
                     EventBus.getDefault().post(new AnswerResultCplShowEvent("ARTS_STOP_QUESTION"));
                 } else {
-                    closeAnswerResult(true);
+                    closeAnswerResult(true, "ARTS_STOP_QUESTION");
                 }
                 break;
             case XESCODE.ARTS_H5_COURSEWARE:
@@ -1031,7 +1052,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                                 mDsipalyer.remindSubmit();
                             }
                         } else {
-                            closeAnswerResult(true);
+                            closeAnswerResult(true, "ARTS_H5_COURSEWARE");
                         }
                     }
                 } else if ("on".equals(status)) {
@@ -1091,7 +1112,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
     public void onWebviewClose(LiveRoomH5CloseEvent event) {
         //logger.e( "=======>onWebviewClose called");
         //mArtsAnswerResultEvent = null;
-        closeAnswerResult(false);
+        closeAnswerResult(false, event.getBasePager(), "onWebviewClose:id=" + event.getId());
         //刷新右侧 金币
         if (mAnswerReulst != null && mAnswerReulst.getGold() > 0 && shoulUpdateGold) {
             shoulUpdateGold = false;
