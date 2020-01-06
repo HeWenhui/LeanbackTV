@@ -231,6 +231,9 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
                     final JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
                     logger.d("getCourseWareUrl:onPmSuccess:jsonObject=" + jsonObject);
                     try {
+                        if(!jsonObject.has(liveId)){
+                            return;
+                        }
                         JSONObject liveIdObj = jsonObject.getJSONObject(liveId);
                         JSONArray urlArray = liveIdObj.getJSONArray("url");
                         final ArrayList<String> urls = new ArrayList<>();
