@@ -341,7 +341,11 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
                             mStateListener.onAutoClose(ArtsPSEAnswerResultPager.this);
                         } else {
                             ViewGroup group = (ViewGroup) mView.getParent();
-                            group.removeView(mView);
+                            // bugly崩溃。
+                            //https://bugly.qq.com/v2/crash-reporting/crashes/a0df5ed682/207249/report?pid=1&search=ArtsPSEAnswerResultPager&searchType=detail&bundleId=&channelId=&version=all&tagList=&start=0&date=custom&startDateStr=2020-01-04&endDateStr=2020-01-04
+                            if(group!=null){
+                                group.removeView(mView);
+                            }
                         }
                     } else {
                         setCloseText(tvClose, integer);
