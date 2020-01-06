@@ -122,7 +122,7 @@ public class RecommendCourseBll extends LiveBaseBll {
             @Override
             public void onClick() {
                 if (!isDetailShow){
-                    XrsBury.clickBury(mContext.getResources().getString(R.string.click_03_63_012));
+                    LightLiveBury.clickBury(mContext.getResources().getString(R.string.click_03_63_012));
                     contentLayout.addView(mDetailPager.getRootView());
                     RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mDetailPager.getRootView().getLayoutParams();
                     params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
@@ -131,7 +131,7 @@ public class RecommendCourseBll extends LiveBaseBll {
                     contentLayout.setBackground(mContext.getResources().getDrawable(R.color.COLOR_80000000));
                     contentLayout.setClickable(true);
                     mDetailPager.updataView(courseEntities);
-                    XrsBury.showBury(mContext.getResources().getString(R.string.show_03_63_009));
+                    LightLiveBury.showBury(mContext.getResources().getString(R.string.show_03_63_009));
                 }
                 isDetailShow = true;
             }
@@ -143,7 +143,7 @@ public class RecommendCourseBll extends LiveBaseBll {
                 contentLayout.setBackground(mContext.getResources().getDrawable(R.color.COLOR_00000000));
                 contentLayout.setClickable(false);
                 isDetailShow = false;
-                XrsBury.clickBury(mContext.getResources().getString(R.string.click_03_63_008));
+                LightLiveBury.clickBury(mContext.getResources().getString(R.string.click_03_63_008));
             }
         });
     }

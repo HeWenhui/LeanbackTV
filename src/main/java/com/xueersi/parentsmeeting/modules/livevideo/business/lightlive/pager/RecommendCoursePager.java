@@ -8,6 +8,7 @@ import android.widget.ViewFlipper;
 import com.xrs.bury.xrsbury.XrsBury;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.bll.LightLiveBury;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.entity.CourseEntity;
 
 import java.util.List;
@@ -54,7 +55,7 @@ public class RecommendCoursePager extends BasePager {
     public void initData() {
         tvCount.setText(courseEntities.size()+"门推荐课程");
         for (CourseEntity entity : courseEntities) {
-            vfCourses.addView(new RecommendCourseItem(mContext,entity).getRootView());
+            vfCourses.addView(new RecommendCourseItem(mContext,entity,!isPlayback).getRootView());
         }
         vfCourses.setFlipInterval(ANIMATION_TIME);
         vfCourses.setInAnimation(mContext,R.anim.anim_slide_in_top_blur);
@@ -68,7 +69,9 @@ public class RecommendCoursePager extends BasePager {
             initData();
             mView.setVisibility(View.VISIBLE);
             if(!isPlayback){
-                XrsBury.showBury(mContext.getResources().getString(R.string.show_03_63_010));
+                LightLiveBury.showBury(mContext.getResources().getString(R.string.show_03_63_010));
+            }else {
+                LightLiveBury.showBury(mContext.getResources().getString(R.string.show_03_84_003));
             }
         }else {
             mView.setVisibility(View.GONE);

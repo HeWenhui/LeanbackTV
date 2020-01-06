@@ -100,6 +100,7 @@ public class RecommendCourseBackBll extends LiveBackBaseBll {
             @Override
             public void onClick() {
                 if (!isDetailShow){
+                    LightLiveBury.clickBury(mContext.getResources().getString(R.string.click_03_84_008));
                     contentLayout.addView(mDetailPager.getRootView());
                     RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mDetailPager.getRootView().getLayoutParams();
                     params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
@@ -108,6 +109,7 @@ public class RecommendCourseBackBll extends LiveBackBaseBll {
                     contentLayout.setBackground(mContext.getResources().getDrawable(R.color.COLOR_80000000));
                     contentLayout.setClickable(true);
                     mDetailPager.updataView(courseEntities);
+                    LightLiveBury.showBury(mContext.getResources().getString(R.string.show_03_84_004));
                 }
                 isDetailShow = true;
             }
@@ -119,6 +121,7 @@ public class RecommendCourseBackBll extends LiveBackBaseBll {
                 contentLayout.setBackground(mContext.getResources().getDrawable(R.color.COLOR_00000000));
                 contentLayout.setClickable(false);
                 isDetailShow = false;
+                LightLiveBury.clickBury(mContext.getResources().getString(R.string.click_03_84_011));
             }
         });
     }

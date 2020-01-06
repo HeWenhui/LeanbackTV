@@ -30,6 +30,7 @@ import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.RegexUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.bll.LightLiveBury;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.entity.LPWeChatEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.http.LightLiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.http.LightLiveHttpResponseParser;
@@ -100,6 +101,7 @@ public class LightLiveBackMsgPortPager extends BasePager implements IBackMsgpage
         teacherMessageEntities = new ArrayList<>();
         if (isShowWeChat) {
             tvTeacherWeChat.setVisibility(View.VISIBLE);
+            LightLiveBury.clickBury(mContext.getResources().getString(R.string.show_03_84_005));
         }
         initListener();
         initData();
@@ -134,6 +136,7 @@ public class LightLiveBackMsgPortPager extends BasePager implements IBackMsgpage
         ivMessageClean.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                LightLiveBury.clickBury(mContext.getResources().getString(R.string.click_03_84_013));
                 cleanMessage();
             }
         });
@@ -144,11 +147,13 @@ public class LightLiveBackMsgPortPager extends BasePager implements IBackMsgpage
                     XESToastUtils.showToastAtCenter("只看老师消息");
                     msgListView.setAdapter(mTeacherMsgAdapter);
                     msgListView.scrollToPosition(mTeacherMsgAdapter.getItemCount()-1);
+                    LightLiveBury.clickBury(mContext.getResources().getString(R.string.click_03_84_010),1);
                 } else {
 //                    BuryManager.permission = true;
                     XESToastUtils.showToastAtCenter("接收全部消息");
                     msgListView.setAdapter(mMsgAdapter);
                     msgListView.scrollToPosition(mMsgAdapter.getItemCount()-1);
+                    LightLiveBury.clickBury(mContext.getResources().getString(R.string.click_03_84_010),0);
                 }
                 messageStatus.justShowTeacher(isChecked);
             }
@@ -365,11 +370,13 @@ public class LightLiveBackMsgPortPager extends BasePager implements IBackMsgpage
                 public void onClick(View v) {
                     XESToastUtils.showToastAtCenter("清屏成功！");
                     removeAllMsg();
+                    LightLiveBury.clickBury(mContext.getResources().getString(R.string.click_03_84_014));
                 }
             });
             cleanMessageDialog.setCancelBtnListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    LightLiveBury.clickBury(mContext.getResources().getString(R.string.click_03_84_015));
                     cleanMessageDialog.cancelDialog();
                 }
             });
@@ -382,11 +389,13 @@ public class LightLiveBackMsgPortPager extends BasePager implements IBackMsgpage
      */
     private void showWeChatDialog() {
         if (wechatDialog == null) {
-            wechatDialog = new TeacherWechatDialog(mContext, mBaseApplication, weChatEntity.getTipType());
+            wechatDialog = new TeacherWechatDialog(mContext, mBaseApplication,false, weChatEntity.getTipType());
         }
         wechatDialog.setTeacherHead(weChatEntity.getTeacherImg()).setTeacherName(weChatEntity.getTeacherName())
                 .setTeacherWechat(weChatEntity.getTeacherWx()).setQrcode(weChatEntity.getWxQrUrl()).setSubTitle(weChatEntity.getTipInfo());
         wechatDialog.showDialog();
+        LightLiveBury.clickBury(mContext.getResources().getString(R.string.click_03_84_005),1);
+        LightLiveBury.clickBury(mContext.getResources().getString(R.string.show_03_84_005));
     }
 
     public void setIGetLPInfo(IGetLPInfo getLPInfo) {
@@ -412,6 +421,7 @@ public class LightLiveBackMsgPortPager extends BasePager implements IBackMsgpage
                     XESToastUtils.showToastAtCenter(msg);
                 }
             });
+            LightLiveBury.clickBury(mContext.getResources().getString(R.string.click_03_84_005),2);
         }
 
         @Override
@@ -423,6 +433,7 @@ public class LightLiveBackMsgPortPager extends BasePager implements IBackMsgpage
                     XESToastUtils.showToastAtCenter(responseEntity.getErrorMsg());
                 }
             });
+            LightLiveBury.clickBury(mContext.getResources().getString(R.string.click_03_84_005),3);
         }
     }
     public interface IGetLPInfo {

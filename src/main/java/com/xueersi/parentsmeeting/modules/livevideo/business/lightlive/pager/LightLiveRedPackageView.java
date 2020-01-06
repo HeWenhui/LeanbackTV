@@ -20,6 +20,7 @@ import com.airbnb.lottie.LottieImageAsset;
 import com.xrs.bury.xrsbury.XrsBury;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
+import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.bll.LightLiveBury;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.mvp.IRedPackageView;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.mvp.ReceiveGold;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
@@ -39,11 +40,13 @@ public class LightLiveRedPackageView extends LiveBasePager implements IRedPackag
     private Handler mHandler = LiveMainHandler.getMainHandler();
     private ReceiveGold receiveGold;
     private int operateId;
+    private boolean isLive;
 
-    public LightLiveRedPackageView(Context context, int interactionId) {
+    public LightLiveRedPackageView(Context context, int interactionId,boolean isLive) {
         super(context, false);
         this.operateId = interactionId;
         mView = initView();
+        this.isLive = isLive;
         initData();
         initListener();
     }
@@ -139,7 +142,11 @@ public class LightLiveRedPackageView extends LiveBasePager implements IRedPackag
         ivBusiRedPackClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                XrsBury.clickBury(mContext.getResources().getString(R.string.click_03_63_003));
+                if (isLive){
+                    LightLiveBury.clickBury(mContext.getResources().getString(R.string.click_03_63_003));
+                }else {
+                    LightLiveBury.clickBury(mContext.getResources().getString(R.string.click_03_84_017));
+                }
                 cancleAnim();
                 mView.setOnClickListener(null);
                 mView.setClickable(false);

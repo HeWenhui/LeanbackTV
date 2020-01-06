@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.xrs.bury.xrsbury.XrsBury;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.lib.framework.drawable.DrawableHelper;
@@ -23,6 +24,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.BackMediaPlayerContro
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaController2;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaControllerBottom2;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.bll.LightLiveBury;
 
 import java.util.List;
 
@@ -105,6 +107,7 @@ public class LightlivePlaybackMediaController extends MediaController2 {
             @Override
             public void onClick(View v) {
                 mPlayer.changeLOrP();
+                LightLiveBury.clickBury(activity.getResources().getString(R.string.click_03_84_007));
             }
         });
     }

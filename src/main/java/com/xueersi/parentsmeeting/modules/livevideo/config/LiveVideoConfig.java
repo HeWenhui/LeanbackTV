@@ -394,6 +394,29 @@ public class LiveVideoConfig {
         return info;
     }
 
+    public static DownLoadFileInfo getDownLoadLightFileInfo() {
+        DownLoadFileInfo info = AppBll.getInstance().getDownLoadFileByFileName("lightassets.zip");
+        if (info == null) {
+            info = new DownLoadFileInfo();
+            info.fileName = "lightassets.zip";
+            info.fileMD5 = "eb60cc1be12223100007a74d489be72d";
+            info.fileType = 0;
+            info.fileUrl = "https://wxapp.xesimg.com/files/moudle/xesmall/assets.zip";
+            info.needManualDownload = true;
+            info.id = 0;
+        }
+        info.dirPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+
+        UmsAgentManager.umsAgentDebug(RunningEnvironment.sAppContext, LiveAssetsLoadUtil.TAG, "assets message:" + info.toString());
+
+        /*if (XueErSiRunningEnvironment.debug) {
+            info.dirPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+        } else {
+            info.dirPath  = LoadFileUtils.geCacheFile(RunningEnvironment.sAppContext, "downloadAssets").getAbsolutePath();
+        }*/
+        return info;
+    }
+
     public final static String LIVE_PLAY_BACK_TUTOR_FLAGE = "_t";
     /** 性别-未知 */
     public static final int LIVE_GROUP_CLASS_USER_SEX_NONE = 3;

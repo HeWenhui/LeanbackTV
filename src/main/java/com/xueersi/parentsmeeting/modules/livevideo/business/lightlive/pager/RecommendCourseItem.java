@@ -14,6 +14,7 @@ import com.xueersi.common.route.XueErSiRouter;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.bll.LightLiveBury;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.entity.CourseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.entity.CourseTeacherEntity;
 
@@ -44,10 +45,12 @@ public class RecommendCourseItem extends BasePager {
     /** 去课程详情页*/
     TextView tvApply;
     CourseEntity mCourseEntity;
+    boolean isLive;
 
-    public RecommendCourseItem(Context context, CourseEntity courseEntity){
+    public RecommendCourseItem(Context context, CourseEntity courseEntity,boolean isLive){
         super(context);
         mCourseEntity = courseEntity;
+        this.isLive = isLive;
         initData();
         initListener();
     }
@@ -103,7 +106,12 @@ public class RecommendCourseItem extends BasePager {
 //            bundle.putString("classId", mCourseEntity.getClassID());
             //采用ARouter来跳转
             XueErSiRouter.startModule(mContext, "/xesmallCourseDetail/xrsmodule", bundle);
-                XrsBury.clickBury(mContext.getResources().getString(R.string.click_03_63_011),mCourseEntity.getCourseId());
+            if (isLive){
+                LightLiveBury.clickBury(mContext.getResources().getString(R.string.click_03_63_011),mCourseEntity.getCourseId());
+            }else {
+                LightLiveBury.clickBury(mContext.getResources().getString(R.string.click_03_84_009),mCourseEntity.getCourseId());
+            }
+
             }
         });
     }

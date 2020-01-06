@@ -48,6 +48,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewActionIml;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIml;
+import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.bll.LightLiveBury;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.http.LightLiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.liveback.SuperSpeakerBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.AllBackBllConfig;
@@ -67,7 +68,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveBackVideoBll;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BasePlayerFragment;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.LightLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LightlivePlaybackMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlaybackMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VideoLoadingImgView;
@@ -202,6 +202,7 @@ public class LightLiveBackVideoFragment extends LiveBackVideoFragmentBase implem
         if (videoFragment != null && !videoFragment.isMuteMode()) {//静音模式下不要次操作
             videoFragment.setVolume(1f, 1f);
         }
+        LightLiveBury.pageStartBury(activity.getResources().getString(R.string.pv_03_84));
     }
 
     @Override
@@ -217,6 +218,7 @@ public class LightLiveBackVideoFragment extends LiveBackVideoFragmentBase implem
                 }
             }
         }
+        LightLiveBury.pageEndBury(activity.getResources().getString(R.string.pv_03_84));
         super.onPause();
     }
 
@@ -233,9 +235,11 @@ public class LightLiveBackVideoFragment extends LiveBackVideoFragmentBase implem
         Intent intent = activity.getIntent();
 
         mVideoMainEntity = (VideoLivePlayBackEntity) intent.getExtras().getSerializable("videoliveplayback");
+        LightLiveBury.liveId = mVideoMainEntity.getLiveId();
         //测试代码
 //        mVideoMainEntity.setVideoPath("https://replayqn.wangxiao.eaydu.com/ll/12077/9da63786302394b95c62f146a7087aa1.flv.mp4");
         videoPlayStatus = intent.getIntExtra("teacherVideoStatus", 0);
+        LightLiveBury.pageStartBury(activity.getResources().getString(R.string.pv_03_83),1);
         changeLandAndPort();
         startNewVideo();
     }
@@ -497,6 +501,13 @@ public class LightLiveBackVideoFragment extends LiveBackVideoFragmentBase implem
             for (LiveBackBaseBll businessBll : businessBlls) {
                 businessBll.onConfigurationChanged(newConfig);
             }
+        }
+        if (mIsLand.get()){
+            LightLiveBury.pageEndBury(activity.getResources().getString(R.string.pv_03_83),1);
+            LightLiveBury.pageStartBury(activity.getResources().getString(R.string.pv_03_83),0);
+        }else {
+            LightLiveBury.pageEndBury(activity.getResources().getString(R.string.pv_03_83),0);
+            LightLiveBury.pageStartBury(activity.getResources().getString(R.string.pv_03_83),1);
         }
         changeLandAndPort();
     }
@@ -778,6 +789,12 @@ public class LightLiveBackVideoFragment extends LiveBackVideoFragmentBase implem
         if (liveBackVideoBll != null) {
             liveBackVideoBll.onDestroy();
         }
+        if (mIsLand.get()){
+            LightLiveBury.pageEndBury(activity.getResources().getString(R.string.pv_03_83),0);
+        }else {
+            LightLiveBury.pageEndBury(activity.getResources().getString(R.string.pv_03_83),1);
+        }
+
         // LiveVideoConfig.isNewArts = false;
         ProxUtil.getProxUtil().clear(activity);
     }

@@ -95,6 +95,9 @@ public class DiscountCouponBackBll extends LiveBackBaseBll {
         }
         discountCouponPager.setData(couponEntities);
         initListener();
+        if (couponEntities != null && !couponEntities.isEmpty()){
+            LightLiveBury.showBury(mContext.getResources().getString(R.string.show_03_84_002));
+        }
         super.initView();
     }
 
@@ -106,6 +109,7 @@ public class DiscountCouponBackBll extends LiveBackBaseBll {
                 @Override
                 public void onClick() {
                     XESToastUtils.showToastAtCenter("优惠券仅在直播时发放哦~");
+                    LightLiveBury.clickBury(mContext.getResources().getString(R.string.click_03_84_002));
                 }
             });
             middleLayout.setOnHierarchyChangeListener(new ViewGroup.OnHierarchyChangeListener() {
@@ -135,6 +139,7 @@ public class DiscountCouponBackBll extends LiveBackBaseBll {
                 couponEntities = mHttpResponseParser.parserCouponList(responseEntity);
                 if (discountCouponPager != null){
                     discountCouponPager.setData(couponEntities);
+                    LightLiveBury.showBury(mContext.getResources().getString(R.string.show_03_84_002));
                 }
             }
 

@@ -22,6 +22,7 @@ import com.xueersi.common.base.BasePager;
 import com.xueersi.common.route.XueErSiRouter;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.bll.LightLiveBury;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.entity.CourseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.entity.CourseTeacherEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.utils.DrawUtil;
@@ -122,7 +123,9 @@ public class RecommendCourseDetailPager extends BasePager {
                     //采用ARouter来跳转
                     XueErSiRouter.startModule(mContext, "/xesmallCourseDetail/xrsmodule", bundle);
                     if (!isPlayback){
-                        XrsBury.clickBury(mContext.getResources().getString(R.string.click_03_63_007),mData.get(position).getCourseId());
+                        LightLiveBury.clickBury(mContext.getResources().getString(R.string.click_03_63_007),mData.get(position).getCourseId());
+                    }else {
+                        LightLiveBury.clickBury(mContext.getResources().getString(R.string.click_03_84_004),mData.get(position).getCourseId());
                     }
                 }
             });

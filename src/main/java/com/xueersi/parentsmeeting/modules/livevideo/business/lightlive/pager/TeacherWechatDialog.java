@@ -46,6 +46,7 @@ import com.xueersi.lib.framework.utils.image.ImageUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.bll.LightLiveBury;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FrameAnimation;
 import com.xueersi.ui.dialog.BaseAlertDialog;
@@ -88,8 +89,11 @@ public class TeacherWechatDialog extends BaseAlertDialog {
     private Bitmap bitmap;
 //    private SoftReference<Bitmap> bitmapSoftReference;
     IWXAPI mApi;
-    public TeacherWechatDialog(Context context, Application application, int type) {
+    private boolean isLive;
+
+    public TeacherWechatDialog(Context context, Application application,boolean isLive, int type) {
         super(context, application, false, type);
+        this.isLive = isLive;
     }
 
     @Override
@@ -177,23 +181,28 @@ public class TeacherWechatDialog extends BaseAlertDialog {
                                     openScanner();
                                 }else {
                                     XESToastUtils.showToast("二维码下载失败");
+                                    LightLiveBury.clickBury(mContext.getResources().getString(R.string.click_03_63_026),2,2);
                                 }
                             }
 
                             @Override
                             public void onFail() {
                                 XESToastUtils.showToast("二维码下载失败");
+                                LightLiveBury.clickBury(mContext.getResources().getString(R.string.click_03_63_026),2,2);
                             }
                         });
                     }
-                    XrsBury.clickBury(mContext.getResources().getString(R.string.click_03_63_002));
+//                    LightLiveBury.clickBury(mContext.getResources().getString(R.string.click_03_63_002));
                 } else if (type == TYPE_WITH_HEAD) {
                     ClipboardManager cm = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
                     ClipData mClipData = ClipData.newPlainText("Label", mWechat);
                     cm.setPrimaryClip(mClipData);
                     XESToastUtils.showToast("您已复制老师微信号，快去添加吧");
-                    XrsBury.clickBury(mContext.getResources().getString(R.string.click_03_63_014));
-
+                    if (isLive){
+                        LightLiveBury.clickBury(mContext.getResources().getString(R.string.click_03_63_014));
+                    }else {
+                        LightLiveBury.clickBury(mContext.getResources().getString(R.string.click_03_84_012));
+                    }
                 }
             }
         });
@@ -247,8 +256,10 @@ public class TeacherWechatDialog extends BaseAlertDialog {
                 boolean isSuccess = ScreenShot.saveToGallery(mContext, bitmap, path.getAbsolutePath(), Bitmap.CompressFormat.JPEG, filename, filename,false);
                 if (isSuccess) {
                     XESToastUtils.showToastAtCenter("已成功保存到相册\n请用微信扫一扫进群");
+                    LightLiveBury.clickBury(mContext.getResources().getString(R.string.click_03_63_026),1,1);
                 } else {
                     XESToastUtils.showToastAtCenter("二维码保存失败");
+                    LightLiveBury.clickBury(mContext.getResources().getString(R.string.click_03_63_026),1,2);
                 }
             }
         }
