@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@id/rl_course_video_contentview"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@id/rl_course_video_content"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/video_default_height"
+        android:background="@color/COLOR_000000">
+
+        <!-- 存放播放器的布局 -->
+        <RelativeLayout
+            android:id="@id/rl_live_video_frag"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <!-- 互动题显示的界面位置,下层 -->
+        <RelativeLayout
+            android:id="@id/rl_course_video_question_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+
+        <!-- MediaController2的界面位置 -->
+        <RelativeLayout
+            android:id="@id/rl_course_video_live_controller_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <RelativeLayout
+            android:id="@id/rl_course_video_first_backgroud"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/COLOR_000000">
+
+            <!-- 退出按钮 （横屏的时候变成竖屏，竖屏的时候退出当前Activity） -->
+
+            <ImageView
+                android:id="@id/iv_course_video_back"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_alignParentLeft="true"
+                android:background="@color/transparent"
+                android:contentDescription="@null"
+                android:padding="10dp"
+                android:src="@drawable/cy_bars_bockwite_icon_normal" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical"
+                android:paddingTop="10dp">
+
+                <ImageView
+                    android:id="@id/iv_course_video_loading_bg"
+                    android:layout_width="240dp"
+                    android:layout_height="65dp"
+                    android:layout_gravity="center_horizontal"
+                    android:src="@drawable/livevideo_cy_moren_logo_normal" />
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="12dp"
+                    android:visibility="gone">
+
+                    <ProgressBar
+                        android:id="@id/probar_course_video_loading_tip_progress"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        android:indeterminateDrawable="@drawable/animlst_video_loading" />
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@id/tv_course_video_loading_content"
+                    style="@style/text_font12_ffffff_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="0dp"
+                    android:text="正在获取网络资源，请稍候" />
+            </LinearLayout>
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_course_video_live_other_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/COLOR_FDFDFF"
+        android:layout_below="@+id/rl_course_video_content"
+        >
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_live_room_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/rl_course_video_content"></LinearLayout>
+
+
+
+    <!-- 直播回放 互动题显示的界面位置 -->
+    <RelativeLayout
+        android:id="@id/rl_course_video_live_question_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/ll_course_video_live_other_content"
+        android:layout_alignParentBottom="true" />
+    <!-- 竖屏全屏VIEW-->
+    <RelativeLayout
+        android:id="@+id/rl_course_video_live_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone">
+
+    </RelativeLayout>
+
+</RelativeLayout>

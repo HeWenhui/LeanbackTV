@@ -58,6 +58,9 @@ public class UserOnline {
 
     public void setGetInfo(LiveGetInfo mGetInfo) {
         this.mGetInfo = mGetInfo;
+        if (mGetInfo != null && mGetInfo.getHbTime() > 0){
+            mHbTime = mGetInfo.getHbTime() ;
+        }
     }
 
     /**

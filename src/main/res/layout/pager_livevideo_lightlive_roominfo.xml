@@ -13,7 +13,7 @@
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:layout_marginLeft="16dp"
-        android:text="在线0人"
+        android:text="人气值"
         android:visibility="visible"/>
 
     <View

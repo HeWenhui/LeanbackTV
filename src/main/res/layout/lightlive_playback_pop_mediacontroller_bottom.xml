@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <RelativeLayout
+        android:id="@id/rl_video_mediacontroller_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/action_bar_default_height"
+        android:layout_alignParentBottom="true"
+        android:background="@color/transparent_80"
+        android:paddingBottom="5dp">
+
+        <!-- 播放暂停 -->
+
+        <ImageView
+            android:id="@id/iv_video_mediacontroller_controls_playpause"
+            style="@style/MediaController_Button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:scaleType="center"
+            android:src="@drawable/ic_playcontroller_play" />
+
+        <!-- 播放进度控制器 -->
+        <RelativeLayout
+            android:id="@+id/rl_video_mediacontroller_controls"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="15dp"
+            android:layout_toRightOf="@+id/iv_video_mediacontroller_controls_playpause"
+            android:layout_toLeftOf="@+id/tv_video_mediacontroller_controls_speed"
+            >
+
+            <SeekBar
+                android:id="@id/sbar_video_mediacontroller_controls_seekbar"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_marginLeft="3dp"
+                android:layout_marginRight="3dp"
+                android:focusable="true"
+                android:max="1000"
+                android:maxHeight="3dp"
+                android:minHeight="3dp"
+                android:progressDrawable="@drawable/layerlst_po_seekbar"
+                android:thumb="@drawable/selector_scrubber_control_holo"
+                android:thumbOffset="0dp" />
+
+            <RelativeLayout
+                android:id="@id/rl_video_mediacontroller_keypoints"
+                android:layout_width="match_parent"
+                android:layout_height="20dp" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_below="@+id/rl_video_mediacontroller_controls"
+            android:layout_alignLeft="@+id/rl_video_mediacontroller_controls"
+            >
+
+            <!-- 视频播放的当前进度时间 -->
+            <TextView
+                android:id="@id/tv_video_mediacontroller_controls_timecurrent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="@android:color/white"
+                android:textSize="9sp"
+                />
+
+            <!-- 视频的总时间长度 -->
+            <TextView
+                android:id="@id/tv_video_mediacontroller_controls_timetotal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="@color/media_time_color_total"
+                android:textSize="9sp"
+                />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@id/tv_video_mediacontroller_controls_speed"
+            android:layout_width="60dp"
+            android:layout_height="24dp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="15dp"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/shape_video_bottom_speed_bg"
+            android:gravity="center"
+            android:text="1.0×"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@id/rl_video_mediacontroller_keytip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/rl_video_mediacontroller_bottom" />
+    <RelativeLayout
+        android:id="@id/rl_video_mediacontroller_speeds_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/rl_video_mediacontroller_bottom"
+        android:layout_marginRight="7dp"
+        android:visibility="invisible">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_above="@id/iv_video_mediacontroller_speeds_arrow"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/shape_video_speed_content_bg"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/text_font14_ffffff_style"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="20dp"
+                android:gravity="center_vertical"
+                android:text="倍速" />
+
+            <LinearLayout
+                android:id="@id/ll_video_mediacontroller_speeds_content"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:layout_gravity="center_vertical"
+                android:orientation="horizontal">
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <ImageView
+            android:id="@id/iv_video_mediacontroller_speeds_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginRight="47dp"
+            android:src="@drawable/bg_livevideo_common_word_arrow" />
+    </RelativeLayout>
+
+</RelativeLayout>
