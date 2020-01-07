@@ -139,8 +139,8 @@ public class LiveVideoBll implements VPlayerListenerReg, ProgressAction {
      */
     @Override
     public void releaseWithViewGone() {
-        VideoPlayDebugUtils.umsIfVideoViewIsNotVisible(activity, activity.findViewById(R.id.vv_course_video_video));
         View view = activity.findViewById(R.id.vv_course_video_video);
+        VideoPlayDebugUtils.umsIfVideoViewIsNotVisible(activity, view);
         if (view != null) {
 //            Map<String, String> map = new HashMap<>();
 //            map.put("videoview", "gone");
@@ -160,7 +160,7 @@ public class LiveVideoBll implements VPlayerListenerReg, ProgressAction {
 //        if (MediaPlayer.getIsNewIJK()) {
         View view = activity.findViewById(R.id.vv_course_video_video);
         if (view != null) {
-            VideoPlayDebugUtils.umsIfVideoViewIsNotVisible(activity, activity.findViewById(R.id.vv_course_video_video));
+            VideoPlayDebugUtils.umsIfVideoViewIsNotVisible(activity, view);
 //                Map<String, String> map = new HashMap<>();
 //                map.put("videoview", "visible");
 //                UmsAgentManager.umsAgentDebug(activity, "livevideo_videoview", map);

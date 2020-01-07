@@ -34,7 +34,7 @@ public class VideoPlayDebugUtils {
     }
 
     public static void umsVideoViewGone(Context context, View view) {
-        if (context != null && view != null && view.getVisibility() != View.VISIBLE) {
+        if (context != null && view != null && view.getVisibility() != View.GONE) {
 //            livevideo_videoview
             Map map = new HashMap();
             map.put(LIVEVIDEO_VIDEO_VIEW, SET_VIDEO_VIEW_GONE);
