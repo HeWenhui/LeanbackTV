@@ -45,10 +45,10 @@
     <string name="show_03_84_002">{"buryId":\"show_03_84_002\","levelone":\"03\","leveltwo":\"84\","levelthree":\"002\","businessinfo$json":{"lecture_id":\"%1$s\"}}</string>
     <!-->说明: 回放-轻直播间回放-课程推荐位曝光
          参数: 讲座id</!-->
-    <string name="show_03_84_018">{"buryId":\"show_03_84_003\","levelone":\"03\","leveltwo":\"84\","levelthree":\"018\","businessinfo$json":{"lecture_id":\"%1$s\"}}</string>
+    <string name="show_03_84_018">{"buryId":\"show_03_84_018\","levelone":\"03\","leveltwo":\"84\","levelthree":\"018\","businessinfo$json":{"lecture_id":\"%1$s\"}}</string>
     <!-->说明: 回放-轻直播间回放-课程推荐卡片-课程详情曝光
-         参数: 讲座id，课程id</!-->
-    <string name="show_03_84_004">{"buryId":\"show_03_84_004\","levelone":\"03\","leveltwo":\"84\","levelthree":\"004\","businessinfo$json":{"lecture_id":\"%1$s\","course_id":\"%2$s\"}}</string>
+         参数: 讲座id</!-->
+    <string name="show_03_84_004">{"buryId":\"show_03_84_004\","levelone":\"03\","leveltwo":\"84\","levelthree":\"004\","businessinfo$json":{"lecture_id":\"%1$s\"}}</string>
     <!-->说明: 回放-轻直播间回放-联系老师按钮曝光</!-->
     <string name="show_03_84_005">{"buryId":\"show_03_84_005\","levelone":\"03\","leveltwo":\"84\","levelthree":\"005\","businessinfo$json":{"lecture_id":\"%1$s\"}}</string>
     <!-->说明: 回放-轻直播间回放-联系老师卡片曝光
