@@ -15,4 +15,8 @@ public interface VPlayerListenerReg extends LiveProvide {
     void releaseWithViewGone();
 
     void playVideoWithViewVisible();
+
+    void releaseVideo();
+
+    void playVideo();
 }
