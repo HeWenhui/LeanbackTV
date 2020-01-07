@@ -2161,6 +2161,6 @@ public class LiveGetInfo {
     }
 
     public boolean isBigLivePrimarySchool() {
-        return bigLivePrimarySchool;
+        return skinType == 1;
     }
 }
