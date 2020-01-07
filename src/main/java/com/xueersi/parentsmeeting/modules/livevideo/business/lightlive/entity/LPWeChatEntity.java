@@ -115,7 +115,7 @@ public class LPWeChatEntity {
 
     public boolean hasData() {
         if (tipType == WECHAT_GROUP) {
-            if (!TextUtils.isEmpty(wxQrUrl)  && !TextUtils.isEmpty(teacherWx)&& !TextUtils.isEmpty(tipInfo)) {
+            if (!TextUtils.isEmpty(wxQrUrl) && !TextUtils.isEmpty(tipInfo)) {
                 return true;
             }
         } else if (TEACHER_WECHAT == tipType) {

@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.dispatcher;
 
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.entity.LPWeChatEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +43,12 @@ public class PublicEntity {
     private String activeUrl;
     private String studyreportUrl;
 
+    /** 轻直播公告*/
+    private String gentlyNotice;
+    /** 是否是轻直播 0否 1是*/
+    private boolean isGently;
+
+    private LPWeChatEntity lpWeChatEntity;
     public PublicEntity() {
     }
 
@@ -300,5 +307,27 @@ public class PublicEntity {
         this.teacherDescriptionUrl = teacherDescriptionUrl;
     }
 
+    public String getGentlyNotice() {
+        return gentlyNotice;
+    }
 
+    public void setGentlyNotice(String gentlyNotice) {
+        this.gentlyNotice = gentlyNotice;
+    }
+
+    public boolean isGently() {
+        return isGently;
+    }
+
+    public void setGently(boolean gently) {
+        isGently = gently;
+    }
+
+    public LPWeChatEntity getLpWeChatEntity() {
+        return lpWeChatEntity;
+    }
+
+    public void setLpWeChatEntity(LPWeChatEntity lpWeChatEntity) {
+        this.lpWeChatEntity = lpWeChatEntity;
+    }
 }

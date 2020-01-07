@@ -1,0 +1,94 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@id/rl_livevideo_message_content2"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        android:visibility="visible">
+
+        <ImageView
+            android:id="@id/iv_livevideo_message_clean"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="16dp"
+            android:src="@drawable/bg_livevideo_lightlive_message_clean" />
+
+        <CheckBox
+            android:id="@id/cb_livevideo_message_teacher"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="4dp"
+            android:layout_toRightOf="@id/iv_livevideo_message_clean"
+            android:button="@drawable/selector_livevideo_lightlive_message_lock" />
+
+
+        <TextView
+            android:id="@+id/tv_livevideo_teacher_wechat"
+            android:layout_width="74dp"
+            android:layout_height="24dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="16dp"
+            android:layout_centerVertical="true"
+            style="@style/text_font10_ffffff_style"
+            android:gravity="center"
+            android:text="联系老师"
+            android:paddingLeft="20dp"
+            android:background="@drawable/livevideo_lightlive_teacher_wechat"
+            android:visibility="gone"
+            />
+
+        <TextView
+            android:id="@id/tv_livevideo_message_disable"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_toLeftOf="@id/tv_livevideo_teacher_wechat"
+            android:layout_toRightOf="@id/cb_livevideo_message_teacher"
+            android:background="@drawable/shape_corners_20_24adb4be"
+            android:gravity="center"
+            android:maxLines="1"
+            android:paddingLeft="10dp"
+            android:paddingRight="16dp"
+            android:textColor="@color/COLOR_ADB4BE"
+            android:textSize="14sp"
+            android:text="回放不可以聊天哦~"
+            android:visibility="visible" />
+
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@id/lv_livevideo_message"
+        style="@style/listview_common_style"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/rl_livevideo_message_content2"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:background="@color/COLOR_FDFDFF"
+        android:clipChildren="false"
+        android:divider="@null"
+        android:dividerHeight="15dp"
+        android:listSelector="@color/transparent"
+        android:paddingLeft="16dp"
+        android:paddingTop="10dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="9dp"
+        android:scrollbars="none" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_above="@id/rl_livevideo_message_content2"
+        android:background="@drawable/shape_shade_1fa0a0bb"/>
+
+</RelativeLayout>
