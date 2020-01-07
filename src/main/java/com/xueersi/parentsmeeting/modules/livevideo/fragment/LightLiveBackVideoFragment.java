@@ -219,6 +219,12 @@ public class LightLiveBackVideoFragment extends LiveBackVideoFragmentBase implem
             }
         }
         LightLiveBury.pageEndBury(activity.getResources().getString(R.string.pv_03_84));
+        if (mIsLand.get()){
+            LightLiveBury.pageEndBury(activity.getResources().getString(R.string.pv_03_83),0);
+        }else {
+            LightLiveBury.pageEndBury(activity.getResources().getString(R.string.pv_03_83),1);
+        }
+
         super.onPause();
     }
 
@@ -789,12 +795,6 @@ public class LightLiveBackVideoFragment extends LiveBackVideoFragmentBase implem
         if (liveBackVideoBll != null) {
             liveBackVideoBll.onDestroy();
         }
-        if (mIsLand.get()){
-            LightLiveBury.pageEndBury(activity.getResources().getString(R.string.pv_03_83),0);
-        }else {
-            LightLiveBury.pageEndBury(activity.getResources().getString(R.string.pv_03_83),1);
-        }
-
         // LiveVideoConfig.isNewArts = false;
         ProxUtil.getProxUtil().clear(activity);
     }
