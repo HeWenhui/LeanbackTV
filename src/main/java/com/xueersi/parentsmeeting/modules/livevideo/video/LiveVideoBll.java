@@ -157,19 +157,28 @@ public class LiveVideoBll implements VPlayerListenerReg, ProgressAction {
      */
     @Override
     public void playVideoWithViewVisible() {
-        if (MediaPlayer.getIsNewIJK()) {
-
-            View view = activity.findViewById(R.id.vv_course_video_video);
-            if (view != null) {
-                VideoPlayDebugUtils.umsIfVideoViewIsNotVisible(activity, activity.findViewById(R.id.vv_course_video_video));
+//        if (MediaPlayer.getIsNewIJK()) {
+        View view = activity.findViewById(R.id.vv_course_video_video);
+        if (view != null) {
+            VideoPlayDebugUtils.umsIfVideoViewIsNotVisible(activity, activity.findViewById(R.id.vv_course_video_video));
 //                Map<String, String> map = new HashMap<>();
 //                map.put("videoview", "visible");
 //                UmsAgentManager.umsAgentDebug(activity, "livevideo_videoview", map);
-                VideoPlayDebugUtils.umsVideoViewVisible(activity, view);
-                view.setVisibility(View.VISIBLE);
-            }
-            psRePlay(false);
+            VideoPlayDebugUtils.umsVideoViewVisible(activity, view);
+            view.setVisibility(View.VISIBLE);
         }
+        psRePlay(false);
+//        }
+    }
+
+    @Override
+    public void releaseVideo() {
+        videoFragment.release();
+    }
+
+    @Override
+    public void playVideo() {
+        psRePlay(false);
     }
 
     public void setVideoAction(VideoAction mVideoAction) {
