@@ -189,7 +189,18 @@ public class LightLiveBackVideoFragment extends LiveBackVideoFragmentBase implem
     public void onResume() {
         super.onResume();
         if (isInitialized() && pausePlay) {
-            vPlayer.pause();
+            startPlayer();
+            //防止暂停后视频位置透过去了
+            LiveMainHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (isInitialized()){
+                        vPlayer.pause();
+                    }
+                }
+            },100);
+        }else {
+            startPlayer();
         }
         if (liveBackVideoBll != null) {
             liveBackVideoBll.onResume();
