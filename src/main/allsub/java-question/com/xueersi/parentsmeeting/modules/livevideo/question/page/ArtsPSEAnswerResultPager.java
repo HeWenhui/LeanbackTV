@@ -38,6 +38,7 @@ import com.airbnb.lottie.LottieImageAsset;
 import com.alibaba.fastjson.JSON;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.xueersi.common.base.BasePager;
+import com.xueersi.common.base.XrsCrashReport;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.transformation.RoundedCornersTransformation;
@@ -341,7 +342,11 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
                             mStateListener.onAutoClose(ArtsPSEAnswerResultPager.this);
                         } else {
                             ViewGroup group = (ViewGroup) mView.getParent();
-                            group.removeView(mView);
+                            // bugly崩溃。
+                            //https://bugly.qq.com/v2/crash-reporting/crashes/a0df5ed682/207249/report?pid=1&search=ArtsPSEAnswerResultPager&searchType=detail&bundleId=&channelId=&version=all&tagList=&start=0&date=custom&startDateStr=2020-01-04&endDateStr=2020-01-04
+                            if(group!=null){
+                                group.removeView(mView);
+                            }
                         }
                     } else {
                         setCloseText(tvClose, integer);
@@ -411,7 +416,7 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
             lottieResPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_error/images";
             lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_error/data.json";
         }
-
+        XrsCrashReport.d(TAG,"displayDetailUi:lottieJsonPath="+lottieJsonPath);
         final ArtsAnswerResultLottieEffectInfo effectInfo = new ArtsAnswerResultLottieEffectInfo(lottieResPath,
                 lottieJsonPath);
         resultAnimeView.useHardwareAcceleration();
