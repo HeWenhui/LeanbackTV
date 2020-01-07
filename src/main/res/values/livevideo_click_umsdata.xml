@@ -32,7 +32,7 @@
 	<string name="click_03_63_015">{"buryId":\"click_03_63_015\","levelone":\"03\","leveltwo":\"63\","levelthree":\"015\","businessinfo$json":{"lecture_id":\"%1$s\"}}</string>
 	<!-->说明: 点击轻直播间屏蔽其他人按钮
          参数: 讲座id，屏蔽按钮状态【"0:关闭屏蔽","1:打开屏蔽"】</!-->
-	<string name="click_03_63_016">{"buryId":\"click_03_63_016\","levelone":\"03\","leveltwo":\"63\","levelthree":\"016\","businessinfo$json":{"lecture_id:\"%1$s\",block_status":\"%2$s\"}}</string>
+	<string name="click_03_63_016">{"buryId":\"click_03_63_016\","levelone":\"03\","leveltwo":\"63\","levelthree":\"016\","businessinfo$json":{"lecture_id":\"%1$s\","block_status":\"%2$s\"}}</string>
 	<!-->说明: 点击轻直播间清屏按钮
          参数: 讲座id</!-->
 	<string name="click_03_63_017">{"buryId":\"click_03_63_017\","levelone":\"03\","leveltwo":\"63\","levelthree":\"017\","businessinfo$json":{"lecture_id":\"%1$s\"}}</string>

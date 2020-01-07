@@ -2,13 +2,13 @@
 <resources>
 	<!-->说明: 轻直播间曝光
          参数: 讲座id</!-->
-	<string name="pv_03_63">{"buryId":\"pv_03_63\","levelone":\"03\","leveltwo":\"63\","businessinfo$json":{"lecture_id:\"%1$s\"}}</string>
+	<string name="pv_03_63">{"buryId":\"pv_03_63\","levelone":\"03\","leveltwo":\"63\","businessinfo$json":{"lecture_id":\"%1$s\"}}</string>
 	<!-->说明: 回放-轻直播间横竖屏曝光
          参数: 讲座id，屏幕状态【0.横屏、1.竖屏】</!-->
-	<string name="pv_03_83">{"buryId":\"pv_03_83\","levelone":\"03\","leveltwo":\"83\","businessinfo$json":{"lecture_id:\"%1$s\,screen_status":\"%2$s\"}}</string>
+	<string name="pv_03_83">{"buryId":\"pv_03_83\","levelone":\"03\","leveltwo":\"83\","businessinfo$json":{"lecture_id":\"%1$s\,"screen_status":\"%2$s\"}}</string>
 	<!-->说明: 轻直播间横竖屏曝光
          参数: 讲座id，屏幕状态【0.横屏、1.竖屏】</!-->
-	<string name="pv_03_82">{"buryId":\"pv_03_82\","levelone":\"03\","leveltwo":\"82\","businessinfo$json":{"lecture_id":\"%1$s\",screen_status":\"%2$s\"}}</string>
+	<string name="pv_03_82">{"buryId":\"pv_03_82\","levelone":\"03\","leveltwo":\"82\","businessinfo$json":{"lecture_id":\"%1$s\","screen_status":\"%2$s\"}}</string>
 	<!-->说明: 回放-轻直播间曝光
          参数: 讲座id</!-->
 	<string name="pv_03_84">{"buryId":\"pv_03_84\","levelone":\"03\","leveltwo":\"84\","businessinfo$json":{"lecture_id":\"%1$s\"}}</string>
