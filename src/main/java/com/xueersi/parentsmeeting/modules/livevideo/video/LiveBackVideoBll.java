@@ -88,11 +88,13 @@ public class LiveBackVideoBll {
             }
 
             //英语1v2小组课 使用recordPath字段 替换videoPath字段
-            JSONObject getinfo = new JSONObject(mVideoEntity.getGetInfoStr());
-            int patten = getinfo.getInt("pattern");
-            String recordPath = getinfo.getString("recordPath");
-            if (patten == LiveVideoConfig.LIVE_PATTERN_GROUP_CLASS) {
-                mVideoEntity.setVideoPath(recordPath);
+            if (mVideoEntity != null && mVideoEntity.getGetInfoStr() != null){
+                JSONObject getinfo = new JSONObject(mVideoEntity.getGetInfoStr());
+                int patten = getinfo.getInt("pattern");
+                String recordPath = getinfo.getString("recordPath");
+                if (patten == LiveVideoConfig.LIVE_PATTERN_GROUP_CLASS) {
+                    mVideoEntity.setVideoPath(recordPath);
+                }
             }
         } catch (Exception e) {
             logger.d("setVideoEntity:hostPath=" + hostPath, e);

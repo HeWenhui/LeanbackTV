@@ -22,6 +22,7 @@ import com.xueersi.common.base.BasePager;
 import com.xueersi.common.route.XueErSiRouter;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.bll.LightLiveBury;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.entity.CourseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.entity.CourseTeacherEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.utils.DrawUtil;
@@ -50,9 +51,11 @@ public class RecommendCourseDetailPager extends BasePager {
     List<CourseEntity> mCourseEntities;
     private CourseDetailAdapter adapter;
     private CloseClickListener listener;
+    private boolean isPlayback;
 
-    public RecommendCourseDetailPager(Context context){
+    public RecommendCourseDetailPager(Context context,boolean isPlayback){
         super(context);
+        this.isPlayback = isPlayback;
         mCourseEntities = new ArrayList<>();
         initData();
     }
@@ -119,7 +122,11 @@ public class RecommendCourseDetailPager extends BasePager {
 //                    bundle.putString("classId", mData.get(position).getClassID());
                     //采用ARouter来跳转
                     XueErSiRouter.startModule(mContext, "/xesmallCourseDetail/xrsmodule", bundle);
-                    XrsBury.clickBury(mContext.getResources().getString(R.string.click_03_63_007),mData.get(position).getCourseId());
+                    if (!isPlayback){
+                        LightLiveBury.clickBury(mContext.getResources().getString(R.string.click_03_63_007),mData.get(position).getCourseId());
+                    }else {
+                        LightLiveBury.clickBury(mContext.getResources().getString(R.string.click_03_84_004),mData.get(position).getCourseId());
+                    }
                 }
             });
         }

@@ -112,7 +112,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="22dp"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <ImageView
             android:id="@+id/iv_livevideo_lightlive_wechat_qrcode"
@@ -126,16 +126,20 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="26dp"
-            android:text="方式一: 截屏扫码入群"
+            android:text="方式"
             android:textColor="@color/COLOR_212831"
-            android:textSize="14sp" />
+            android:gravity="center"
+            android:textSize="14sp"
+            android:textStyle="bold"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="10dp"
-            android:text="方式二: 复制微信号加老师微信，等待入群"
+            android:text="保存上方二维码，打开微信扫一扫\n从右上角“相册”选择图片进行识别"
+            android:gravity="center"
+            android:lineSpacingExtra ="10dp"
             android:textColor="@color/COLOR_212831"
             android:textSize="14sp" />
 

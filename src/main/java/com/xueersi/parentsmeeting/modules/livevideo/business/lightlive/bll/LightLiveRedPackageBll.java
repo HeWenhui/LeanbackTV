@@ -18,6 +18,7 @@ import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.config.BurySourceIds;
@@ -64,7 +65,6 @@ public class LightLiveRedPackageBll implements RedPackageAction, Handler.Callbac
      * 直播id
      */
     private String mVSectionID;
-    private RelativeLayout mContentView;
     /**
      * 红包的布局
      */
@@ -75,10 +75,13 @@ public class LightLiveRedPackageBll implements RedPackageAction, Handler.Callbac
     LightLiveRedPackageView lightLiveRedPackageView;
     AtomicBoolean mIsLand;
     private boolean isGetPagClick;
+    private boolean isLive;
+    LiveViewAction mContentView;
 
-    public LightLiveRedPackageBll(Activity activity, LiveGetInfo liveGetInfo) {
+    public LightLiveRedPackageBll(Activity activity, LiveGetInfo liveGetInfo,boolean isLive) {
         mLogtf = new LogToFile(activity, TAG);
         mLogtf.clear();
+        this.isLive = isLive;
         this.activity = activity;
     }
 
@@ -118,7 +121,7 @@ public class LightLiveRedPackageBll implements RedPackageAction, Handler.Callbac
         rlRedpacketContent.removeAllViews();
     }
 
-    public void initView(RelativeLayout bottomContent, RelativeLayout mContentView, AtomicBoolean mIsLand) {
+    public void initView(RelativeLayout bottomContent, LiveViewAction mContentView, AtomicBoolean mIsLand) {
         this.mContentView = mContentView;
         this.mIsLand = mIsLand;
         if (rlRedpacketContent == null) {
@@ -152,7 +155,7 @@ public class LightLiveRedPackageBll implements RedPackageAction, Handler.Callbac
 //            if (lightLiveRedPackageView != null) {
 //                rlRedpacketContent.removeView(lightLiveRedPackageView.getRootView());
 //            }
-        lightLiveRedPackageView = new LightLiveRedPackageView(activity, operateId);
+        lightLiveRedPackageView = new LightLiveRedPackageView(activity, operateId,isLive);
         lightLiveRedPackageView.setOnPagerClose(new LiveBasePager.OnPagerClose() {
             @Override
             public void onClose(LiveBasePager basePager) {
@@ -160,18 +163,27 @@ public class LightLiveRedPackageBll implements RedPackageAction, Handler.Callbac
                     rlRedpacketContent.removeView(basePager.getRootView());
                     lightLiveRedPackageView = null;
                 }
+                isGetPagClick = false;
             }
         });
         lightLiveRedPackageView.setReceiveGold(new com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.mvp.ReceiveGold() {
             @Override
             public void sendReceiveGold(int operateId, OnRedPackageSend onRedPackageSend) {
                 if(!isGetPagClick){
-                    XrsBury.clickBury(activity.getResources().getString(R.string.click_03_63_015));
+                    if (isLive){
+                        LightLiveBury.clickBury(activity.getResources().getString(R.string.click_03_63_015));
+                    }else {
+                        LightLiveBury.clickBury(activity.getResources().getString(R.string.click_03_84_016));
+                    }
                     isGetPagClick = true;
                     if (AppBll.getInstance().isAlreadyLogin()) {
                         LightLiveRedPackageBll.this.sendReceiveGold(operateId, mVSectionID, onRedPackageSend);
                     } else {
-                        XrsBury.showBury(activity.getResources().getString(R.string.show_03_63_005), BurySourceIds.LIGHT_LIVE_RED_PAGERAGE_SOURCEID);
+                        if (isLive){
+                            LightLiveBury.showBury(activity.getResources().getString(R.string.show_03_63_005), BurySourceIds.LIGHT_LIVE_RED_PAGERAGE_SOURCEID);
+                        }else {
+                            LightLiveBury.showBury(activity.getResources().getString(R.string.show_03_84_019), BurySourceIds.LIGHT_LIVE_RED_PAGERAGE_SOURCEID);
+                        }
                         LoginEnter.openLogin(activity, false, null);
                         isGetPagClick = false;
                     }
@@ -196,7 +208,11 @@ public class LightLiveRedPackageBll implements RedPackageAction, Handler.Callbac
         rlRedpacketContent.bringToFront();
         activity.getWindow().getDecorView().requestLayout();
         activity.getWindow().getDecorView().invalidate();
-        XrsBury.showBury(activity.getResources().getString(R.string.show_03_63_004));
+        if (isLive){
+            LightLiveBury.showBury(activity.getResources().getString(R.string.show_03_63_004));
+        }else {
+            LightLiveBury.showBury(activity.getResources().getString(R.string.show_03_84_001));
+        }
     }
 
     private void sendReceiveGold(final int operateId, String sectionID, final OnRedPackageSend onRedPackageSend) {
@@ -207,7 +223,12 @@ public class LightLiveRedPackageBll implements RedPackageAction, Handler.Callbac
                 // 广播 领取红包成功事件
                 int gold = entity.getGoldNum();
                 onRedPackageSend.onReceiveGold(gold);
-                XrsBury.showBury(activity.getResources().getString(R.string.show_03_63_006));
+                if(isLive){
+                    LightLiveBury.showBury(activity.getResources().getString(R.string.show_03_63_006));
+                }else {
+                    LightLiveBury.showBury(activity.getResources().getString(R.string.show_03_84_020));
+                }
+                isGetPagClick = false;
                 EventBus.getDefault().post(new RedPackageEvent(mVSectionID, entity.getGoldNum(),
                         operateId + "", RedPackageEvent.STATE_CODE_SUCCESS));
             }
@@ -216,17 +237,23 @@ public class LightLiveRedPackageBll implements RedPackageAction, Handler.Callbac
             public void onDataFail(int errStatus, String failMsg) {
                 super.onDataFail(errStatus, failMsg);
                 isGetPagClick = false;
-                XESToastUtils.showToastAtCenter("红包领取失败，请重试");
-                onRedPackageSend.onReceiveFail();
-
+                if (isLive){
+                    XESToastUtils.showToastAtCenter("红包领取失败，请重试");
+                    onRedPackageSend.onReceiveFail();
+                }else {
+                    if (lightLiveRedPackageView != null) {
+                        rlRedpacketContent.removeView(lightLiveRedPackageView.getRootView());
+                        lightLiveRedPackageView = null;
+                    }
+                }
             }
 
             @Override
             public void onDataFail(int errStatus, String failMsg, int code) {
                 super.onDataFail(errStatus, failMsg, code);
+                isGetPagClick = false;
                 if (CODE_60411 == code) {
                     XESToastUtils.showToastAtCenter("" + failMsg);
-                    isGetPagClick = false;
                     onRedPackageSend.onReceiveError(errStatus, failMsg, code);
                 } else if (CODE_60410 == code) {
                     onRedPackageSend.onHaveReceiveGold();

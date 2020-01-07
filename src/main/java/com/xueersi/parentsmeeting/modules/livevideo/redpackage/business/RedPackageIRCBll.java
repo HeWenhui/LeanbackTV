@@ -60,7 +60,7 @@ public class RedPackageIRCBll extends LiveBaseBll implements NoticeAction {
             redPackageBll.initView(mRootView, getLiveViewAction());
         } else if (redPackageAction instanceof LightLiveRedPackageBll){
             LightLiveRedPackageBll redPackageBll = (LightLiveRedPackageBll) redPackageAction;
-            redPackageBll.initView(mRootView, mContentView,mIsLand);
+            redPackageBll.initView(mRootView, getLiveViewAction(),mIsLand);
         }
     }
 
@@ -144,9 +144,9 @@ public class RedPackageIRCBll extends LiveBaseBll implements NoticeAction {
                 });
                 redPackageAction = redPackageBll;
             } else if (LiveVideoConfig.isLightLive )  {
-                LightLiveRedPackageBll redPackageBll = new LightLiveRedPackageBll(activity,getInfo);
+                LightLiveRedPackageBll redPackageBll = new LightLiveRedPackageBll(activity,getInfo,true);
                 redPackageBll.setVSectionID(mLiveId);
-                redPackageBll.initView(mRootView, mContentView,mIsLand);
+                redPackageBll.initView(mRootView, getLiveViewAction(),mIsLand);
                 redPackageBll.setReceiveGold(new RedPackageAction.ReceiveGold() {
                     @Override
                     public void sendReceiveGold(int operateId, String liveId, AbstractBusinessDataCallBack callBack) {
