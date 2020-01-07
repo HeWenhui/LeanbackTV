@@ -576,6 +576,15 @@ public class LiveGetInfo {
     /** getinfo创建时间*/
     private long creatTime;
 
+    /** 1v2提分机制 分数下限 */
+    private int minToFakeScore;
+    /** 1v2提分机制 分数上限 */
+    private int maxToFakeScore;
+    /** 1v2提分机制 目标分数 */
+    private int fakeScore;
+    /** 1v2是否使用云平台调度 */
+    private boolean use1v2Sdk;
+
     public VideoConfigEntity getVideoConfigEntity() {
         return videoConfigEntity;
     }
@@ -2152,5 +2161,41 @@ public class LiveGetInfo {
 
     public void setCreatTime(long creatTime) {
         this.creatTime = creatTime;
+    }
+
+    public void setTeamStuIds(ArrayList<String> teamStuIds) {
+        this.teamStuIds = teamStuIds;
+    }
+
+    public int getMinToFakeScore() {
+        return minToFakeScore;
+    }
+
+    public void setMinToFakeScore(int minToFakeScore) {
+        this.minToFakeScore = minToFakeScore;
+    }
+
+    public int getMaxToFakeScore() {
+        return maxToFakeScore;
+    }
+
+    public void setMaxToFakeScore(int maxToFakeScore) {
+        this.maxToFakeScore = maxToFakeScore;
+    }
+
+    public int getFakeScore() {
+        return fakeScore;
+    }
+
+    public void setFakeScore(int fakeScore) {
+        this.fakeScore = fakeScore;
+    }
+
+    public boolean isUse1v2Sdk() {
+        return use1v2Sdk;
+    }
+
+    public void setUse1v2Sdk(boolean use1v2Sdk) {
+        this.use1v2Sdk = use1v2Sdk;
     }
 }
