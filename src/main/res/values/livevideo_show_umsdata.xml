@@ -21,7 +21,8 @@
     <!-->说明: 轻直播间课程推荐卡片-课程详情曝光
          参数: 讲座id</!-->
     <string name="show_03_63_009">{"buryId":\"show_03_63_009\","levelone":\"03\","leveltwo":\"63\","levelthree":\"009\","businessinfo$json":{"lecture_id":\"%1$s\"}}</string>
-    <!-->说明: 轻直播间联系老师按钮曝光</!-->
+    <!-->说明: 轻直播间联系老师按钮曝光
+        参数: 讲座id</!-->
     <string name="show_03_63_013">{"buryId":\"show_03_63_013\","levelone":\"03\","leveltwo":\"63\","levelthree":\"013\","businessinfo$json":{"lecture_id":\"%1$s\"}}</string>
     <!-->说明: 轻直播间联系老师卡片-复制微信号按钮曝光
          参数: 讲座id</!-->
@@ -44,7 +45,7 @@
     <string name="show_03_84_002">{"buryId":\"show_03_84_002\","levelone":\"03\","leveltwo":\"84\","levelthree":\"002\","businessinfo$json":{"lecture_id":\"%1$s\"}}</string>
     <!-->说明: 回放-轻直播间回放-课程推荐位曝光
          参数: 讲座id</!-->
-    <string name="show_03_84_003">{"buryId":\"show_03_84_003\","levelone":\"03\","leveltwo":\"84\","levelthree":\"003\","businessinfo$json":{"lecture_id":\"%1$s\"}}</string>
+    <string name="show_03_84_018">{"buryId":\"show_03_84_003\","levelone":\"03\","leveltwo":\"84\","levelthree":\"018\","businessinfo$json":{"lecture_id":\"%1$s\"}}</string>
     <!-->说明: 回放-轻直播间回放-课程推荐卡片-课程详情曝光
          参数: 讲座id，课程id</!-->
     <string name="show_03_84_004">{"buryId":\"show_03_84_004\","levelone":\"03\","leveltwo":\"84\","levelthree":\"004\","businessinfo$json":{"lecture_id":\"%1$s\","course_id":\"%2$s\"}}</string>
@@ -53,6 +54,11 @@
     <!-->说明: 回放-轻直播间回放-联系老师卡片曝光
          参数: 讲座id</!-->
     <string name="show_03_84_006">{"buryId":\"show_03_84_006\","levelone":\"03\","leveltwo":\"84\","levelthree":\"006\","businessinfo$json":{"lecture_id":\"%1$s\"}}</string>
-
+    <!-->说明: 回放-轻直播间-红包唤起登录
+             参数: 讲座id</!-->
+    <string name="show_03_84_019">{"buryId":\"show_03_84_019\","levelone":\"03\","leveltwo":\"84\","levelthree":\"019\","businessinfo$json":{"lecture_id":\"%1$s\"}}</string>
+    <!-->说明: 回放-轻直播间-红包领取成功弹窗
+         参数: 讲座id</!-->
+    <string name="show_03_84_020">{"buryId":\"show_03_84_020\","levelone":\"03\","leveltwo":\"84\","levelthree":\"020\","businessinfo$json":{"lecture_id":\"%1$s\"}}</string>
 
 </resources>

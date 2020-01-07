@@ -71,7 +71,7 @@ public class RecommendCoursePager extends BasePager {
             if(!isPlayback){
                 LightLiveBury.showBury(mContext.getResources().getString(R.string.show_03_63_010));
             }else {
-                LightLiveBury.showBury(mContext.getResources().getString(R.string.show_03_84_003));
+                LightLiveBury.showBury(mContext.getResources().getString(R.string.show_03_84_018));
             }
         }else {
             mView.setVisibility(View.GONE);

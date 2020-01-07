@@ -182,7 +182,7 @@ public class LightLiveRedPackageBll implements RedPackageAction, Handler.Callbac
                         if (isLive){
                             LightLiveBury.showBury(activity.getResources().getString(R.string.show_03_63_005), BurySourceIds.LIGHT_LIVE_RED_PAGERAGE_SOURCEID);
                         }else {
-
+                            LightLiveBury.showBury(activity.getResources().getString(R.string.show_03_84_019), BurySourceIds.LIGHT_LIVE_RED_PAGERAGE_SOURCEID);
                         }
                         LoginEnter.openLogin(activity, false, null);
                         isGetPagClick = false;
@@ -225,6 +225,8 @@ public class LightLiveRedPackageBll implements RedPackageAction, Handler.Callbac
                 onRedPackageSend.onReceiveGold(gold);
                 if(isLive){
                     LightLiveBury.showBury(activity.getResources().getString(R.string.show_03_63_006));
+                }else {
+                    LightLiveBury.showBury(activity.getResources().getString(R.string.show_03_84_020));
                 }
                 isGetPagClick = false;
                 EventBus.getDefault().post(new RedPackageEvent(mVSectionID, entity.getGoldNum(),
