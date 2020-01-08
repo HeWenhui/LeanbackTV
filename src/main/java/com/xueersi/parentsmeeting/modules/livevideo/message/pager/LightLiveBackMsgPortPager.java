@@ -101,7 +101,7 @@ public class LightLiveBackMsgPortPager extends BasePager implements IBackMsgpage
         teacherMessageEntities = new ArrayList<>();
         if (isShowWeChat) {
             tvTeacherWeChat.setVisibility(View.VISIBLE);
-            LightLiveBury.clickBury(mContext.getResources().getString(R.string.show_03_84_005));
+            LightLiveBury.showBury(mContext.getResources().getString(R.string.show_03_84_005));
         }
         initListener();
         initData();
@@ -395,7 +395,7 @@ public class LightLiveBackMsgPortPager extends BasePager implements IBackMsgpage
                 .setTeacherWechat(weChatEntity.getTeacherWx()).setQrcode(weChatEntity.getWxQrUrl()).setSubTitle(weChatEntity.getTipInfo());
         wechatDialog.showDialog();
         LightLiveBury.clickBury(mContext.getResources().getString(R.string.click_03_84_005),1);
-        LightLiveBury.clickBury(mContext.getResources().getString(R.string.show_03_84_005));
+        LightLiveBury.showBury(mContext.getResources().getString(R.string.show_03_84_006));
     }
 
     public void setIGetLPInfo(IGetLPInfo getLPInfo) {
