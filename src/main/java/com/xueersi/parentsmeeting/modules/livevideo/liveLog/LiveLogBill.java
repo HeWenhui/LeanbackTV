@@ -7,6 +7,7 @@ import android.util.Log;
 
 
 import com.alibaba.fastjson.JSON;
+import com.google.gson.Gson;
 import com.xrs.bury.xrsbury.BuryPublicParam;
 import com.xrs.log.LogConfig;
 import com.xrs.log.xrsLog.UpdateParamInterface;
@@ -53,6 +54,7 @@ public class LiveLogBill {
     private Thread thread = new Thread();
     private boolean isRunning; //日志在上报中
     private int anrCount;//当前触发次数
+    private Gson mGson;
 
     public static LiveLogBill getInstance() {
         if (mInstance == null) {
@@ -81,6 +83,7 @@ public class LiveLogBill {
     private LiveLogBill(Context context) {
         this.context = context;
         isRunning = false;
+        mGson = new Gson();
     }
 
     /**
@@ -392,16 +395,16 @@ public class LiveLogBill {
 
                 isRunning = true;
                 LiveLogEntity log = new LiveLogEntity();
-                if(type==1 || type==2){
+                if (type == 1 || type == 2) {
                     log.pri = 2;
-                }else{
+                } else {
                     log.pri = type;
                 }
                 if (LiveLogBill.param != null) {
                     log.liveid = LiveLogBill.param.liveid;
                 }
-                log.processId=android.os.Process.myPid();
-                log.reason=type+"";
+                log.processId = android.os.Process.myPid();
+                log.reason = type + "";
                 if (myUserInfoEntity == null) {
                     myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
                 }
@@ -427,7 +430,7 @@ public class LiveLogBill {
                     log.pridata = pridata;
                     pridata.dnsinfo = pingMap;
                 }
-                String s = JSON.toJSONString(log);
+                String s = mGson.toJson(log);
                 LiveMonitorDebug.dLog(s);
                 //LiveLog.sendLog();
                 LiveLog.log(log);
@@ -478,12 +481,11 @@ public class LiveLogBill {
                     pridata.dnsinfo = pingMap;
                 }
 
-                String s = JSON.toJSONString(log);
+                String s = mGson.toJson(log);
                 LiveMonitorDebug.dLog(s);
                 //LiveLog.sendLog();
                 LiveLog.log(log);
                 LiveMonitorSender.send(s);
-                Log.d("testttttttttttttttt", "log: ");
             }
         }.start();
     }
