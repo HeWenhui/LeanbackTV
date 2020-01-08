@@ -10,7 +10,7 @@
 	<string name="click_03_63_003">{"buryId":\"click_03_63_003\","levelone":\"03\","leveltwo":\"63\","levelthree":\"003\","businessinfo$json":{"lecture_id":\"%1$s\"}}</string>
 	<!-->说明: 点击轻直播间课程详情课程推荐卡片-
      参数: 讲座id ,课程id</!-->
-	<string name="click_03_63_007">{"buryId":\"click_03_63_007\","levelone":\"03\","leveltwo":\"63\","levelthree":\"007\","businessinfo$json":{"lecture_id":\"%1$s\","courseid":\"%2$s\"}}</string>
+	<string name="click_03_63_007">{"buryId":\"click_03_63_007\","levelone":\"03\","leveltwo":\"63\","levelthree":\"007\","businessinfo$json":{"lecture_id":\"%1$s\","course_id":\"%2$s\"}}</string>
 	<!-->说明: 点击轻直播间课程推荐卡片-关闭按钮
          参数: 讲座id</!-->
 	<string name="click_03_63_008">{"buryId":\"click_03_63_008\","levelone":\"03\","leveltwo":\"63\","levelthree":\"008\","businessinfo$json":{"lecture_id":\"%1$s\"}}</string>
@@ -57,7 +57,7 @@
 	<!-->说明: 点击轻直播间保存二维码，去微信扫码按钮
          参数: 讲座id，班级群码获取状态【1.二维码图片加载成功、
 2.二维码图片加载失败】，图片保存状态【1.保存成功、2.保存失败】</!-->
-	<string name="click_03_63_026">{"buryId":\"click_03_63_026\","levelone":\"03\","leveltwo":\"63\","levelthree":\"026\","businessinfo$json":{"lecture_id":\"%1$s\","class_get_status":\"%2$s\","pic_save_status":\"%3$s\"}}</string>
+	<string name="click_03_63_026">{"buryId":\"click_03_63_026\","levelone":\"03\","leveltwo":\"63\","levelthree":\"026\","businessinfo$json":{"lecture_id":\"%1$s\","pic_get_status":\"%2$s\","pic_save_status":\"%3$s\"}}</string>
 
 
 	<!-->说明: 点击回放-轻直播间回放-优惠券展示位
@@ -78,7 +78,7 @@
 	<string name="click_03_84_008">{"buryId":\"click_03_84_008\","levelone":\"03\","leveltwo":\"84\","levelthree":\"008\","businessinfo$json":{"lecture_id":\"%1$s\"}}</string>
 	<!-->说明: 点击回放-轻直播间回放-课程推荐位-立即报名按钮
          参数: 讲座id，推荐课程id</!-->
-	<string name="click_03_84_009">{"buryId":\"click_03_84_009\","levelone":\"03\","leveltwo":\"84\","levelthree":\"009\","businessinfo$json":{"lecture_id":\"%1$s\","rec_course_id":\"%2$s\"}}</string>
+	<string name="click_03_84_009">{"buryId":\"click_03_84_009\","levelone":\"03\","leveltwo":\"84\","levelthree":\"009\","businessinfo$json":{"lecture_id":\"%1$s\","course_id":\"%2$s\"}}</string>
 	<!-->说明: 点击回放-轻直播间回放-屏蔽老师按钮
          参数: 讲座id，屏蔽按钮状态【"0:关闭屏蔽","1:打开屏蔽"】</!-->
 	<string name="click_03_84_010">{"buryId":\"click_03_84_010\","levelone":\"03\","leveltwo":\"84\","levelthree":\"010\","businessinfo$json":{"lecture_id":\"%1$s\","block_status":\"%2$s\"}}</string>
