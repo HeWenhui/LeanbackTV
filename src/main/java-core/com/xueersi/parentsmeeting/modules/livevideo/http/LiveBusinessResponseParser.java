@@ -228,6 +228,7 @@ public class LiveBusinessResponseParser extends HttpResponseParser {
             JSONObject liveStatusJsonObj = data.optJSONObject("liveStatus");
             if (liveStatusJsonObj != null) {
                 liveGetInfo.getLiveStatus().setStartClass(liveStatusJsonObj.optBoolean("startClass"));
+                liveGetInfo.getLiveStatus().setStreamMode(liveStatusJsonObj.optInt("streamMode"));
             }
 
 

@@ -2032,12 +2032,23 @@ public class LiveGetInfo {
          **/
         private boolean startClass;
 
+        /**当前视频流模式：课前辅导/主讲/课后辅导 */
+        private int streamMode;
+
         public boolean isStartClass() {
             return startClass;
         }
 
         public void setStartClass(boolean startClass) {
             this.startClass = startClass;
+        }
+
+        public int getStreamMode() {
+            return streamMode;
+        }
+
+        public void setStreamMode(int streamMode) {
+            this.streamMode = streamMode;
         }
     }
 
