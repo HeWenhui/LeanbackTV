@@ -78,6 +78,7 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -156,6 +157,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     private boolean loadJs = false;
     /** 是不是刷新，加载完成 */
     private int isRefresh = 0;
+    private boolean haveSno4 = false;
     /** 收到加载完成 */
     private boolean isLoadComplete = false;
     /** 刷新次数 */
@@ -167,6 +169,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     private int getAnswerType = 0;
     /** 加载结果页 */
     private boolean loadResult = false;
+    private int newProgress;
     /** 确认提交的弹窗 */
     private CourseTipDialog courseTipDialog;
     /** 保存今天互动题 */
@@ -363,6 +366,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         getTodayQues();
         newCourseCache = new NewCourseCache(mContext, liveId, testid);
         addJavascriptInterface();
+        final String finalTestid = testid;
         wvSubjectWeb.setWebChromeClient(new BaseCoursewareNativePager.MyWebChromeClient() {
             @Override
             public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
@@ -376,6 +380,16 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             protected File getLocalFile(ConsoleMessage consoleMessage) {
                 File file = newCourseCache.onConsoleMessage(wvSubjectWeb, consoleMessage);
                 return file;
+            }
+
+            @Override
+            protected HashMap<String, String> getExtra() {
+                HashMap<String, String> extra = new HashMap<>();
+                extra.put("testid", "" + finalTestid);
+                extra.put("loadJs", "" + loadJs);
+                extra.put("newProgress", "" + newProgress);
+                extra.put("haveSno4", "" + haveSno4);
+                return extra;
             }
         });
         CourseWebViewClient courseWebViewClient = new CourseWebViewClient();
@@ -476,6 +490,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 loadJs = false;
                 isRefresh = 1;
                 refreshTime++;
+                haveSno4 = false;
                 mLogtf.d("ivWebViewRefresh:refreshTime=" + refreshTime);
                 wvSubjectWeb.reload();
             }
@@ -774,6 +789,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     if (currentIndex >= 0 && currentIndex < tests.size()) {
                         pageid = tests.get(currentIndex).getId();
                     }
+                    haveSno4 = true;
                     NewCourseLog.sno4(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), getSubtestid(), wvSubjectWeb.getUrl(), ispreload, pageid, (System.currentTimeMillis() - pagerStart), isRefresh, refreshTime, detailInfo.isTUtor(), getProtocal());
                     isRefresh = 0;
                 }
@@ -1428,6 +1444,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     @Override
     protected void onProgressChanged(WebView view, int newProgress) {
         super.onProgressChanged(view, newProgress);
+        this.newProgress = newProgress;
         newCourseCache.onProgressChanged(newProgress);
         if (!loadResult) {
             preLoad.onProgressChanged(view, newProgress);
@@ -1534,6 +1551,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     }
                     mLogtf.d(SysLogLable.loadCourseWareStart, "onDataSucess:type=" + type + ",url=" + test.getPreviewPath());
                     NewCourseLog.sno3(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), getSubtestid(), test.getPreviewPath(), ispreload, test.getId(), detailInfo.isTUtor(), getProtocal());
+                    haveSno4 = false;
                     //设置作答时间
                     if (isArts == LiveVideoSAConfig.ART_EN) {
                         setTimeEn(newCourseSec);
