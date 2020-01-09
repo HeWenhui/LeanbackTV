@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.enteampk.item;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
@@ -9,7 +8,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xueersi.lib.framework.are.ContextManager;
-import com.xueersi.lib.framework.drawable.DrawableHelper;
+import com.xueersi.common.resources.DrawableHelper;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;

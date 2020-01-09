@@ -3,18 +3,15 @@ package com.xueersi.parentsmeeting.modules.livevideo.widget;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import com.xrs.bury.xrsbury.XrsBury;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.logerhelper.XesMobAgent;
-import com.xueersi.lib.framework.drawable.DrawableHelper;
+import com.xueersi.common.resources.DrawableHelper;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.TimeUtils;
 import com.xueersi.lib.log.LoggerFactory;
@@ -22,7 +19,6 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.BackMediaPlayerControl;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaController2;
-import com.xueersi.parentsmeeting.module.videoplayer.media.MediaControllerBottom2;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.bll.LightLiveBury;
 
