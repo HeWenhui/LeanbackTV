@@ -47,4 +47,6 @@ public class LivePluginGrayConfig {
     public static final int MODULE_TEAM_PK = 70;
     /** roleplay */
 //    public static final int MODULE_ROLE_PLAY = 90;
+    /** ai主观题课件互动题 **/
+    public static final int MOUDLE_AI_COURSEWARE = 127;
 }
