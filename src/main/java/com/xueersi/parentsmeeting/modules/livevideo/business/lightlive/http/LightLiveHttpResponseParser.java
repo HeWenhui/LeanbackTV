@@ -7,8 +7,11 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.entity.Co
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.entity.CourseTeacherEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.entity.LPWeChatEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveBackMsgEntity;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -240,5 +243,53 @@ public class LightLiveHttpResponseParser extends HttpResponseParser {
             lpEntity.setTeacherImg(teaInfo.optString("teaImg"));
         }
         return lpEntity;
+    }
+
+    /**
+     * 解析回放聊天数据
+     * @param responseEntity
+     * @return
+     */
+    public ArrayList<LiveBackMsgEntity> parserBackMessageInfo(ResponseEntity responseEntity) {
+        ArrayList<LiveBackMsgEntity> entities = new ArrayList<>();
+        JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+        try {
+            if (jsonObject.has("list")) {
+                JSONArray msgList = jsonObject.getJSONArray("list");
+                for (int i = 0; i < msgList.length(); i++) {
+                    LiveBackMsgEntity entity = new LiveBackMsgEntity();
+                    JSONObject temp = msgList.getJSONObject(i);
+                    entity.setSender(temp.optString("sender"));
+                    entity.setId(temp.optLong("id"));
+                    entity.setReceiver(temp.optString("receiver"));
+                    entity.setChannel(temp.optInt("channel"));
+                    entity.setNotice(temp.optInt("notice"));
+                    String sender = entity.getSender();
+                    if (sender != null) {
+                        sender = sender.substring(0, sender.length() - 2);
+                        if (sender.startsWith("t")) {
+                            entity.setFrom(LiveBackMsgEntity.MESSAGE_TEACHER);
+                        } else if (sender.substring(sender.lastIndexOf("_") + 1).equals(LiveAppUserInfo.getInstance().getStuId())) {
+                            entity.setFrom(LiveBackMsgEntity.MESSAGE_MINE);
+                        } else {
+                            entity.setFrom(LiveBackMsgEntity.MESSAGE_CLASS);
+                        }
+                    }
+                    if (temp.has("text")) {
+                        JSONObject text = temp.optJSONObject("text");
+                        entity.setText(text.optString("msg"));
+                        entity.setType(text.optString("type"));
+                        entity.setName(text.optString("name"));
+                        entity.setHeadImg(text.optString("path"));
+                        entity.setEvenNum(text.optString("evenexc"));
+                    }
+                    entities.add(entity);
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return entities;
     }
 }

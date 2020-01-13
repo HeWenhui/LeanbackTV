@@ -19,7 +19,15 @@
             android:process=":livevideo"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustResize|stateHidden" />
-
+        <activity
+            android:name="com.xueersi.parentsmeeting.modules.livevideo.fragment.LightlivePlaybackVideoActivity"
+            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
+            android:launchMode="singleTask"
+            android:process=":livevideo"
+            android:theme="@style/style_live_compat"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize|stateHidden"
+            />
         <activity
             android:name="com.xueersi.parentsmeeting.modules.livevideo.activity.AuditClassRoomActivity"
             android:screenOrientation="portrait"></activity>

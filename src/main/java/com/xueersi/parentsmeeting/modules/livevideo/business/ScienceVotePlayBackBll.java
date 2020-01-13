@@ -141,7 +141,13 @@ public class ScienceVotePlayBackBll extends LiveBackBaseBll {
     }
 
     private void submitResult() {
-        getmHttpManager().ScienceVoteCommit("1", liveId, liveGetInfo.getLiveType(), liveGetInfo.getStudentLiveInfo().getClassId(), interactionId, getUserAnswer(), nickname, liveGetInfo.getStuName(), new HttpCallBack(true) {
+        // FIXME: 封版后需求，加强异常检查。后续可以重新评估异常可能，去掉判断。
+        String teamId = "";
+        if(liveGetInfo != null && liveGetInfo.getStudentLiveInfo() != null && !TextUtils.isEmpty(liveGetInfo.getStudentLiveInfo().getTeamId())){
+            teamId = liveGetInfo.getStudentLiveInfo().getTeamId();
+        }
+        getmHttpManager().ScienceVoteCommit("1", liveId, liveGetInfo.getLiveType(), liveGetInfo.getStudentLiveInfo().getClassId(),
+                interactionId, getUserAnswer(), nickname, liveGetInfo.getStuName(),teamId, new HttpCallBack(true) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 logger.d("ScienceVoteCommit:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());

@@ -383,6 +383,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
         liveGetInfo.setTeacherId(mVideoEntity.getTutorTeacherId());
         liveGetInfo.setTeacherName(mVideoEntity.getTutorTeacherName());
         liveGetInfo.setTeacherIMG(mVideoEntity.getTutorTeacherImg());
+        liveGetInfo.setStreamTimes(mVideoEntity.getStreamTimes());
 
         liveGetInfo.setsTime(mVideoEntity.getsTime());
         liveGetInfo.seteTime(mVideoEntity.geteTime());

@@ -404,9 +404,20 @@ public class LiveVideoDispatcher extends AbsDispatcher {
         videoEntity.setGotoClassTime(publicLiveCourseEntity.getGotoClassTime());
         videoEntity.setOnlineNums(publicLiveCourseEntity.getOnlineNums());
         videoEntity.setStreamTimes(publicLiveCourseEntity.getStreamTimes());
+        //测试代码
+//        publicLiveCourseEntity.setGently(true);
+
         Bundle bundle = new Bundle();
         bundle.putSerializable("videoliveplayback", videoEntity);
         bundle.putInt("type", 2);
+        bundle.putBoolean("isGently",publicLiveCourseEntity.isGently());
+        //轻直播需要参数
+        if (publicLiveCourseEntity.isGently()){
+            bundle.putString("gentlyNotice",publicLiveCourseEntity.getGentlyNotice());
+            if (publicLiveCourseEntity.getLpWeChatEntity() != null){
+                bundle.putInt("tipType",publicLiveCourseEntity.getLpWeChatEntity().getTipType());
+            }
+        }
         if ("720P".equals(publicLiveCourseEntity.getRadioType())) {
             LiveVideoEnter.intentToLectureLivePlayBackVideo(activity, bundle,
                     activity.getClass().getSimpleName());

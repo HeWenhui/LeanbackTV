@@ -698,7 +698,11 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
         // 已展示过答题结果
         if (mDsipalyer != null) {
             mDsipalyer.close();
-            mLogtf.d(SysLogLable.courseCloseResult, "closeAnswerResult:method=" + method + ",basePager=" + basePager);
+            try {
+                mLogtf.d(SysLogLable.courseCloseResult, "closeAnswerResult:method=" + method + ",basePager=" + basePager);
+            }catch (Exception e){
+                LiveCrashReport.postCatchedException(TAG,e);
+            }
             mDsipalyer = null;
             EventBus.getDefault().post(new AnswerResultCplShowEvent(basePager, "closeAnswerResult:method1=" + method));
         }
@@ -753,6 +757,11 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
     @Override
     public void onCompeletShow() {
         //logger.e( "=======onCompeletShow called:" + forceSumbmit + ":" + this);
+        try {
+            mLogtf.d("onCompeletShow:forceSumbmit=" + forceSumbmit+"，mDsipalyer="+mDsipalyer);
+        } catch (Exception e) {
+            LiveCrashReport.postCatchedException(TAG, e);
+        }
         if (forceSumbmit) {
             postDelayed(new Runnable() {
                 @Override
@@ -766,6 +775,11 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
 
     @Override
     public void onAutoClose(BasePager basePager) {
+        try {
+            mLogtf.d("onAutoClose:mDsipalyer=" + mDsipalyer);
+        } catch (Exception e) {
+            LiveCrashReport.postCatchedException(TAG, e);
+        }
         if (mDsipalyer != null) {
             removeView(mDsipalyer.getRootLayout());
             mLogtf.d(SysLogLable.courseCloseResult, "onAutoClose");

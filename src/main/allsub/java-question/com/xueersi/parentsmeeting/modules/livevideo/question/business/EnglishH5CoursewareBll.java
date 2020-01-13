@@ -496,6 +496,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, BaseVo
                 if (h5CoursewarePager != null) {
                     try {
                         if (basePager instanceof CoursewareNativePager) {
+                            //如果不是同一个。不应该关闭
                             if (h5CoursewarePager != basePager) {
                                 CoursewareNativePager coursewareNativePager = (CoursewareNativePager) basePager;
                                 BaseVideoQuestionEntity baseVideoQuestionEntity = coursewareNativePager.getBaseVideoQuestionEntity();
@@ -505,6 +506,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, BaseVo
                                 } else {
                                     logToFile.d("forceClose:noclose_method=" + method);
                                 }
+                                return;
                             }
                         }
                     } catch (Exception e) {

@@ -344,7 +344,7 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
         VPlayerListenerReg reg = ProxUtil.getProxUtil().get(context, VPlayerListenerReg.class);
         if (reg != null) {
             logger.i("停止播放");
-            reg.releaseWithViewGone();
+            reg.releaseVideo();
         }
 
         String moduleName = "aievaluation";

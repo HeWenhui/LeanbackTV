@@ -4,14 +4,25 @@ import android.app.Application;
 import android.app.Dialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Environment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -19,14 +30,30 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
+import com.tal100.chatsdk.utils.ToastUtils;
+import com.tencent.mm.opensdk.constants.ConstantsAPI;
+import com.tencent.mm.opensdk.openapi.IWXAPI;
+import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 import com.xrs.bury.xrsbury.XrsBury;
+import com.xueersi.common.config.AppConfig;
+import com.xueersi.common.config.FileConfig;
+import com.xueersi.common.util.ScreenShot;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.lib.framework.utils.file.FileUtils;
+import com.xueersi.lib.framework.utils.image.ImageUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
+import com.xueersi.lib.imageloader.SingleConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.bll.LightLiveBury;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.FrameAnimation;
 import com.xueersi.ui.dialog.BaseAlertDialog;
 import com.xueersi.ui.dialog.BaseDialog;
+
+import java.io.File;
+import java.lang.ref.SoftReference;
 
 /**
  * @ProjectName: xueersiwangxiao
@@ -57,9 +84,16 @@ public class TeacherWechatDialog extends BaseAlertDialog {
     private RelativeLayout rlWechat;
     private String mWechat = "";
     private int type;
+    private String imgQrcodeURL;
+    private boolean isLoadSuccess;
+    private Bitmap bitmap;
+//    private SoftReference<Bitmap> bitmapSoftReference;
+    IWXAPI mApi;
+    private boolean isLive;
 
-    public TeacherWechatDialog(Context context, Application application, int type) {
+    public TeacherWechatDialog(Context context, Application application,boolean isLive, int type) {
         super(context, application, false, type);
+        this.isLive = isLive;
     }
 
     @Override
@@ -113,8 +147,7 @@ public class TeacherWechatDialog extends BaseAlertDialog {
         mAlertDialog.setContentView(
                 alertView,
                 new ViewGroup.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
-                        type == TYPE_WITH_HEAD ? SizeUtils.Dp2Px(mContext, 246) : SizeUtils.Dp2Px(mContext, 400)));
-
+                        type == TYPE_WITH_HEAD ? SizeUtils.Dp2Px(mContext, 246) : SizeUtils.Dp2Px(mContext, 416)));
     }
 
     private void setAlertDialog(Dialog alertDialog) {
@@ -135,20 +168,101 @@ public class TeacherWechatDialog extends BaseAlertDialog {
         btWechatCopy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (type == TYPE_WITH_QRCODE) {
+                    if (isLoadSuccess && bitmap != null) {
+                        saveBitmap(bitmap);
+                        openScanner();
+                    } else {
+                        ImageLoader.with(ContextManager.getContext()).load(imgQrcodeURL).asBitmap(new SingleConfig.BitmapListener() {
+                            @Override
+                            public void onSuccess(Drawable drawable) {
+                                if(drawable != null){
+                                    saveBitmap(ImageUtils.drawable2Bitmap(drawable));
+                                    openScanner();
+                                }else {
+                                    XESToastUtils.showToast("二维码下载失败");
+                                    LightLiveBury.clickBury(mContext.getResources().getString(R.string.click_03_63_026),2,2);
+                                }
+                            }
 
-                ClipboardManager cm = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
-
-                ClipData mClipData = ClipData.newPlainText("Label", mWechat);
-
-                cm.setPrimaryClip(mClipData);
-                XESToastUtils.showToast("您已复制老师微信号，快去添加吧");
-                if (TYPE_WITH_HEAD == type){
-                    XrsBury.clickBury(mContext.getResources().getString(R.string.click_03_63_014));
-                }else if (TYPE_WITH_QRCODE == type){
-                    XrsBury.clickBury(mContext.getResources().getString(R.string.click_03_63_002));
+                            @Override
+                            public void onFail() {
+                                XESToastUtils.showToast("二维码下载失败");
+                                LightLiveBury.clickBury(mContext.getResources().getString(R.string.click_03_63_026),2,2);
+                            }
+                        });
+                    }
+//                    LightLiveBury.clickBury(mContext.getResources().getString(R.string.click_03_63_002));
+                } else if (type == TYPE_WITH_HEAD) {
+                    ClipboardManager cm = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
+                    ClipData mClipData = ClipData.newPlainText("Label", mWechat);
+                    cm.setPrimaryClip(mClipData);
+                    XESToastUtils.showToast("您已复制老师微信号，快去添加吧");
+                    if (isLive){
+                        LightLiveBury.clickBury(mContext.getResources().getString(R.string.click_03_63_014));
+                    }else {
+                        LightLiveBury.clickBury(mContext.getResources().getString(R.string.click_03_84_012));
+                    }
                 }
             }
         });
+    }
+
+    /**
+     * 跳转到微信扫一扫
+     */
+    private void openScanner() {
+        if (mApi == null){
+            mApi = WXAPIFactory.createWXAPI(mContext,AppConfig.SHARE_WX_APP_ID);
+            mApi.registerApp(AppConfig.SHARE_WX_APP_ID);
+        }
+        if (mApi.isWXAppInstalled()){
+//            cancelDialog();
+            String WECHAT_APP_PACKAGE = "com.tencent.mm";
+            String WECHAT_LAUNCHER_UI_CLASS = "com.tencent.mm.ui.LauncherUI";
+            String WECHAT_OPEN_SCANER_NAME = "LauncherUI.From.Scaner.Shortcut";
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setComponent(new ComponentName(WECHAT_APP_PACKAGE, WECHAT_LAUNCHER_UI_CLASS));
+            intent.putExtra(WECHAT_OPEN_SCANER_NAME, true);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            mContext.startActivity(intent);
+        }else {
+            LiveMainHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    XESToastUtils.showToastAtCenter("你的设备还未安装微信客户端");
+                }
+            },3000);
+
+        }
+    }
+
+    /**
+     * 保存二维码
+     * @param bitmap
+     */
+    private void saveBitmap(Bitmap bitmap) {
+        File dir = FileUtils.createOrExistsSDCardDirForFile(FileConfig.savePathImageDir);
+        String filePath = "";
+        if (dir != null && dir.exists()) {
+            String filename = "Xes" + System.currentTimeMillis() + ".jpg";
+            File path = FileUtils.getFileByPath(dir.getPath() + File.separator + filename);
+            if (path != null) {
+                if (path.exists()) {
+                    path.delete();
+                }
+                filePath = path.getPath();
+
+                boolean isSuccess = ScreenShot.saveToGallery(mContext, bitmap, path.getAbsolutePath(), Bitmap.CompressFormat.JPEG, filename, filename,false);
+                if (isSuccess) {
+                    XESToastUtils.showToastAtCenter("已成功保存到相册\n请用微信扫一扫进群");
+                    LightLiveBury.clickBury(mContext.getResources().getString(R.string.click_03_63_026),1,1);
+                } else {
+                    XESToastUtils.showToastAtCenter("二维码保存失败");
+                    LightLiveBury.clickBury(mContext.getResources().getString(R.string.click_03_63_026),1,2);
+                }
+            }
+        }
     }
 
     private void initView() {
@@ -164,18 +278,22 @@ public class TeacherWechatDialog extends BaseAlertDialog {
             tvSubTitle.setTextSize(14);
             tvSubTitle.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
             tvTitle.setText("扫码加入班级群");
+            btWechatCopy.setText("保存二维码，去微信扫码");
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) btWechatCopy.getLayoutParams();
+            params.width = SizeUtils.Dp2Px(mContext, 194);
+            btWechatCopy.setLayoutParams(params);
         }
     }
 
     public TeacherWechatDialog setTeacherName(String name) {
-        if (name != null){
+        if (name != null) {
             tvName.setText(name);
         }
         return this;
     }
 
-    public TeacherWechatDialog setTeacherWechat(String num){
-        if (num != null){
+    public TeacherWechatDialog setTeacherWechat(String num) {
+        if (num != null) {
             mWechat = num;
             tvWechatNum.setText(num);
         }
@@ -196,22 +314,46 @@ public class TeacherWechatDialog extends BaseAlertDialog {
     }
 
     public TeacherWechatDialog setQrcode(String imgURL) {
-        int defaultHeadImg = R.color.COLOR_F5F5F6;
+        imgQrcodeURL = imgURL;
+        final int defaultHeadImg = R.color.COLOR_F5F5F6;
         if (TextUtils.isEmpty(imgURL)) {
             // 如果图片URL为空则直接加载默认图片，因为图片加载框架对空字符串的路径加载会加载到其它图片上，故这样解决
             ivQrcode.setImageResource(defaultHeadImg);
 
         } else {
             ImageLoader.with(ContextManager.getContext()).load(imgURL).error(defaultHeadImg)
-                    .placeHolder(defaultHeadImg).into(ivQrcode);
+                    .placeHolder(defaultHeadImg).into(ivQrcode, new SingleConfig.BitmapListener() {
+                @Override
+                public void onSuccess(Drawable drawable) {
+                    bitmap = ImageUtils.drawable2Bitmap(drawable);
+                    isLoadSuccess = true;
+                }
+
+                @Override
+                public void onFail() {
+                    isLoadSuccess = false;
+                    XESToastUtils.showToastAtCenter("班级群码丢啦，再次打开弹窗试试吧~");
+                }
+            });
         }
         return this;
     }
 
-    public TeacherWechatDialog setSubTitle(String subTitle){
+    public TeacherWechatDialog setSubTitle(String subTitle) {
         tvSubTitle.setText(subTitle);
         return this;
     }
 
-
+    @Override
+    public void showDialog() {
+        super.showDialog();
+        if (type == TYPE_WITH_QRCODE) {
+            ScaleAnimation animation =  new ScaleAnimation(0.95f, 1.05f, 0.95f, 1.05f,
+                    Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+            animation.setDuration(1100);
+            animation.setRepeatCount(Animation.INFINITE);
+            animation.setRepeatMode(Animation.REVERSE);
+            btWechatCopy.startAnimation(animation);
+        }
+    }
 }
