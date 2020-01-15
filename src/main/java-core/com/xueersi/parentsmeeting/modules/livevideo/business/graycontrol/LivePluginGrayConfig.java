@@ -44,7 +44,7 @@ public class LivePluginGrayConfig {
     /** 轻互动聊天面板 **/
     public static final int MODULE_FORUM_INTERACTION = 68;
     /** 战队pk **/
-    public static final int MODULE_TEAM_PK = 70;
+    public static final int MODULE_TEAM_PK = 100;
     /** roleplay */
 //    public static final int MODULE_ROLE_PLAY = 90;
     /** ai主观题课件互动题 **/
