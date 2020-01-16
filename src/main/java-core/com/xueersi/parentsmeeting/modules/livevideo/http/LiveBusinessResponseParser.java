@@ -131,6 +131,7 @@ public class LiveBusinessResponseParser extends HttpResponseParser {
                 LiveGetInfo.StudentLiveInfoEntity studentLiveInfoEntity = new LiveGetInfo.StudentLiveInfoEntity();
                 studentLiveInfoEntity.setClassId(stuLiveInfoObj.optString("classId"));
                 studentLiveInfoEntity.setTeamId(stuLiveInfoObj.optString("teamId"));
+                studentLiveInfoEntity.setCourseId(stuLiveInfoObj.optString("courseId"));
 
                 boolean isExpe = "-1".equals(studentLiveInfoEntity.getClassId());
                 if (isExpe) {
