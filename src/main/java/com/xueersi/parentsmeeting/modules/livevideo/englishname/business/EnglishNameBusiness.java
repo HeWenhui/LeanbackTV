@@ -182,25 +182,10 @@ public class EnglishNameBusiness extends BaseBll {
         }
         List<EngLishNameEntity> nameList = mEnlishNameParser.pareseEnglishName(nameString,1,listIndex);
         List<EngLishNameEntity> nameList2 = mEnlishNameParser.pareseEnglishName(nameString,2,listIndex);
-        if(nameList == null) {
-            nameString = getStringFromFile("generate.txt", true);
-
-            indexPosition = 0;
-            for (int j = 0; j < word.length; j++) {
-                index = new EngLishNameEntity();
-                index.setWordIndex(word[j]);
-                listIndex.add(index);
-            }
-           nameList = mEnlishNameParser.pareseEnglishName(nameString,1,listIndex);
-            nameList2 = mEnlishNameParser.pareseEnglishName(nameString,2,listIndex);
-
-        } else {
-            nameList.addAll(nameList2);
-        }
         if (nameList==null) {
             return;
         }
-
+        nameList.addAll(nameList2);
         for (int i = 0; i < nameList.size(); i++) {
             if(TextUtils.equals(nameList.get(i).getName(),userName)) {
                 UserBll.getInstance().saveUserNameAudio(nameList.get(i).getAudioPath());
