@@ -883,7 +883,15 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
                     index = i;
                     break;
                 }
-            } else if (LocalCourseConfig.CATEGORY_NB_EXPERIMENT == videoQuestionEntity.getvCategory()) {
+            } else if (LocalCourseConfig.CATEGORY_FUTURE_AI_WARE == videoQuestionEntity.getvCategory()) {
+                // 大班ai主观题课件互动题
+                if (startTime <= playPosition && playPosition < endTime) {
+                    mQuestionEntity = videoQuestionEntity;
+                    hasQuestionShow = true;
+                    index = i;
+                    break;
+                }
+            }else if (LocalCourseConfig.CATEGORY_NB_EXPERIMENT == videoQuestionEntity.getvCategory()) {
                 //大班nb 实验
                 if (startTime <= playPosition && playPosition < endTime) {
                     mQuestionEntity = videoQuestionEntity;
