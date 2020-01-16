@@ -182,7 +182,7 @@ public class EnglishNameBusiness extends BaseBll {
         }
         List<EngLishNameEntity> nameList = mEnlishNameParser.pareseEnglishName(nameString,1,listIndex);
         List<EngLishNameEntity> nameList2 = mEnlishNameParser.pareseEnglishName(nameString,2,listIndex);
-        if (nameList==null) {
+        if (nameList==null || nameList2 ==null) {
             return;
         }
         nameList.addAll(nameList2);
