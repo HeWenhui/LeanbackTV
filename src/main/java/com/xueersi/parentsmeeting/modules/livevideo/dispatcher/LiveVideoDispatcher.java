@@ -126,7 +126,12 @@ public class LiveVideoDispatcher extends AbsDispatcher {
 
     private void dispatchInfo(Activity srcActivity, Bundle bundle, int requestCode) {
         englishNameBll = new EnglishNameBusiness(srcActivity);
-        englishNameBll.checkName();
+        //TODO:暂时先catch住，后续优化
+        try {
+            englishNameBll.checkName();
+        }catch (Exception e){
+            }
+
         if (bundle.containsKey(ParamKey.EXTRAKEY_JSONPARAM)) {
             activity = srcActivity;
             dispatcherBll = new DispatcherBll(srcActivity);
