@@ -49,4 +49,6 @@ public class LivePluginGrayConfig {
 //    public static final int MODULE_ROLE_PLAY = 90;
     /** ai主观题课件互动题 **/
     public static final int MOUDLE_AI_COURSEWARE = 127;
+    /** 课件预加载 **/
+    public static final int MOUDLE_COURSEWARE_PRELOAD = 128;
 }

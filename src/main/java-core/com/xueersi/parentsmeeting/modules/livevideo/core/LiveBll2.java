@@ -1957,7 +1957,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                         mLiveModuleConfigInfo = (LiveModuleConfigInfo) JsonUtil.jsonToObject(jsonString,
                                 LiveModuleConfigInfo.class);
                         mGetInfo.setLiveModuleConfigInfo(mLiveModuleConfigInfo);
-                        String preloadUrl = mGetInfo.getProperties(LivePluginGrayConfig.MOUDLE_FUTURE_COURSEWARE, "preloadUrl");
+                        String preloadUrl = mGetInfo.getProperties(LivePluginGrayConfig.MOUDLE_COURSEWARE_PRELOAD, "preloadurl");
                         if (!TextUtils.isEmpty(preloadUrl)) {
                             String liveId = mGetInfo.getId();
                             CoursewarePreload coursewarePreload = new CoursewarePreload(mContext, -1);
