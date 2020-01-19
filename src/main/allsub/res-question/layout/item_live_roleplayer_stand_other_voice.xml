@@ -24,28 +24,28 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
-                <ImageView
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_centerInParent="true"
-                    android:background="@drawable/roleplay_touxiangzhezhao_pic_nor" />
-
                 <com.xueersi.parentsmeeting.modules.livevideo.widget.CountDownHeadImageView
                     android:id="@id/civ_live_roleplayer_message_user_head"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
                     android:layout_centerInParent="true"
                     android:clickable="true"
                     android:src="@drawable/ic_default_head_square" />
+
+                <ImageView
+                    android:layout_width="55dp"
+                    android:layout_height="55dp"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/roleplay_touxiangzhezhao_pic_nor" />
 
             </RelativeLayout>
 
             <TextView
                 android:id="@id/tv_live_roleplayer_message_username"
                 style="@style/text_style_chat__name_style"
-                android:layout_width="60dp"
+                android:layout_width="55dp"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="2dp"
                 android:ellipsize="end"
                 android:gravity="center"
                 android:singleLine="true"
@@ -56,15 +56,16 @@
         </LinearLayout>
 
         <LinearLayout
+
             android:id="@id/rl_live_roleplayer_message_voice_main"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="70dp"
+            android:layout_marginLeft="63dp"
+            android:layout_marginTop="7dp"
             android:background="@drawable/selector_live_stand_roleplayer_other_item_bubble"
             android:minHeight="32dp"
             android:minWidth="120dp"
-            android:orientation="horizontal"
-            >
+            android:orientation="horizontal">
 
             <ImageView
                 android:id="@id/iv_live_roleplayer_message_voice_main"

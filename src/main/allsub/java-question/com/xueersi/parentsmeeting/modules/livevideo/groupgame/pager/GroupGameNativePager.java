@@ -446,7 +446,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         groupGameMVPMultPager.setOnPagerClose(new OnPagerClose() {
             @Override
             public void onClose(LiveBasePager basePager) {
-                onClose.onH5ResultClose(GroupGameNativePager.this, detailInfo);
+                onClose.onH5ResultClose(GroupGameNativePager.this, detailInfo, "");
             }
         });
         ((ViewGroup) mView).addView(groupGameMVPMultPager.getRootView());
@@ -665,7 +665,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
     }
 
     @Override
-    public void close() {
+    public void close(String method) {
 
     }
 
@@ -796,7 +796,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                         if (errStatus == LiveHttpConfig.HTTP_ERROR_ERROR) {
                             XESToastUtils.showToastAtCenter(failMsg);
                         }
-                        onClose.onH5ResultClose(GroupGameNativePager.this, detailInfo);
+                        onClose.onH5ResultClose(GroupGameNativePager.this, detailInfo, "");
                     }
                 });
         mLog.sno5(liveAndBackDebug, detailInfo.id, isForce ? "endPublish" : "autoSubmit", voiceTime == 0 ?

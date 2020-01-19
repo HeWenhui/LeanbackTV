@@ -8,8 +8,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 
+import com.xueersi.common.business.AppBll;
 import com.xueersi.common.entity.EnglishH5Entity;
-import com.xueersi.common.route.XueErSiRouter;
+import com.xueersi.common.route.module.ModuleHandler;
+import com.xueersi.common.route.module.entity.Module;
+import com.xueersi.common.route.module.entity.ModuleData;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
@@ -341,9 +344,19 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
         VPlayerListenerReg reg = ProxUtil.getProxUtil().get(context, VPlayerListenerReg.class);
         if (reg != null) {
             logger.i("停止播放");
-            reg.releaseWithViewGone();
+            reg.releaseVideo();
         }
-        XueErSiRouter.startModuleForResult((Activity) context, "/aievaluation/intelligent_recognition", XESCODE.ARTS_SEND_QUESTION, bundle);
+
+        String moduleName = "aievaluation";
+        Module m = AppBll.getInstance().getModuleByModuleName(moduleName);
+        if (m == null) {
+            m = new Module();
+            m.moduleName = moduleName;
+            m.version = "1.0.1";
+            m.title = "智能英语评测";
+            m.moduleType = 0;
+        }
+        ModuleHandler.start((Activity) context, new ModuleData(m, bundle), XESCODE.ARTS_SEND_QUESTION);
     }
 
     private void stopIntelligentOnce(Context context) {

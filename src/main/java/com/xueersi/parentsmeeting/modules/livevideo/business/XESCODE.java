@@ -342,4 +342,9 @@ public interface XESCODE {
 
     /**大班整合切换主辅 模式**/
     int LIVE_BUSINESS_MODE_CHANGE = 102;
+
+    /** 轻直播人气*/
+    int LIGHTLIVE_ROOM_STUDENT_NUM = 501;
+    /** 轻直播公告*/
+    int LIGHTLIVE_ROOM_NOTICE = 502;
 }

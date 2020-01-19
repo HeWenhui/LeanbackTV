@@ -17,16 +17,19 @@ import com.tencent.smtt.sdk.WebView;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.common.logerhelper.UmsAgentUtil;
+import com.xueersi.common.util.XrsBroswer;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentTrayPreference;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ErrorWebViewClient;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import java.io.File;
+import java.util.HashMap;
 
 import static com.xueersi.parentsmeeting.modules.livevideo.config.SysLogLable.xesWebLog;
 
@@ -79,6 +82,7 @@ public class BaseCoursewareNativePager extends LiveBasePager {
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
             super.onProgressChanged(view, newProgress);
+            XrsBroswer.writeLog("onProgressChanged:newProgress=" + newProgress);
             BaseCoursewareNativePager.this.onProgressChanged(view, newProgress);
         }
 
@@ -142,11 +146,21 @@ public class BaseCoursewareNativePager extends LiveBasePager {
                         + ",lineNumber=" + consoleMessage.lineNumber() + ",message=" + consoleMessage.message().replace("xesweblog:", ""));
             }
             File localFile = getLocalFile(consoleMessage);
-            UmsAgentUtil.webConsoleMessageFile(mContext, TAG, wvSubjectWeb.getUrl(), consoleMessage, isRequst, localFile);
+            HashMap<String, String> extra = null;
+            if (isRequst) {
+                try {
+                    extra = getExtra();
+                } catch (Exception e) {
+                    LiveCrashReport.postCatchedException(TAG, e);
+                }
+            }
+            UmsAgentUtil.webConsoleMessageFile(mContext, TAG, wvSubjectWeb.getUrl(), consoleMessage, isRequst, localFile, extra);
             if (AppConfig.DEBUG) {
                 mLogtf.debugSave("onConsoleMessage:level=" + consoleMessage.messageLevel() + ",sourceId=" + consoleMessage.sourceId()
                         + ",lineNumber=" + consoleMessage.lineNumber() + ",message=" + consoleMessage.message());
             }
+            XrsBroswer.writeLog("onConsoleMessage:level=" + consoleMessage.messageLevel() + ",sourceId=" + consoleMessage.sourceId()
+                    + ",lineNumber=" + consoleMessage.lineNumber() + ",message=" + consoleMessage.message());
             return super.onConsoleMessage(consoleMessage);
         }
 
@@ -163,6 +177,10 @@ public class BaseCoursewareNativePager extends LiveBasePager {
         }
 
         protected File getLocalFile(ConsoleMessage consoleMessage) {
+            return null;
+        }
+
+        protected HashMap<String, String> getExtra() {
             return null;
         }
     }

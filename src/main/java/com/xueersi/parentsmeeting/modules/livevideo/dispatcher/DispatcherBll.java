@@ -589,7 +589,7 @@ public class DispatcherBll extends BaseBll {
                             publicLiveCourseEntity.setCourseId(courseId);
                             publicLiveCourseEntity.setCourseName(courseName);
                             publicLiveCourseEntity.setTeacherId(teacherId);
-                            if (!TextUtils.isEmpty(gotoClassTime) && TextUtils.isDigitsOnly(gotoClassTime)) {
+                            if (!TextUtils.isEmpty(gotoClassTime) && TextUtils.isDigitsOnly(gotoClassTime) && !publicLiveCourseEntity.isGently()) {
                                 publicLiveCourseEntity.setGotoClassTime(Long.parseLong(gotoClassTime));
                             }
                         }

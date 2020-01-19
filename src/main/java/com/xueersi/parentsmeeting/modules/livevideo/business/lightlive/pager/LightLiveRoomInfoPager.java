@@ -90,4 +90,7 @@ public class LightLiveRoomInfoPager extends LiveBasePager {
         });
     }
 
+    public void setHasClose(boolean hasClose) {
+        this.hasClose = hasClose;
+    }
 }

@@ -8,6 +8,7 @@ import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
+import com.xueersi.common.util.XrsBroswer;
 import com.xueersi.lib.monitor.AppMonitor;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.tencent.smtt.sdk.CookieManager;
@@ -174,6 +175,7 @@ public class CacheWebView extends WebView {
     private static String sessionId;
 
     private String getSessionUrl(String url) {
+        XrsBroswer.writeLog("getSessionUrl:url=" + url);
         if (url == null) {
             return null;
         }

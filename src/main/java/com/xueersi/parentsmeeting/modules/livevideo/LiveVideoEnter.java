@@ -32,7 +32,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoTransferAc
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.dispatcher.DispatcherBll;
-import com.xueersi.parentsmeeting.modules.livevideo.englishname.SettingEnglishLandActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
@@ -251,7 +250,6 @@ public class LiveVideoEnter {
                 bundle.putInt("type", LiveVideoConfig.LIVE_TYPE_LECTURE);
                 bundle.putBoolean("loadAsserts", true);
                 bundle.putInt(ENTER_ROOM_FROM, from);
-                //        LectureLiveVideoActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
                 LiveVideoLoadActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
             }
 
@@ -298,7 +296,6 @@ public class LiveVideoEnter {
                 bundle.putInt("type", LiveVideoConfig.LIVE_TYPE_LECTURE);
                 bundle.putBoolean("loadAsserts", true);
                 bundle.putInt(ENTER_ROOM_FROM, from);
-                //        LectureLiveVideoActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
                 LiveVideoLoadActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
             }
 
@@ -493,9 +490,16 @@ public class LiveVideoEnter {
 
                     start1v2PlayBack(context, bundle, where);
                 } else {
-                    com.xueersi.parentsmeeting.modules.livevideo.fragment.LivePlaybackVideoActivity.intentTo(context, bundle,
+                    boolean isGently = bundle.getBoolean("isGently");
+                    if (isGently){
+                        com.xueersi.parentsmeeting.modules.livevideo.fragment.
+                                LightlivePlaybackVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
+                    }else {
+                        com.xueersi.parentsmeeting.modules.livevideo.fragment.
+                                LivePlaybackVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
+                    }
 
-                            where, VIDEO_REQUEST);
+
                 }
             }
 

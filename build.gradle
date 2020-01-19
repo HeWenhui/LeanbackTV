@@ -134,7 +134,7 @@ dependencies {
     implementation rootProject.ext.thirdlibraries.ticker
     implementation rootProject.ext.thirdlibraries.tray
     implementation rootProject.ext.thirdlibraries.design
-
+    implementation rootProject.ext.thirdlibraries.wx
 
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.agora)
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.thirdlibraries.rtcengine)
@@ -167,3 +167,5 @@ dependencies {
     }
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.talaccsdk)
 }
+apply from: rootDir.absolutePath + '/buildscript/module_secure_check.gradle'
+apply from: rootDir.absolutePath + '/buildscript/module_replace_image.gradle'

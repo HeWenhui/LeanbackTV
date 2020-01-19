@@ -28,6 +28,7 @@ public abstract class BaseLiveQuestionPager extends LiveBasePager {
         if (!isPostEvent){
             String testId = baseVideoQuestionEntity.getvQuestionID();
             LiveRoomH5CloseEvent event = new LiveRoomH5CloseEvent(-1, -1, LiveRoomH5CloseEvent.H5_TYPE_INTERACTION, testId);
+            event.setBasePager(this);
             event.setCloseByTeahcer(true);
             EventBus.getDefault().post(event);
         }

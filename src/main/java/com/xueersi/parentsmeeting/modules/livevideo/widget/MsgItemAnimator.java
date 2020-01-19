@@ -93,7 +93,7 @@ public class MsgItemAnimator extends BaseItemAnimator {
     /**
      * 所有item 条目 淡出动效
      */
-    private void startItemsFadeOut() {
+    public void startItemsFadeOut() {
        // Log.e("MsgItemAnim", "=====>startItemsFadeOut");
         fadeOutCancle = false;
         mCurrentItemIndex = 0;
