@@ -487,6 +487,8 @@ public class LiveVideoDispatcher extends AbsDispatcher {
         if (entity.getConfigs() != null) {
             videoEntity.setProtocol(entity.getConfigs().getProtocol());
             videoEntity.setFileId(entity.getConfigs().getFileId());
+            videoEntity.setBeforeClassFileId(entity.getConfigs().getBeforeClassFileId());
+            videoEntity.setAfterClassFileId(entity.getConfigs().getAfterClassFileId());
         }
         Bundle bundle = new Bundle();
         bundle.putSerializable("videoliveplayback", videoEntity);
@@ -554,6 +556,8 @@ public class LiveVideoDispatcher extends AbsDispatcher {
         if (entity.getConfigs() != null) {
             videoEntity.setProtocol(entity.getConfigs().getProtocol());
             videoEntity.setFileId(entity.getConfigs().getFileId());
+            videoEntity.setBeforeClassFileId(entity.getConfigs().getBeforeClassFileId());
+            videoEntity.setAfterClassFileId(entity.getConfigs().getAfterClassFileId());
         }
         Bundle bundle = new Bundle();
         bundle.putSerializable("videoliveplayback", videoEntity);

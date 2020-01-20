@@ -1273,6 +1273,8 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
                 configs.setIrcRoomsJson(configsJsonObj.optJSONArray("ircRooms").toString());
                 configs.setProtocol(configsJsonObj.optInt("protocol", MediaPlayer.VIDEO_PROTOCOL_MP4));
                 configs.setFileId(configsJsonObj.optString("fileId"));
+                configs.setBeforeClassFileId(configsJsonObj.optString("beforeClassFileId"));
+                configs.setAfterClassFileId(configsJsonObj.optString("afterClassFileId"));
                 playBackEntity.setSkinType(configsJsonObj.optInt("skinType"));
                 playBackEntity.setConfigs(configs);
             }

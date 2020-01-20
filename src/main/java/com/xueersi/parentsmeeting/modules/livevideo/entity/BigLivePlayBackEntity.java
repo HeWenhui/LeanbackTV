@@ -450,6 +450,8 @@ public class BigLivePlayBackEntity extends BaseEntity {
         /** 回放协议 */
         private int protocol;
         private String fileId;
+        private String beforeClassFileId;
+        private String afterClassFileId;
 
         /**聊天信息接口**/
         private String getChatRecordUrl;
@@ -537,6 +539,22 @@ public class BigLivePlayBackEntity extends BaseEntity {
 
         public void setFileId(String fileId) {
             this.fileId = fileId;
+        }
+
+        public String getBeforeClassFileId() {
+            return beforeClassFileId;
+        }
+
+        public void setBeforeClassFileId(String beforeClassFileId) {
+            this.beforeClassFileId = beforeClassFileId;
+        }
+
+        public String getAfterClassFileId() {
+            return afterClassFileId;
+        }
+
+        public void setAfterClassFileId(String afterClassFileId) {
+            this.afterClassFileId = afterClassFileId;
         }
     }
 
