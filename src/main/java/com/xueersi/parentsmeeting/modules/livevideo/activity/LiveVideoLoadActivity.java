@@ -213,6 +213,10 @@ public class LiveVideoLoadActivity extends BaseActivity {
 
     private void initData() {
         logger.d("initData:index=" + index + ",size=" + liveVideoLoadActivities.size());
+        //已经finish了 https://bugly.qq.com/v2/crash-reporting/crashes/a0df5ed682/336475?pid=1
+        if (liveVideoLoadActivities.isEmpty()) {
+            return;
+        }
         LiveVideoLoadActivity activity = liveVideoLoadActivities.get(0);
         if (activity != this) {
             DataLoadManager.newInstance().loadDataStyle(LiveVideoLoadActivity.this,
@@ -288,12 +292,12 @@ public class LiveVideoLoadActivity extends BaseActivity {
                         }
                         String stuId = LiveAppUserInfo.getInstance().getStuId();
                         getInfos.put(liveType + "-" + stuId + "-" + vSectionID, mGetInfo);
-                        if(!mGetInfo.isGently()){
+                        if (!mGetInfo.isGently()) {
                             LiveVideoConfig.isLightLive = false;
                             com.xueersi.parentsmeeting.modules.livevideo.fragment.LecVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
-                        }else {
+                        } else {
                             LiveVideoConfig.isLightLive = true;
-                            bundle.putBoolean("isGently",true);
+                            bundle.putBoolean("isGently", true);
                             com.xueersi.parentsmeeting.modules.livevideo.fragment.LightLiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
                         }
 
