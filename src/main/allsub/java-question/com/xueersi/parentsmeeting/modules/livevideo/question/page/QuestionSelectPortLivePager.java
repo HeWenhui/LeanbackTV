@@ -9,6 +9,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.xueersi.common.business.AppBll;
+import com.xueersi.common.util.LoginEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.ui.widget.button.progressbutton.CircularProgressButton;
@@ -122,16 +124,21 @@ public class QuestionSelectPortLivePager extends BaseLiveQuestionPager {
 
         @Override
         public void onClick(View v) {
-            if (btnSubmit.getProgress() == 0) {
-                btnSubmit.setProgress(50);
-            } else if (btnSubmit.getProgress() == 100) {
-                btnSubmit.setProgress(0);
-            } else {
-                btnSubmit.setProgress(100);
+            if (AppBll.getInstance().isAlreadyLogin()){
+                if (btnSubmit.getProgress() == 0) {
+                    btnSubmit.setProgress(50);
+                } else if (btnSubmit.getProgress() == 100) {
+                    btnSubmit.setProgress(0);
+                } else {
+                    btnSubmit.setProgress(100);
+                }
+                if (putQuestion != null) {
+                    putQuestion.onPutQuestionResult(QuestionSelectPortLivePager.this, interQues, mAnswer);
+                }
+            }else {
+                LoginEnter.openLogin(mContext, false, null);
             }
-            if (putQuestion != null) {
-                putQuestion.onPutQuestionResult(QuestionSelectPortLivePager.this, interQues, mAnswer);
-            }
+
         }
     }
 
