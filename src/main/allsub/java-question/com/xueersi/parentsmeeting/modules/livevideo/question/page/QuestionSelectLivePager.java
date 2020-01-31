@@ -9,7 +9,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.xueersi.common.business.AppBll;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
+import com.xueersi.common.util.LoginEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.PlaybackVideoEvent;
@@ -144,18 +146,23 @@ public class QuestionSelectLivePager extends BaseLiveQuestionPager {
 
         @Override
         public void onClick(View v) {
-            if (baseVideoQuestionEntity instanceof VideoQuestionLiveEntity) {
-                if (btnSubmit.getProgress() == 0) {
-                    btnSubmit.setProgress(50);
-                } else if (btnSubmit.getProgress() == 100) {
-                    btnSubmit.setProgress(0);
-                } else {
-                    btnSubmit.setProgress(100);
+            if (AppBll.getInstance().isAlreadyLogin()){
+                if (baseVideoQuestionEntity instanceof VideoQuestionLiveEntity) {
+                    if (btnSubmit.getProgress() == 0) {
+                        btnSubmit.setProgress(50);
+                    } else if (btnSubmit.getProgress() == 100) {
+                        btnSubmit.setProgress(0);
+                    } else {
+                        btnSubmit.setProgress(100);
+                    }
                 }
+                if (putQuestion != null) {
+                    putQuestion.onPutQuestionResult(QuestionSelectLivePager.this, baseVideoQuestionEntity, mAnswer);
+                }
+            }else {
+                LoginEnter.openLogin(mContext, false, null);
             }
-            if (putQuestion != null) {
-                putQuestion.onPutQuestionResult(QuestionSelectLivePager.this, baseVideoQuestionEntity, mAnswer);
-            }
+
         }
     }
 
