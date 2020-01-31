@@ -2,7 +2,9 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
 import android.app.Activity;
 
+import com.xueersi.common.business.AppBll;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
+import com.xueersi.common.util.LoginEnter;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.BackMediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
@@ -136,33 +138,38 @@ public class LiveQuestionCreat {
         @Override
         public void onPutQuestionResult(BaseLiveQuestionPager baseLiveQuestionPager, final BaseVideoQuestionEntity videoQuestionLiveEntity2, String result) {
             final VideoQuestionLiveEntity liveEntity = (VideoQuestionLiveEntity) videoQuestionLiveEntity2;
-            questionHttp.liveSubmitTestAnswer(baseLiveQuestionPager, liveEntity, mVSectionID, result,
-                    false, false, new QuestionSwitch.OnAnswerReslut() {
-                        @Override
-                        public void onAnswerReslut(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
-                            //onSubmit();
-                            if (entity == null) {
-                                onQuestionHide();
+            if (AppBll.getInstance().isAlreadyLogin()){
+                questionHttp.liveSubmitTestAnswer(baseLiveQuestionPager, liveEntity, mVSectionID, result,
+                        false, false, new QuestionSwitch.OnAnswerReslut() {
+                            @Override
+                            public void onAnswerReslut(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
+                                //onSubmit();
+                                if (entity == null) {
+                                    onQuestionHide();
+                                }
                             }
-                        }
 
-                        @Override
-                        public void onAnswerFailure() {
+                            @Override
+                            public void onAnswerFailure() {
 
-                        }
-
-                        private void onQuestionHide() {
-                            BackMediaPlayerControl mediaPlayerControl = ProxUtil.getProxUtil().get(activity, BackMediaPlayerControl.class);
-                            if (mediaPlayerControl != null) {
-                                mediaPlayerControl.seekTo(liveEntity.getvEndTime() * 1000);
-                                mediaPlayerControl.start();
                             }
-                            LiveBackBll.ShowQuestion showQuestion = ProxUtil.getProxUtil().get(activity, LiveBackBll.ShowQuestion.class);
-                            if (showQuestion != null) {
-                                showQuestion.onHide(videoQuestionLiveEntity2);
+
+                            private void onQuestionHide() {
+                                BackMediaPlayerControl mediaPlayerControl = ProxUtil.getProxUtil().get(activity, BackMediaPlayerControl.class);
+                                if (mediaPlayerControl != null) {
+                                    mediaPlayerControl.seekTo(liveEntity.getvEndTime() * 1000);
+                                    mediaPlayerControl.start();
+                                }
+                                LiveBackBll.ShowQuestion showQuestion = ProxUtil.getProxUtil().get(activity, LiveBackBll.ShowQuestion.class);
+                                if (showQuestion != null) {
+                                    showQuestion.onHide(videoQuestionLiveEntity2);
+                                }
                             }
-                        }
-                    }, "1");
+                        }, "1");
+            }else {
+                LoginEnter.openLogin(activity, false, null);
+            }
+
         }
     };
 
