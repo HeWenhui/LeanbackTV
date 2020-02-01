@@ -18,6 +18,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.common.business.AppBll;
+import com.xueersi.common.util.LoginEnter;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
@@ -206,7 +208,12 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
             btnRedPacket.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    sendReceiveGold(operateId, mVSectionID);
+                    if (AppBll.getInstance().isAlreadyLogin()) {
+                        sendReceiveGold(operateId, mVSectionID);
+                    }else {
+                        LoginEnter.openLogin(activity, false, null);
+                    }
+
                 }
             });
             view.findViewById(R.id.iv_livevideo_redpackage_close).setOnClickListener(new View.OnClickListener() {

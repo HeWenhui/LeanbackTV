@@ -46,6 +46,17 @@
             <meta-data
                 android:name="dispatcher"
                 android:value="com.xueersi.parentsmeeting.modules.livevideo.dispatcher.LiveVideoDispatcher" />
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="livevideo"
+                    android:path="/intolive"
+                    android:scheme="xeswangxiao" />
+            </intent-filter>
         </activity>
         <activity
             android:name="com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoTransferActivity"
@@ -75,7 +86,7 @@
             android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
             android:launchMode="singleTask"
             android:process=":livevideo"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustUnspecified|stateHidden" />
 
         <activity

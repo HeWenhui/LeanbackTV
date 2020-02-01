@@ -14,7 +14,9 @@ import android.widget.ListView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.xueersi.common.base.BaseApplication;
+import com.xueersi.common.business.AppBll;
 import com.xueersi.common.entity.AnswerEntity;
+import com.xueersi.common.util.LoginEnter;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -227,16 +229,21 @@ public class QuestionFillInBlankPortLivePager extends BaseLiveQuestionPager {
 
     private void commit(QuesReslutEntity quesReslutEntity) {
         hideInputMode();
-        if (btnSubmit.getProgress() == 0) {
-            btnSubmit.setProgress(50);
-        } else if (btnSubmit.getProgress() == 100) {
-            btnSubmit.setProgress(0);
-        } else {
-            btnSubmit.setProgress(100);
+        if (AppBll.getInstance().isAlreadyLogin()){
+            if (btnSubmit.getProgress() == 0) {
+                btnSubmit.setProgress(50);
+            } else if (btnSubmit.getProgress() == 100) {
+                btnSubmit.setProgress(0);
+            } else {
+                btnSubmit.setProgress(100);
+            }
+            if (putQuestion != null) {
+                putQuestion.onPutQuestionResult(this, videoQuestionLiveEntity, quesReslutEntity.getResult());
+            }
+        }else {
+            LoginEnter.openLogin(mContext, false, null);
         }
-        if (putQuestion != null) {
-            putQuestion.onPutQuestionResult(this, videoQuestionLiveEntity, quesReslutEntity.getResult());
-        }
+
     }
 
     public VideoQuestionLiveEntity getInterQues() {

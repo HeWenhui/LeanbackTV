@@ -16,8 +16,10 @@ import android.widget.RelativeLayout;
 
 import com.alibaba.fastjson.JSONObject;
 import com.xueersi.common.base.BaseApplication;
+import com.xueersi.common.business.AppBll;
 import com.xueersi.common.entity.AnswerEntity;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
+import com.xueersi.common.util.LoginEnter;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
@@ -243,19 +245,24 @@ public class QuestionFillInBlankLivePager extends BaseLiveQuestionPager {
 
     private void commit(QuesReslutEntity quesReslutEntity) {
         hideInputMode();
-        if (baseVideoQuestionEntity instanceof VideoQuestionLiveEntity) {
-            if (btnSubmit.getProgress() == 0) {
-                btnSubmit.setProgress(50);
-            } else if (btnSubmit.getProgress() == 100) {
-                btnSubmit.setProgress(0);
-            } else {
-                btnSubmit.setProgress(100);
+        if (AppBll.getInstance().isAlreadyLogin()){
+            if (baseVideoQuestionEntity instanceof VideoQuestionLiveEntity) {
+                if (btnSubmit.getProgress() == 0) {
+                    btnSubmit.setProgress(50);
+                } else if (btnSubmit.getProgress() == 100) {
+                    btnSubmit.setProgress(0);
+                } else {
+                    btnSubmit.setProgress(100);
+                }
             }
+            if (putQuestion != null) {
+                mLogtf.d("commit:result=" + quesReslutEntity.getResult());
+                putQuestion.onPutQuestionResult(this, baseVideoQuestionEntity, quesReslutEntity.getResult());
+            }
+        }else {
+            LoginEnter.openLogin(mContext, false, null);
         }
-        if (putQuestion != null) {
-            mLogtf.d("commit:result=" + quesReslutEntity.getResult());
-            putQuestion.onPutQuestionResult(this, baseVideoQuestionEntity, quesReslutEntity.getResult());
-        }
+
     }
 
     /** 填空题校验 */
