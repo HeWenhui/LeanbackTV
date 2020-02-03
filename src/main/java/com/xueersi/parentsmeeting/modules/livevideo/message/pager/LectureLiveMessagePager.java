@@ -19,7 +19,7 @@ public class LectureLiveMessagePager extends EvenDriveLiveMessagePager {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-                tvMessageCount.setText("本教室"+peopleCount + "人");
+                tvMessageCount.setText("本教室在线"+peopleCount + "人");
             }
         });
     }
@@ -29,7 +29,7 @@ public class LectureLiveMessagePager extends EvenDriveLiveMessagePager {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-                tvMessageCount.setText("本教室"+peopleCount + "人");
+                tvMessageCount.setText("本教室在线"+peopleCount + "人");
             }
         });
     }
@@ -40,7 +40,7 @@ public class LectureLiveMessagePager extends EvenDriveLiveMessagePager {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-                tvMessageCount.setText("本教室"+peopleCount + "人");
+                tvMessageCount.setText("本教室在线"+peopleCount + "人");
             }
         });
     }
