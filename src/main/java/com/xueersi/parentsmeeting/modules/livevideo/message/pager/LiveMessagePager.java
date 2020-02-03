@@ -109,7 +109,7 @@ public class LiveMessagePager extends BaseEvenDriveCommonPager {
     /** 聊天，默认打开 */
     private CheckBox cbMessageClock;
     /** 聊天人数 */
-    private TextView tvMessageCount;
+    public TextView tvMessageCount;
     /** 聊天IRC一下状态，正在连接，在线等 */
     private ImageView ivMessageOnline;
     /** 聊天消息 */
