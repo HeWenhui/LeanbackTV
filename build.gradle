@@ -134,7 +134,7 @@ dependencies {
     implementation rootProject.ext.thirdlibraries.ticker
     implementation rootProject.ext.thirdlibraries.tray
     implementation rootProject.ext.thirdlibraries.design
-    implementation rootProject.ext.thirdlibraries.hppylay
+    implementation rootProject.ext.thirdlibraries.letousdk
 
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.agora)
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.thirdlibraries.rtcengine)
