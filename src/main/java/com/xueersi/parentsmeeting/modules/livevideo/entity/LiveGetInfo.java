@@ -405,6 +405,9 @@ public class LiveGetInfo {
     /** 聊天人数增加开关 1开 0关*/
     private int chatSwitch;
 
+    /**  直播流地址**/
+    public  List addressList;
+
     public String getGentlyNotice() {
         return gentlyNotice;
     }
@@ -2142,5 +2145,13 @@ public class LiveGetInfo {
 
     public void setCreatTime(long creatTime) {
         this.creatTime = creatTime;
+    }
+
+    public List getAddressList() {
+        return addressList;
+    }
+
+    public void setAddressList(List addressList) {
+        this.addressList = addressList;
     }
 }

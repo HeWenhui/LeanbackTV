@@ -127,6 +127,9 @@ public class LiveVideoBll implements VPlayerListenerReg, ProgressAction {
         mPlayStatistics.add(vPlayerListener);
     }
 
+
+
+
     @Override
     public void removeVPlayerListener(VPlayerCallBack.VPlayerListener vPlayerListener) {
         mPlayStatistics.remove(vPlayerListener);

@@ -17,9 +17,9 @@ import com.hpplay.sdk.source.browse.api.ILelinkServiceManager;
 import com.hpplay.sdk.source.browse.api.LelinkServiceInfo;
 import com.hpplay.sdk.source.browse.api.LelinkServiceManager;
 import com.hpplay.sdk.source.browse.api.LelinkSetting;
-import com.xueersi.common.business.AppBll;
-import com.xueersi.common.config.AppConfig;
 import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
+import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerServiceVideoUrlCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
@@ -32,6 +32,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChat
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -46,7 +47,7 @@ public class MiracastBll extends LiveBaseBll implements IBrowseListener, IConnec
     private String url;
     private DanmakuBean danmakuBean;
     IMiracastState iMiracastState;
-    private LelinkSetting mLelinkSetting;
+    PlayerService playerService;
 
     public MiracastBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -54,14 +55,30 @@ public class MiracastBll extends LiveBaseBll implements IBrowseListener, IConnec
 
 
     @Override
-    public void onLiveInited(LiveGetInfo getInfo) {
-        if (AppConfig.DEBUG){
-            mLelinkSetting = new LelinkSetting.LelinkSettingBuilder("10494", "699d23d680136ee1d3e7d9cbf767ac0a").build();
-        }else {
-            mLelinkSetting = new LelinkSetting.LelinkSettingBuilder("10495", "42417c9f85b4842c026e2240eec88ae2").build();
+    public void onCreate(HashMap<String, Object> data) {
+        super.onCreate(data);
+        playerService = (PlayerService) mLiveBll.getBusinessShareParam("vPlayer");
+        if (playerService!=null){
+            playerService.setPlayServiceVideoUrlCallback(new PlayerServiceVideoUrlCallback() {
+                @Override
+                public void onServerList(int cur, int total, List<String> addrLists) {
+                    if (addrLists != null && !addrLists.isEmpty()) {
+                        String s = addrLists.get(0);
+                        logger.i("hpplay url " + s);
+                        miracastPager.setUrl(s);
+                    }
+                }
+            });
         }
+
+    }
+
+    @Override
+    public void onLiveInited(LiveGetInfo getInfo) {
+        LelinkSetting lelinkSetting = new LelinkSetting.LelinkSettingBuilder("10494", "699d23d680136ee1d3e7d9cbf767ac0a").build();
+//        LelinkSetting lelinkSetting = new LelinkSetting.LelinkSettingBuilder("10495", "42417c9f85b4842c026e2240eec88ae2").build();
         lelinkServiceManager = LelinkServiceManager.getInstance(mContext.getApplicationContext());
-        lelinkServiceManager.setLelinkSetting(mLelinkSetting);
+        lelinkServiceManager.setLelinkSetting(lelinkSetting);
         lelinkServiceManager.setDebug(true);
         lelinkServiceManager.setOption(IAPI.OPTION_5, false);
         lelinkServiceManager.setOnBrowseListener(this);
@@ -74,12 +91,13 @@ public class MiracastBll extends LiveBaseBll implements IBrowseListener, IConnec
         iMiracastState = miracastPager.getiMiracastState();
         super.onLiveInited(getInfo);
         showPager();
-        url = mGetInfo.getRtmpUrl() +
+
+
+       /* url = mGetInfo.getRtmpUrl() +
                 "/x_" + mGetInfo.getLiveType() + "_" +
-                mGetInfo.getId() + "_" + mGetInfo.getTeacherId() +
-                "?" + mGetInfo.getSkeyPlayF() + "&cfrom=android";
-        logger.i("hpplay url " + url);
-        miracastPager.setUrl(url);
+                mGetInfo.getId();*/
+
+
     }
 
     public void showPager() {
@@ -127,7 +145,13 @@ public class MiracastBll extends LiveBaseBll implements IBrowseListener, IConnec
         logger.i("hpplay onStart");
         XESToastUtils.showToast(activity, "start");
         iMiracastState.onStart();
+        if (playerService!=null){
+            playerService.psStop();
+        }
+
+        super.onStart();
     }
+
 
     @Override
     public void onCompletion() {
@@ -168,7 +192,7 @@ public class MiracastBll extends LiveBaseBll implements IBrowseListener, IConnec
         if (IBrowseListener.BROWSE_SUCCESS == resultCode) {
             if (!list.isEmpty()) {
                 XESToastUtils.showToast(activity, "搜索成功");
-                synchronized (this){
+                synchronized (this) {
                     miracastPager.setmLinklist(list);
                 }
             }
@@ -185,6 +209,13 @@ public class MiracastBll extends LiveBaseBll implements IBrowseListener, IConnec
             this.url = url;
         }
     }
+
+/*    @Override
+    public void onDestory() {
+        leLinkPlayer.stop();
+        leLinkPlayer.release();
+        super.onDestory();
+    }*/
 
     @Override
     public void onDestroy() {

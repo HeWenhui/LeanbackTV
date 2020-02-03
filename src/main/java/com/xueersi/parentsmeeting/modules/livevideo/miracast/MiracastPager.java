@@ -17,7 +17,6 @@ import com.hpplay.sdk.source.api.ILelinkMirrorManager;
 import com.hpplay.sdk.source.api.ILelinkPlayerListener;
 import com.hpplay.sdk.source.api.LelinkPlayer;
 import com.hpplay.sdk.source.api.LelinkPlayerInfo;
-import com.hpplay.sdk.source.browse.api.IAPI;
 import com.hpplay.sdk.source.browse.api.IBrowseListener;
 import com.hpplay.sdk.source.browse.api.ILelinkServiceManager;
 import com.hpplay.sdk.source.browse.api.LelinkServiceInfo;
@@ -122,14 +121,13 @@ public class MiracastPager extends LiveBasePager  {
                 if (ContextCompat.checkSelfPermission(getApplication(), Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_DENIED) {
                     // 同意权限
                     LelinkPlayerInfo lelinkPlayerInfo = new LelinkPlayerInfo();
-                    lelinkPlayerInfo.setType(LelinkPlayerInfo.TYPE_MIRROR);
-                    lelinkPlayerInfo.setActivity((Activity) mContext);
+                    lelinkPlayerInfo.setType(LelinkPlayerInfo.TYPE_VIDEO);
+//                    lelinkPlayerInfo.setActivity((Activity) mContext);
                     lelinkPlayerInfo.setLelinkServiceInfo(connectInfo);
-                    lelinkPlayerInfo.setMirrorAudioEnable(true);
-                    lelinkPlayerInfo.setOption(IAPI.OPTION_5,false);
+//                    lelinkPlayerInfo.setMirrorAudioEnable(true);
                     lelinkPlayerInfo.setResolutionLevel(ILelinkMirrorManager.RESOLUTION_AUTO);
                     lelinkPlayerInfo.setBitRateLevel(ILelinkMirrorManager.BITRATE_LOW);
-//                    lelinkPlayerInfo.setUrl(url);
+                    lelinkPlayerInfo.setUrl(url);
                     leLinkPlayer.setDataSource(lelinkPlayerInfo);
                     leLinkPlayer.start();
                     btnPause.setEnabled(true);

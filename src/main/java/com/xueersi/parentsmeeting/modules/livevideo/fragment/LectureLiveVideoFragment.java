@@ -16,6 +16,7 @@ import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
+import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoLoadActivity;
@@ -100,6 +101,8 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
         String stuId = LiveAppUserInfo.getInstance().getStuId();
         LiveGetInfo mGetInfo = LiveVideoLoadActivity.getInfos.get(liveType + "-" + stuId + "-" + mVSectionID);
         mLiveBll.getInfo(mGetInfo);
+
+
     }
 
     @Override
@@ -162,6 +165,7 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
         }
         liveVideoAction.rePlay(modeChange);
         mLiveVideoBll.psRePlay(modeChange);
+
     }
 
     @Override
