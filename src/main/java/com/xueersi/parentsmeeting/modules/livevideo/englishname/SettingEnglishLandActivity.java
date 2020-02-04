@@ -340,8 +340,13 @@ public class SettingEnglishLandActivity extends XesActivity {
 
         @Override
         public void dialogCancel() {
-            selectName = LiveVideoConfig.ENGLISH_NAME_DEFAULT_BOY;
-            sex = LiveVideoConfig.LIVE_GROUP_CLASS_USER_SEX_BOY;
+            if(TextUtils.isEmpty(UserBll.getInstance().getMyUserInfoEntity().getEnglishName())){
+                selectName = LiveVideoConfig.ENGLISH_NAME_DEFAULT_BOY;
+                sex = LiveVideoConfig.LIVE_GROUP_CLASS_USER_SEX_BOY;
+            }else{
+                selectName = UserBll.getInstance().getMyUserInfoEntity().getEnglishName();
+                sex = UserBll.getInstance().getMyUserInfoEntity().getSex();
+            }
             saveEnglishName();
             if(!TextUtils.isEmpty(planId)){
                 mShareDataManager.put(LiveVideoConfig.LIVE_GOUP_1V2_ENGLISH_SKIPED, planId,

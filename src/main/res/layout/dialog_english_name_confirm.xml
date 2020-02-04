@@ -13,11 +13,13 @@
         android:orientation="vertical">
 
         <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:gravity="center"
             android:layout_marginTop="98dp"
-            android:paddingLeft="8dp"
+            android:layout_marginLeft="80dp"
+            android:layout_marginRight="80dp"
             android:text="确定不选择名字吗？"
             android:textColor="@color/COLOR_726565"
             android:textSize="20sp" />
@@ -25,10 +27,11 @@
         <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
             android:id="@+id/tv_setting_english_name_dialog_tip"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="21dp"
-            android:paddingLeft="8dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginLeft="80dp"
+            android:layout_marginRight="80dp"
+            android:layout_gravity="center"
             android:text=""
             android:textColor="@color/COLOR_8C8080"
             android:textSize="12sp" />
@@ -36,8 +39,8 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="30dp"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_marginBottom="90dp"
             android:orientation="horizontal">
 
             <TextView
