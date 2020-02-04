@@ -414,6 +414,7 @@ public class LiveVideoDispatcher extends AbsDispatcher {
 
         Bundle bundle = new Bundle();
         bundle.putSerializable("videoliveplayback", videoEntity);
+        bundle.putString("planId", planId);
         bundle.putInt("type", 2);
         bundle.putBoolean("isGently",publicLiveCourseEntity.isGently());
         //轻直播需要参数
@@ -440,7 +441,6 @@ public class LiveVideoDispatcher extends AbsDispatcher {
      * @param entity
      */
     private void enterBigLiveLecturePlayBack(BigLivePlayBackEntity entity) {
-
         ShareDataManager dataManager = ShareDataManager.getInstance();
         VideoLivePlayBackEntity videoEntity = new VideoLivePlayBackEntity();
         videoEntity.setCourseId(entity.getPlanInfo().getId());
@@ -491,6 +491,7 @@ public class LiveVideoDispatcher extends AbsDispatcher {
         Bundle bundle = new Bundle();
         bundle.putSerializable("videoliveplayback", videoEntity);
         bundle.putInt("type", 2);
+        bundle.putString("planId", planId);
         bundle.putBoolean("isBigLive", true);
         // FIXME: 2019/9/6  PublicLiveDetailActivity
         //LiveVideoEnter.intentTo(activity, bundle, activity.getClass().getSimpleName());
@@ -557,6 +558,7 @@ public class LiveVideoDispatcher extends AbsDispatcher {
         Bundle bundle = new Bundle();
         bundle.putSerializable("videoliveplayback", videoEntity);
         bundle.putInt("type", LocalCourseConfig.LIVETYPE_LIVE);
+        bundle.putString("planId", planId);
         bundle.putBoolean("isBigLive", true);
         LiveVideoEnter.intentTo(activity, bundle, activity.getClass().getSimpleName());
     }

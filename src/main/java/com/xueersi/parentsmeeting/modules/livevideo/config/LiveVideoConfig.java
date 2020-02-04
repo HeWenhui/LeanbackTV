@@ -433,9 +433,11 @@ public class LiveVideoConfig {
 
 
     /** 默认英文名-男 */
-    public static final String ENGLISH_NAME_DEFAULT_BOY = "Jack";
+    public static final String ENGLISH_NAME_DEFAULT_BOY = "student";
     /** 默认英文名-女 */
-    public static final String ENGLISH_NAME_DEFAULT_GRIL = "Alice";
+    public static final String ENGLISH_NAME_DEFAULT_GRIL = "student";
     /** 是否需要设置英文名 */
     public static final String LIVE_GOUP_1V2_ENGLISH_CHECK = "live_goup_1v2_english_name_check"+Calendar.getInstance().get(Calendar.WEEK_OF_MONTH);
+    /** 是否跳过了名字设置 */
+    public static final String LIVE_GOUP_1V2_ENGLISH_SKIPED = "live_goup_1v2_english_name_skip";
 }

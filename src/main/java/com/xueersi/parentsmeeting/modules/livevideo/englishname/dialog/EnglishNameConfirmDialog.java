@@ -42,7 +42,11 @@ public class EnglishNameConfirmDialog extends BaseAlertDialog {
     }
 
     public void initData(String msg, EnglishNameListener englishNameListener){
-        tvMsg.setText("不选择名字会默认设置名字为"+msg+"哦~");
+        String contentText = "确定跳过名字选择吗？不选择名字可能错失点名机会哦~ 您可以在个人中心重新选择英文名。";
+        if(mContext != null){
+            contentText = mContext.getResources().getString(R.string.english_group_name_skip);
+        }
+        tvMsg.setText(contentText);
         this.englishNameListener = englishNameListener;
     }
 
