@@ -29,7 +29,7 @@ public class LiveLogEntity {
     public String network_ip = ""; //外网IP，日志接受方填充
 
     public String mem_total = ApmBill.getMemory() + "";           //内存总容量
-    public String mac = DeviceInfo.getWifiMac();    //wifi mac 地址
+    public String mac = "0000";    //wifi mac 地址
     public String cpu_modle = ApmBill.getCPUType();            //CPU架构
 
 
