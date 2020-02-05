@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 
 import com.xueersi.parentsmeeting.modules.livevideo.lecadvert.business.LecAdvertPlayBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.miracast.MiracastLivebackBll;
 
 /**
  * Created by linyuqiang on 2018/7/23.
@@ -20,6 +21,7 @@ public class LecBackVideoFragment extends LiveBackVideoFragment {
         super.addBusiness(activity);
         lecAdvertPlayBackBll = new LecAdvertPlayBackBll(activity, liveBackBll);
         liveBackBll.addBusinessBll(lecAdvertPlayBackBll);
+        liveBackBll.addBusinessBll(new MiracastLivebackBll(activity,liveBackBll));
     }
 
     protected void onNewIntent(Intent intent) {

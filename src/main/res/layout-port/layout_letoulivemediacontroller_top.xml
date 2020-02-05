@@ -37,6 +37,7 @@
             android:textColor="@android:color/white"
             android:textSize="16sp"
             android:textStyle="bold" />
+
         <!-- 横竖屏切换 -->
         <ImageView
             android:id="@id/iv_video_mediacontroller_controls_allview"
@@ -46,7 +47,14 @@
             android:layout_centerVertical="true"
             android:padding="15dp"
             android:scaleType="center"
-            android:src="@drawable/ic_video_mediacontroller_controls_enlarge"
-            />
+            android:src="@drawable/ic_video_mediacontroller_controls_enlarge" />
+
+        <ImageView
+            android:id="@+id/iv_video_tv_player"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/iv_video_mediacontroller_controls_allview"
+            android:src="@drawable/icon_tv_player" />
     </RelativeLayout>
 </RelativeLayout>

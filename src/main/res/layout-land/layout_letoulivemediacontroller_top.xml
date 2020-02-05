@@ -55,7 +55,14 @@
             android:layout_marginRight="16dp"
             android:background="@drawable/shape_oval_4d000000"
             android:src="@drawable/livevideo_lightlive_fullscreen_icon"
-            android:visibility="gone" />
-
+             />
+        <ImageView
+            android:layout_marginRight="24dp"
+            android:layout_marginTop="24dp"
+            android:id="@+id/iv_video_tv_player"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@id/iv_video_mediacontroller_controls_allview"
+            android:src="@drawable/icon_tv_player" />
     </RelativeLayout>
 </RelativeLayout>

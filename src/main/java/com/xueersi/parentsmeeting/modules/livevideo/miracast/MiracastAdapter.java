@@ -21,7 +21,7 @@ public class MiracastAdapter extends RecyclerView.Adapter<MiracastAdapter.DevVie
     List<LelinkServiceInfo> devList;
     private IOnItemClickListener mItemClickListener;
 
-    public MiracastAdapter(Context context){
+    public MiracastAdapter(Context context) {
         mInflater = LayoutInflater.from(context);
         devList = new ArrayList<>();
     }
@@ -33,12 +33,14 @@ public class MiracastAdapter extends RecyclerView.Adapter<MiracastAdapter.DevVie
             notifyDataSetChanged();
         }
     }
+
     public void setOnItemClickListener(IOnItemClickListener l) {
         this.mItemClickListener = l;
     }
+
     @Override
     public DevViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = mInflater.inflate(R.layout.item_miracast_name, null);
+        View itemView = mInflater.inflate(R.layout.item_miracast_name, parent, false);
         return new DevViewHolder(itemView);
     }
 
@@ -48,7 +50,9 @@ public class MiracastAdapter extends RecyclerView.Adapter<MiracastAdapter.DevVie
         if (null == info) {
             return;
         }
-        String item = info.getName() + " uid:" + info.getUid() + " types:" + info.getTypes();
+
+        // + " uid:" + info.getUid() + " types:" + info.getTypes()
+        String item = info.getName();
         holder.tvName.setText(item);
         holder.tvName.setTag(R.id.id_position, position);
         holder.tvName.setTag(R.id.id_info, info);
@@ -65,7 +69,7 @@ public class MiracastAdapter extends RecyclerView.Adapter<MiracastAdapter.DevVie
         return null == devList ? 0 : devList.size();
     }
 
-    class DevViewHolder extends RecyclerView.ViewHolder{
+    class DevViewHolder extends RecyclerView.ViewHolder {
         TextView tvName;
 
         public DevViewHolder(View itemView) {
@@ -73,6 +77,7 @@ public class MiracastAdapter extends RecyclerView.Adapter<MiracastAdapter.DevVie
             tvName = itemView.findViewById(R.id.tv_dev_name);
         }
     }
+
     private View.OnClickListener mOnItemClickListener = new View.OnClickListener() {
 
         @Override

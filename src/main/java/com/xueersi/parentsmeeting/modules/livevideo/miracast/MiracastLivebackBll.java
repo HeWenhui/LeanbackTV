@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * Created by: WangDe on 2019/2/25
  */
-public class MiracastLivebackBll extends LiveBackBaseBll implements IBrowseListener,IConnectListener,ILelinkPlayerListener {
+public class MiracastLivebackBll extends LiveBackBaseBll implements IBrowseListener, IConnectListener, ILelinkPlayerListener {
 
     ILelinkServiceManager lelinkServiceManager;
     LelinkPlayer leLinkPlayer;
@@ -36,6 +36,7 @@ public class MiracastLivebackBll extends LiveBackBaseBll implements IBrowseListe
     private RelativeLayout rlLiveMessageContent;
     List<LelinkServiceInfo> devList;
     private String url;
+    IMiracastState iMiracastState;
 
     public MiracastLivebackBll(Activity context, LiveBackBll liveBll) {
         super(context, liveBll);
@@ -43,9 +44,17 @@ public class MiracastLivebackBll extends LiveBackBaseBll implements IBrowseListe
 
 
     @Override
+    public void initView() {
+        super.initView();
+        showPager();
+
+    }
+
+    @Override
     public void onCreate(VideoLivePlayBackEntity mVideoEntity, LiveGetInfo liveGetInfo, HashMap<String, Object>
             businessShareParamMap) {
         super.onCreate(mVideoEntity, liveGetInfo, businessShareParamMap);
+        logger.i("hpplay MiracastLivebackBll onCreate");
         LelinkSetting lelinkSetting = new LelinkSetting.LelinkSettingBuilder("10494", "699d23d680136ee1d3e7d9cbf767ac0a").build();
 //        LelinkSetting lelinkSetting = new LelinkSetting.LelinkSettingBuilder("10495", "42417c9f85b4842c026e2240eec88ae2").build();
         lelinkServiceManager = LelinkServiceManager.getInstance(mContext.getApplicationContext());
@@ -59,16 +68,20 @@ public class MiracastLivebackBll extends LiveBackBaseBll implements IBrowseListe
         miracastPager = new MiracastPager(mContext);
         miracastPager.setLeLinkPlayer(leLinkPlayer);
         miracastPager.setILelinkServiceManager(lelinkServiceManager);
-
+        String videoPath = mVideoEntity.getVideoPath();
+        logger.i("hpplay MiracastLivebackBll url " + videoPath);
+        setUrl(videoPath);
+        iMiracastState = miracastPager.getiMiracastState();
     }
 
-    public void showPager(){
+    public void showPager() {
+        logger.i("hpplay MiracastLivebackBll showPager");
         final ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                 .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         if (rlLiveMessageContent == null) {
             rlLiveMessageContent = new RelativeLayout(activity);
             rlLiveMessageContent.setId(R.id.rl_miracast);
-            mRootView.addView(rlLiveMessageContent, params);
+            addView(rlLiveMessageContent, params);
         } else {
             rlLiveMessageContent.removeAllViews();
         }
@@ -78,36 +91,40 @@ public class MiracastLivebackBll extends LiveBackBaseBll implements IBrowseListe
 
     @Override
     public void onConnect(LelinkServiceInfo lelinkServiceInfo, int extra) {
-        logger.i("hpplay 连接成功： info name:"+ lelinkServiceInfo.getName()+" ip:"+lelinkServiceInfo.getIp());
-        XESToastUtils.showToast(activity,"连接成功");
+        logger.i("hpplay 连接成功： info name:" + lelinkServiceInfo.getName() + " ip:" + lelinkServiceInfo.getIp());
+        XESToastUtils.showToast(activity, "连接成功");
+        iMiracastState.onConnect();
 
     }
 
     @Override
     public void onDisconnect(LelinkServiceInfo lelinkServiceInfo, int what, int extra) {
-        if (IConnectListener.CONNECT_INFO_DISCONNECT == what){
+        if (IConnectListener.CONNECT_INFO_DISCONNECT == what) {
             logger.i("hpplay 连接断开");
-            XESToastUtils.showToast(activity,"连接断开");
-        }else if(IConnectListener.CONNECT_ERROR_FAILED == what){
+            XESToastUtils.showToast(activity, "连接断开");
+        } else if (IConnectListener.CONNECT_ERROR_FAILED == what) {
             logger.i("hpplay 连接失败");
-            XESToastUtils.showToast(activity,"连接失败");
+            XESToastUtils.showToast(activity, "连接失败");
         }
+        iMiracastState.onDisConnect();
     }
 
     @Override
     public void onLoading() {
         logger.i("hpplay onLoading");
-        XESToastUtils.showToast(activity,"loading");
+        XESToastUtils.showToast(activity, "loading");
     }
 
     @Override
     public void onStart() {
         logger.i("hpplay onStart");
-        XESToastUtils.showToast(activity,"start");
+        XESToastUtils.showToast(activity, "start");
+        iMiracastState.onStart();
     }
 
     @Override
     public void onPause() {
+        iMiracastState.onPause();
 
     }
 
@@ -149,22 +166,21 @@ public class MiracastLivebackBll extends LiveBackBaseBll implements IBrowseListe
 
     @Override
     public void onBrowse(int resultCode, List<LelinkServiceInfo> list) {
-        logger.i("hpplay 搜索成功"+ list.toString());
-        if (IBrowseListener.BROWSE_SUCCESS == resultCode){
-            if (!list.isEmpty()){
-                XESToastUtils.showToast(activity,"搜索成功");
+        logger.i("hpplay 搜索成功" + list.toString());
+        if (IBrowseListener.BROWSE_SUCCESS == resultCode) {
+            if (!list.isEmpty()) {
+                XESToastUtils.showToast(activity, "搜索成功");
                 miracastPager.setmLinklist(list);
             }
-        }else {
+        } else {
             logger.i("hpplay 搜索失败，Auth错误，请检查您的网络设置或AppId和AppSecret");
-            XESToastUtils.showToast(activity,"搜索失败");
+            XESToastUtils.showToast(activity, "搜索失败");
         }
     }
 
     public void setUrl(String url) {
-        logger.i("hpplay url:"+url);
-        if (url != null){
-            showPager();
+        logger.i("hpplay url:" + url);
+        if (url != null) {
             miracastPager.setUrl(url);
             this.url = url;
         }

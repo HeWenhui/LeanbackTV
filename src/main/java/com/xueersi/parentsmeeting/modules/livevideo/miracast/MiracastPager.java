@@ -9,8 +9,11 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.Button;
+import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.hpplay.sdk.source.api.IConnectListener;
 import com.hpplay.sdk.source.api.ILelinkMirrorManager;
@@ -20,6 +23,7 @@ import com.hpplay.sdk.source.api.LelinkPlayerInfo;
 import com.hpplay.sdk.source.browse.api.IBrowseListener;
 import com.hpplay.sdk.source.browse.api.ILelinkServiceManager;
 import com.hpplay.sdk.source.browse.api.LelinkServiceInfo;
+import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 
@@ -31,15 +35,11 @@ import static com.xueersi.lib.framework.are.ContextManager.getApplication;
 /**
  * Created by: WangDe on 2019/2/25
  */
-public class MiracastPager extends LiveBasePager  {
-    private Button btnSearch;
-    private Button btnPlay;
-    private Button btnPause;
-    private Button btnStop;
-    private Button btnVolumeUp;
-    private Button btnVolumeDown;
+public class MiracastPager extends LiveBasePager {
+    private TextView mTitleTv;
+    private ImageButton mBackIvTtn;
+
     private ILelinkServiceManager lelinkServiceManager;
-    private Button btnConnect;
     private LelinkPlayer leLinkPlayer;
     private RecyclerView rcDevView;
     boolean isSearch = false;
@@ -54,6 +54,8 @@ public class MiracastPager extends LiveBasePager  {
     private boolean isConnect = false;
     private String url;
     private boolean isPause = false;
+    private WebView mWebView;
+    private TextView mSearchLoadingView;
 
     public MiracastPager(Context context) {
         super(context);
@@ -65,14 +67,19 @@ public class MiracastPager extends LiveBasePager  {
     @Override
     public View initView() {
         mView = View.inflate(mContext, R.layout.pager_miracast, null);
-        btnSearch = mView.findViewById(R.id.btn_search);
-        btnPlay = mView.findViewById(R.id.btn_play);
-        btnPause = mView.findViewById(R.id.btn_pause);
-        btnStop = mView.findViewById(R.id.btn_stop);
-        btnVolumeUp = mView.findViewById(R.id.btn_volume_up);
-        btnVolumeDown = mView.findViewById(R.id.btn_volume_down);
         rcDevView = mView.findViewById(R.id.rc_device);
+        mBackIvTtn = mView.findViewById(R.id.imgbtn_title_bar_back);
+        mTitleTv = mView.findViewById(R.id.tv_title_bar_content);
+        mSearchLoadingView = mView.findViewById(R.id.letou_describe_searching);
+        initWebView();
         return mView;
+    }
+
+    private void initWebView() {
+        mWebView = mView.findViewById(R.id.letou_describe_webview);
+        mWebView.getSettings().setJavaScriptEnabled(true);
+        mWebView.setWebViewClient(new WebViewClient());
+        mWebView.loadUrl("http://xeswxapp.oss-cn-beijing.aliyuncs.com/files/Touping/index.html");
     }
 
     @Override
@@ -82,108 +89,70 @@ public class MiracastPager extends LiveBasePager  {
         rcDevView.setAdapter(miracastAdapter);
         miracastAdapter.setOnItemClickListener(mOnItemClickListener);
         super.initData();
+
     }
 
     @Override
     public void initListener() {
-        btnPause.setEnabled(false);
-        btnStop.setEnabled(false);
-        btnVolumeUp.setEnabled(false);
-        btnVolumeDown.setEnabled(false);
-        btnPlay.setEnabled(false);
-        btnSearch.setOnClickListener(new View.OnClickListener() {
+        mTitleTv.setText("选择投屏设备");
+        mBackIvTtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isConnect = false;
-                if (ContextCompat.checkSelfPermission(getApplication(),
-                        Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_DENIED
-                        && ContextCompat.checkSelfPermission(mContext.getApplicationContext(),
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_DENIED) {
-                    if (!isSearch) {
-                        lelinkServiceManager.browse(ILelinkServiceManager.TYPE_ALL);
-                        isSearch = true;
-                        btnSearch.setText("停止搜索");
-                    } else {
-                        lelinkServiceManager.stopBrowse();
-                        isSearch = false;
-                        btnSearch.setText("搜索");
-                    }
-                } else {
-                    // 若没有授权，会弹出一个对话框（这个对话框是系统的，开发者不能自己定制），用户选择是否授权应用使用系统权限
-                    ActivityCompat.requestPermissions((Activity) mContext, new String[]{Manifest.permission.READ_PHONE_STATE,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_MUST_PERMISSION);
+                ViewGroup parent = (ViewGroup) getRootView().getParent();
+                if (parent != null) {
+                    parent.removeView(getRootView());
                 }
             }
         });
-        btnPlay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (ContextCompat.checkSelfPermission(getApplication(), Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_DENIED) {
-                    // 同意权限
-                    LelinkPlayerInfo lelinkPlayerInfo = new LelinkPlayerInfo();
-                    lelinkPlayerInfo.setType(LelinkPlayerInfo.TYPE_VIDEO);
+
+
+    }
+
+    public void playTv() {
+        if (ContextCompat.checkSelfPermission(getApplication(), Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_DENIED) {
+            // 同意权限
+            LelinkPlayerInfo lelinkPlayerInfo = new LelinkPlayerInfo();
+            lelinkPlayerInfo.setType(LelinkPlayerInfo.TYPE_VIDEO);
 //                    lelinkPlayerInfo.setActivity((Activity) mContext);
-                    lelinkPlayerInfo.setLelinkServiceInfo(connectInfo);
+            lelinkPlayerInfo.setLelinkServiceInfo(connectInfo);
 //                    lelinkPlayerInfo.setMirrorAudioEnable(true);
-                    lelinkPlayerInfo.setResolutionLevel(ILelinkMirrorManager.RESOLUTION_AUTO);
-                    lelinkPlayerInfo.setBitRateLevel(ILelinkMirrorManager.BITRATE_LOW);
-                    lelinkPlayerInfo.setUrl(url);
-                    leLinkPlayer.setDataSource(lelinkPlayerInfo);
-                    leLinkPlayer.start();
-                    btnPause.setEnabled(true);
-                    btnStop.setEnabled(true);
-                    btnVolumeUp.setEnabled(true);
-                    btnVolumeDown.setEnabled(true);
-                } else {
-                    // 不同意，则去申请权限
-                    ActivityCompat.requestPermissions((Activity) mContext, new String[]{
-                            Manifest.permission.RECORD_AUDIO}, REQUEST_RECORD_AUDIO_PERMISSION);
-                }
-            }
-        });
-        btnPause.setOnClickListener(new View.OnClickListener() {
+            lelinkPlayerInfo.setResolutionLevel(ILelinkMirrorManager.RESOLUTION_AUTO);
+            lelinkPlayerInfo.setBitRateLevel(ILelinkMirrorManager.BITRATE_LOW);
+            lelinkPlayerInfo.setUrl(url);
+            leLinkPlayer.setDataSource(lelinkPlayerInfo);
+            leLinkPlayer.start();
+
+        } else {
+            // 不同意，则去申请权限
+            ActivityCompat.requestPermissions((Activity) mContext, new String[]{
+                    Manifest.permission.RECORD_AUDIO}, REQUEST_RECORD_AUDIO_PERMISSION);
+        }
+    }
+
+    public void startSearch() {
+        if (ContextCompat.checkSelfPermission(getApplication(),
+                Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_DENIED
+                && ContextCompat.checkSelfPermission(mContext.getApplicationContext(),
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_DENIED) {
+            lelinkServiceManager.browse(ILelinkServiceManager.TYPE_ALL);
+            isSearch = true;
+            mSearchLoadingView.setText("设备搜索中...");
+        } else {
+            // 若没有授权，会弹出一个对话框（这个对话框是系统的，开发者不能自己定制），用户选择是否授权应用使用系统权限
+            ActivityCompat.requestPermissions((Activity) mContext, new String[]{Manifest.permission.READ_PHONE_STATE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_MUST_PERMISSION);
+        }
+
+    }
+
+    public void stopSearch() {
+        lelinkServiceManager.stopBrowse();
+
+        isSearch = false;
+        mSearchLoadingView.post(new Runnable() {
             @Override
-            public void onClick(View v) {
-                if (isPause){
-                    leLinkPlayer.resume();
-                    mView.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            btnPause.setText("暂停");
-                        }
-                    });
-                }else {
-                    leLinkPlayer.pause();
-                    mView.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            btnPause.setText("继续");
-                        }
-                    });
-                }
-                isPause =  !isPause;
-            }
-        });
-        btnStop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                leLinkPlayer.stop();
-                btnPause.setEnabled(false);
-                btnStop.setEnabled(false);
-                btnVolumeUp.setEnabled(false);
-                btnVolumeDown.setEnabled(false);
-            }
-        });
-        btnVolumeUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                leLinkPlayer.addVolume();
-            }
-        });
-        btnVolumeDown.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                leLinkPlayer.subVolume();
+            public void run() {
+                mSearchLoadingView.setText("");
             }
         });
 
@@ -191,6 +160,7 @@ public class MiracastPager extends LiveBasePager  {
 
     public void setILelinkServiceManager(ILelinkServiceManager iLelinkServiceManager) {
         this.lelinkServiceManager = iLelinkServiceManager;
+        startSearch();
     }
 
     public void setLeLinkPlayer(LelinkPlayer leLinkPlayer) {
@@ -198,7 +168,7 @@ public class MiracastPager extends LiveBasePager  {
     }
 
     public void setmLinklist(final List<LelinkServiceInfo> linklist) {
-        if (!isConnect){
+        if (!isConnect) {
             mView.post(new Runnable() {
                 @Override
                 public void run() {
@@ -216,7 +186,7 @@ public class MiracastPager extends LiveBasePager  {
 
     @Override
     public void onDestroy() {
-        if(leLinkPlayer != null){
+      /*  if(leLinkPlayer != null){
             if (connectInfo != null){
                 leLinkPlayer.disConnect(connectInfo);
             }
@@ -225,7 +195,7 @@ public class MiracastPager extends LiveBasePager  {
         }
         if (lelinkServiceManager!=null){
             lelinkServiceManager.stopBrowse();
-        }
+        }*/
         super.onDestroy();
     }
 
@@ -236,7 +206,7 @@ public class MiracastPager extends LiveBasePager  {
     IOnItemClickListener mOnItemClickListener = new IOnItemClickListener() {
         @Override
         public void onClick(int pos, LelinkServiceInfo info) {
-            if (leLinkPlayer!= null){
+            if (leLinkPlayer != null) {
                 leLinkPlayer.connect(info);
                 miracastAdapter.notifyDataSetChanged();
             }
@@ -246,16 +216,14 @@ public class MiracastPager extends LiveBasePager  {
     private IMiracastState iMiracastState = new IMiracastState() {
         @Override
         public void onConnect() {
-            btnPlay.setEnabled(true);
+           stopSearch();
+            playTv();
         }
 
         @Override
         public void onDisConnect() {
-            btnPlay.setEnabled(false);
-            btnPause.setEnabled(false);
-            btnStop.setEnabled(false);
-            btnVolumeUp.setEnabled(false);
-            btnVolumeDown.setEnabled(false);
+
+
         }
 
         @Override
@@ -265,10 +233,8 @@ public class MiracastPager extends LiveBasePager  {
 
         @Override
         public void onStart() {
-            btnPause.setEnabled(true);
-            btnStop.setEnabled(true);
-            btnVolumeUp.setEnabled(true);
-            btnVolumeDown.setEnabled(true);
+
+
         }
 
         @Override
