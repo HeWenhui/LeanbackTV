@@ -405,8 +405,7 @@ public class LiveGetInfo {
     /** 聊天人数增加开关 1开 0关*/
     private int chatSwitch;
 
-    /**  直播流地址**/
-    public  List addressList;
+    private String streamTimes;
 
     public String getGentlyNotice() {
         return gentlyNotice;
@@ -430,6 +429,14 @@ public class LiveGetInfo {
 
     public void setLpWeChatEntity(LPWeChatEntity lpWeChatEntity) {
         this.lpWeChatEntity = lpWeChatEntity;
+    }
+
+    public String getStreamTimes() {
+        return streamTimes;
+    }
+
+    public void setStreamTimes(String streamTimes) {
+        this.streamTimes = streamTimes;
     }
 
     public int getChatSwitch() {
@@ -568,6 +575,15 @@ public class LiveGetInfo {
     private RecordStandliveEntity recordStandliveEntity;
     /** getinfo创建时间*/
     private long creatTime;
+
+    /** 1v2提分机制 分数下限 */
+    private int minToFakeScore;
+    /** 1v2提分机制 分数上限 */
+    private int maxToFakeScore;
+    /** 1v2提分机制 目标分数 */
+    private int fakeScore;
+    /** 1v2是否使用云平台调度 */
+    private boolean use1v2Sdk;
 
     public VideoConfigEntity getVideoConfigEntity() {
         return videoConfigEntity;
@@ -2147,11 +2163,39 @@ public class LiveGetInfo {
         this.creatTime = creatTime;
     }
 
-    public List getAddressList() {
-        return addressList;
+    public void setTeamStuIds(ArrayList<String> teamStuIds) {
+        this.teamStuIds = teamStuIds;
     }
 
-    public void setAddressList(List addressList) {
-        this.addressList = addressList;
+    public int getMinToFakeScore() {
+        return minToFakeScore;
+    }
+
+    public void setMinToFakeScore(int minToFakeScore) {
+        this.minToFakeScore = minToFakeScore;
+    }
+
+    public int getMaxToFakeScore() {
+        return maxToFakeScore;
+    }
+
+    public void setMaxToFakeScore(int maxToFakeScore) {
+        this.maxToFakeScore = maxToFakeScore;
+    }
+
+    public int getFakeScore() {
+        return fakeScore;
+    }
+
+    public void setFakeScore(int fakeScore) {
+        this.fakeScore = fakeScore;
+    }
+
+    public boolean isUse1v2Sdk() {
+        return use1v2Sdk;
+    }
+
+    public void setUse1v2Sdk(boolean use1v2Sdk) {
+        this.use1v2Sdk = use1v2Sdk;
     }
 }

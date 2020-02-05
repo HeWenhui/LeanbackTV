@@ -44,13 +44,13 @@ public class ArtsAnswerResultPlayBackBll extends LiveBackBaseBll {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onLiveBackQuestionEvent(LiveBackQuestionEvent event) {
         if (event.getEnvetnType() == LiveBackQuestionEvent.QUSTIONS_SHOW) {
-            mAnswerResultBll.closeAnswerResult(false);
+            mAnswerResultBll.closeAnswerResult(false, "onLiveBackQuestionEvent1");
         } else if (event.getEnvetnType() == LiveBackQuestionEvent.QUSTION_CLOSE) {
             if (liveGetInfo.getPattern() == LiveVideoConfig.LIVE_PATTERN_2) {
                 EventBus.getDefault().post(new AnswerResultCplShowEvent("onLiveBackQuestionEvent"));
                 Log.e("mqtt", "submitData" + "hahaha");
             } else {
-                mAnswerResultBll.closeAnswerResult(true);
+                mAnswerResultBll.closeAnswerResult(true, "onLiveBackQuestionEvent2");
             }
         }
     }

@@ -411,8 +411,8 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
     }
 
     @Override
-    public void close() {
-        onClose.onH5ResultClose(this, getBaseVideoQuestionEntity());
+    public void close(String method) {
+        onClose.onH5ResultClose(this, getBaseVideoQuestionEntity(), "");
     }
 
     @Override
@@ -923,7 +923,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
             if (FORCE == isforce) {
                 if (onClose != null) {
                     loadResult = true;
-                    onClose.onH5ResultClose(ChineseAiSubjectiveCoursewarePager.this, getBaseVideoQuestionEntity());
+                    onClose.onH5ResultClose(ChineseAiSubjectiveCoursewarePager.this, getBaseVideoQuestionEntity(), "");
                 }
             }
         }
@@ -1205,7 +1205,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
     @Override
     protected boolean shouldOverrideUrlLoading(WebView view, String url) {
         if (url.contains("baidu.com")) {
-            onClose.onH5ResultClose(this, getBaseVideoQuestionEntity());
+            onClose.onH5ResultClose(this, getBaseVideoQuestionEntity(), "");
             StableLogHashMap logHashMap = new StableLogHashMap("coursewareClose");
             logHashMap.put("coursewareid", id);
             logHashMap.put("coursewaretype", courseware_type);

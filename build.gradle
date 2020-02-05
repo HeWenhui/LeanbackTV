@@ -99,6 +99,7 @@ dependencies {
     api rootProject.ext.thirdlibraries.JavaWebSocket
     //glide库
     implementation rootProject.ext.thirdlibraries.glide
+
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.speechrecognizer)
 //    implementation(rootProject.ext.xeslibraries.ldnetdiagnoservice) { changing = true }
     //uicomponent
@@ -122,7 +123,6 @@ dependencies {
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.browser)
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.xeslottie)
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.pschatsdk)
-//    rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.hppylay)
     implementation rootProject.ext.thirdlibraries.arouterapi
     implementation rootProject.ext.thirdlibraries.appcompat
     implementation rootProject.ext.thirdlibraries.recyclerview
@@ -135,6 +135,7 @@ dependencies {
     implementation rootProject.ext.thirdlibraries.tray
     implementation rootProject.ext.thirdlibraries.design
     implementation rootProject.ext.thirdlibraries.letousdk
+    implementation rootProject.ext.thirdlibraries.wx
 
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.agora)
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.thirdlibraries.rtcengine)
@@ -167,3 +168,5 @@ dependencies {
     }
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.talaccsdk)
 }
+apply from: rootDir.absolutePath + '/buildscript/module_secure_check.gradle'
+apply from: rootDir.absolutePath + '/buildscript/module_replace_image.gradle'

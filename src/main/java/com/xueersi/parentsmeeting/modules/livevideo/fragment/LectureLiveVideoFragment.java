@@ -94,7 +94,7 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
         mMediaController.setControllerTop(miracastLiveMediaControllerTop);
 
         setMediaControllerBottomParam();
-        videoFragment.setIsAutoOrientation(true);
+        videoFragment.setIsAutoOrientation(false);
         pauseNotStopVideoIml = new PauseNotStopVideoIml(activity);
         mLiveBll.addBusinessShareParam("videoView", videoView);
     }

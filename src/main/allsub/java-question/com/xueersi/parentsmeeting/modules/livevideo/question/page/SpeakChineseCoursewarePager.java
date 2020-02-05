@@ -346,6 +346,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                     LiveRoomH5CloseEvent event = new LiveRoomH5CloseEvent(gold, energy, LiveRoomH5CloseEvent
                             .H5_TYPE_COURSE, id);
                     if (mEnglishH5CoursewareBll != null) {
+                        event.setBasePager(SpeakChineseCoursewarePager.this);
                         event.setCloseByTeahcer(mEnglishH5CoursewareBll.isWebViewCloseByTeacher());
                         mEnglishH5CoursewareBll.setWebViewCloseByTeacher(false);
                     }
@@ -498,7 +499,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
     }
 
     @Override
-    public void close() {
+    public void close(String method) {
     }
 
     @Override
@@ -1151,7 +1152,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                     preLoad.onStop();
                     //如果答完了 直接关闭
                     if (onClose != null) {
-                        onClose.onH5ResultClose(SpeakChineseCoursewarePager.this, getBaseVideoQuestionEntity());
+                        onClose.onH5ResultClose(SpeakChineseCoursewarePager.this, getBaseVideoQuestionEntity(), "");
                     }
 //                    showAnswerResult(0);
                 } else {
@@ -1262,7 +1263,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
     @Override
     protected boolean shouldOverrideUrlLoading(WebView view, String url) {
         if (url.contains("baidu.com")) {
-            onClose.onH5ResultClose(this, getBaseVideoQuestionEntity());
+            onClose.onH5ResultClose(this, getBaseVideoQuestionEntity(), "");
             StableLogHashMap logHashMap = new StableLogHashMap("coursewareClose");
             logHashMap.put("coursewareid", id);
             logHashMap.put("coursewaretype", courseware_type);
@@ -1380,7 +1381,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                                     @Override
                                     public void onClose() {
                                         onClose.onH5ResultClose(SpeakChineseCoursewarePager.this,
-                                                getBaseVideoQuestionEntity());
+                                                getBaseVideoQuestionEntity(), "");
                                     }
                                 });
                         ((RelativeLayout) mView).addView(primaryScienceAnserResultPager.getRootView(), new

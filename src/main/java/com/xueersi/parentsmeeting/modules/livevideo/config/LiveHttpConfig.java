@@ -265,6 +265,10 @@ public class LiveHttpConfig {
     public final static String URL_LIGHTLIVE_GET_WECHAT= AppConfig.HTTP_HOST_EXPAPI + "/operation/mobile/diversionLecture";
     /** 轻直播获取推荐课列表*/
     public final static String URL_LIGHTLIVE_REPORT_LOGIN= AppConfig.HTTP_HOST_LECTUREPIE + "/exp/loginReport";
+    /** 轻直播获取推荐课列表*/
+    public final static String URL_LIGHTLIVE_GET_MESSAGE= AppConfig.HTTP_HOST_LECTUREPIE + "/LiveLecture/getHistoryMsg";
+    /** 轻直播回放领取红包*/
+    public final static String URL_LIGHTLIVE_GET_PLAYBACK_REDPACKAGE= AppConfig.HTTP_HOST + "/LiveLecture/receiveGoldForPlayBack";
     /** 直播辅导献花 */
     @Deprecated
     public final static String URL_LIVE_TUTORIAL_PRAISE_TEACHER = LiveVideoConfig.HTTP_HOST +
@@ -311,6 +315,8 @@ public class LiveHttpConfig {
     public final static String URL_CHINESE_SELF_UPLOAD_ARTS_EVEN_DRIVE_MSG = "https://student.chs.xueersi.com/Stimulation/getTestRightNum";
     //science新课件获取自传互动题连对数量
     public final static String URL_SCIENCE_SELF_UPLOAD_ARTS_EVEN_DRIVE_MSG = "https://student.xueersi.com/science/Stimulation/getTestRightNum";
+    //投票-小学理科三分屏 获取连对数量, science新课件请求协议相同。
+    public final static String URL_VOTE_EVEN_DRIVE_MSG = URL_SCIENCE_NEW_ARTS_EVEN_DRIVE_MSG;
     /** 学生上课情况 */
     public static String URL_LIVE_STUDY_INFO = LiveIntegratedCfg.HTTP_HOST + "/v1/student/audit/getLiveSimpleData";
     /**

@@ -122,7 +122,7 @@ public class DiscountCouponBll extends LiveBaseBll {
         }
         discountCouponPager.setData(couponEntities);
         if (couponEntities != null && !couponEntities.isEmpty()){
-            XrsBury.showBury(mContext.getResources().getString(R.string.show_03_63_025));
+            LightLiveBury.showBury(mContext.getResources().getString(R.string.show_03_63_025));
         }
         initListener();
         super.initView();
@@ -133,7 +133,7 @@ public class DiscountCouponBll extends LiveBaseBll {
             @Override
             public void onClick() {
                 if (!isDetailShow){
-                    XrsBury.clickBury(mContext.getResources().getString(R.string.click_03_63_025));
+                    LightLiveBury.clickBury(mContext.getResources().getString(R.string.click_03_63_025));
                     contentLayout.addView(detailPager.getRootView());
                     RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) detailPager.getRootView().getLayoutParams();
                     params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
@@ -142,7 +142,7 @@ public class DiscountCouponBll extends LiveBaseBll {
                     contentLayout.setBackground(mContext.getResources().getDrawable(R.color.COLOR_80000000));
                     contentLayout.setClickable(true);
                     detailPager.updataView(couponEntities);
-                    XrsBury.showBury(mContext.getResources().getString(R.string.show_03_63_021));
+                    LightLiveBury.showBury(mContext.getResources().getString(R.string.show_03_63_021));
                 }
                 isDetailShow = true;
             }
@@ -155,7 +155,7 @@ public class DiscountCouponBll extends LiveBaseBll {
                 contentLayout.setBackground(mContext.getResources().getDrawable(R.color.COLOR_00000000));
                 contentLayout.setClickable(false);
                 isDetailShow = false;
-                XrsBury.clickBury(mContext.getResources().getString(R.string.click_03_63_022));
+                LightLiveBury.clickBury(mContext.getResources().getString(R.string.click_03_63_022));
             }
         });
 
@@ -172,7 +172,7 @@ public class DiscountCouponBll extends LiveBaseBll {
                                 int status = jsonObject.optInt("status");
                                 String toast = jsonObject.optString("tip");
                                 XESToastUtils.showToastAtCenter(toast);
-                                XrsBury.clickBury(mContext.getResources().getString(R.string.click_03_63_023),couponId, status== 1 ? 0:1);
+                                LightLiveBury.clickBury(mContext.getResources().getString(R.string.click_03_63_023),couponId, status== 1 ? 0:1);
                             }
                             getCouponList(false);
                         }
@@ -181,22 +181,37 @@ public class DiscountCouponBll extends LiveBaseBll {
                         public void onPmFailure(Throwable error, String msg) {
                             super.onPmFailure(error, msg);
                             XESToastUtils.showToastAtCenter(msg);
-                            XrsBury.clickBury(mContext.getResources().getString(R.string.click_03_63_023),couponId,1);
+                            LightLiveBury.clickBury(mContext.getResources().getString(R.string.click_03_63_023),couponId,1);
                         }
 
                         @Override
                         public void onPmError(ResponseEntity responseEntity) {
                             super.onPmError(responseEntity);
                             XESToastUtils.showToastAtCenter(responseEntity.getErrorMsg());
-                            XrsBury.clickBury(mContext.getResources().getString(R.string.click_03_63_023),couponId,1);
+                            LightLiveBury.clickBury(mContext.getResources().getString(R.string.click_03_63_023),couponId,1);
                         }
                     });
                 } else {
-                    XrsBury.showBury(mContext.getResources().getString(R.string.show_03_63_024), BurySourceIds.LIGHT_LIVE_POUPON_SOURCEID);
+                    LightLiveBury.showBury(mContext.getResources().getString(R.string.show_03_63_024), BurySourceIds.LIGHT_LIVE_POUPON_SOURCEID);
                     LoginEnter.openLogin(mContext,false,new Bundle());
                 }
             }
         });
+        if (!mIsLand.get()){
+            middleLayout.setOnHierarchyChangeListener(new ViewGroup.OnHierarchyChangeListener() {
+                @Override
+                public void onChildViewAdded(View parent, View child) {
+                    if (child != discountCouponPager.getRootView()){
+                        discountCouponPager.setLineVisible(false);
+                    }
+                }
+
+                @Override
+                public void onChildViewRemoved(View parent, View child) {
+
+                }
+            });
+        }
     }
 
     /** 获取优惠券列表*/
@@ -210,7 +225,7 @@ public class DiscountCouponBll extends LiveBaseBll {
                 if (discountCouponPager != null){
                     discountCouponPager.setData(couponEntities);
                     if (isClear && couponEntities != null && !couponEntities.isEmpty()){
-                        XrsBury.showBury(mContext.getResources().getString(R.string.show_03_63_025));
+                        LightLiveBury.showBury(mContext.getResources().getString(R.string.show_03_63_025));
                     }
                 }
                 if (detailPager != null){
@@ -247,7 +262,7 @@ public class DiscountCouponBll extends LiveBaseBll {
 
     @Override
     public void onDestroy() {
-        EventBusUtil.unregister(toString());
+        EventBusUtil.unregister(this);
         super.onDestroy();
     }
 

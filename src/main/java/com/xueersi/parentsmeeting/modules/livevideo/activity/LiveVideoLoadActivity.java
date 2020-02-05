@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -83,6 +84,25 @@ public class LiveVideoLoadActivity extends BaseActivity {
         String token = LiveAppUserInfo.getInstance().getTalToken();
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
+        //scheme 测试
+//        if (bundle == null) {
+//            bundle = new Bundle();
+//            Uri uri = getIntent().getData();
+////            xeswangxiao://livevideo/intolive?livetype=2&liveid=10011002
+//            String query = uri.getQuery(); //queryParameter=queryString
+//            //param
+//            int livetype = Integer.parseInt(uri.getQueryParameter("livetype"));
+//            String vSectionID = uri.getQueryParameter("liveid");
+//            if (livetype == LiveVideoConfig.LIVE_TYPE_LIVE) {
+//                String vStuCourseID = uri.getQueryParameter("stuCourseID");
+//                intent.putExtra("vStuCourseID", vStuCourseID);
+//                String courseId = intent.getStringExtra("courseId");
+//                intent.putExtra("courseId", courseId);
+//            }
+//            bundle.putInt("type", livetype);
+//            bundle.putString("vSectionID", vSectionID);
+//            intent.putExtras(bundle);
+//        }
         int liveType = bundle.getInt("type", 0);
         //如果没有token，只能重新点击进入了
         if (StringUtils.isEmpty(token) && liveType != LiveVideoConfig.LIVE_TYPE_LECTURE) {
@@ -164,9 +184,13 @@ public class LiveVideoLoadActivity extends BaseActivity {
                     DataLoadManager.newInstance().loadDataStyle(LiveVideoLoadActivity.this,
                             mDataLoadEntity);
                     finish();
+                } else {
+                    mDataLoadEntity.webDataSuccess();
+                    DataLoadManager.newInstance().loadDataStyle(LiveVideoLoadActivity.this,
+                            mDataLoadEntity);
                 }
                 UmsAgentManager.umsAgentDebug(LiveVideoLoadActivity.this, ModuleHandler.TAG,
-                        "fail:errorCode="+errorCode+",errorMsg="+errorMsg);
+                        "fail:errorCode=" + errorCode + ",errorMsg=" + errorMsg);
             }
         });
 
@@ -209,6 +233,10 @@ public class LiveVideoLoadActivity extends BaseActivity {
 
     private void initData() {
         logger.d("initData:index=" + index + ",size=" + liveVideoLoadActivities.size());
+        //已经finish了 https://bugly.qq.com/v2/crash-reporting/crashes/a0df5ed682/336475?pid=1
+        if (liveVideoLoadActivities.isEmpty()) {
+            return;
+        }
         LiveVideoLoadActivity activity = liveVideoLoadActivities.get(0);
         if (activity != this) {
             DataLoadManager.newInstance().loadDataStyle(LiveVideoLoadActivity.this,
@@ -284,12 +312,12 @@ public class LiveVideoLoadActivity extends BaseActivity {
                         }
                         String stuId = LiveAppUserInfo.getInstance().getStuId();
                         getInfos.put(liveType + "-" + stuId + "-" + vSectionID, mGetInfo);
-                        if(!mGetInfo.isGently()){
+                        if (!mGetInfo.isGently()) {
                             LiveVideoConfig.isLightLive = false;
                             com.xueersi.parentsmeeting.modules.livevideo.fragment.LecVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
-                        }else {
+                        } else {
                             LiveVideoConfig.isLightLive = true;
-                            bundle.putBoolean("isGently",true);
+                            bundle.putBoolean("isGently", true);
                             com.xueersi.parentsmeeting.modules.livevideo.fragment.LightLiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
                         }
 

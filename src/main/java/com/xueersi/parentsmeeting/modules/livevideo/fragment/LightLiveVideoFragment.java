@@ -29,6 +29,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewActionIml;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIml;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.bll.DiscountCouponBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.bll.LightLiveBury;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.bll.RecommendCourseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.bll.RoomInfoIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.http.LightLiveHttpManager;
@@ -115,7 +116,7 @@ public class LightLiveVideoFragment  extends LiveFragmentBase implements Activit
     @Override
     protected void onBusinessCreate() {
         super.onBusinessCreate();
-        XrsBury.pageStartBury(activity.getResources().getString(R.string.pv_03_63),1);
+        LightLiveBury.pageStartBury(activity.getResources().getString(R.string.pv_03_82),1);
         changeLandAndPort();
     }
 
@@ -158,6 +159,7 @@ public class LightLiveVideoFragment  extends LiveFragmentBase implements Activit
         Intent intent = activity.getIntent();
         mVideoType = MobEnumUtil.VIDEO_LIVE;
         mVSectionID = intent.getStringExtra("vSectionID");
+        LightLiveBury.liveId = mVSectionID;
         if (TextUtils.isEmpty(mVSectionID)) {
             Toast.makeText(activity, "直播场次不存在", Toast.LENGTH_SHORT).show();
             return false;
@@ -304,6 +306,7 @@ public class LightLiveVideoFragment  extends LiveFragmentBase implements Activit
         if (mLiveBll != null) {
             mLiveBll.onResume();
         }
+        LightLiveBury.pageStartBury(activity.getResources().getString(R.string.pv_03_63));
     }
 
     @Override
@@ -328,6 +331,7 @@ public class LightLiveVideoFragment  extends LiveFragmentBase implements Activit
                 }
             });
         }
+        LightLiveBury.pageEndBury(activity.getResources().getString(R.string.pv_03_63));
         if (mLiveBll != null) {
             mLiveBll.onPause();
         }
@@ -362,11 +366,11 @@ public class LightLiveVideoFragment  extends LiveFragmentBase implements Activit
             logger.d("onConfigurationChanged:videoView2=" + lp.width + "," + lp.height);
         }
         if (mIsLand.get()){
-            XrsBury.pageEndBury(activity.getResources().getString(R.string.pv_03_63),1);
-            XrsBury.pageStartBury(activity.getResources().getString(R.string.pv_03_63),0);
+            LightLiveBury.pageEndBury(activity.getResources().getString(R.string.pv_03_82),1);
+            LightLiveBury.pageStartBury(activity.getResources().getString(R.string.pv_03_82),0);
         }else {
-            XrsBury.pageEndBury(activity.getResources().getString(R.string.pv_03_63),0);
-            XrsBury.pageStartBury(activity.getResources().getString(R.string.pv_03_63),1);
+            LightLiveBury.pageEndBury(activity.getResources().getString(R.string.pv_03_82),0);
+            LightLiveBury.pageStartBury(activity.getResources().getString(R.string.pv_03_82),1);
         }
         changeLandAndPort();
 //        if (lecLiveVideoAction != null) {
@@ -377,9 +381,9 @@ public class LightLiveVideoFragment  extends LiveFragmentBase implements Activit
     @Override
     public void onDestroy() {
         if (mIsLand.get()){
-            XrsBury.pageEndBury(activity.getResources().getString(R.string.pv_03_63),0);
+            LightLiveBury.pageEndBury(activity.getResources().getString(R.string.pv_03_82),0);
         }else {
-            XrsBury.pageEndBury(activity.getResources().getString(R.string.pv_03_63),1);
+            LightLiveBury.pageEndBury(activity.getResources().getString(R.string.pv_03_82),1);
         }
         EventBusUtil.unregister(this);
         super.onDestroy();

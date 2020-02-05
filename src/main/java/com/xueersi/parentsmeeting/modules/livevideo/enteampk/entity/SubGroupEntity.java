@@ -21,8 +21,9 @@ public class SubGroupEntity {
 
     /** 假流视频 */
     private JSONObject videoJson;
+    /** 对接云平台假流视频地址 */
+    private JSONObject videoPathJson;
     private JSONObject dataJson;
-
 
     public int getGroupId() {
         return groupId;
@@ -62,6 +63,14 @@ public class SubGroupEntity {
 
     public void setDataJson(JSONObject dataJson) {
         this.dataJson = dataJson;
+    }
+
+    public JSONObject getVideoPathJson() {
+        return videoPathJson;
+    }
+
+    public void setVideoPathJson(JSONObject videoPathJson) {
+        this.videoPathJson = videoPathJson;
     }
 
     public JSONObject getVideoJson() {

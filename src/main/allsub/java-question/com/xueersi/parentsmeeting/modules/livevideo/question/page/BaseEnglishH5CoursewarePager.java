@@ -17,7 +17,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5C
 public interface BaseEnglishH5CoursewarePager {
     boolean isFinish();
 
-    void close();
+    void close(String method);
 
     String getUrl();
 

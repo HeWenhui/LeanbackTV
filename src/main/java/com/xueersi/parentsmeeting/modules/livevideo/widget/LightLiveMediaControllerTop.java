@@ -8,6 +8,7 @@ import android.view.View;
 import com.xrs.bury.xrsbury.XrsBury;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.bll.LightLiveBury;
 
 /**
  * @ProjectName: xueersiwangxiao
@@ -34,7 +35,7 @@ public class LightLiveMediaControllerTop extends BaseLiveMediaControllerTop{
             @Override
             public void onClick(View v) {
                 mPlayer.changeLOrP(); // 切换横竖屏
-                XrsBury.clickBury(mContext.getResources().getString(R.string.click_03_63_020));
+                LightLiveBury.clickBury(mContext.getResources().getString(R.string.click_03_63_020));
             }
         };
         return LayoutInflater.from(mContext).inflate(R.layout.layout_lightlivemediacontroller_top, this);

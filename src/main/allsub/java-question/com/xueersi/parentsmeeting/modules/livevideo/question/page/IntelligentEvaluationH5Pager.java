@@ -17,7 +17,7 @@ public class IntelligentEvaluationH5Pager implements BaseEnglishH5CoursewarePage
     }
 
     @Override
-    public void close() {
+    public void close(String method) {
 
     }
 

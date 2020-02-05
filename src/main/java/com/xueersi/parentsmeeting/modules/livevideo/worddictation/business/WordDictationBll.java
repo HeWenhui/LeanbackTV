@@ -13,10 +13,14 @@ import android.view.View;
 import android.webkit.WebSettings;
 import android.widget.RelativeLayout;
 
+import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.route.XueErSiRouter;
+import com.xueersi.common.route.module.ModuleHandler;
+import com.xueersi.common.route.module.entity.Module;
+import com.xueersi.common.route.module.entity.ModuleData;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.SizeUtils;
@@ -72,13 +76,33 @@ public class WordDictationBll implements WordDictationAction {
                 RecognizeFlow savedData = DictationQuery.getLastRecord(activity);
                 bundle.putSerializable("data", savedData);
                 bundle.putString("what","Result");
-                XueErSiRouter.startModule(activity, "/dictation/Result", bundle);
+
+                String moduleName = "endictation";
+                Module m = AppBll.getInstance().getModuleByModuleName(moduleName);
+                if (m == null) {
+                    m = new Module();
+                    m.moduleName = moduleName;
+                    m.version = "1.0.1";
+                    m.title = "英语单词听写";
+                    m.moduleType = 0;
+                }
+                ModuleHandler.start(activity, new ModuleData(m, bundle));
             }else {
                 // 没有作答记录，直接进入引导页
                 RecognizeFlow recognizeFlow = new RecognizeFlow(wordStatisticInfo.testid, liveGetInfo.getId(), wordStatisticInfo.pagetype, liveGetInfo.getTeacherId(), wordStatisticInfo.answers, LiveAppUserInfo.getInstance().getStuId());
                 bundle.putSerializable("data", recognizeFlow);
                 bundle.putString("what","Launch");
-                XueErSiRouter.startModule(activity, "/dictation/Launch", bundle);
+
+                String moduleName = "endictation";
+                Module m = AppBll.getInstance().getModuleByModuleName(moduleName);
+                if (m == null) {
+                    m = new Module();
+                    m.moduleName = moduleName;
+                    m.version = "1.0.1";
+                    m.title = "英语单词听写";
+                    m.moduleType = 0;
+                }
+                ModuleHandler.start(activity, new ModuleData(m, bundle));
             }
         } else{
             if (DictationQuery.hasSavedRecord(activity,wordStatisticInfo.testid, liveGetInfo.getId())){
@@ -86,13 +110,33 @@ public class WordDictationBll implements WordDictationAction {
                 RecognizeFlow savedData = DictationQuery.getLastRecord(activity);
                 bundle.putSerializable("data", savedData);
                 bundle.putString("what","MiddleResult");
-                XueErSiRouter.startModule(activity, "/dictation/MiddleResult", bundle);
+
+                String moduleName = "endictation";
+                Module m = AppBll.getInstance().getModuleByModuleName(moduleName);
+                if (m == null) {
+                    m = new Module();
+                    m.moduleName = moduleName;
+                    m.version = "1.0.1";
+                    m.title = "英语单词听写";
+                    m.moduleType = 0;
+                }
+                ModuleHandler.start(activity, new ModuleData(m, bundle));
             }else {
                 // 没有作答记录，直接进入引导页
                 RecognizeFlow recognizeFlow = new RecognizeFlow(wordStatisticInfo.testid, liveGetInfo.getId(), wordStatisticInfo.pagetype, liveGetInfo.getTeacherId(), wordStatisticInfo.answers, LiveAppUserInfo.getInstance().getStuId());
                 bundle.putSerializable("data", recognizeFlow);
                 bundle.putString("what","MiddleLaunch");
-                XueErSiRouter.startModule(activity, "/dictation/MiddleLaunch", bundle);
+
+                String moduleName = "endictation";
+                Module m = AppBll.getInstance().getModuleByModuleName(moduleName);
+                if (m == null) {
+                    m = new Module();
+                    m.moduleName = moduleName;
+                    m.version = "1.0.1";
+                    m.title = "英语单词听写";
+                    m.moduleType = 0;
+                }
+                ModuleHandler.start(activity, new ModuleData(m, bundle));
             }
         }
 
@@ -142,13 +186,33 @@ public class WordDictationBll implements WordDictationAction {
                         Bundle bundle = new Bundle();
                         bundle.putSerializable("data", recognizeFlow);
                         bundle.putString("what","Result");
-                        XueErSiRouter.startModule(activity, "/dictation/Result", bundle);
+
+                        String moduleName = "endictation";
+                        Module m = AppBll.getInstance().getModuleByModuleName(moduleName);
+                        if (m == null) {
+                            m = new Module();
+                            m.moduleName = moduleName;
+                            m.version = "1.0.1";
+                            m.title = "英语单词听写";
+                            m.moduleType = 0;
+                        }
+                        ModuleHandler.start(activity, new ModuleData(m, bundle));
                     } else {
                         logger.d("middle result stuanswer"+ recognizeFlow);
                         Bundle bundle = new Bundle();
                         bundle.putSerializable("data", recognizeFlow);
                         bundle.putString("what","MiddleResult");
-                        XueErSiRouter.startModule(activity, "/dictation/MiddleResult", bundle);
+
+                        String moduleName = "endictation";
+                        Module m = AppBll.getInstance().getModuleByModuleName(moduleName);
+                        if (m == null) {
+                            m = new Module();
+                            m.moduleName = moduleName;
+                            m.version = "1.0.1";
+                            m.title = "英语单词听写";
+                            m.moduleType = 0;
+                        }
+                        ModuleHandler.start(activity, new ModuleData(m, bundle));
                     }
                     bottomContent.removeView(view);
                 }
