@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:arc="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -17,10 +16,10 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:gravity="center"
-            android:layout_marginTop="98dp"
-            android:layout_marginLeft="80dp"
+            android:layout_marginTop="93dp"
+            android:layout_marginLeft="84dp"
             android:layout_marginRight="80dp"
-            android:text="确定不选择名字吗？"
+            android:text="确定跳过名字选择吗？"
             android:textColor="@color/COLOR_726565"
             android:textSize="20sp" />
 
@@ -29,10 +28,11 @@
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:layout_marginLeft="80dp"
+            android:layout_marginLeft="84dp"
             android:layout_marginRight="80dp"
+            android:layout_marginBottom="9dp"
             android:layout_gravity="center"
-            android:text=""
+            android:gravity="center_vertical"
             android:textColor="@color/COLOR_8C8080"
             android:textSize="12sp" />
 
@@ -40,7 +40,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal|bottom"
-            android:layout_marginBottom="90dp"
+            android:layout_marginBottom="110dp"
             android:orientation="horizontal">
 
             <TextView
@@ -53,7 +53,7 @@
                 android:id="@+id/tv_dialog_setting_english_name_sumit_data"
                 android:layout_width="106dp"
                 android:layout_height="40dp"
-                android:layout_marginLeft="10dp"
+                android:layout_marginLeft="9dp"
                 android:background="@drawable/bg_groupclass_setting_english_conform_click" />
         </LinearLayout>
     </LinearLayout>

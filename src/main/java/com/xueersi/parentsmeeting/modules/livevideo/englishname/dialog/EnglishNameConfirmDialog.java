@@ -42,7 +42,7 @@ public class EnglishNameConfirmDialog extends BaseAlertDialog {
     }
 
     public void initData(String msg, EnglishNameListener englishNameListener){
-        String contentText = "确定跳过名字选择吗？不选择名字可能错失点名机会哦~ 您可以在个人中心重新选择英文名。";
+        String contentText = "不选择名字可能错失点名机会哦~ 您可以在个人中心重新选择英文名。";
         if(mContext != null){
             contentText = mContext.getResources().getString(R.string.english_group_name_skip);
         }
