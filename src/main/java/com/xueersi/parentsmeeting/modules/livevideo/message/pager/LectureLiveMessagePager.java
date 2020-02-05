@@ -61,8 +61,8 @@ public class LectureLiveMessagePager extends LiveMessagePager {
         int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoConfig.VIDEO_WIDTH);
         int minisize = wradio / 13;
         messageSize = Math.max((int) (ScreenUtils.getScreenDensity() * 12), minisize);
-        logger.e("messageSize:" + messageSize);
-        logger.e("size:"+ SizeUtils.Dp2Px(mContext,14));
+//        logger.e("messageSize:" + messageSize);
+//        logger.e("size:"+ SizeUtils.Dp2Px(mContext,14));
     }
 
     @Override
