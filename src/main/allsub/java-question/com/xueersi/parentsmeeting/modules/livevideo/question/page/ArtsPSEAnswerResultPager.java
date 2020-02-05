@@ -46,6 +46,7 @@ import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsAnswerErrorEnergyStateLottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsAnswerPartRightEnergyStateLottieEffectInfo;
@@ -125,11 +126,14 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
     FangZhengCuYuanTextView tvGoldCount;
     /** 能量值 */
     FangZhengCuYuanTextView tvEnergyCount;
+    private LogToFile mLogtf;
 
     public ArtsPSEAnswerResultPager(Context context, AnswerResultEntity entity, AnswerResultStateListener stateListener) {
         super(context);
         mData = entity;
         this.mStateListener = stateListener;
+        mLogtf = new LogToFile(context, "ArtsPSEAnswerResultPager");
+        mLogtf.d("ArtsPSEAnswerResultPager:isRight=" + entity.getIsRight() + ",gold=" + entity.getGold());
     }
 
     @Override
@@ -344,7 +348,7 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
                             ViewGroup group = (ViewGroup) mView.getParent();
                             // bugly崩溃。
                             //https://bugly.qq.com/v2/crash-reporting/crashes/a0df5ed682/207249/report?pid=1&search=ArtsPSEAnswerResultPager&searchType=detail&bundleId=&channelId=&version=all&tagList=&start=0&date=custom&startDateStr=2020-01-04&endDateStr=2020-01-04
-                            if(group!=null){
+                            if (group != null) {
                                 group.removeView(mView);
                             }
                         }
@@ -416,7 +420,7 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
             lottieResPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_error/images";
             lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_error/data.json";
         }
-        XrsCrashReport.d(TAG,"displayDetailUi:lottieJsonPath="+lottieJsonPath);
+        XrsCrashReport.d(TAG, "displayDetailUi:lottieJsonPath=" + lottieJsonPath);
         final ArtsAnswerResultLottieEffectInfo effectInfo = new ArtsAnswerResultLottieEffectInfo(lottieResPath,
                 lottieJsonPath);
         resultAnimeView.useHardwareAcceleration();

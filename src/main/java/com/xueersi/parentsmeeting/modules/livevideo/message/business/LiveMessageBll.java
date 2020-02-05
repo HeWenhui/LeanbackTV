@@ -37,6 +37,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.message.pager.EvenDriveLiveM
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.HalfBodyArtsLiveMsgPager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.HalfBodyLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.HalfBodyPrimaryLiveMessagePager;
+import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LectureLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LightLiveMessageLandPager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LightLiveMessagePortPager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessageLandPager;
@@ -429,7 +430,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
                     mLiveMessagePager = liveMessagePager;
                 }else {
                     LiveMessagePager liveMessagePager =
-                        new EvenDriveLiveMessagePager(activity, baseLiveMediaControllerBottom, liveMessageLandEntities, liveMessagePortEntities);
+                        new LectureLiveMessagePager(activity, baseLiveMediaControllerBottom, liveMessageLandEntities, liveMessagePortEntities);
                     mLiveMessagePager = liveMessagePager;
                 }
             } else {
