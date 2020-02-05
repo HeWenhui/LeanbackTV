@@ -114,11 +114,11 @@ public class LectureLiveMessagePager extends LiveMessagePager {
                         if (urlclick == 1 && LiveMessageEntity.MESSAGE_TEACHER == entity.getType()) {
                             SpannableString tSpanttt = new SpannableString("# "+sender + ": ");
                             Drawable drawable =mContext.getResources().getDrawable(R.drawable.live_icon_msg_teacher);
-                            drawable.setBounds(0, 0, SizeUtils.Dp2Px(tvMessageItem.getContext(), 28),
-                                    SizeUtils.Dp2Px(tvMessageItem.getContext(), 16));
+                            drawable.setBounds(0, 0, SizeUtils.Dp2Px(tvMessageItem.getContext(), 20),
+                                    SizeUtils.Dp2Px(tvMessageItem.getContext(), 12));
                             CenterAlignImageSpan imageSpan = new CenterAlignImageSpan(drawable);
                             tSpanttt.setSpan(imageSpan, 0, 1, ImageSpan.ALIGN_BASELINE);
-                            tSpanttt.setSpan(characterStyle, 1, sender.length() + 1, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                            tSpanttt.setSpan(characterStyle, 1, tSpanttt.length() , Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
                             tvMessageItem.setAutoLinkMask(Linkify.WEB_URLS);
                             urlClick(tvMessageItem);
                             SpannableStringBuilder stringBuilder = new SpannableStringBuilder();
@@ -165,6 +165,7 @@ public class LectureLiveMessagePager extends LiveMessagePager {
             @Override
             public void run() {
                 tvMessageCount.setText("本教室在线"+peopleCount + "人");
+//                addMessage("laoshidddd", LiveMessageEntity.MESSAGE_TEACHER, "test", "");
             }
         });
     }

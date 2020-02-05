@@ -67,7 +67,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="11dp"
+                android:layout_marginLeft="8dp"
                 android:textColor="@color/COLOR_212831"
                 android:textSize="10dp" />
 
@@ -102,7 +102,7 @@
             android:divider="@null"
             android:dividerHeight="8dp"
             android:listSelector="@color/transparent"
-            android:paddingLeft="10dp"
+            android:paddingLeft="8dp"
             android:paddingTop="10dp"
             android:paddingRight="8dp"
             android:scrollbars="none" />
