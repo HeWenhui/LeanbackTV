@@ -187,13 +187,19 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
         EventBus.getDefault().register(this);
     }
 
-    private void addPager(ArtsAnswerResultEvent event) {
+    private void addPager(ArtsAnswerResultEvent event, AnswerResultEntity answerReulst) {
         //logger.e("ArtsAnswerResultBll:addPager:" + mDsipalyer);
 
         if (mDsipalyer != null) {
             return;
         }
-
+        if (answerReulst != mAnswerReulst) {
+            if (answerReulst != null) {
+                mLogtf.d("addPager:answerReulst=" + answerReulst.getIsRight() + ",gold=" + answerReulst.getGold());
+            } else {
+                mLogtf.d("addPager:answerReulst=-1,-1");
+            }
+        }
         if (isPse) {
             mDsipalyer = new ArtsPSEAnswerResultPager(mContext, mAnswerReulst, this);
             RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams
@@ -347,7 +353,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
     /**
      * 展示答题结果
      */
-    private void showAnswerReulst(final ArtsAnswerResultEvent event) {
+    private void showAnswerReulst(final ArtsAnswerResultEvent event, final AnswerResultEntity answerReulst) {
         post(new Runnable() {
             @Override
             public void run() {
@@ -359,7 +365,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                         close = false;
                     } else {
                         closeRemindUI();
-                        addPager(event);
+                        addPager(event, answerReulst);
                     }
                     try {
                         VideoQuestionLiveEntity detailInfo = event.getDetailInfo();
@@ -627,7 +633,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                     //答题结果里有填空选择 才展示 统计面板 (当前统计面UI 只支持显示 选择、填空题)
                     if (!resultFromVoice) {
                         shoulUpdateGold = true;
-                        showAnswerReulst(event);
+                        showAnswerReulst(event, mAnswerReulst);
                     }
 
                 } else {
@@ -662,6 +668,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                     }
                 }
                 mAnswerResultList.add(mAnswerReulst);
+                mLogtf.d("onAnswerResult:isRight=" + mAnswerReulst.getIsRight() + ",gold=" + mAnswerReulst.getGold());
             } else {
                 String errorMsg = jsonObject.optString("msg");
                 if (!TextUtils.isEmpty(errorMsg)) {
@@ -700,8 +707,8 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
             mDsipalyer.close();
             try {
                 mLogtf.d(SysLogLable.courseCloseResult, "closeAnswerResult:method=" + method + ",basePager=" + basePager);
-            }catch (Exception e){
-                LiveCrashReport.postCatchedException(TAG,e);
+            } catch (Exception e) {
+                LiveCrashReport.postCatchedException(TAG, e);
             }
             mDsipalyer = null;
             EventBus.getDefault().post(new AnswerResultCplShowEvent(basePager, "closeAnswerResult:method1=" + method));
@@ -758,7 +765,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
     public void onCompeletShow() {
         //logger.e( "=======onCompeletShow called:" + forceSumbmit + ":" + this);
         try {
-            mLogtf.d("onCompeletShow:forceSumbmit=" + forceSumbmit+"，mDsipalyer="+mDsipalyer);
+            mLogtf.d("onCompeletShow:forceSumbmit=" + forceSumbmit + "，mDsipalyer=" + mDsipalyer);
         } catch (Exception e) {
             LiveCrashReport.postCatchedException(TAG, e);
         }
