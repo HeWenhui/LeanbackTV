@@ -32,6 +32,8 @@
             android:layout_marginRight="80dp"
             android:layout_marginBottom="9dp"
             android:layout_gravity="center"
+            android:text="确定跳过名字选择吗确定跳过名字选择吗确定跳过名字选择吗"
+            android:lineSpacingMultiplier="1.25"
             android:gravity="center_vertical"
             android:textColor="@color/COLOR_8C8080"
             android:textSize="12sp" />
