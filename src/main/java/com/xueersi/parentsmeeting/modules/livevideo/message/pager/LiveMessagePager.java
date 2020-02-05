@@ -113,13 +113,13 @@ public class LiveMessagePager extends BaseEvenDriveCommonPager {
     /** 聊天IRC一下状态，正在连接，在线等 */
     private ImageView ivMessageOnline;
     /** 聊天消息 */
-    ListView lvMessage;
+    protected ListView lvMessage;
     private View rlInfo;
     private View rlMessageContent;
     private Button btMessageSend;
     private Button btMessageExpress;
-    CommonAdapter<LiveMessageEntity> messageAdapter;
-    CommonAdapter<LiveMessageEntity> otherMessageAdapter;
+    protected CommonAdapter<LiveMessageEntity> messageAdapter;
+    protected CommonAdapter<LiveMessageEntity> otherMessageAdapter;
     boolean isTouch = false;
     /** 大题互动过程中，不能收聊天消息 */
     private boolean isBigQue = false;
@@ -141,6 +141,10 @@ public class LiveMessagePager extends BaseEvenDriveCommonPager {
     private long mOldTime = 0;//记录点击赠送按钮那一刻的时间
     /** 是否统计用户发送消息 */
     boolean debugMsg = false;
+    protected int layout = R.layout.page_livevideo_message;
+    protected RelativeLayout rlMessageStatus;
+    protected View vGap;
+
 
     public LiveMessagePager(Context context,
                             BaseLiveMediaControllerBottom
@@ -193,7 +197,9 @@ public class LiveMessagePager extends BaseEvenDriveCommonPager {
 
     @Override
     public View initView() {
-        mView = View.inflate(mContext, R.layout.page_livevideo_message, null);
+        setMessageLayout();
+        mView = LayoutInflater.from(mContext).inflate(layout,null,false);
+//        mView = View.inflate(mContext, layout, null);
         tvMessageCount = (TextView) mView.findViewById(R.id.tv_livevideo_message_count);
         ivMessageOnline = (ImageView) mView.findViewById(R.id.iv_livevideo_message_online);
         lvMessage = (ListView) mView.findViewById(R.id.lv_livevideo_message);
@@ -213,9 +219,15 @@ public class LiveMessagePager extends BaseEvenDriveCommonPager {
         tvNowEvenNum = mView.findViewById(R.id.tv_livevideo_livemessage_middle_even_right_now);
         tvHighestEvenNum = mView.findViewById(R.id.tv_livevideo_livemessage_middle_even_right_max);
 //        }
+        rlMessageStatus = mView.findViewById(R.id.rl_livevideo_message_status);
+        vGap = mView.findViewById(R.id.v_livevideo_message_gap);
+        changeBackground();
         return mView;
     }
-
+    protected void setMessageLayout(){
+        layout = R.layout.page_livevideo_message;
+    }
+    protected void changeBackground(){}
     @Override
     public void initListener() {
         rlLivevideoCommonWord = (RelativeLayout) liveMediaControllerBottom.findViewById(R.id.rl_livevideo_common_word);
@@ -437,6 +449,24 @@ public class LiveMessagePager extends BaseEvenDriveCommonPager {
         int minisize = wradio / 13;
         messageSize = Math.max((int) (ScreenUtils.getScreenDensity() * 12), minisize);
         logger.i("initData:minisize=" + minisize);
+        initAdapter();
+        lvMessage.setAdapter(messageAdapter);
+        logger.i("initData:time2=" + (System.currentTimeMillis() - before));
+        before = System.currentTimeMillis();
+        mView.post(new Runnable() {
+            @Override
+            public void run() {
+                initDanmaku();
+            }
+        });
+        logger.i("initData:time3=" + (System.currentTimeMillis() - before));
+        before = System.currentTimeMillis();
+        //initCommonWord();
+        logger.i("initData:time4=" + (System.currentTimeMillis() - before));
+        before = System.currentTimeMillis();
+    }
+
+    protected void initAdapter(){
         messageAdapter = new CommonAdapter<LiveMessageEntity>(liveMessageEntities) {
             @Override
             public AdapterItemInterface<LiveMessageEntity> getItemView(Object type) {
@@ -519,24 +549,9 @@ public class LiveMessagePager extends BaseEvenDriveCommonPager {
                 };
             }
         };
-        lvMessage.setAdapter(messageAdapter);
-        logger.i("initData:time2=" + (System.currentTimeMillis() - before));
-        before = System.currentTimeMillis();
-        mView.post(new Runnable() {
-            @Override
-            public void run() {
-                initDanmaku();
-            }
-        });
-        logger.i("initData:time3=" + (System.currentTimeMillis() - before));
-        before = System.currentTimeMillis();
-        //initCommonWord();
-        logger.i("initData:time4=" + (System.currentTimeMillis() - before));
-        before = System.currentTimeMillis();
     }
-
     /** 设置聊天消息的点赞图片 */
-    private SpannableStringBuilder likeEvenDrive(LiveMessageEntity entity) {
+    protected SpannableStringBuilder likeEvenDrive(LiveMessageEntity entity) {
         String textShow = entity.getText() + "  ";
         SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(textShow);
         String replacePos = "点赞心";
@@ -550,7 +565,7 @@ public class LiveMessagePager extends BaseEvenDriveCommonPager {
     }
 
     //点击连对激励，弹出排行榜
-    private SpannableStringBuilder clickEvenDrive(LiveMessageEntity entity) {
+    protected SpannableStringBuilder clickEvenDrive(LiveMessageEntity entity) {
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(@NonNull View widget) {
@@ -1165,6 +1180,8 @@ public class LiveMessagePager extends BaseEvenDriveCommonPager {
 //                }
                 if (!isRegister) {
                     ivMessageOnline.setImageResource(R.drawable.bg_livevideo_message_offline);
+                }else {
+                    ivMessageOnline.setImageResource(R.drawable.bg_livevideo_message_online);
                 }
             }
         });
@@ -1179,13 +1196,7 @@ public class LiveMessagePager extends BaseEvenDriveCommonPager {
     /** 聊天进入房间 */
     @Override
     public void onRegister() {
-        mainHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                isRegister = true;
-                ivMessageOnline.setImageResource(R.drawable.bg_livevideo_message_online);
-            }
-        });
+        isRegister = true;
     }
 
     /** 聊天断开 */

@@ -180,4 +180,10 @@
     <color name="COLOR_FF8F2C">#FF8F2C</color>
     <color name="COLOR_FE9B43">#FE9B43</color>
     <color name="COLOR_F5F5F6">#F5F5F6</color>
+
+    <color name="COLOR_4D565682">#4D565682</color>#
+    <color name="COLOR_F8F8F9">#F8F8F9</color>
+    <color name="COLOR_4A82F7">#4A82F7</color>
+    <color name="COLOR_5B6169">#5B6169</color>
+    <color name="COLOR_EB002A">#EB002A</color>
 </resources>
