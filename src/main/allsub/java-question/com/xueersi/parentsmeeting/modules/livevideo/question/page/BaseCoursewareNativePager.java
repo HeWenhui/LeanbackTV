@@ -135,6 +135,9 @@ public class BaseCoursewareNativePager extends LiveBasePager {
 
         @Override
         public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
+            if (!isAttach()) {
+                return false;
+            }
             ConsoleMessage.MessageLevel mLevel = consoleMessage.messageLevel();
             boolean isRequst = false;
             if (mLevel == ConsoleMessage.MessageLevel.ERROR || mLevel == ConsoleMessage.MessageLevel.WARNING) {

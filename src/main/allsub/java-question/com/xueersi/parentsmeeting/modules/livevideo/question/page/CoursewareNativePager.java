@@ -20,6 +20,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xueersi.common.base.XrsCrashReport;
+import com.xueersi.lib.framework.utils.listener.OnUnDoubleClickListener;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.tencent.smtt.export.external.interfaces.ConsoleMessage;
@@ -460,9 +461,9 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 }
             }
         });
-        btCourseSubmit.setOnClickListener(new View.OnClickListener() {
+        btCourseSubmit.setOnClickListener(new OnUnDoubleClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onUnDoubleClick(View view) {
                 getAnswerType = LiveQueConfig.GET_ANSWERTYPE_SUBMIT;
                 JSONObject jsonData = new JSONObject();
                 try {
@@ -1164,6 +1165,9 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         englishH5CoursewareSecHttp.submitCourseWareTests(detailInfo, isforce, nonce, entranceTime, "" + answerArray, new AbstractBusinessDataCallBack() {
             @Override
             public void onDataSucess(Object... objData) {
+                if (loadResult) {
+                    return;
+                }
                 JSONObject jsonObject = (JSONObject) objData[0];
                 rlCourseControl.setVisibility(View.GONE);
                 loadResult = true;

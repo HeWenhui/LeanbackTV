@@ -23,6 +23,7 @@ import android.widget.TextView;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LivePlayBackMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.AnswerResultStateListener;
@@ -70,11 +71,14 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
 
     /** 奖励布局 */
     LinearLayout llRewardInfo;
+    private LogToFile mLogtf;
 
-    public ArtsAnswerResultPager(Context context, AnswerResultEntity data, AnswerResultStateListener listener) {
+    public ArtsAnswerResultPager(Context context, AnswerResultEntity entity, AnswerResultStateListener listener) {
         super(context);
-        mData = data;
+        mData = entity;
         mStateListenr = listener;
+        mLogtf = new LogToFile(context, "ArtsAnswerResultPager");
+        mLogtf.d("ArtsAnswerResultPager:isRight=" + entity.getIsRight() + ",gold=" + entity.getGold());
     }
 
 

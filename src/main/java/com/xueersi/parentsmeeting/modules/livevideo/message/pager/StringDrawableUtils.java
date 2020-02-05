@@ -5,6 +5,8 @@ import android.graphics.drawable.Drawable;
 import android.text.Spannable;
 import android.text.SpannableString;
 
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.CenterAlignImageSpan;
 
@@ -31,7 +33,7 @@ public class StringDrawableUtils {
                 R.drawable.bg_livevideo_even_drive_message_king,
                 R.drawable.bg_livevideo_even_drive_message_top};
         CenterAlignImageSpan verticalImageSpan = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP && sEvenNum != null) {
             int evenNum = 0;
             try {
                 evenNum = Integer.valueOf(sEvenNum);
@@ -52,7 +54,8 @@ public class StringDrawableUtils {
                     }
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Logger logger = LoggerFactory.getLogger("StringDrawableUtils");
+                logger.d("addEvenDriveMessageNum:e=" + e);
             }
         }
         if (verticalImageSpan != null) {

@@ -961,7 +961,8 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         mAudioRequest = ProxUtil.getProxUtil().
 
                 get(liveVideoActivity, AudioRequest.class);
-        logger.i("AudioRequest" + mAudioRequest == null ? "null" : mAudioRequest.toString());
+        //https://bugly.qq.com/v2/crash-reporting/crashes/a0df5ed682/246702?pid=1
+//        logger.i("AudioRequest" + mAudioRequest == null ? "null" : mAudioRequest.toString());
 //        LiveVideoPoint.getInstance().addVideoSizeChangeAndCall(mContext, new LiveVideoPoint.VideoSizeChange() {
 //            @Override
 //            public void videoSizeChange(LiveVideoPoint liveVideoPoint) {
