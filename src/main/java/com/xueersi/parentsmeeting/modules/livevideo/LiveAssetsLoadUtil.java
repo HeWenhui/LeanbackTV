@@ -73,7 +73,12 @@ public class LiveAssetsLoadUtil {
             public void start() {
                 starttime = System.currentTimeMillis();
                 //XESToastUtils.showToast(context, "开始加载");
-                mDataLoadEntity.beginLoading();
+                //https://bugly.qq.com/v2/crash-reporting/crashes/a0df5ed682/350181?pid=1
+                try {
+                    mDataLoadEntity.beginLoading();
+                } catch (Exception e) {
+                    LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+                }
                 DataLoadManager.newInstance().loadDataStyle(context, mDataLoadEntity);
                 callback.start();
             }
