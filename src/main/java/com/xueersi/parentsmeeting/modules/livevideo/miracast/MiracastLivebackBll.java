@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
@@ -48,6 +49,8 @@ public class MiracastLivebackBll extends LiveBackBaseBll implements IBrowseListe
 
     private MiracastPlaySucListener miracastPlaySucListener;
 
+    private boolean isInit = false;
+
     public MiracastLivebackBll(Activity context, LiveBackBll liveBll) {
         super(context, liveBll);
     }
@@ -64,6 +67,11 @@ public class MiracastLivebackBll extends LiveBackBaseBll implements IBrowseListe
             businessShareParamMap) {
         super.onCreate(mVideoEntity, liveGetInfo, businessShareParamMap);
         logger.i("hpplay MiracastLivebackBll onCreate");
+
+
+    }
+
+    public void initLetouSdk() {
         LelinkSetting lelinkSetting = new LelinkSetting.LelinkSettingBuilder("10494", "699d23d680136ee1d3e7d9cbf767ac0a").build();
 //        LelinkSetting lelinkSetting = new LelinkSetting.LelinkSettingBuilder("10495", "42417c9f85b4842c026e2240eec88ae2").build();
         lelinkServiceManager = LelinkServiceManager.getInstance(mContext.getApplicationContext());
@@ -81,9 +89,13 @@ public class MiracastLivebackBll extends LiveBackBaseBll implements IBrowseListe
         logger.i("hpplay MiracastLivebackBll url " + videoPath);
         setUrl(videoPath);
         iMiracastState = miracastPager.getiMiracastState();
+        isInit = true;
     }
 
     public void showPager(ViewGroup rootView) {
+        if (!isInit) {
+            initLetouSdk();
+        }
         logger.i("hpplay MiracastLivebackBll showPager");
         final ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                 .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -118,15 +130,21 @@ public class MiracastLivebackBll extends LiveBackBaseBll implements IBrowseListe
 
     public void hildPage() {
         if (miracastPager != null && mFragmentRootView != null) {
-            mFragmentRootView.removeView(miracastPager.getRootView());
-            miracastPager.stopSearch();
+            mFragmentRootView.post(new Runnable() {
+                @Override
+                public void run() {
+                    mFragmentRootView.removeView(miracastPager.getRootView());
+                    miracastPager.stopSearch();
+                }
+            });
+
         }
     }
 
     @Override
     public void onConnect(LelinkServiceInfo lelinkServiceInfo, int extra) {
         logger.i("hpplay 连接成功： info name:" + lelinkServiceInfo.getName() + " ip:" + lelinkServiceInfo.getIp());
-        XESToastUtils.showToast(activity, "连接成功");
+        XESToastUtils.showToast("连接成功");
         iMiracastState.onConnect();
 
     }
@@ -153,15 +171,17 @@ public class MiracastLivebackBll extends LiveBackBaseBll implements IBrowseListe
         } else if (extra == IConnectListener.CONNECT_ERROR_IM_BLACKLIST) {
             text = lelinkServiceInfo.getName() + "连接黑名单";
         }
+        if (!TextUtils.isEmpty(text)) {
+            XESToastUtils.showToast(text);
+        }
 
-        XESToastUtils.showToast(text);
         iMiracastState.onDisConnect();
     }
 
     @Override
     public void onLoading() {
         logger.i("hpplay onLoading");
-        XESToastUtils.showToast("loading");
+        //XESToastUtils.showToast("loading");
     }
 
     @Override

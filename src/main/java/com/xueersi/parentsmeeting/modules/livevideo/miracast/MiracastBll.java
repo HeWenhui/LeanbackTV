@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
@@ -45,13 +46,12 @@ public class MiracastBll extends LiveBaseBll implements IBrowseListener, IConnec
     LelinkPlayer leLinkPlayer;
     private MiracastPager miracastPager;
     private RelativeLayout rlLiveMessageContent;
-    List<LelinkServiceInfo> devList;
-    private String url;
     private DanmakuBean danmakuBean;
     IMiracastState iMiracastState;
     PlayerService playerService;
     private ViewGroup mRootView;
     private MiracastLivebackBllCallback miracastLivebackBllCallback;
+    private boolean isInit = false;
 
     public MiracastBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -79,6 +79,13 @@ public class MiracastBll extends LiveBaseBll implements IBrowseListener, IConnec
 
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
+
+        super.onLiveInited(getInfo);
+        // showPager();
+
+    }
+
+    public void initLetouSdk() {
         LelinkSetting lelinkSetting = new LelinkSetting.LelinkSettingBuilder("10494", "699d23d680136ee1d3e7d9cbf767ac0a").build();
 //        LelinkSetting lelinkSetting = new LelinkSetting.LelinkSettingBuilder("10495", "42417c9f85b4842c026e2240eec88ae2").build();
         lelinkServiceManager = LelinkServiceManager.getInstance(mContext.getApplicationContext());
@@ -93,12 +100,13 @@ public class MiracastBll extends LiveBaseBll implements IBrowseListener, IConnec
         miracastPager.setLeLinkPlayer(leLinkPlayer);
         miracastPager.setILelinkServiceManager(lelinkServiceManager);
         iMiracastState = miracastPager.getiMiracastState();
-        super.onLiveInited(getInfo);
-        // showPager();
-
+        isInit = true;
     }
 
     public void showPager(ViewGroup rootView) {
+        if (!isInit) {
+            initLetouSdk();
+        }
         final ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                 .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         mRootView = rootView;
@@ -178,7 +186,9 @@ public class MiracastBll extends LiveBaseBll implements IBrowseListener, IConnec
             text = lelinkServiceInfo.getName() + "连接黑名单";
         }
 
-        XESToastUtils.showToast(text);
+        if (!TextUtils.isEmpty(text)) {
+            XESToastUtils.showToast(text);
+        }
         iMiracastState.onDisConnect();
     }
 
@@ -250,7 +260,6 @@ public class MiracastBll extends LiveBaseBll implements IBrowseListener, IConnec
         logger.i("hpplay url:" + url);
         if (url != null) {
             miracastPager.setUrl(url);
-            this.url = url;
         }
     }
 
