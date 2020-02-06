@@ -328,6 +328,12 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
             logger.d("onConfigurationChanged:videoView2=" + lp.width + "," + lp.height);
         }
         changeLandAndPort();
+        liveViewAction.removeView(liveMediaControllerBottom);
+        if (mIsLand.get()){
+             liveViewAction.addView(LiveVideoLevel.LEVEL_CTRl, liveMediaControllerBottom
+                  ,new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        }
+
 //        if (lecLiveVideoAction != null) {
 //            lecLiveVideoAction.onConfigurationChanged();
 //        }
@@ -356,12 +362,12 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
                 ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT);
                 controllerContent.addView(mMediaController, params);
-                mMediaController.setControllerBottom(liveMediaControllerBottom, true);
+                mMediaController.setControllerBottom(liveMediaControllerBottom, false);
                 BaseLiveMediaControllerTop baseLiveMediaControllerTop = new BaseLiveMediaControllerTop(activity, mMediaController, videoFragment);
                 mMediaController.setControllerTop(baseLiveMediaControllerTop);
                 controllerContent.addView(baseLiveMediaControllerTop);
                 mMediaController.setAutoOrientation(true);
-                liveMediaControllerBottom.setController(mMediaController);
+//                liveMediaControllerBottom.setController(mMediaController);
                 if (mGetInfo != null) {
                     mMediaController.setFileName(mGetInfo.getName());
                 }
@@ -408,7 +414,7 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
                 ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT);
                 controllerContent.addView(mMediaController, params);
-                mMediaController.setControllerBottom(liveMediaControllerBottom, true);
+                mMediaController.setControllerBottom(liveMediaControllerBottom, false);
                 BaseLiveMediaControllerTop baseLiveMediaControllerTop = new BaseLiveMediaControllerTop(activity, mMediaController, videoFragment);
                 mMediaController.setControllerTop(baseLiveMediaControllerTop);
                 controllerContent.addView(baseLiveMediaControllerTop);
