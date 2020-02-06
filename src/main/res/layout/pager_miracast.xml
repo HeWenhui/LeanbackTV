@@ -6,14 +6,17 @@
     android:background="#F3F3F4"
     android:orientation="vertical">
 
-    <include layout="@layout/include_app_title_main" />
+    <include layout="@layout/include_app_tv_play_title_main" />
 
     <TextView
+        android:id="@+id/tv_player_top_tips"
         android:layout_width="match_parent"
         android:layout_height="36dp"
-        android:background="#D6E6BC7A"
+        android:background="#29E6BC7A"
+        android:drawableLeft="@drawable/icon_tv_player_stat_wifi"
+        android:drawablePadding="4dp"
         android:gravity="center_vertical"
-        android:paddingLeft="36dp"
+        android:paddingLeft="18dp"
         android:text="当前使用WIFI连接"
         android:textColor="#FE9B43"
         android:textSize="12sp" />
@@ -29,13 +32,13 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="158dp"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginBottom="16dp"
-                android:orientation="vertical"
-                android:background="@drawable/bg_letou_describe_shape">
+                android:background="@drawable/bg_letou_describe_shape"
+                android:orientation="vertical">
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/rc_device"
@@ -45,15 +48,62 @@
                     android:layout_marginBottom="50dp">
 
                 </android.support.v7.widget.RecyclerView>
+
                 <TextView
                     android:id="@+id/letou_describe_searching"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
-                    android:layout_marginBottom="14dp"
-                    android:textSize="14sp"
+                    android:layout_centerHorizontal="true"
+                    android:paddingBottom="20dp"
                     android:textColor="#ADB4BE"
-                    android:layout_centerHorizontal="true"/>
+                    android:textSize="14sp" />
+
+                <RelativeLayout
+                    android:id="@+id/letou_describe_empty_rl"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/bg_letou_describe_shape"
+                    android:padding="10dp"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:id="@+id/letou_describe_empty_iv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="36dp"
+                        android:src="@drawable/icon_tv_play_search_empty" />
+
+                    <TextView
+                        android:id="@+id/letou_describe_empty_tips_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/letou_describe_empty_iv"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="8dp"
+                        android:text="未连接WIFI,无法投屏"
+                        android:textColor="#ADB4BE"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/letou_describe_empty_refresh_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/letou_describe_empty_tips_tv"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="36dp"
+                        android:background="@drawable/bg_letou_refresh_btn_shape"
+                        android:paddingLeft="30dp"
+                        android:paddingTop="9dp"
+                        android:paddingRight="30dp"
+                        android:paddingBottom="9dp"
+                        android:text="刷新重试"
+                        android:textColor="#FFFFFF"
+                        android:textSize="14sp" />
+
+                </RelativeLayout>
             </RelativeLayout>
 
             <FrameLayout

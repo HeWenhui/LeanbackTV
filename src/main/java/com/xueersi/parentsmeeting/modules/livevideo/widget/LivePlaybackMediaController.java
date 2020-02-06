@@ -52,6 +52,7 @@ public class LivePlaybackMediaController extends MediaController2 {
         addBottom();
     }
 
+
     protected void addBottom() {
         mediaControllerBottom = new MediaControllerBottom2(activity, this, mPlayer);
         rlKeyPoints = (RelativeLayout) mediaControllerBottom.findViewById(R.id.rl_video_mediacontroller_keypoints);

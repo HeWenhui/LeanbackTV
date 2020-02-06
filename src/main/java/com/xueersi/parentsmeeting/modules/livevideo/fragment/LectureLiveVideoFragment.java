@@ -1,9 +1,14 @@
 package com.xueersi.parentsmeeting.modules.livevideo.fragment;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,7 +57,8 @@ import java.util.List;
  * Created by linyuqiang on 2018/7/18.
  * 讲座布局
  */
-public class LectureLiveVideoFragment extends LiveFragmentBase implements ActivityChangeLand, MiracastLiveMediaControllerTop.TvBtnClicklistener {
+public class LectureLiveVideoFragment extends LiveFragmentBase implements ActivityChangeLand, MiracastLiveMediaControllerTop.TvBtnClicklistener, MiracastBll.MiracastLivebackBllCallback {
+    private static final int REQUEST_MUST_PERMISSION = 1;
     private String TAG = "LectureLiveVideoFrameLog";
     MiracastLiveMediaControllerTop miracastLiveMediaControllerTop;
     protected BaseLiveMediaControllerBottom liveMediaControllerBottom;
@@ -225,6 +231,7 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
                 LiveBaseBll liveBaseBll = constructor.newInstance(activity, mLiveBll);
                 if (liveBaseBll instanceof MiracastBll) {
                     miracastBll = (MiracastBll) liveBaseBll;
+                    miracastBll.setMiracastLivebackBllCallback(this);
                 }
                 mLiveBll.addBusinessBll(liveBaseBll);
                 logger.d("addBusiness:business=" + className);
@@ -477,8 +484,9 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
             }
 
             //
-            if (shouldShowLetouPage){
+            if (shouldShowLetouPage) {
                 if (miracastBll != null) {
+                    shouldShowLetouPage = false;
                     miracastBll.showPager(getContentView());
                 }
             }
@@ -559,6 +567,31 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
         } else {
             if (miracastBll != null) {
                 miracastBll.showPager(getContentView());
+            }
+        }
+
+    }
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public void requestReadPhoneStatesPermissions(){
+        requestPermissions( new String[]{Manifest.permission.READ_PHONE_STATE}, REQUEST_MUST_PERMISSION);
+    }
+
+    @Override
+    public void onSearchRequestPromession() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requestReadPhoneStatesPermissions();
+        }
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (miracastBll!=null){
+            if (requestCode==1){
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    miracastBll.startSearch();
+                }
             }
         }
 

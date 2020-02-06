@@ -1,9 +1,13 @@
 package com.xueersi.parentsmeeting.modules.livevideo.miracast;
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.pm.PackageManager;
+import android.support.v4.content.ContextCompat;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import com.hpplay.common.utils.NetworkUtil;
 import com.hpplay.sdk.source.api.IConnectListener;
 import com.hpplay.sdk.source.api.ILelinkPlayerListener;
 import com.hpplay.sdk.source.api.LelinkPlayer;
@@ -15,6 +19,7 @@ import com.hpplay.sdk.source.browse.api.ILelinkServiceManager;
 import com.hpplay.sdk.source.browse.api.LelinkServiceInfo;
 import com.hpplay.sdk.source.browse.api.LelinkServiceManager;
 import com.hpplay.sdk.source.browse.api.LelinkSetting;
+import com.xueersi.common.http.NetUtil;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerServiceVideoUrlCallback;
@@ -30,6 +35,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static com.xueersi.lib.framework.are.ContextManager.getApplication;
+
 /**
  * Created by: WangDe on 2019/2/25
  */
@@ -44,6 +51,7 @@ public class MiracastBll extends LiveBaseBll implements IBrowseListener, IConnec
     IMiracastState iMiracastState;
     PlayerService playerService;
     private ViewGroup mRootView;
+    private MiracastLivebackBllCallback miracastLivebackBllCallback;
 
     public MiracastBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -97,13 +105,41 @@ public class MiracastBll extends LiveBaseBll implements IBrowseListener, IConnec
         if (rootView != null && miracastPager != null) {
             rootView.removeView(miracastPager.getRootView());
             rootView.addView(miracastPager.getRootView(), params);
+            if (NetworkUtil.isWiFiOpen(mContext)) {
+                rootView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (ContextCompat.checkSelfPermission(getApplication(),
+                                Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_DENIED
+                                && ContextCompat.checkSelfPermission(mContext.getApplicationContext(),
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_DENIED) {
+                            miracastPager.setNetworkStatus(true);
+                            miracastPager.startSearch();
+                        } else {
+                            if (miracastLivebackBllCallback != null) {
+                                miracastLivebackBllCallback.onSearchRequestPromession();
+                            }
+                        }
+                    }
+                }, 1000);
+            } else {
+                miracastPager.setNetworkStatus(false);
+            }
+
         }
 
     }
 
     public void hildPage() {
         if (mRootView != null) {
-            mRootView.removeView(miracastPager.getRootView());
+            mRootView.post(new Runnable() {
+                @Override
+                public void run() {
+                    mRootView.removeView(miracastPager.getRootView());
+                    miracastPager.stopSearch();
+                }
+            });
+
         }
     }
 
@@ -149,7 +185,7 @@ public class MiracastBll extends LiveBaseBll implements IBrowseListener, IConnec
     @Override
     public void onLoading() {
         logger.i("hpplay onLoading");
-       // XESToastUtils.showToast("onLoading");
+        // XESToastUtils.showToast("onLoading");
     }
 
     @Override
@@ -277,5 +313,19 @@ public class MiracastBll extends LiveBaseBll implements IBrowseListener, IConnec
     public int[] getNoticeFilter() {
         return new int[]{
                 XESCODE.READPACAGE, XESCODE.UNDERSTANDT};
+    }
+
+    public void startSearch() {
+        if (miracastPager != null) {
+            miracastPager.startSearch();
+        }
+    }
+
+    public interface MiracastLivebackBllCallback {
+        void onSearchRequestPromession();
+    }
+
+    public void setMiracastLivebackBllCallback(MiracastLivebackBllCallback callback) {
+        miracastLivebackBllCallback = callback;
     }
 }

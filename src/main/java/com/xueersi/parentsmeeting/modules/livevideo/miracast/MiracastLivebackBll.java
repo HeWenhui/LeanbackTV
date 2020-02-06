@@ -1,10 +1,14 @@
 package com.xueersi.parentsmeeting.modules.livevideo.miracast;
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.pm.PackageManager;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import com.hpplay.common.utils.NetworkUtil;
 import com.hpplay.sdk.source.api.IConnectListener;
 import com.hpplay.sdk.source.api.ILelinkPlayerListener;
 import com.hpplay.sdk.source.api.LelinkPlayer;
@@ -25,6 +29,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import java.util.HashMap;
 import java.util.List;
 
+import static com.xueersi.lib.framework.are.ContextManager.getApplication;
+
 /**
  * Created by: WangDe on 2019/2/25
  */
@@ -38,6 +44,10 @@ public class MiracastLivebackBll extends LiveBackBaseBll implements IBrowseListe
     private String url;
     IMiracastState iMiracastState;
 
+    private ViewGroup mFragmentRootView;
+
+    private MiracastPlaySucListener miracastPlaySucListener;
+
     public MiracastLivebackBll(Activity context, LiveBackBll liveBll) {
         super(context, liveBll);
     }
@@ -46,7 +56,6 @@ public class MiracastLivebackBll extends LiveBackBaseBll implements IBrowseListe
     @Override
     public void initView() {
         super.initView();
-        showPager();
 
     }
 
@@ -74,19 +83,44 @@ public class MiracastLivebackBll extends LiveBackBaseBll implements IBrowseListe
         iMiracastState = miracastPager.getiMiracastState();
     }
 
-    public void showPager() {
+    public void showPager(ViewGroup rootView) {
         logger.i("hpplay MiracastLivebackBll showPager");
         final ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                 .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        if (rlLiveMessageContent == null) {
-            rlLiveMessageContent = new RelativeLayout(activity);
-            rlLiveMessageContent.setId(R.id.rl_miracast);
-            addView(rlLiveMessageContent, params);
-        } else {
-            rlLiveMessageContent.removeAllViews();
+        if (rootView != null && miracastPager != null) {
+            mFragmentRootView = rootView;
+            rootView.removeView(miracastPager.getRootView());
+            rootView.addView(miracastPager.getRootView(), params);
+            if (NetworkUtil.isWiFiOpen(mContext)) {
+                rootView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (ContextCompat.checkSelfPermission(getApplication(),
+                                Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_DENIED
+                                && ContextCompat.checkSelfPermission(mContext.getApplicationContext(),
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_DENIED) {
+                            miracastPager.startSearch();
+                            miracastPager.setNetworkStatus(true);
+                        } else {
+                            if (miracastPlaySucListener != null) {
+                                miracastPlaySucListener.onSearchRequestPromession();
+                            }
+                        }
+
+                    }
+                }, 1000);
+            } else {
+                miracastPager.setNetworkStatus(false);
+            }
+
         }
-        View view = miracastPager.getRootView();
-        rlLiveMessageContent.addView(view, params);
+    }
+
+    public void hildPage() {
+        if (miracastPager != null && mFragmentRootView != null) {
+            mFragmentRootView.removeView(miracastPager.getRootView());
+            miracastPager.stopSearch();
+        }
     }
 
     @Override
@@ -99,28 +133,49 @@ public class MiracastLivebackBll extends LiveBackBaseBll implements IBrowseListe
 
     @Override
     public void onDisconnect(LelinkServiceInfo lelinkServiceInfo, int what, int extra) {
+        String text = null;
         if (IConnectListener.CONNECT_INFO_DISCONNECT == what) {
             logger.i("hpplay 连接断开");
-            XESToastUtils.showToast(activity, "连接断开");
+            text = lelinkServiceInfo.getName() + "连接断开";
         } else if (IConnectListener.CONNECT_ERROR_FAILED == what) {
             logger.i("hpplay 连接失败");
-            XESToastUtils.showToast(activity, "连接失败");
+            text = lelinkServiceInfo.getName() + "连接失败";
         }
+
+        if (extra == IConnectListener.CONNECT_ERROR_IO) {
+            text = lelinkServiceInfo.getName() + "连接失败";
+        } else if (extra == IConnectListener.CONNECT_ERROR_IM_WAITTING) {
+            text = lelinkServiceInfo.getName() + "等待确认";
+        } else if (extra == IConnectListener.CONNECT_ERROR_IM_REJECT) {
+            text = lelinkServiceInfo.getName() + "连接拒绝";
+        } else if (extra == IConnectListener.CONNECT_ERROR_IM_TIMEOUT) {
+            text = lelinkServiceInfo.getName() + "连接超时";
+        } else if (extra == IConnectListener.CONNECT_ERROR_IM_BLACKLIST) {
+            text = lelinkServiceInfo.getName() + "连接黑名单";
+        }
+
+        XESToastUtils.showToast(text);
         iMiracastState.onDisConnect();
     }
 
     @Override
     public void onLoading() {
         logger.i("hpplay onLoading");
-        XESToastUtils.showToast(activity, "loading");
+        XESToastUtils.showToast("loading");
     }
 
     @Override
     public void onStart() {
         logger.i("hpplay onStart");
-        XESToastUtils.showToast(activity, "start");
+        XESToastUtils.showToast("投屏成功");
+        hildPage();
+        if (miracastPlaySucListener != null) {
+            miracastPlaySucListener.onTvPlaySuccess();
+        }
         iMiracastState.onStart();
+
     }
+
 
     @Override
     public void onPause() {
@@ -185,5 +240,15 @@ public class MiracastLivebackBll extends LiveBackBaseBll implements IBrowseListe
             this.url = url;
         }
 
+    }
+
+    public void setMiracastPlaySucListener(MiracastPlaySucListener sucListener) {
+        miracastPlaySucListener = sucListener;
+    }
+
+    public void startSearch() {
+        if (miracastPager != null) {
+            miracastPager.startSearch();
+        }
     }
 }

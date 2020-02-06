@@ -4,6 +4,9 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,6 +16,8 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.hpplay.sdk.source.api.IConnectListener;
@@ -23,6 +28,7 @@ import com.hpplay.sdk.source.api.LelinkPlayerInfo;
 import com.hpplay.sdk.source.browse.api.IBrowseListener;
 import com.hpplay.sdk.source.browse.api.ILelinkServiceManager;
 import com.hpplay.sdk.source.browse.api.LelinkServiceInfo;
+import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
@@ -47,7 +53,6 @@ public class MiracastPager extends LiveBasePager {
     private IConnectListener connectListener;
     private ILelinkPlayerListener playerListener;
     private LelinkServiceInfo connectInfo;
-    private static final int REQUEST_MUST_PERMISSION = 1;
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 4;
     private List<LelinkServiceInfo> devList;
     private MiracastAdapter miracastAdapter;
@@ -56,6 +61,14 @@ public class MiracastPager extends LiveBasePager {
     private boolean isPause = false;
     private WebView mWebView;
     private TextView mSearchLoadingView;
+
+    private TextView mTvPlayerTopTips;
+
+    private RelativeLayout mEmtpySearchGroup;
+    private TextView mEmtpyRefreshBtn;
+    private TextView mEmptyTipsTv;
+    private boolean isSearchSuccess = false;
+    private ImageView mRefreshSearchBtn;
 
     public MiracastPager(Context context) {
         super(context);
@@ -71,6 +84,12 @@ public class MiracastPager extends LiveBasePager {
         mBackIvTtn = mView.findViewById(R.id.imgbtn_title_bar_back);
         mTitleTv = mView.findViewById(R.id.tv_title_bar_content);
         mSearchLoadingView = mView.findViewById(R.id.letou_describe_searching);
+        mTvPlayerTopTips = mView.findViewById(R.id.tv_player_top_tips);
+        mEmtpySearchGroup = mView.findViewById(R.id.letou_describe_empty_rl);
+        mEmtpyRefreshBtn = mView.findViewById(R.id.letou_describe_empty_refresh_btn);
+        mEmptyTipsTv = mView.findViewById(R.id.letou_describe_empty_tips_tv);
+        mEmtpySearchGroup.setVisibility(View.GONE);
+        mRefreshSearchBtn = mView.findViewById(R.id.imgbtn_title_bar_refresh);
         initWebView();
         return mView;
     }
@@ -88,9 +107,12 @@ public class MiracastPager extends LiveBasePager {
         rcDevView.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
         rcDevView.setAdapter(miracastAdapter);
         miracastAdapter.setOnItemClickListener(mOnItemClickListener);
+
         super.initData();
 
+
     }
+
 
     @Override
     public void initListener() {
@@ -104,9 +126,61 @@ public class MiracastPager extends LiveBasePager {
                 }
             }
         });
+        mEmtpyRefreshBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hildEmtpyLayout();
+                startSearch();
+            }
+        });
+        mRefreshSearchBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setmLinklist(new ArrayList<LelinkServiceInfo>());
+                mView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        startSearch();
+                    }
+                });
+
+            }
+        });
 
 
     }
+
+    public void swtichTips(boolean isWifi) {
+        if (isWifi) {
+            mTvPlayerTopTips.setText("当前使用WIFI连接");
+            Drawable drawable = mContext.getResources().getDrawable(R.drawable.icon_tv_player_stat_wifi);
+            drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+            mTvPlayerTopTips.setCompoundDrawables(drawable, null, null, null);
+            mTvPlayerTopTips.setCompoundDrawablePadding(SizeUtils.Dp2Px(mContext, 4));
+            // mEmtpySearchGroup.setVisibility(View.GONE);
+        } else {
+            mTvPlayerTopTips.setText("当前使用流量连接");
+            Drawable drawable = mContext.getResources().getDrawable(R.drawable.icon_tv_player_stat_liuliang);
+            drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+            mTvPlayerTopTips.setCompoundDrawables(drawable, null, null, null);
+            mTvPlayerTopTips.setCompoundDrawablePadding(SizeUtils.Dp2Px(mContext, 4));
+            mEmtpySearchGroup.setVisibility(View.VISIBLE);
+            mEmtpyRefreshBtn.setVisibility(View.GONE);
+        }
+    }
+
+
+    public void showEmtpyLayout() {
+        mEmtpySearchGroup.setVisibility(View.VISIBLE);
+        mEmtpyRefreshBtn.setVisibility(View.VISIBLE);
+        mEmptyTipsTv.setText("暂未搜索到设备信息");
+
+    }
+
+    public void hildEmtpyLayout() {
+        mEmtpySearchGroup.setVisibility(View.GONE);
+    }
+
 
     public void playTv() {
         if (ContextCompat.checkSelfPermission(getApplication(), Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_DENIED) {
@@ -130,19 +204,32 @@ public class MiracastPager extends LiveBasePager {
     }
 
     public void startSearch() {
-        if (ContextCompat.checkSelfPermission(getApplication(),
-                Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_DENIED
-                && ContextCompat.checkSelfPermission(mContext.getApplicationContext(),
-                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_DENIED) {
-            lelinkServiceManager.browse(ILelinkServiceManager.TYPE_ALL);
-            isSearch = true;
-            mSearchLoadingView.setText("设备搜索中...");
-        } else {
-            // 若没有授权，会弹出一个对话框（这个对话框是系统的，开发者不能自己定制），用户选择是否授权应用使用系统权限
-            ActivityCompat.requestPermissions((Activity) mContext, new String[]{Manifest.permission.READ_PHONE_STATE,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_MUST_PERMISSION);
-        }
+        lelinkServiceManager.browse(ILelinkServiceManager.TYPE_ALL);
+        isSearchSuccess = false;
+        isSearch = true;
+        mSearchLoadingView.setText("设备搜索中...");
+        registDelayCheckEmpty();
 
+    }
+
+    public void registDelayCheckEmpty() {
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (!isSearchSuccess) {
+                    stopSearch();
+                    showSearchFaild();
+                }
+            }
+        }, 30000);
+    }
+
+    private void showSearchFaild() {
+        showEmtpyLayout();
+    }
+
+    public void setNetworkStatus(boolean isWifi) {
+        swtichTips(isWifi);
     }
 
     public void stopSearch() {
@@ -160,7 +247,7 @@ public class MiracastPager extends LiveBasePager {
 
     public void setILelinkServiceManager(ILelinkServiceManager iLelinkServiceManager) {
         this.lelinkServiceManager = iLelinkServiceManager;
-        startSearch();
+
     }
 
     public void setLeLinkPlayer(LelinkPlayer leLinkPlayer) {
@@ -168,6 +255,9 @@ public class MiracastPager extends LiveBasePager {
     }
 
     public void setmLinklist(final List<LelinkServiceInfo> linklist) {
+        if (linklist != null && !linklist.isEmpty()) {
+            isSearchSuccess = true;
+        }
         if (!isConnect) {
             mView.post(new Runnable() {
                 @Override
@@ -216,7 +306,7 @@ public class MiracastPager extends LiveBasePager {
     private IMiracastState iMiracastState = new IMiracastState() {
         @Override
         public void onConnect() {
-           stopSearch();
+            stopSearch();
             playTv();
         }
 
