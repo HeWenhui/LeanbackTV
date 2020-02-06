@@ -563,7 +563,7 @@ public class LiveVideoDispatcher extends AbsDispatcher {
         bundle.putSerializable("videoliveplayback", videoEntity);
         bundle.putInt("type", LocalCourseConfig.LIVETYPE_LIVE);
         bundle.putBoolean("isBigLive", true);
-        //bundle.putInt("skinType",entity.getSkinType());
+        bundle.putInt("skinType",entity.getSkinType());
         LiveVideoEnter.intentTo(activity, bundle, activity.getClass().getSimpleName());
     }
 
