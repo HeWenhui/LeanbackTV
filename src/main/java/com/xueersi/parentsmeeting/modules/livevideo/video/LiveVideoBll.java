@@ -206,6 +206,9 @@ public class LiveVideoBll implements VPlayerListenerReg, ProgressAction {
 
         if (mGetInfo != null) {//设置日志需要的liveid
             LiveLogBill.getInstance().setLiveId(mGetInfo.getId());
+            if ( mGetInfo.getProtocol()!=0){
+                nowProtol = mGetInfo.getProtocol();
+            }
         }
     }
 
@@ -356,6 +359,10 @@ public class LiveVideoBll implements VPlayerListenerReg, ProgressAction {
     /** 得到转化的协议 */
     public int changeProtol(int now) {
         int tempProtol;
+        if (mGetInfo.getProtocol()!=0){
+            tempProtol = mGetInfo.getProtocol();
+            return tempProtol;
+        }
         if (now == MediaPlayer.VIDEO_PROTOCOL_RTMP) {
             tempProtol = MediaPlayer.VIDEO_PROTOCOL_FLV;
         } else {
