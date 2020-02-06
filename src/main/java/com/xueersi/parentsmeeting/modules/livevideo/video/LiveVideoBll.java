@@ -359,7 +359,7 @@ public class LiveVideoBll implements VPlayerListenerReg, ProgressAction {
     /** 得到转化的协议 */
     public int changeProtol(int now) {
         int tempProtol;
-        if (mGetInfo.getProtocol()!=0){
+        if (mGetInfo != null && mGetInfo.getProtocol()!=0){
             tempProtol = mGetInfo.getProtocol();
             return tempProtol;
         }
