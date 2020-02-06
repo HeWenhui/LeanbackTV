@@ -11,6 +11,7 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.xrs.bury.xrsbury.XrsBury;
 import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.lib.framework.utils.ScreenUtils;
@@ -41,6 +42,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
+import com.xueersi.parentsmeeting.share.business.advert.AdvertSourceUtils;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -270,6 +272,10 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
         if (mLiveBll != null) {
             mLiveBll.onResume();
         }
+
+        XrsBury.pageStartBury(getResources().getString(R.string.pv_02_84), mGetInfo != null ? mGetInfo.getId() : "",
+                vPlayer.getCurrentPosition(),
+                AdvertSourceUtils.getInstance().getSourceid(), AdvertSourceUtils.getInstance().getAdvertid());
     }
 
     @Override
@@ -297,6 +303,9 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
         if (mLiveBll != null) {
             mLiveBll.onPause();
         }
+        XrsBury.pageEndBury(getResources().getString(R.string.pv_02_84), mGetInfo != null ? mGetInfo.getId() : "",
+                vPlayer.getCurrentPosition(),
+                AdvertSourceUtils.getInstance().getSourceid(), AdvertSourceUtils.getInstance().getAdvertid());
     }
 
     @Override
