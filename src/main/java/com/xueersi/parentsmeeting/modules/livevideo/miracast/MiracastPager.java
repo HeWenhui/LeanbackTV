@@ -32,6 +32,7 @@ import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
+import com.xueersi.parentsmeeting.modules.livevideo.utils.BuryUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,8 +71,16 @@ public class MiracastPager extends LiveBasePager {
     private boolean isSearchSuccess = false;
     private ImageView mRefreshSearchBtn;
 
-    public MiracastPager(Context context) {
+    public static final int FROM_PLAYBACK = 1;
+    public static final int FROM_LIVE = 2;
+
+    private int mFrom = FROM_LIVE;
+    private String mStuCourseId;
+
+    public MiracastPager(Context context, int from, String stuCourseId) {
         super(context);
+        mFrom = from;
+        mStuCourseId = stuCourseId;
         devList = new ArrayList<LelinkServiceInfo>();
         initListener();
         initData();
@@ -129,6 +138,11 @@ public class MiracastPager extends LiveBasePager {
         mEmtpyRefreshBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (mFrom == FROM_LIVE) {
+                    BuryUtil.click(R.string.click_03_63_046, mStuCourseId);
+                } else {
+                    BuryUtil.click(R.string.click_03_84_021, mStuCourseId);
+                }
                 hildEmtpyLayout();
                 startSearch();
             }
@@ -225,6 +239,11 @@ public class MiracastPager extends LiveBasePager {
     }
 
     private void showSearchFaild() {
+        if (mFrom == FROM_LIVE) {
+            BuryUtil.show(R.string.show_03_63_048, mStuCourseId);
+        } else {
+            BuryUtil.show(R.string.show_03_84_023, mStuCourseId);
+        }
         showEmtpyLayout();
     }
 
@@ -257,6 +276,11 @@ public class MiracastPager extends LiveBasePager {
     public void setmLinklist(final List<LelinkServiceInfo> linklist) {
         if (linklist != null && !linklist.isEmpty()) {
             isSearchSuccess = true;
+            if (mFrom == FROM_LIVE) {
+                BuryUtil.show(R.string.show_03_63_047, mStuCourseId);
+            } else {
+                BuryUtil.show(R.string.show_03_84_022, mStuCourseId);
+            }
         }
         if (!isConnect) {
             mView.post(new Runnable() {
@@ -296,9 +320,15 @@ public class MiracastPager extends LiveBasePager {
     IOnItemClickListener mOnItemClickListener = new IOnItemClickListener() {
         @Override
         public void onClick(int pos, LelinkServiceInfo info) {
+
             if (leLinkPlayer != null) {
                 leLinkPlayer.connect(info);
                 miracastAdapter.notifyDataSetChanged();
+            }
+            if (mFrom == FROM_LIVE) {
+                BuryUtil.click(R.string.click_03_63_045, mStuCourseId);
+            } else {
+                BuryUtil.click(R.string.click_03_84_027, mStuCourseId);
             }
         }
     };

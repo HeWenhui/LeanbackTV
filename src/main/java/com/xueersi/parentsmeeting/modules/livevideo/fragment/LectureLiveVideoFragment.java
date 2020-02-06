@@ -44,6 +44,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.miracast.MiracastBll;
 import com.xueersi.parentsmeeting.modules.livevideo.miracast.MiracastLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.utils.BuryUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
@@ -561,6 +562,7 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
      */
     @Override
     public void onTvPlayClick(View view) {
+        BuryUtil.click(R.string.click_03_63_044,mGetInfo.getStuCouId());
         if (mIsLand.get()) {
             shouldShowLetouPage = true;
             changeLOrP();

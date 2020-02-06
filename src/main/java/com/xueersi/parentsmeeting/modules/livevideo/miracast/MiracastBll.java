@@ -7,6 +7,7 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.hpplay.common.utils.NetworkUtil;
 import com.hpplay.sdk.source.api.IConnectListener;
@@ -21,14 +22,17 @@ import com.hpplay.sdk.source.browse.api.LelinkServiceInfo;
 import com.hpplay.sdk.source.browse.api.LelinkServiceManager;
 import com.hpplay.sdk.source.browse.api.LelinkSetting;
 import com.xueersi.common.http.NetUtil;
+import com.xueersi.common.toast.XesToast;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerServiceVideoUrlCallback;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.utils.BuryUtil;
 
 import org.json.JSONObject;
 
@@ -37,6 +41,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static com.xueersi.lib.framework.are.ContextManager.getApplication;
+import static com.xueersi.parentsmeeting.modules.livevideo.miracast.MiracastPager.FROM_LIVE;
 
 /**
  * Created by: WangDe on 2019/2/25
@@ -86,8 +91,8 @@ public class MiracastBll extends LiveBaseBll implements IBrowseListener, IConnec
     }
 
     public void initLetouSdk() {
-        LelinkSetting lelinkSetting = new LelinkSetting.LelinkSettingBuilder("10494", "699d23d680136ee1d3e7d9cbf767ac0a").build();
-//        LelinkSetting lelinkSetting = new LelinkSetting.LelinkSettingBuilder("10495", "42417c9f85b4842c026e2240eec88ae2").build();
+       // LelinkSetting lelinkSetting = new LelinkSetting.LelinkSettingBuilder("10494", "699d23d680136ee1d3e7d9cbf767ac0a").build();
+        LelinkSetting lelinkSetting = new LelinkSetting.LelinkSettingBuilder("10495", "42417c9f85b4842c026e2240eec88ae2").build();
         lelinkServiceManager = LelinkServiceManager.getInstance(mContext.getApplicationContext());
         lelinkServiceManager.setLelinkSetting(lelinkSetting);
         lelinkServiceManager.setDebug(true);
@@ -96,7 +101,7 @@ public class MiracastBll extends LiveBaseBll implements IBrowseListener, IConnec
         leLinkPlayer = new LelinkPlayer(mContext.getApplicationContext());
         leLinkPlayer.setPlayerListener(this);
         leLinkPlayer.setConnectListener(this);
-        miracastPager = new MiracastPager(mContext);
+        miracastPager = new MiracastPager(mContext,FROM_LIVE,mGetInfo.getStuCouId());
         miracastPager.setLeLinkPlayer(leLinkPlayer);
         miracastPager.setILelinkServiceManager(lelinkServiceManager);
         iMiracastState = miracastPager.getiMiracastState();
@@ -156,6 +161,7 @@ public class MiracastBll extends LiveBaseBll implements IBrowseListener, IConnec
         logger.i("hpplay 连接成功： info name:" + lelinkServiceInfo.getName() + " ip:" + lelinkServiceInfo.getIp());
 
         XESToastUtils.showToast("连接成功");
+        BuryUtil.show(R.string.show_03_63_049,mGetInfo.getStuCouId());
         iMiracastState.onConnect();
 
 
@@ -171,21 +177,18 @@ public class MiracastBll extends LiveBaseBll implements IBrowseListener, IConnec
             text = lelinkServiceInfo.getName() + "连接断开";
         } else if (IConnectListener.CONNECT_ERROR_FAILED == what) {
             logger.i("hpplay 连接失败");
-            text = lelinkServiceInfo.getName() + "连接失败";
+            if (extra == IConnectListener.CONNECT_ERROR_IO) {
+                text = lelinkServiceInfo.getName() + "连接失败";
+            } else if (extra == IConnectListener.CONNECT_ERROR_IM_WAITTING) {
+                text = lelinkServiceInfo.getName() + "等待确认";
+            } else if (extra == IConnectListener.CONNECT_ERROR_IM_REJECT) {
+                text = lelinkServiceInfo.getName() + "连接拒绝";
+            } else if (extra == IConnectListener.CONNECT_ERROR_IM_TIMEOUT) {
+                text = lelinkServiceInfo.getName() + "连接超时";
+            } else if (extra == IConnectListener.CONNECT_ERROR_IM_BLACKLIST) {
+                text = lelinkServiceInfo.getName() + "连接黑名单";
+            }
         }
-
-        if (extra == IConnectListener.CONNECT_ERROR_IO) {
-            text = lelinkServiceInfo.getName() + "连接失败";
-        } else if (extra == IConnectListener.CONNECT_ERROR_IM_WAITTING) {
-            text = lelinkServiceInfo.getName() + "等待确认";
-        } else if (extra == IConnectListener.CONNECT_ERROR_IM_REJECT) {
-            text = lelinkServiceInfo.getName() + "连接拒绝";
-        } else if (extra == IConnectListener.CONNECT_ERROR_IM_TIMEOUT) {
-            text = lelinkServiceInfo.getName() + "连接超时";
-        } else if (extra == IConnectListener.CONNECT_ERROR_IM_BLACKLIST) {
-            text = lelinkServiceInfo.getName() + "连接黑名单";
-        }
-
         if (!TextUtils.isEmpty(text)) {
             XESToastUtils.showToast(text);
         }
@@ -204,7 +207,9 @@ public class MiracastBll extends LiveBaseBll implements IBrowseListener, IConnec
         XESToastUtils.showToast("投屏成功");
         hildPage();
         iMiracastState.onStart();
+
         super.onStart();
+        BuryUtil.show(R.string.show_03_63_050,mGetInfo.getStuCouId());
     }
 
 
@@ -226,7 +231,7 @@ public class MiracastBll extends LiveBaseBll implements IBrowseListener, IConnec
 
     @Override
     public void onError(int what, int extra) {
-
+        XESToastUtils.showToast("投屏失败");
     }
 
     @Override

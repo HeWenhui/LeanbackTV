@@ -10,10 +10,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.view.View;
 
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.lecadvert.business.LecAdvertPlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.miracast.LetouLivePlaybackMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.miracast.MiracastLivebackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.miracast.MiracastPlaySucListener;
+import com.xueersi.parentsmeeting.modules.livevideo.utils.BuryUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlaybackMediaController;
 
 /**
@@ -73,8 +75,8 @@ public class LecBackVideoFragment extends LiveBackVideoFragment implements Letou
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    public void requestReadPhoneStatesPermissions(){
-        requestPermissions( new String[]{Manifest.permission.READ_PHONE_STATE}, REQUEST_MUST_PERMISSION);
+    public void requestReadPhoneStatesPermissions() {
+        requestPermissions(new String[]{Manifest.permission.READ_PHONE_STATE}, REQUEST_MUST_PERMISSION);
     }
 
 
@@ -88,6 +90,7 @@ public class LecBackVideoFragment extends LiveBackVideoFragment implements Letou
                 miracastLivebackBll.showPager(getContentView());
             }
         }
+        BuryUtil.click(R.string.click_03_84_026, mVideoEntity.getStuCourseId());
 
     }
 
@@ -108,8 +111,8 @@ public class LecBackVideoFragment extends LiveBackVideoFragment implements Letou
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (miracastLivebackBll!=null){
-            if (requestCode==1){
+        if (miracastLivebackBll != null) {
+            if (requestCode == 1) {
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     miracastLivebackBll.startSearch();
                 }
