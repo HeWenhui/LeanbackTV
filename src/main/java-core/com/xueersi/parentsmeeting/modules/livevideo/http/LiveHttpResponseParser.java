@@ -602,6 +602,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     parseLiveGetInfoScience(data, liveTopic, getInfo);
                 }
             }
+            getInfo.setProtocol(data.optInt("protocol"));
             getInfo.setSubjectiveItem2AIUrl(data.optString("subjectiveItem2AIUrl"));
             LiveGetInfo.EvenDriveInfo evenDriveInfo = new LiveGetInfo.EvenDriveInfo();
             evenDriveInfo.setIsOpenStimulation(data.optInt("isOpenStimulation"));

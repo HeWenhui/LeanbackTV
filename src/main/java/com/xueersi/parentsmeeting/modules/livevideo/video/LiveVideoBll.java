@@ -200,12 +200,14 @@ public class LiveVideoBll implements VPlayerListenerReg, ProgressAction {
             }
         }, mLiveType, getInfo, liveTopic);
         liveGetPlayServer.setVideoAction(mVideoAction);
-        if (!isGroupClass()) {
-            liveGetPlayServer(liveTopic.getMode(), false);
-        }
-
         if (mGetInfo != null) {//设置日志需要的liveid
             LiveLogBill.getInstance().setLiveId(mGetInfo.getId());
+            if (mGetInfo.getProtocol() != 0) {
+                nowProtol = mGetInfo.getProtocol();
+            }
+        }
+        if (!isGroupClass()) {
+            liveGetPlayServer(liveTopic.getMode(), false);
         }
     }
 

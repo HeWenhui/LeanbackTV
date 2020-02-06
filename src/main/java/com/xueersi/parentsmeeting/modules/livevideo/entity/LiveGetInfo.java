@@ -584,6 +584,8 @@ public class LiveGetInfo {
     private int fakeScore;
     /** 1v2是否使用云平台调度 */
     private boolean use1v2Sdk;
+    /** 视频播放协议*/
+    private int protocol;
 
     public VideoConfigEntity getVideoConfigEntity() {
         return videoConfigEntity;
@@ -2197,5 +2199,13 @@ public class LiveGetInfo {
 
     public void setUse1v2Sdk(boolean use1v2Sdk) {
         this.use1v2Sdk = use1v2Sdk;
+    }
+
+    public int getProtocol() {
+        return protocol;
+    }
+
+    public void setProtocol(int protocol) {
+        this.protocol = protocol;
     }
 }
