@@ -40,7 +40,7 @@ public class LecBackVideoFragment extends LiveBackVideoFragment {
     public void onResume() {
         super.onResume();
         XrsBury.pageStartBury(getResources().getString(R.string.pv_02_85), mVideoEntity != null ? mVideoEntity.getLiveId() : "",
-                vPlayer.getCurrentPosition(),
+                vPlayer != null ? vPlayer.getCurrentPosition() : "",
                 AdvertSourceUtils.getInstance().getSourceid(), AdvertSourceUtils.getInstance().getAdvertid());
     }
 
@@ -48,7 +48,7 @@ public class LecBackVideoFragment extends LiveBackVideoFragment {
     public void onPause() {
         super.onPause();
         XrsBury.pageEndBury(getResources().getString(R.string.pv_02_85),mVideoEntity != null ? mVideoEntity.getLiveId() : "",
-                vPlayer.getCurrentPosition(),
+                vPlayer != null ? vPlayer.getCurrentPosition() : "",
                 AdvertSourceUtils.getInstance().getSourceid(), AdvertSourceUtils.getInstance().getAdvertid());
     }
 }

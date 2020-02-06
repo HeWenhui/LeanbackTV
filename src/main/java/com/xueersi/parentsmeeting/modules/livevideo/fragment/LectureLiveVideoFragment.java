@@ -274,7 +274,7 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
         }
 
         XrsBury.pageStartBury(getResources().getString(R.string.pv_02_84), mGetInfo != null ? mGetInfo.getId() : "",
-                vPlayer.getCurrentPosition(),
+                vPlayer != null ? vPlayer.getCurrentPosition() : "",
                 AdvertSourceUtils.getInstance().getSourceid(), AdvertSourceUtils.getInstance().getAdvertid());
     }
 
@@ -304,7 +304,7 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
             mLiveBll.onPause();
         }
         XrsBury.pageEndBury(getResources().getString(R.string.pv_02_84), mGetInfo != null ? mGetInfo.getId() : "",
-                vPlayer.getCurrentPosition(),
+                vPlayer != null ? vPlayer.getCurrentPosition() : "",
                 AdvertSourceUtils.getInstance().getSourceid(), AdvertSourceUtils.getInstance().getAdvertid());
     }
 
