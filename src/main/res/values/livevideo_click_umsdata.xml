@@ -103,4 +103,22 @@
 	<!-->说明: 点击回放-轻直播间回放-关闭红包按钮
          参数: 讲座id</!-->
 	<string name="click_03_84_017">{"buryId":\"click_03_84_017\","levelone":\"03\","leveltwo":\"84\","levelthree":\"017\","businessinfo$json":{"lecture_id":\"%1$s\"}}</string>
+	<!--说明:click_轻直播间_点击投屏按钮
+		参数: 课程id-->
+	<string name="click_03_63_044">{"buryId":\"click_03_63_044\","levelone":\"03\","leveltwo":\"63\","levelthree":\"044\","businessinfo$json":{"course_id":\"%1$s\"}}</string>
+	<!--说明:click_轻直播间_触发投屏
+		参数: 课程id-->
+	<string name="click_03_63_045">{"buryId":\"click_03_63_045\","levelone":\"03\","leveltwo":\"63\","levelthree":\"045\","businessinfo$json":{"course_id":\"%1$s\"}}</string>
+	<!--说明:click_轻直播间_点击重试
+		参数: 课程id-->
+	<string name="click_03_63_046">{"buryId":\"click_03_63_046\","levelone":\"03\","leveltwo":\"63\","levelthree":\"046\","businessinfo$json":{"course_id":\"%1$s\"}}</string>
+	<!--说明:click_回放-轻直播间_点击投屏按钮
+		参数: 课程id-->
+	<string name="click_03_84_026">{"buryId":\"click_03_84_026\","levelone":\"03\","leveltwo":\"84\","levelthree":\"026\","businessinfo$json":{"course_id":\"%1$s\"}}</string>
+	<!--说明:触发投屏
+		参数: 课程id-->
+	<string name="click_03_84_027">{"buryId":\"click_03_84_027\","levelone":\"03\","leveltwo":\"84\","levelthree":\"027\","businessinfo$json":{"course_id":\"%1$s\"}}</string>
+	<!--说明:点击重试
+		参数: 课程id-->
+	<string name="click_03_84_021">{"buryId":\"click_03_84_021\","levelone":\"03\","leveltwo":\"84\","levelthree":\"021\","businessinfo$json":{"course_id":\"%1$s\"}}</string>
 </resources>

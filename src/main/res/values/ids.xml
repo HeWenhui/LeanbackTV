@@ -1485,5 +1485,8 @@
     <item name="ll_lightlive_video_loading_container" type="id" />
     <item name="vl_lightlive_video_loading" type="id" />
 
+    <item name="id_position" type="id"/>
+    <item name="id_info" type="id"/>
+
 
 </resources>
