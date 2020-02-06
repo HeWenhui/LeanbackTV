@@ -6,56 +6,54 @@
 
     <RelativeLayout
         android:id="@id/rl_video_mediacontroller_info_panel"
-        android:background="@drawable/shape_shade_80000000"
+        style="@style/InfoPanel_Container"
         android:layout_width="match_parent"
-        android:layout_height="64dp"
+        android:layout_height="35dp"
         android:layout_alignParentTop="true">
 
         <!-- 退出按钮 （横屏的时候变成竖屏，竖屏的时候退出当前Activity） -->
 
         <ImageView
             android:id="@id/iv_video_mediacontroller_back"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
             android:contentDescription="@string/content_desc_lock"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="24dp"
-            android:padding="4dp"
-            android:background="@drawable/shape_oval_4d000000"
-            android:src="@drawable/livevideo_lightlive_back_icon" />
+            android:paddingLeft="20dp"
+            android:src="@drawable/cy_bars_bockwite_icon_normal" />
 
         <!-- 播放的视频名称 -->
 
         <TextView
             android:id="@id/tv_video_mediacontroller_filename"
             android:layout_width="wrap_content"
-            android:layout_height="28dp"
-            android:layout_toRightOf="@+id/iv_video_mediacontroller_back"
-            android:layout_toLeftOf="@+id/iv_video_mediacontroller_controls_allview"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp"
-            android:layout_marginTop="24dp"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
             android:singleLine="true"
-            android:gravity="center_vertical|left"
             android:text="@string/app_name"
             android:textColor="@android:color/white"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textStyle="bold" />
 
         <!-- 横竖屏切换 -->
         <ImageView
             android:id="@id/iv_video_mediacontroller_controls_allview"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_marginTop="24dp"
-            android:padding="4dp"
+            android:layout_centerVertical="true"
+            android:padding="15dp"
             android:scaleType="center"
-            android:layout_marginRight="16dp"
-            android:background="@drawable/shape_oval_4d000000"
-            android:src="@drawable/livevideo_lightlive_fullscreen_icon"
+            android:src="@drawable/livevideo_leclive_fullscreen_icon"
             android:visibility="gone" />
 
+        <ImageView
+            android:id="@id/iv_video_mark_points"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/bg_bt_live_mark"
+            android:layout_alignParentRight="true"
+            android:visibility="gone" />
     </RelativeLayout>
 </RelativeLayout>

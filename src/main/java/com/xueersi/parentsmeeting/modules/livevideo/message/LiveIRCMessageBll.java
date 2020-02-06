@@ -628,17 +628,21 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                 try {
                     if (mRoomAction != null) {
                         String name;
+                        //需要传递老师姓名 暂时使用这个变量
+                        String hostname;
                         if (sourceNick.startsWith("t")) {
                             name = "主讲老师";
+                            hostname = object.optString("name","主讲老师");
                             String teacherImg = "";
                             try {
                                 teacherImg = mGetInfo.getMainTeacherInfo().getTeacherImg();
                             } catch (Exception e) {
 
                             }
-                            mRoomAction.onMessage(target, sourceNick, "", "", object.getString("msg"), teacherImg);
+                            mRoomAction.onMessage(target, sourceNick, "", hostname, object.getString("msg"), teacherImg);
                         } else {
                             name = "辅导老师";
+                            hostname = object.optString("name","辅导老师");
                             String teamId = "";
                             if(mGetInfo != null && mGetInfo.getStudentLiveInfo() != null){
                                 teamId = mGetInfo.getStudentLiveInfo().getTeamId();
@@ -646,7 +650,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                             String to = object.optString("to", "All");
                             if ("All".equals(to) || teamId.equals(to)) {
                                 String teacherIMG = mGetInfo.getTeacherIMG();
-                                mRoomAction.onMessage(target, sourceNick, "", "", object.getString("msg"),
+                                mRoomAction.onMessage(target, sourceNick, "", hostname, object.getString("msg"),
                                         teacherIMG);
                             }
                         }

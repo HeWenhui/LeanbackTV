@@ -142,6 +142,5 @@ public class EvenDriveLiveMessagePager extends LiveMessagePager {
             logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE_IMMSG);
             umsAgentDebugInter(LiveVideoConfig.LIVE_EXPERIENCE_IMMSG, logHashMap.getData());
         }
-        Loger.e("Duncan", "sender:" + sender);
     }
 }

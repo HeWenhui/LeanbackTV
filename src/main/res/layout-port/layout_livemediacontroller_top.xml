@@ -46,7 +46,7 @@
             android:layout_centerVertical="true"
             android:padding="15dp"
             android:scaleType="center"
-            android:src="@drawable/ic_video_mediacontroller_controls_enlarge"
-            />
+            android:src="@drawable/livevideo_leclive_fullscreen_icon"
+            android:visibility="gone" />
     </RelativeLayout>
 </RelativeLayout>
