@@ -9,6 +9,7 @@ import android.text.TextUtils;
 
 import com.tencent.smtt.sdk.TbsListener;
 import com.xueersi.common.base.BaseActivity;
+import com.xueersi.common.base.XrsCrashReport;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.business.sharebusiness.http.downloadAppfile.entity.DownLoadFileInfo;
 import com.xueersi.common.http.HttpCallBack;
@@ -30,6 +31,7 @@ import com.xueersi.lib.log.FileLogger;
 import com.xueersi.parentsmeeting.modules.livevideo.LiveAssetsLoadUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.CoursewarePreload;
 import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.PreloadStaticStorage;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.share.business.biglive.config.BigLiveCfg;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
@@ -235,6 +237,8 @@ public class LiveVideoLoadActivity extends BaseActivity {
         logger.d("initData:index=" + index + ",size=" + liveVideoLoadActivities.size());
         //已经finish了 https://bugly.qq.com/v2/crash-reporting/crashes/a0df5ed682/336475?pid=1
         if (liveVideoLoadActivities.isEmpty()) {
+            XrsCrashReport.d(TAG, "initData:finish=" + isFinishing());
+            XrsCrashReport.postCatchedException(new LiveException(TAG));
             return;
         }
         LiveVideoLoadActivity activity = liveVideoLoadActivities.get(0);
