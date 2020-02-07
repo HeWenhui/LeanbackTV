@@ -57,6 +57,7 @@ public class MiracastBll extends LiveBaseBll implements IBrowseListener, IConnec
     private ViewGroup mRootView;
     private MiracastLivebackBllCallback miracastLivebackBllCallback;
     private boolean isInit = false;
+    private String mUrl;
 
     public MiracastBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -74,7 +75,7 @@ public class MiracastBll extends LiveBaseBll implements IBrowseListener, IConnec
                     if (addrLists != null && !addrLists.isEmpty()) {
                         String s = addrLists.get(0);
                         logger.i("hpplay url " + s);
-                        miracastPager.setUrl(s);
+                        mUrl=s;
                     }
                 }
             });
@@ -91,8 +92,8 @@ public class MiracastBll extends LiveBaseBll implements IBrowseListener, IConnec
     }
 
     public void initLetouSdk() {
-       // LelinkSetting lelinkSetting = new LelinkSetting.LelinkSettingBuilder("10494", "699d23d680136ee1d3e7d9cbf767ac0a").build();
-        LelinkSetting lelinkSetting = new LelinkSetting.LelinkSettingBuilder("10495", "42417c9f85b4842c026e2240eec88ae2").build();
+        LelinkSetting lelinkSetting = new LelinkSetting.LelinkSettingBuilder("10494", "699d23d680136ee1d3e7d9cbf767ac0a").build();
+       // LelinkSetting lelinkSetting = new LelinkSetting.LelinkSettingBuilder("10495", "42417c9f85b4842c026e2240eec88ae2").build();
         lelinkServiceManager = LelinkServiceManager.getInstance(mContext.getApplicationContext());
         lelinkServiceManager.setLelinkSetting(lelinkSetting);
         lelinkServiceManager.setDebug(true);
@@ -101,7 +102,7 @@ public class MiracastBll extends LiveBaseBll implements IBrowseListener, IConnec
         leLinkPlayer = new LelinkPlayer(mContext.getApplicationContext());
         leLinkPlayer.setPlayerListener(this);
         leLinkPlayer.setConnectListener(this);
-        miracastPager = new MiracastPager(mContext,FROM_LIVE,mGetInfo.getStuCouId());
+        miracastPager = new MiracastPager(mContext,FROM_LIVE,mGetInfo.getId());
         miracastPager.setLeLinkPlayer(leLinkPlayer);
         miracastPager.setILelinkServiceManager(lelinkServiceManager);
         iMiracastState = miracastPager.getiMiracastState();
@@ -116,6 +117,7 @@ public class MiracastBll extends LiveBaseBll implements IBrowseListener, IConnec
                 .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         mRootView = rootView;
         if (rootView != null && miracastPager != null) {
+            miracastPager.setUrl(mUrl);
             rootView.removeView(miracastPager.getRootView());
             rootView.addView(miracastPager.getRootView(), params);
             if (NetworkUtil.isWiFiOpen(mContext)) {
@@ -161,7 +163,7 @@ public class MiracastBll extends LiveBaseBll implements IBrowseListener, IConnec
         logger.i("hpplay 连接成功： info name:" + lelinkServiceInfo.getName() + " ip:" + lelinkServiceInfo.getIp());
 
         XESToastUtils.showToast("连接成功");
-        BuryUtil.show(R.string.show_03_63_049,mGetInfo.getStuCouId());
+        BuryUtil.show(R.string.show_03_63_049,mGetInfo.getId());
         iMiracastState.onConnect();
 
 
@@ -209,7 +211,7 @@ public class MiracastBll extends LiveBaseBll implements IBrowseListener, IConnec
         iMiracastState.onStart();
 
         super.onStart();
-        BuryUtil.show(R.string.show_03_63_050,mGetInfo.getStuCouId());
+        BuryUtil.show(R.string.show_03_63_050,mGetInfo.getId());
     }
 
 

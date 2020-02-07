@@ -11,6 +11,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
@@ -337,7 +338,12 @@ public class MiracastPager extends LiveBasePager {
         @Override
         public void onConnect() {
             stopSearch();
-            playTv();
+            if (TextUtils.isEmpty(url)){
+                XESToastUtils.showToast("未获取到视频流地址");
+            }else {
+                playTv();
+            }
+
         }
 
         @Override
