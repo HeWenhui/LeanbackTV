@@ -441,7 +441,7 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
                 ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT);
                 controllerContent.addView(mMediaController, params);
-                mMediaController.setControllerBottom(liveMediaControllerBottom, true);
+                mMediaController.setControllerBottom(liveMediaControllerBottom, false);
                 MiracastLiveMediaControllerTop miracastLiveMediaControllerTop = new MiracastLiveMediaControllerTop(activity, mMediaController, videoFragment);
                 miracastLiveMediaControllerTop.setTvPlayClickListener(this);
                 mMediaController.setControllerTop(miracastLiveMediaControllerTop);
