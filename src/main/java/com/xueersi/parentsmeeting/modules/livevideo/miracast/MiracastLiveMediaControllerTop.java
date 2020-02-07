@@ -37,6 +37,11 @@ public class MiracastLiveMediaControllerTop extends BaseLiveMediaControllerTop {
         });
     }
 
+    public void hildAllView(boolean isHild){
+        mAllView.setVisibility(isHild?INVISIBLE:VISIBLE);
+    }
+
+
     public void setTvPlayClickListener(TvBtnClicklistener listener) {
         mTvBtnClickListener = listener;
     }
@@ -47,5 +52,6 @@ public class MiracastLiveMediaControllerTop extends BaseLiveMediaControllerTop {
 
     public void changeLOrP() {
         mPlayer.changeLOrP();
+
     }
 }

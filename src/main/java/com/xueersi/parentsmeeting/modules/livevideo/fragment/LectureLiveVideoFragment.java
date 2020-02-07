@@ -363,9 +363,9 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
         }
         changeLandAndPort();
         liveViewAction.removeView(liveMediaControllerBottom);
-        if (mIsLand.get()){
-             liveViewAction.addView(LiveVideoLevel.LEVEL_CTRl, liveMediaControllerBottom
-                  ,new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        if (mIsLand.get()) {
+            liveViewAction.addView(LiveVideoLevel.LEVEL_CTRl, liveMediaControllerBottom
+                    , new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         }
 
 //        if (lecLiveVideoAction != null) {
@@ -400,6 +400,7 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
                 mMediaController.setControllerBottom(liveMediaControllerBottom, true);
                 MiracastLiveMediaControllerTop miracastLiveMediaControllerTop = new MiracastLiveMediaControllerTop(activity, mMediaController, videoFragment);
                 miracastLiveMediaControllerTop.setTvPlayClickListener(this);
+                miracastLiveMediaControllerTop.hildAllView(true);
                 mMediaController.setControllerTop(miracastLiveMediaControllerTop);
                 controllerContent.addView(miracastLiveMediaControllerTop);
                 mMediaController.setAutoOrientation(true);
@@ -452,6 +453,7 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
                 controllerContent.addView(mMediaController, params);
                 mMediaController.setControllerBottom(liveMediaControllerBottom, false);
                 MiracastLiveMediaControllerTop miracastLiveMediaControllerTop = new MiracastLiveMediaControllerTop(activity, mMediaController, videoFragment);
+                miracastLiveMediaControllerTop.hildAllView(false);
                 miracastLiveMediaControllerTop.setTvPlayClickListener(this);
                 mMediaController.setControllerTop(miracastLiveMediaControllerTop);
                 controllerContent.addView(miracastLiveMediaControllerTop);
@@ -577,7 +579,7 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
      */
     @Override
     public void onTvPlayClick(View view) {
-        BuryUtil.click(R.string.click_03_63_044,mGetInfo.getId());
+        BuryUtil.click(R.string.click_03_63_044, mGetInfo.getId());
         if (mIsLand.get()) {
             shouldShowLetouPage = true;
             changeLOrP();
@@ -588,9 +590,10 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
         }
 
     }
+
     @RequiresApi(api = Build.VERSION_CODES.M)
-    public void requestReadPhoneStatesPermissions(){
-        requestPermissions( new String[]{Manifest.permission.READ_PHONE_STATE}, REQUEST_MUST_PERMISSION);
+    public void requestReadPhoneStatesPermissions() {
+        requestPermissions(new String[]{Manifest.permission.READ_PHONE_STATE}, REQUEST_MUST_PERMISSION);
     }
 
     @Override
@@ -604,8 +607,8 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (miracastBll!=null){
-            if (requestCode==1){
+        if (miracastBll != null) {
+            if (requestCode == 1) {
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     miracastBll.startSearch();
                 }
