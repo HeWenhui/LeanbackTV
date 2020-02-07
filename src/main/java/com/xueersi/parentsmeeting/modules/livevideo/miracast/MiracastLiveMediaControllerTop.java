@@ -35,7 +35,10 @@ public class MiracastLiveMediaControllerTop extends BaseLiveMediaControllerTop {
                 }
             }
         });
-        mAllView.setVisibility(INVISIBLE);
+    }
+
+    public void hildAllView(boolean isHild){
+        mAllView.setVisibility(isHild?INVISIBLE:VISIBLE);
     }
 
 
