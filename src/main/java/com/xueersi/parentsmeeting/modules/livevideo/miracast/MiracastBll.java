@@ -92,8 +92,8 @@ public class MiracastBll extends LiveBaseBll implements IBrowseListener, IConnec
     }
 
     public void initLetouSdk() {
-        LelinkSetting lelinkSetting = new LelinkSetting.LelinkSettingBuilder("10494", "699d23d680136ee1d3e7d9cbf767ac0a").build();
-       // LelinkSetting lelinkSetting = new LelinkSetting.LelinkSettingBuilder("10495", "42417c9f85b4842c026e2240eec88ae2").build();
+       // LelinkSetting lelinkSetting = new LelinkSetting.LelinkSettingBuilder("10494", "699d23d680136ee1d3e7d9cbf767ac0a").build();
+        LelinkSetting lelinkSetting = new LelinkSetting.LelinkSettingBuilder("10495", "42417c9f85b4842c026e2240eec88ae2").build();
         lelinkServiceManager = LelinkServiceManager.getInstance(mContext.getApplicationContext());
         lelinkServiceManager.setLelinkSetting(lelinkSetting);
         lelinkServiceManager.setDebug(true);
