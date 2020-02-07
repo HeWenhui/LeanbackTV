@@ -3,11 +3,11 @@
     android:id="@+id/tv_dev_name"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/selector_letou_device_item_bg"
     android:gravity="center"
-    android:paddingTop="8dp"
+    android:paddingTop="16dp"
+    android:paddingBottom="16dp"
     android:text="客厅的小米盒子"
-    android:paddingBottom="8dp"
     android:textColor="#212831"
     android:textSize="14sp"
-    android:textStyle="bold">
-</TextView>
+    android:textStyle="bold"></TextView>

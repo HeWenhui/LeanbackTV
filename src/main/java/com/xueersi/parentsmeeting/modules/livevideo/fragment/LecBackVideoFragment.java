@@ -90,7 +90,7 @@ public class LecBackVideoFragment extends LiveBackVideoFragment implements Letou
                 miracastLivebackBll.showPager(getContentView());
             }
         }
-        BuryUtil.click(R.string.click_03_84_026, mVideoEntity.getStuCourseId());
+        BuryUtil.click(R.string.click_03_84_026, mVideoEntity.getLiveId());
 
     }
 
