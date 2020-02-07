@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/iv_livevideo_lecture_subscribe"
+        android:layout_width="wrap_content"
+        android:layout_height="18dp"
+        android:src="@drawable/ic_livevideo_lecture_subscribe"
+        android:background="@drawable/shape_solid_eb002a_corners_12dp"
+        android:gravity="center"
+        android:paddingLeft="6dp"
+        android:paddingRight="6dp"
+        android:layout_gravity="right"/>
+
+    <TextView
+        android:id="@+id/tv_livevideo_lecture_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_livevideo_lecture_subscribe"
+        android:text="添加课程，上课提醒不错过"
+        android:textSize="10dp"
+        android:textColor="@color/COLOR_FFFFFF"
+        android:gravity="center_vertical"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        />
+
+</LinearLayout>

@@ -587,6 +587,24 @@ public class LiveGetInfo {
     /** 视频播放协议*/
     private int protocol;
 
+    //讲座订阅推荐课程字段
+    /** 系列讲座id*/
+    private int seriesLectureId;
+    /** 系列讲座名称*/
+    private String seriesLectureName;
+    /** 是否订阅该系列讲座*/
+    private int isSeriesLectureSub;
+    /** 气泡开关*/
+    private int bubbleSwitch;
+    /** 气泡文字*/
+    private String bubbleText;
+    /** 弹窗主标题*/
+    private String popupMainTitle;
+    /** 弹窗副标题*/
+    private String popupSubTitle;
+    /** 订阅成功标题*/
+    private String subSuccessTitle;
+
     public VideoConfigEntity getVideoConfigEntity() {
         return videoConfigEntity;
     }
@@ -2207,5 +2225,69 @@ public class LiveGetInfo {
 
     public void setProtocol(int protocol) {
         this.protocol = protocol;
+    }
+
+    public int getSeriesLectureId() {
+        return seriesLectureId;
+    }
+
+    public void setSeriesLectureId(int seriesLectureId) {
+        this.seriesLectureId = seriesLectureId;
+    }
+
+    public String getSeriesLectureName() {
+        return seriesLectureName;
+    }
+
+    public void setSeriesLectureName(String seriesLectureName) {
+        this.seriesLectureName = seriesLectureName;
+    }
+
+    public int getIsSeriesLectureSub() {
+        return isSeriesLectureSub;
+    }
+
+    public void setIsSeriesLectureSub(int isSeriesLectureSub) {
+        this.isSeriesLectureSub = isSeriesLectureSub;
+    }
+
+    public int getBubbleSwitch() {
+        return bubbleSwitch;
+    }
+
+    public void setBubbleSwitch(int bubbleSwitch) {
+        this.bubbleSwitch = bubbleSwitch;
+    }
+
+    public String getBubbleText() {
+        return bubbleText;
+    }
+
+    public void setBubbleText(String bubbleText) {
+        this.bubbleText = bubbleText;
+    }
+
+    public String getPopupMainTitle() {
+        return popupMainTitle;
+    }
+
+    public void setPopupMainTitle(String popupMainTitle) {
+        this.popupMainTitle = popupMainTitle;
+    }
+
+    public String getPopupSubTitle() {
+        return popupSubTitle;
+    }
+
+    public void setPopupSubTitle(String popupSubTitle) {
+        this.popupSubTitle = popupSubTitle;
+    }
+
+    public String getSubSuccessTitle() {
+        return subSuccessTitle;
+    }
+
+    public void setSubSuccessTitle(String subSuccessTitle) {
+        this.subSuccessTitle = subSuccessTitle;
     }
 }
