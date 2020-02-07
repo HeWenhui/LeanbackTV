@@ -212,7 +212,9 @@ public class MiracastLivebackBll extends LiveBackBaseBll implements IBrowseListe
 
     @Override
     public void onPause() {
-        iMiracastState.onPause();
+        if (iMiracastState!=null){
+            iMiracastState.onPause();
+        }
 
     }
 
