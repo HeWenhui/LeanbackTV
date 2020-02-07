@@ -87,6 +87,12 @@ public class MiracastLivebackBll extends LiveBackBaseBll implements IBrowseListe
         leLinkPlayer.setConnectListener(this);
         miracastPager = new MiracastPager(mContext, FROM_PLAYBACK, mVideoEntity.getLiveId());
         miracastPager.setLeLinkPlayer(leLinkPlayer);
+        miracastPager.setListener(new MiracastPager.MiracastPagerListener() {
+            @Override
+            public void onBackClick() {
+                hildPage();
+            }
+        });
         miracastPager.setILelinkServiceManager(lelinkServiceManager);
         String videoPath = mVideoEntity.getVideoPath();
         logger.i("hpplay MiracastLivebackBll url " + videoPath);
@@ -138,6 +144,9 @@ public class MiracastLivebackBll extends LiveBackBaseBll implements IBrowseListe
                 public void run() {
                     mFragmentRootView.removeView(miracastPager.getRootView());
                     miracastPager.stopSearch();
+                    if (miracastPlaySucListener != null) {
+                        miracastPlaySucListener.onTvPlaySuccess();
+                    }
                 }
             });
 

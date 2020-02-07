@@ -78,6 +78,8 @@ public class MiracastPager extends LiveBasePager {
     private int mFrom = FROM_LIVE;
     private String mStuCourseId;
 
+    private MiracastPagerListener mListener;
+
     public MiracastPager(Context context, int from, String stuCourseId) {
         super(context);
         mFrom = from;
@@ -130,9 +132,16 @@ public class MiracastPager extends LiveBasePager {
         mBackIvTtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ViewGroup parent = (ViewGroup) getRootView().getParent();
-                if (parent != null) {
-                    parent.removeView(getRootView());
+
+                if (mFrom == FROM_PLAYBACK) {
+                    if (mListener != null) {
+                        mListener.onBackClick();
+                    }
+                } else {
+                    ViewGroup parent = (ViewGroup) getRootView().getParent();
+                    if (parent != null) {
+                        parent.removeView(getRootView());
+                    }
                 }
             }
         });
@@ -338,9 +347,9 @@ public class MiracastPager extends LiveBasePager {
         @Override
         public void onConnect() {
             stopSearch();
-            if (TextUtils.isEmpty(url)){
+            if (TextUtils.isEmpty(url)) {
                 XESToastUtils.showToast("未获取到视频流地址");
-            }else {
+            } else {
                 playTv();
             }
 
@@ -373,4 +382,13 @@ public class MiracastPager extends LiveBasePager {
 
         }
     };
+
+    public interface MiracastPagerListener {
+        void onBackClick();
+    }
+
+    public void setListener(MiracastPagerListener listener) {
+        mListener = listener;
+    }
+
 }
