@@ -12,4 +12,10 @@
 	<!-->说明: 回放-轻直播间曝光
          参数: 讲座id</!-->
 	<string name="pv_03_84">{"buryId":\"pv_03_84\","levelone":\"03\","leveltwo":\"84\","businessinfo$json":{"lecture_id":\"%1$s\"}}</string>
+
+
+	<!--lecture_id,source_id， duration，adverid讲座id，热点id,广告id，时长-->
+	<string name="pv_02_84">{"buryId":\"pv_02_84\","levelone":\"02\","leveltwo":\"84\","businessinfo$json":{"lecture_id":\"%1$s\","duration":\"%2$s\","source_id":\"%3$s\","adverid":\"%4$s\"}}</string>
+	<string name="pv_02_85">{"buryId":\"pv_02_85\","levelone":\"02\","leveltwo":\"85\","businessinfo$json":{"lecture_id":\"%1$s\","duration":\"%2$s\","source_id":\"%3$s\","adverid":\"%4$s\"}}</string>
+
 </resources>

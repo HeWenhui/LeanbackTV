@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.view.View;
 
+import com.xrs.bury.xrsbury.XrsBury;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.lecadvert.business.LecAdvertPlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.miracast.LetouLivePlaybackMediaController;
@@ -17,6 +18,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.miracast.MiracastLivebackBll
 import com.xueersi.parentsmeeting.modules.livevideo.miracast.MiracastPlaySucListener;
 import com.xueersi.parentsmeeting.modules.livevideo.utils.BuryUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlaybackMediaController;
+import com.xueersi.parentsmeeting.share.business.advert.AdvertSourceUtils;
 
 /**
  * Created by linyuqiang on 2018/7/23.
@@ -120,4 +122,21 @@ public class LecBackVideoFragment extends LiveBackVideoFragment implements Letou
         }
 
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        XrsBury.pageStartBury(getResources().getString(R.string.pv_02_85), mVideoEntity != null ? mVideoEntity.getLiveId() : "",
+                vPlayer != null ? vPlayer.getCurrentPosition() : "",
+                AdvertSourceUtils.getInstance().getSourceid(), AdvertSourceUtils.getInstance().getAdvertid());
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        XrsBury.pageEndBury(getResources().getString(R.string.pv_02_85),mVideoEntity != null ? mVideoEntity.getLiveId() : "",
+                vPlayer != null ? vPlayer.getCurrentPosition() : "",
+                AdvertSourceUtils.getInstance().getSourceid(), AdvertSourceUtils.getInstance().getAdvertid());
+    }
+
 }
