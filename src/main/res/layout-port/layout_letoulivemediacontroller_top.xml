@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?><!-- 顶部信息栏 -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentTop="true">
+
+    <RelativeLayout
+        android:id="@id/rl_video_mediacontroller_info_panel"
+        style="@style/InfoPanel_Container"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:layout_alignParentTop="true">
+
+        <!-- 退出按钮 （横屏的时候变成竖屏，竖屏的时候退出当前Activity） -->
+
+        <ImageView
+            android:id="@id/iv_video_mediacontroller_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:contentDescription="@string/content_desc_lock"
+            android:paddingLeft="20dp"
+            android:src="@drawable/cy_bars_bockwite_icon_normal" />
+
+        <!-- 播放的视频名称 -->
+
+        <TextView
+            android:id="@id/tv_video_mediacontroller_filename"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:ellipsize="end"
+            android:gravity="center_horizontal"
+            android:singleLine="true"
+            android:text="@string/app_name"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <!-- 横竖屏切换 -->
+        <ImageView
+            android:id="@id/iv_video_mediacontroller_controls_allview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:padding="15dp"
+            android:scaleType="center"
+            android:src="@drawable/livevideo_leclive_fullscreen_icon" />
+
+        <ImageView
+            android:id="@+id/iv_video_tv_player"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/iv_video_mediacontroller_controls_allview"
+            android:src="@drawable/icon_tv_player" />
+    </RelativeLayout>
+</RelativeLayout>
