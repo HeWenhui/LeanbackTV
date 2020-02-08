@@ -66,9 +66,9 @@ public class SubscribeCourseBll extends LiveBaseBll implements ISubscribeClickLi
     /** 已预约弹窗标题*/
     private String subSuccessTitle;
 
-    private final int IMG_DEFAULT_WIDTH = 380;
+    private final int IMG_DEFAULT_WIDTH = 320;
 
-    private final int IMG_DEFAULT_HEIGHT = 88;
+    private final int IMG_DEFAULT_HEIGHT = 74;
 
     public SubscribeCourseBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);

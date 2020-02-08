@@ -4,8 +4,8 @@
     >
 
     <size
-        android:width = "380dp"
-        android:height = "88dp"
+        android:width = "320dp"
+        android:height = "74dp"
        />
     <!-- 填充 -->
     <solid
