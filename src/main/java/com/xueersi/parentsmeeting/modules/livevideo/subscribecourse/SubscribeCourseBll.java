@@ -17,6 +17,7 @@ import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
@@ -64,6 +65,10 @@ public class SubscribeCourseBll extends LiveBaseBll implements ISubscribeClickLi
     private final String URL_PICTURE = "http://xeswxapp.oss-cn-beijing.aliyuncs.com/Android/imges/image_home_guide.png";
     /** 已预约弹窗标题*/
     private String subSuccessTitle;
+
+    private final int IMG_DEFAULT_WIDTH = 380;
+
+    private final int IMG_DEFAULT_HEIGHT = 88;
 
     public SubscribeCourseBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -161,7 +166,7 @@ public class SubscribeCourseBll extends LiveBaseBll implements ISubscribeClickLi
 
     private void initDialog(){
         subscribeDialog = new ConfirmAlertDialog(mContext,mBaseApplication,false,ConfirmAlertDialog.TITLE_SUBTITLE_IMGMESSAGE_VERIFY_CANCEL_TYPE);
-        subscribeDialog.initInfo(popupMainTitle,popupSubTitle,URL_PICTURE);
+        subscribeDialog.initInfo(popupMainTitle,popupSubTitle,URL_PICTURE, R.drawable.bg_corners_f6f7f8_radius_4_width_380_height_88,IMG_DEFAULT_WIDTH,IMG_DEFAULT_HEIGHT);
         subscribeDialog.setVerifyShowText("立即添加");
         subscribeDialog.setVerifyBtnListener(new View.OnClickListener() {
             @Override
@@ -201,7 +206,8 @@ public class SubscribeCourseBll extends LiveBaseBll implements ISubscribeClickLi
         });
 
         hasSubscribeDialog = new ConfirmAlertDialog(mContext,mBaseApplication,false,ConfirmAlertDialog.TITLE_IMGMESSAGE_VERIFY_TYPE);
-        hasSubscribeDialog.initInfo(subSuccessTitle,URL_PICTURE);
+        hasSubscribeDialog.initInfo(subSuccessTitle,"",URL_PICTURE, R.drawable.bg_corners_f6f7f8_radius_4_width_380_height_88,
+                IMG_DEFAULT_WIDTH,IMG_DEFAULT_HEIGHT);
         hasSubscribeDialog.setVerifyShowText("好的");
     }
 
