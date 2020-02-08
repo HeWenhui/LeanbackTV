@@ -85,8 +85,14 @@ public class MiracastLivebackBll extends LiveBackBaseBll implements IBrowseListe
         leLinkPlayer = new LelinkPlayer(mContext.getApplicationContext());
         leLinkPlayer.setPlayerListener(this);
         leLinkPlayer.setConnectListener(this);
-        miracastPager = new MiracastPager(mContext, FROM_PLAYBACK, mVideoEntity.getStuCourseId());
+        miracastPager = new MiracastPager(mContext, FROM_PLAYBACK, mVideoEntity.getLiveId());
         miracastPager.setLeLinkPlayer(leLinkPlayer);
+        miracastPager.setListener(new MiracastPager.MiracastPagerListener() {
+            @Override
+            public void onBackClick() {
+                hildPage();
+            }
+        });
         miracastPager.setILelinkServiceManager(lelinkServiceManager);
         String videoPath = mVideoEntity.getVideoPath();
         logger.i("hpplay MiracastLivebackBll url " + videoPath);
@@ -138,6 +144,9 @@ public class MiracastLivebackBll extends LiveBackBaseBll implements IBrowseListe
                 public void run() {
                     mFragmentRootView.removeView(miracastPager.getRootView());
                     miracastPager.stopSearch();
+                    if (miracastPlaySucListener != null) {
+                        miracastPlaySucListener.onTvPlaySuccess();
+                    }
                 }
             });
 
@@ -148,7 +157,7 @@ public class MiracastLivebackBll extends LiveBackBaseBll implements IBrowseListe
     public void onConnect(LelinkServiceInfo lelinkServiceInfo, int extra) {
         logger.i("hpplay 连接成功： info name:" + lelinkServiceInfo.getName() + " ip:" + lelinkServiceInfo.getIp());
         XESToastUtils.showToast("连接成功");
-        BuryUtil.show(R.string.show_03_84_024, mVideoEntity.getStuCourseId());
+        BuryUtil.show(R.string.show_03_84_024, mVideoEntity.getLiveId());
         iMiracastState.onConnect();
 
     }
@@ -197,13 +206,15 @@ public class MiracastLivebackBll extends LiveBackBaseBll implements IBrowseListe
             miracastPlaySucListener.onTvPlaySuccess();
         }
         iMiracastState.onStart();
-        BuryUtil.show(R.string.show_03_84_025, mVideoEntity.getStuCourseId());
+        BuryUtil.show(R.string.show_03_84_025, mVideoEntity.getLiveId());
     }
 
 
     @Override
     public void onPause() {
-        iMiracastState.onPause();
+        if (iMiracastState!=null){
+            iMiracastState.onPause();
+        }
 
     }
 

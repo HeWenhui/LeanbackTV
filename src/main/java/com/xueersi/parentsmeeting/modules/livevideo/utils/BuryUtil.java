@@ -1,8 +1,10 @@
 package com.xueersi.parentsmeeting.modules.livevideo.utils;
 
 import android.app.Activity;
+import android.content.Context;
 
 import com.xrs.bury.xrsbury.XrsBury;
+import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.data.AppCacheData;
 
 /**
@@ -13,10 +15,10 @@ public class BuryUtil {
     private static final String TAG = "BuryUtil";
 
     public static void show(int strBuryId, Object params) {
-        Activity activity = AppCacheData.getHomeActivity();
+        Context context = BaseApplication.getContext();
         try {
-            if (activity != null) {
-                XrsBury.showBury(activity.getResources().getString(strBuryId), params);
+            if (context != null) {
+                XrsBury.showBury(context.getResources().getString(strBuryId), params);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -25,10 +27,10 @@ public class BuryUtil {
     }
 
     public static void show(int strBuryId, Object... params) {
-        Activity activity = AppCacheData.getHomeActivity();
+        Context context = BaseApplication.getContext();
         try {
-            if (activity != null) {
-                XrsBury.showBury(activity.getResources().getString(strBuryId), params);
+            if (context != null) {
+                XrsBury.showBury(context.getResources().getString(strBuryId), params);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -37,10 +39,10 @@ public class BuryUtil {
 
 
     public static void pageStartBury(int strBuryId, Object... params) {
-        Activity activity = AppCacheData.getHomeActivity();
+        Context context = BaseApplication.getContext();
         try {
-            if (activity != null) {
-                XrsBury.pageStartBury(activity.getResources().getString(strBuryId), params);
+            if (context != null) {
+                XrsBury.pageStartBury(context.getResources().getString(strBuryId), params);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -48,10 +50,10 @@ public class BuryUtil {
     }
 
     public static void pageEndBury(int strBuryId, Object... params) {
-        Activity activity = AppCacheData.getHomeActivity();
+        Context context = BaseApplication.getContext();
         try {
-            if (activity != null) {
-                XrsBury.pageEndBury(activity.getResources().getString(strBuryId), params);
+            if (context != null) {
+                XrsBury.pageEndBury(context.getResources().getString(strBuryId), params);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -60,10 +62,10 @@ public class BuryUtil {
 
 
     public static void click(int strBuryId, Object... params) {
-        Activity activity = AppCacheData.getHomeActivity();
+        Context context = BaseApplication.getContext();
         try {
-            if (activity != null) {
-                XrsBury.clickBury(activity.getResources().getString(strBuryId), params);
+            if (context != null) {
+                XrsBury.clickBury(context.getResources().getString(strBuryId), params);
             }
         } catch (Exception e) {
             e.printStackTrace();
