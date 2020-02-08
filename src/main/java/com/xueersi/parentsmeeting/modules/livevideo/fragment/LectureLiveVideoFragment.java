@@ -258,7 +258,7 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
         createMediaControllerBottom();
         liveViewAction.addView(LiveVideoLevel.LEVEL_CTRl, miracastLiveMediaControllerTop, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         liveViewAction.addView(LiveVideoLevel.LEVEL_CTRl, liveMediaControllerBottom);
-        miracastLiveMediaControllerTop.setAutoOrientation(true);
+//        miracastLiveMediaControllerTop.setAutoOrientation(true);
     }
 
     protected void createMediaControllerBottom() {
@@ -403,7 +403,7 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
                 miracastLiveMediaControllerTop.hildAllView(true);
                 mMediaController.setControllerTop(miracastLiveMediaControllerTop);
                 controllerContent.addView(miracastLiveMediaControllerTop);
-                mMediaController.setAutoOrientation(true);
+//                mMediaController.setAutoOrientation(true);
 //                liveMediaControllerBottom.setController(mMediaController);
                 if (mGetInfo != null) {
                     mMediaController.setFileName(mGetInfo.getName());
@@ -457,7 +457,7 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
                 miracastLiveMediaControllerTop.setTvPlayClickListener(this);
                 mMediaController.setControllerTop(miracastLiveMediaControllerTop);
                 controllerContent.addView(miracastLiveMediaControllerTop);
-                mMediaController.setAutoOrientation(true);
+//                mMediaController.setAutoOrientation(true);
                 liveMediaControllerBottom.setController(mMediaController);
                 if (mGetInfo != null) {
                     mMediaController.setFileName(mGetInfo.getName());
