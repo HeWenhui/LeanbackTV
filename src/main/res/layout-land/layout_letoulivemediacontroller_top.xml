@@ -43,25 +43,33 @@
             android:textSize="18sp"
             android:textStyle="bold" />
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_alignParentRight="true">
+            <ImageView
+                android:layout_marginRight="24dp"
+                android:layout_marginTop="24dp"
+                android:id="@+id/iv_video_tv_player"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@id/iv_video_mediacontroller_controls_allview"
+                android:src="@drawable/icon_tv_player" />
         <!-- 横竖屏切换 -->
         <ImageView
             android:id="@id/iv_video_mediacontroller_controls_allview"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:layout_alignParentRight="true"
+
             android:layout_marginTop="24dp"
             android:padding="4dp"
             android:scaleType="center"
             android:layout_marginRight="16dp"
+            android:visibility="gone"
             android:src="@drawable/livevideo_leclive_fullscreen_icon"
              />
-        <ImageView
-            android:layout_marginRight="24dp"
-            android:layout_marginTop="24dp"
-            android:id="@+id/iv_video_tv_player"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toLeftOf="@id/iv_video_mediacontroller_controls_allview"
-            android:src="@drawable/icon_tv_player" />
+
+        </LinearLayout>
     </RelativeLayout>
 </RelativeLayout>
