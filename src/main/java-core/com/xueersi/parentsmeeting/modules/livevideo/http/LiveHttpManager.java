@@ -2659,4 +2659,18 @@ public class LiveHttpManager extends BaseHttpBusiness implements LiveHttpAction,
 
         sendJsonPost(LiveCoreConfig.URL_LIVE_GROUP_CLASS_VIRTUAL, param, requestCallBack);
     }
+
+    public void getIsSubscribe(String liveId,HttpCallBack requestCallBack){
+        HttpRequestParams params = new HttpRequestParams();
+        setDefaultParameter(params);
+        params.addBodyParam("liveId", liveId);
+        sendPost(LiveHttpConfig.URL_LECTURE_IS_SUBSCRIBE,params,requestCallBack);
+    }
+
+    public void subscribSeriesLecture(String liveId,HttpCallBack requestCallBack){
+        HttpRequestParams params = new HttpRequestParams();
+        setDefaultParameter(params);
+        params.addBodyParam("liveId", liveId);
+        sendPost(LiveHttpConfig.URL_LECTURE_SUBSCRIBE_SERIESLECTURE,params,requestCallBack);
+    }
 }

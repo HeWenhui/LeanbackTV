@@ -326,4 +326,8 @@ public class LiveHttpConfig {
     public static int HTTP_ERROR_ERROR = 1;
     public static int HTTP_ERROR_FAIL = 2;
     public static int HTTP_ERROR_NULL = 3;
+    /** 请求系列讲座是否已经订阅*/
+    public final static String URL_LECTURE_IS_SUBSCRIBE = AppConfig.HTTP_HOST_LECTUREPIE+"/app/series/isSub";
+    /**https://laoshi.xueersi.com/LiveLecture/reserveSeriesLecture*/
+    public final static String URL_LECTURE_SUBSCRIBE_SERIESLECTURE = AppConfig.HTTP_HOST+"/LiveLecture/reserveSeriesLecture";
 }

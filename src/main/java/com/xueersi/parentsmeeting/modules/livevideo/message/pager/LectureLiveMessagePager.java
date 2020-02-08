@@ -164,7 +164,7 @@ public class LectureLiveMessagePager extends LiveMessagePager {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-                tvMessageCount.setText("本教室在线"+peopleCount + "人");
+                tvMessageCount.setText("本教室"+peopleCount + "人");
 //                addMessage("laoshidddd", LiveMessageEntity.MESSAGE_TEACHER, "test", "");
             }
         });
@@ -175,7 +175,7 @@ public class LectureLiveMessagePager extends LiveMessagePager {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-                tvMessageCount.setText("本教室在线"+peopleCount + "人");
+                tvMessageCount.setText("本教室"+peopleCount + "人");
             }
         });
     }
@@ -186,7 +186,7 @@ public class LectureLiveMessagePager extends LiveMessagePager {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-                tvMessageCount.setText("本教室在线"+peopleCount + "人");
+                tvMessageCount.setText("本教室"+peopleCount + "人");
             }
         });
     }

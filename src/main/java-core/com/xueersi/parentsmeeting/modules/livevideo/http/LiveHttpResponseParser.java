@@ -646,6 +646,15 @@ public class LiveHttpResponseParser extends HttpResponseParser {
 
             }
             getInfo.setChatSwitch(data.optInt("chatSwitch"));
+            //订阅系列讲座用字段
+            getInfo.setSeriesLectureId(data.optInt("seriesLectureId"));
+            getInfo.setSeriesLectureName(data.optString("seriesLectureName"));
+            getInfo.setIsSeriesLectureSub(data.optInt("isSeriesLectureSub"));
+            getInfo.setBubbleSwitch(data.optInt("bubbleSwitch"));
+            getInfo.setBubbleText(data.optString("bubbleText"));
+            getInfo.setPopupMainTitle(data.optString("popupMainTitle"));
+            getInfo.setPopupSubTitle(data.optString("popupSubTitle"));
+            getInfo.setSubSuccessTitle(data.optString("subSuccessTitle"));
             return getInfo;
         } catch (JSONException e) {
             logger.e("parseLiveGetInfo", e);
