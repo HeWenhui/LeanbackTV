@@ -45,7 +45,10 @@ public class LecBackVideoFragment extends LiveBackVideoFragment implements Letou
     }
 
     protected void onNewIntent(Intent intent) {
-        liveBackBll.onNewIntent(intent);
+        if (liveBackBll!=null){
+            liveBackBll.onNewIntent(intent);
+        }
+
     }
 
 
