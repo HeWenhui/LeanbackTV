@@ -83,7 +83,7 @@ public class SubscribeCourseBll extends LiveBaseBll implements ISubscribeClickLi
         super.initView();
         if (mIsLand.get()){
             getLiveViewAction().removeView(mSubCoursePager.getRootView());
-            getLiveViewAction().addView(LiveVideoLevel.LEVEL_CTRl, mSubCoursePager.getRootView());
+            getLiveViewAction().addView(LiveVideoLevel.LEVEL_CTRl, mSubCoursePager.getRootView(),params);
             setVideoLayout(LiveVideoPoint.getInstance());
         }
 

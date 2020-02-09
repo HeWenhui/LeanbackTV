@@ -593,7 +593,10 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void requestReadPhoneStatesPermissions() {
-        requestPermissions(new String[]{Manifest.permission.READ_PHONE_STATE}, REQUEST_MUST_PERMISSION);
+        if (isAdded()){
+            requestPermissions(new String[]{Manifest.permission.READ_PHONE_STATE}, REQUEST_MUST_PERMISSION);
+        }
+
     }
 
     @Override

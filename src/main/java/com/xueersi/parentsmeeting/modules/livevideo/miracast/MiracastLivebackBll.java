@@ -202,9 +202,6 @@ public class MiracastLivebackBll extends LiveBackBaseBll implements IBrowseListe
         logger.i("hpplay onStart");
         XESToastUtils.showToast("投屏成功");
         hildPage();
-        if (miracastPlaySucListener != null) {
-            miracastPlaySucListener.onTvPlaySuccess();
-        }
         iMiracastState.onStart();
         BuryUtil.show(R.string.show_03_84_025, mVideoEntity.getLiveId());
     }

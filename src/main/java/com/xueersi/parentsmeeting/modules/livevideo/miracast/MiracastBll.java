@@ -116,7 +116,7 @@ public class MiracastBll extends LiveBaseBll implements IBrowseListener, IConnec
         final ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                 .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         mRootView = rootView;
-        if (rootView != null && miracastPager != null) {
+        if (rootView != null && miracastPager != null&&!TextUtils.isEmpty(mUrl)) {
             miracastPager.setUrl(mUrl);
             rootView.removeView(miracastPager.getRootView());
             rootView.addView(miracastPager.getRootView(), params);

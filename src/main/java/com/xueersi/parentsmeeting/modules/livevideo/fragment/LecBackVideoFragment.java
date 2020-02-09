@@ -45,7 +45,10 @@ public class LecBackVideoFragment extends LiveBackVideoFragment implements Letou
     }
 
     protected void onNewIntent(Intent intent) {
-        liveBackBll.onNewIntent(intent);
+        if (liveBackBll!=null){
+            liveBackBll.onNewIntent(intent);
+        }
+
     }
 
 
@@ -78,7 +81,10 @@ public class LecBackVideoFragment extends LiveBackVideoFragment implements Letou
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void requestReadPhoneStatesPermissions() {
-        requestPermissions(new String[]{Manifest.permission.READ_PHONE_STATE}, REQUEST_MUST_PERMISSION);
+        if (isAdded()){
+            requestPermissions(new String[]{Manifest.permission.READ_PHONE_STATE}, REQUEST_MUST_PERMISSION);
+        }
+
     }
 
 
