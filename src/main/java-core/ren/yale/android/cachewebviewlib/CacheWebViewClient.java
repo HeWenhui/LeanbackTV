@@ -33,7 +33,7 @@ final class CacheWebViewClient extends ErrorWebViewClient {
 
     public WebViewClient mCustomWebViewClient;
     /** 使用腾讯x5浏览器，不适合在 shouldInterceptRequest 网络请求 */
-    private boolean mIsEnableCache = false;
+    private boolean mIsEnableCache = true;
     private boolean mIsBlockImageLoad = false;
     private WebViewCache.CacheStrategy mCacheStrategy = WebViewCache.CacheStrategy.NORMAL;
     private String mEncoding = "";
