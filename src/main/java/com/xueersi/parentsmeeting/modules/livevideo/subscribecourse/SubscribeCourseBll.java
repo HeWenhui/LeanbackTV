@@ -83,7 +83,7 @@ public class SubscribeCourseBll extends LiveBaseBll implements ISubscribeClickLi
         super.initView();
         if (mIsLand.get()){
             getLiveViewAction().removeView(mSubCoursePager.getRootView());
-            getLiveViewAction().addView(LiveVideoLevel.LEVEL_CTRl, mSubCoursePager.getRootView(),params);
+            getLiveViewAction().addView(LiveVideoLevel.LEVEL_CTRl, mSubCoursePager.getRootView());
             setVideoLayout(LiveVideoPoint.getInstance());
         }
 
@@ -128,8 +128,12 @@ public class SubscribeCourseBll extends LiveBaseBll implements ISubscribeClickLi
     public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
         super.setVideoLayout(liveVideoPoint);
         params = (RelativeLayout.LayoutParams) mSubCoursePager.getRootView().getLayoutParams();
+        if (params == null){
+            params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
+                    .WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        }
         int topMargin = liveVideoPoint.y3;
-        if (topMargin != params.topMargin + SizeUtils.Dp2Px(mContext,3)) {
+        if (params != null && topMargin != params.topMargin + SizeUtils.Dp2Px(mContext,3)) {
             params.topMargin = topMargin + SizeUtils.Dp2Px(mContext,3);
             params.rightMargin = liveVideoPoint.screenWidth - liveVideoPoint.x4 + SizeUtils.Dp2Px(mContext,8);
             params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
