@@ -118,7 +118,7 @@ public class SubscribeCourseBll extends LiveBaseBll implements ISubscribeClickLi
                 mSubCoursePager.setTvTip(getInfo.getBubbleText());
             }
             setSubscribeText();
-            initDialog();
+
         }else {
             mSubCoursePager.getRootView().setVisibility(View.GONE);
         }
@@ -128,14 +128,19 @@ public class SubscribeCourseBll extends LiveBaseBll implements ISubscribeClickLi
     public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
         super.setVideoLayout(liveVideoPoint);
         params = (RelativeLayout.LayoutParams) mSubCoursePager.getRootView().getLayoutParams();
+        if (params == null){
+            params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
+                    .WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        }
         int topMargin = liveVideoPoint.y3;
-        if (params!=null&&topMargin != params.topMargin + SizeUtils.Dp2Px(mContext,3)) {
+        if (params != null && topMargin != params.topMargin + SizeUtils.Dp2Px(mContext,3)) {
             params.topMargin = topMargin + SizeUtils.Dp2Px(mContext,3);
             params.rightMargin = liveVideoPoint.screenWidth - liveVideoPoint.x4 + SizeUtils.Dp2Px(mContext,8);
             params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 //                rlInfo.setLayoutParams(params);
             LayoutParamsUtil.setViewLayoutParams(mSubCoursePager.getRootView(), params);
             logger.d("initView:width=" + liveVideoPoint.getRightMargin() + "," + liveVideoPoint.y3);
+
         }
     }
 
@@ -150,6 +155,7 @@ public class SubscribeCourseBll extends LiveBaseBll implements ISubscribeClickLi
 
     @Override
     public void onClick() {
+        initDialog();
         mSubCoursePager.setTvTipVisible(false);
         if (AppBll.getInstance().isAlreadyLogin()){
             if (isSeriesLectureSub){
@@ -164,50 +170,54 @@ public class SubscribeCourseBll extends LiveBaseBll implements ISubscribeClickLi
     }
 
     private void initDialog(){
-        subscribeDialog = new ConfirmAlertDialog(mContext,mBaseApplication,false,ConfirmAlertDialog.TITLE_SUBTITLE_IMGMESSAGE_VERIFY_CANCEL_TYPE);
-        subscribeDialog.initInfo(popupMainTitle,popupSubTitle,URL_PICTURE, R.drawable.bg_corners_f6f7f8_radius_4_width_380_height_88,IMG_DEFAULT_WIDTH,IMG_DEFAULT_HEIGHT);
-        subscribeDialog.setVerifyShowText("立即添加");
-        subscribeDialog.setVerifyBtnListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mSubCoursePager.setTvSubscribeEnable(false);
-                getHttpManager().subscribSeriesLecture(String.valueOf(seriesLectureId), new HttpCallBack(false) {
-                    @Override
-                    public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                        mSubCoursePager.setTvSubscribeEnable(true);
-                        JSONObject data = (JSONObject)responseEntity.getJsonObject();
-                        int status = data.optInt("status");
-                        if (status == 1){
-                            isSeriesLectureSub = true;
-                            setSubscribeText();
-                            XesCenterToast.showToast("已成功添加至你的课程");
-                        }else {
+        if (subscribeDialog == null){
+            subscribeDialog = new ConfirmAlertDialog(mContext,mBaseApplication,false,ConfirmAlertDialog.TITLE_SUBTITLE_IMGMESSAGE_VERIFY_CANCEL_TYPE);
+            subscribeDialog.initInfo(popupMainTitle,popupSubTitle,URL_PICTURE, R.drawable.bg_corners_f6f7f8_radius_4_width_380_height_88,IMG_DEFAULT_WIDTH,IMG_DEFAULT_HEIGHT);
+            subscribeDialog.setVerifyShowText("立即添加");
+            subscribeDialog.setVerifyBtnListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mSubCoursePager.setTvSubscribeEnable(false);
+                    getHttpManager().subscribSeriesLecture(String.valueOf(seriesLectureId), new HttpCallBack(false) {
+                        @Override
+                        public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                            mSubCoursePager.setTvSubscribeEnable(true);
+                            JSONObject data = (JSONObject)responseEntity.getJsonObject();
+                            int status = data.optInt("status");
+                            if (status == 1){
+                                isSeriesLectureSub = true;
+                                setSubscribeText();
+                                XesCenterToast.showToast("已成功添加至你的课程");
+                            }else {
+                                XesCenterToast.showToast("出错了，请重试");
+                            }
+
+                        }
+
+                        @Override
+                        public void onPmFailure(Throwable error, String msg) {
+                            super.onPmFailure(error, msg);
+                            mSubCoursePager.setTvSubscribeEnable(true);
                             XesCenterToast.showToast("出错了，请重试");
                         }
 
-                    }
+                        @Override
+                        public void onPmError(ResponseEntity responseEntity) {
+                            super.onPmError(responseEntity);
+                            mSubCoursePager.setTvSubscribeEnable(true);
+                            XesCenterToast.showToast("出错了，请重试");
+                        }
+                    });
+                }
+            });
+        }
+        if (hasSubscribeDialog == null){
+            hasSubscribeDialog = new ConfirmAlertDialog(mContext,mBaseApplication,false,ConfirmAlertDialog.TITLE_IMGMESSAGE_VERIFY_TYPE);
+            hasSubscribeDialog.initInfo(subSuccessTitle,"",URL_PICTURE, R.drawable.bg_corners_f6f7f8_radius_4_width_380_height_88,
+                    IMG_DEFAULT_WIDTH,IMG_DEFAULT_HEIGHT);
+            hasSubscribeDialog.setVerifyShowText("好的");
+        }
 
-                    @Override
-                    public void onPmFailure(Throwable error, String msg) {
-                        super.onPmFailure(error, msg);
-                        mSubCoursePager.setTvSubscribeEnable(true);
-                        XesCenterToast.showToast("出错了，请重试");
-                    }
-
-                    @Override
-                    public void onPmError(ResponseEntity responseEntity) {
-                        super.onPmError(responseEntity);
-                        mSubCoursePager.setTvSubscribeEnable(true);
-                        XesCenterToast.showToast("出错了，请重试");
-                    }
-                });
-            }
-        });
-
-        hasSubscribeDialog = new ConfirmAlertDialog(mContext,mBaseApplication,false,ConfirmAlertDialog.TITLE_IMGMESSAGE_VERIFY_TYPE);
-        hasSubscribeDialog.initInfo(subSuccessTitle,"",URL_PICTURE, R.drawable.bg_corners_f6f7f8_radius_4_width_380_height_88,
-                IMG_DEFAULT_WIDTH,IMG_DEFAULT_HEIGHT);
-        hasSubscribeDialog.setVerifyShowText("好的");
     }
 
     private void setSubscribeText(){
@@ -230,4 +240,9 @@ public class SubscribeCourseBll extends LiveBaseBll implements ISubscribeClickLi
         }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBusUtil.unregister(this);
+    }
 }
