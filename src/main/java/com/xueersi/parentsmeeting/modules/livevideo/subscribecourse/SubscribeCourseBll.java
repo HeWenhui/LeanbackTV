@@ -121,6 +121,7 @@ public class SubscribeCourseBll extends LiveBaseBll implements ISubscribeClickLi
 
         }else {
             mSubCoursePager.getRootView().setVisibility(View.GONE);
+            mLiveBll.removeBusinessBll(this);
         }
     }
 
