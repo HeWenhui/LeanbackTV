@@ -37,6 +37,7 @@ public class SubscribeCoursePager extends LiveBasePager {
         mView = View.inflate(mContext, R.layout.page_livevideo_lecture_subscribe, null);
         ivSubscribe = mView.findViewById(R.id.iv_livevideo_lecture_subscribe);
         tvTip = mView.findViewById(R.id.tv_livevideo_lecture_tip);
+        mView.setVisibility(View.GONE);
         return mView;
     }
 
