@@ -579,7 +579,7 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
      */
     @Override
     public void onTvPlayClick(View view) {
-        BuryUtil.click(R.string.click_03_63_044, mGetInfo.getId());
+        BuryUtil.click(R.string.click_03_63_044, mGetInfo!=null?mGetInfo.getId():"");
         if (mIsLand.get()) {
             shouldShowLetouPage = true;
             changeLOrP();
