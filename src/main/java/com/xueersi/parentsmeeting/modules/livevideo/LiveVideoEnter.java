@@ -485,8 +485,12 @@ public class LiveVideoEnter {
 
             @Override
             public void success() {
+                String planId = bundle.getString("planId","");
                 boolean isNeed = LiveAppUserInfo.getInstance().isNeedEnglishName();
-                if (bundle.getInt("pattern") == 8 && !isNeed) {
+                String skipPlanId = ShareDataManager.getInstance().getString(LiveVideoConfig.LIVE_GOUP_1V2_ENGLISH_SKIPED, "-1",
+                        ShareDataManager.SHAREDATA_USER);
+                boolean isSkip = skipPlanId.equals(planId);
+                if (bundle.getInt("pattern") == 8 && !isNeed && !isSkip) {
 
                     start1v2PlayBack(context, bundle, where);
                 } else {

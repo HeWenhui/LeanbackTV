@@ -127,7 +127,7 @@ public class LiveVideoDispatcher extends AbsDispatcher {
     private void dispatchInfo(Activity srcActivity, Bundle bundle, int requestCode) {
         englishNameBll = new EnglishNameBusiness(srcActivity);
         try {
-            englishNameBll.checkName();
+            englishNameBll.checkName(bundle);
         } catch (Exception e){
             e.printStackTrace();
         }

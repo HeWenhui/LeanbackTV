@@ -502,9 +502,12 @@ public class LiveVideoLoadActivity extends BaseActivity {
                             LiveMainHandler.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    boolean isNeed =
-                                            LiveAppUserInfo.getInstance().isNeedEnglishName();
-                                    if (bundle.getInt("pattern") == 8 && !isNeed) {
+                                    String planId = bundle.getString("planId","");
+                                    boolean isNeed = LiveAppUserInfo.getInstance().isNeedEnglishName();
+                                    String skipPlanId = mShareDataManager.getString(LiveVideoConfig.LIVE_GOUP_1V2_ENGLISH_SKIPED, "-1",
+                                            ShareDataManager.SHAREDATA_USER);
+                                    boolean isSkip = skipPlanId.equals(planId);
+                                    if (bundle.getInt("pattern") == 8 && !isNeed && !isSkip) {
                                         XueErSiRouter.startModule(mContext, "/groupclass" +
                                                         "/englishname"
                                                 , bundle);
@@ -521,8 +524,13 @@ public class LiveVideoLoadActivity extends BaseActivity {
                 PermissionConfig.PERMISSION_CODE_CAMERA, PermissionConfig.PERMISSION_CODE_AUDIO,
                 PermissionConfig.PERMISSION_CODE_STORAGE);
         if (have) {
+            String planId = bundle.getString("planId","");
             boolean isNeed = LiveAppUserInfo.getInstance().isNeedEnglishName();
-            if (bundle.getInt("pattern") == 8 && !isNeed) {
+            String skipPlanId = ShareDataManager.getInstance().getString(LiveVideoConfig.LIVE_GOUP_1V2_ENGLISH_SKIPED, "-1",
+                    ShareDataManager.SHAREDATA_USER);
+            boolean isSkip = skipPlanId.equals(planId);
+
+            if (bundle.getInt("pattern") == 8 && !isNeed && !isSkip) {
                 XueErSiRouter.startModule(mContext, "/groupclass/englishname"
                         , bundle);
             } else {

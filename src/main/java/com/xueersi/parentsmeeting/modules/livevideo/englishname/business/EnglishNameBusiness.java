@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.englishname.business;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.os.Environment;
 import android.text.TextUtils;
 
@@ -72,7 +73,6 @@ public class EnglishNameBusiness extends BaseBll {
      * 下载资源
      *
      * @param context
-     * @param resourceCallback
      */
     public void downloadResource(final Context context ,String url) {
         String mathGamePath = getLocalPath()+"/generate.txt";
@@ -154,7 +154,8 @@ public class EnglishNameBusiness extends BaseBll {
         }.execute(true);
     }
 
-    public void checkName(){
+    public void checkName(Bundle bundle){
+        String planId = bundle.getString("planId","");
         if(LiveAppUserInfo.getInstance().isNeedEnglishName()) {
            return;
         }
