@@ -347,7 +347,9 @@ public class SettingEnglishLandActivity extends XesActivity {
                 selectName = UserBll.getInstance().getMyUserInfoEntity().getEnglishName();
                 sex = UserBll.getInstance().getMyUserInfoEntity().getSex();
             }
-            saveEnglishName();
+
+            // 跳过后，不在请求接口。直接更新缓存，让ui按缓存显示。
+            UserBll.getInstance().setUserEnglishInfo(selectName, sex);
             if(!TextUtils.isEmpty(planId)){
                 mShareDataManager.put(LiveVideoConfig.LIVE_GOUP_1V2_ENGLISH_SKIPED, planId,
                         ShareDataManager.SHAREDATA_USER);
