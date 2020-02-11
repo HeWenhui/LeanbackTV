@@ -122,7 +122,7 @@ public class LecBackVideoFragment extends LiveBackVideoFragment implements Letou
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (miracastLivebackBll != null) {
             if (requestCode == 1) {
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults!=null&&grantResults.length>=1&&grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     miracastLivebackBll.startSearch();
                 }
             }

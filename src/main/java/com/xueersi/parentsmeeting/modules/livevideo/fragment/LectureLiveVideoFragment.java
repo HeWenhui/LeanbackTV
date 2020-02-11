@@ -612,7 +612,7 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (miracastBll != null) {
             if (requestCode == 1) {
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults!=null&&grantResults.length>=1&&grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     miracastBll.startSearch();
                 }
             }
