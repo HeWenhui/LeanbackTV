@@ -76,10 +76,10 @@ public class LiveAssetsLoadUtil {
                 //https://bugly.qq.com/v2/crash-reporting/crashes/a0df5ed682/350181?pid=1
                 try {
                     mDataLoadEntity.beginLoading();
+                    DataLoadManager.newInstance().loadDataStyle(context, mDataLoadEntity);
                 } catch (Exception e) {
                     LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                 }
-                DataLoadManager.newInstance().loadDataStyle(context, mDataLoadEntity);
                 callback.start();
             }
 

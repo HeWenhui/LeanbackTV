@@ -18,6 +18,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
+import com.xueersi.common.base.XrsCrashReport;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.ui.component.R;
 import com.xueersi.ui.dataload.DataErrorManager;
@@ -27,8 +28,8 @@ import com.xueersi.ui.dataload.DataLoadEntity;
 import java.util.Random;
 
 /**
- * 数据加载页面模块
- * Created by ZouHao on 2016/6/21.
+ * 数据加载页面模块,石小强复制过来的
+ * Created by shixiaoqiang on 2016/6/21.
  */
 public class DataLoadManager {
 
@@ -137,7 +138,12 @@ public class DataLoadManager {
      */
     private void showLockLoading(final Context context, final String tipResource) {
 
-
+        if(mProgressDialog!=null){
+            Context context1=mProgressDialog.getContext();
+            if(context1!=context){
+                XrsCrashReport.d("DataLoadManager","showLockLoading_old");
+            }
+        }
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.dismiss();
         }
