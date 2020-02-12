@@ -248,9 +248,11 @@ public class LiveAppUserInfo {
         return mIrcNick;
     }
 
+    /**
+     * 2020/2/12 修改，当前字段只针对小组课使用。并不通用。
+     */
     public String getEnglishNameProcess() {
-        return mShareDataManager.getString(LoginRegistersConfig.SP_USER_ENGLISH_NAME, "",
-                ShareDataManager.SHAREDATA_USER);
+        return getGroupClassName();
     }
     public int getSexProcess() {
         return mShareDataManager.getInt(LoginRegistersConfig.SP_USER_SEX, 3,
