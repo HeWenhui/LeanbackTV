@@ -1,5 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
+import android.text.TextUtils;
+
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.LoginRegistersConfig;
@@ -224,10 +226,6 @@ public class LiveAppUserInfo {
         mGroupClassName = groupClassName;
     }
 
-    public String getGroupClassName(){
-        return !StringUtils.isEmpty(mGroupClassName)?mGroupClassName:UserBll.getInstance().getMyUserInfoEntity().getEnglishName();
-    }
-
     /**
      * 退出直播间时 清理缓存信息
      */
@@ -252,7 +250,9 @@ public class LiveAppUserInfo {
      * 2020/2/12 修改，当前字段只针对小组课使用。并不通用。
      */
     public String getEnglishNameProcess() {
-        return getGroupClassName();
+        String englishName = mShareDataManager.getString(LoginRegistersConfig.SP_USER_ENGLISH_NAME, "",
+                ShareDataManager.SHAREDATA_USER);
+        return !TextUtils.isEmpty(englishName)? englishName:mGroupClassName;
     }
     public int getSexProcess() {
         return mShareDataManager.getInt(LoginRegistersConfig.SP_USER_SEX, 3,
