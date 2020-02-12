@@ -261,8 +261,6 @@ public class SettingEnglishLandActivity extends XesActivity {
 
                 //  XESToastUtils.showToast(stringResp.result);
                 UserBll.getInstance().setUserEnglishInfo(selectName, sex);
-                // 小组课专用名称，与UserBll用户中心不通用
-                LiveAppUserInfo.getInstance().setGroupClassName(selectName);
                 LiveAppUserInfo.getInstance().setEnglishNameAudio(audioPath);
                 continueToVideo();
             }
@@ -338,16 +336,15 @@ public class SettingEnglishLandActivity extends XesActivity {
 
         @Override
         public void dialogCancel() {
-            if(TextUtils.isEmpty(UserBll.getInstance().getMyUserInfoEntity().getEnglishName())){
-                selectName = LiveVideoConfig.ENGLISH_NAME_DEFAULT_BOY;
-                sex = LiveVideoConfig.LIVE_GROUP_CLASS_USER_SEX_BOY;
-            }else{
-                selectName = UserBll.getInstance().getMyUserInfoEntity().getEnglishName();
-                sex = UserBll.getInstance().getMyUserInfoEntity().getSex();
-            }
+//            if(TextUtils.isEmpty(UserBll.getInstance().getMyUserInfoEntity().getEnglishName())){
+//                selectName = LiveVideoConfig.ENGLISH_NAME_DEFAULT_BOY;
+//                sex = LiveVideoConfig.LIVE_GROUP_CLASS_USER_SEX_BOY;
+//            }else{
+//                selectName = UserBll.getInstance().getMyUserInfoEntity().getEnglishName();
+//                sex = UserBll.getInstance().getMyUserInfoEntity().getSex();
+//            }
 
-            // 跳过后，不在请求接口。直接更新缓存，让ui按缓存显示。同时此处更新的是小组课专用名称，不更新用户信息。
-            LiveAppUserInfo.getInstance().setGroupClassName(selectName);
+            // 跳过后，不在请求接口。ui显示会直接拿默认值student。
 //            UserBll.getInstance().setUserEnglishInfo(selectName, sex);
 
             if(!TextUtils.isEmpty(planId)){

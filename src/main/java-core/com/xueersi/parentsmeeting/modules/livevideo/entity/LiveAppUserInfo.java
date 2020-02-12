@@ -18,8 +18,6 @@ public class LiveAppUserInfo {
     private String mPsAppId;
     private String mPsimId;
     private String mPsimPwd;
-    // 小组课专用英文名
-    private String mGroupClassName;
     private String mIrcNick;
     ShareDataManager mShareDataManager;
     private LiveAppUserInfo(){
@@ -222,10 +220,6 @@ public class LiveAppUserInfo {
         mPsimPwd = psimPwd;
     }
 
-    public void setGroupClassName(String groupClassName){
-        mGroupClassName = groupClassName;
-    }
-
     /**
      * 退出直播间时 清理缓存信息
      */
@@ -252,7 +246,7 @@ public class LiveAppUserInfo {
     public String getEnglishNameProcess() {
         String englishName = mShareDataManager.getString(LoginRegistersConfig.SP_USER_ENGLISH_NAME, "",
                 ShareDataManager.SHAREDATA_USER);
-        return !TextUtils.isEmpty(englishName)? englishName:mGroupClassName;
+        return !TextUtils.isEmpty(englishName)? englishName:LiveVideoConfig.ENGLISH_NAME_DEFAULT_BOY;
     }
     public int getSexProcess() {
         return mShareDataManager.getInt(LoginRegistersConfig.SP_USER_SEX, 3,
