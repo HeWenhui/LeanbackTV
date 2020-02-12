@@ -279,7 +279,7 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
         });
     }
 
-    public void onRemoteVideoStateChanged(long uid, final int state) {
+    public void onRemoteVideoStateChanged(int uid, final int state) {
         this.state = state;
         mLogtf.d("onRemoteVideoStateChanged:uid=" + uid + ",state=" + state + ",look=" + entity.isLook() + ",videoStatus=" + videoStatus);
         if (entity.isLook() && videoStatus) {

@@ -13,7 +13,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.xes.ps.rtcstream.listener.RTCConnectionStateType;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xes.ps.rtcstream.RTCEngine;
 import com.xueersi.common.config.AppConfig;
@@ -629,7 +628,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         }
     };
 
-    private void doRenderRemoteUi(final long uid, final BasePrimaryTeamItem courseGroupItem) {
+    private void doRenderRemoteUi(final int uid, final BasePrimaryTeamItem courseGroupItem) {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -644,7 +643,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
 
     private RTCEngine.IRtcEngineEventListener listener = new RTCEngine.IRtcEngineEventListener() {
         @Override
-        public void remotefirstVideoRecvWithUid(long uid) {
+        public void remotefirstVideoRecvWithUid(int uid) {
             BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + uid);
             mLogtf.d("remotefirstVideoRecvWithUid:uid=" + uid + ",item=" + (basePrimaryTeamItem == null));
             if (basePrimaryTeamItem != null) {
@@ -659,7 +658,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         }
 
         @Override
-        public void remoteUserJoinWitnUid(long uid) {
+        public void remoteUserJoinWitnUid(int uid) {
             BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + uid);
             if (basePrimaryTeamItem != null) {
                 basePrimaryTeamItem.didOfflineOfUid("remoteUserJoinWitnUid", true);
@@ -672,7 +671,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         }
 
         @Override
-        public void didOfflineOfUid(long uid) {
+        public void didOfflineOfUid(int uid) {
             surfaceViewHashMap.remove("" + uid);
             userVoiceStat.remove("" + uid);
             BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + uid);
@@ -684,12 +683,12 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         }
 
         @Override
-        public void didAudioMuted(long uid, boolean muted) {
+        public void didAudioMuted(int uid, boolean muted) {
 
         }
 
         @Override
-        public void didVideoMuted(long uid, boolean muted) {
+        public void didVideoMuted(int uid, boolean muted) {
 
         }
 
@@ -704,12 +703,12 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         }
 
         @Override
-        public void connectionChangedToState(RTCConnectionStateType state, String reason){
+        public void onConnectionLost() {
 
         }
 
         @Override
-        public void localUserJoindWithUid(long uid) {
+        public void localUserJoindWithUid(int uid) {
             if (stuid == uid) {
                 BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + uid);
                 if (basePrimaryTeamItem != null) {
@@ -720,7 +719,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         }
 
         @Override
-        public void reportAudioVolumeOfSpeaker(long uid, int volume) {
+        public void reportAudioVolumeOfSpeaker(int uid, int volume) {
             BasePrimaryTeamItem basePrimaryTeamItem;
             if (0 == uid) {
                 basePrimaryTeamItem = courseGroupItemHashMap.get("" + stuid);
@@ -733,7 +732,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         }
 
         @Override
-        public void remotefirstAudioRecvWithUid(long uid) {
+        public void remotefirstAudioRecvWithUid(int uid) {
             userVoiceStat.put("" + uid, true);
             BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + uid);
             mLogtf.d("remotefirstAudioRecvWithUid:uid=" + uid + ",item=" + (basePrimaryTeamItem == null));
@@ -744,7 +743,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         }
 
         @Override
-        public void onRemoteVideoStateChanged(long uid, int state) {
+        public void onRemoteVideoStateChanged(int uid, int state) {
             BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + uid);
             mLogtf.d("onRemoteVideoStateChanged:uid=" + uid + ",state=" + state + ",item=" + (basePrimaryTeamItem == null));
             if (basePrimaryTeamItem instanceof PrimaryTeamOtherItem) {

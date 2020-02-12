@@ -100,7 +100,7 @@ public class BasePrimaryTeamPeopleItem extends BasePrimaryTeamItem {
         }
     }
 
-    public void remotefirstAudioRecvWithUid(long uid) {
+    public void remotefirstAudioRecvWithUid(int uid) {
 
     }
 

@@ -13,7 +13,7 @@ public interface StudyReportAction extends LiveProvide {
      *
      * @param uid
      */
-    void onFirstRemoteVideoDecoded(long uid);
+    void onFirstRemoteVideoDecoded(int uid);
 
     /**
      * 接麦用户进入
@@ -21,7 +21,7 @@ public interface StudyReportAction extends LiveProvide {
      * @param uid
      * @param elapsed
      */
-    void onUserJoined(long uid, int elapsed);
+    void onUserJoined(int uid, int elapsed);
 
     /**
      * 接麦用户退出
@@ -29,7 +29,7 @@ public interface StudyReportAction extends LiveProvide {
      * @param uid
      * @param reason
      */
-    void onUserOffline(long uid, int reason);
+    void onUserOffline(int uid, int reason);
 
     /**
      * 截图
