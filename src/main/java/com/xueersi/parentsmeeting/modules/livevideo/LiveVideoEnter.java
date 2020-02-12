@@ -486,12 +486,12 @@ public class LiveVideoEnter {
             @Override
             public void success() {
                 String planId = bundle.getString("planId","");
-                boolean isNeed = LiveAppUserInfo.getInstance().isNeedEnglishName();
+                boolean isSupported = LiveAppUserInfo.getInstance().isSupportedEnglishName();
                 String skipPlanId = ShareDataManager.getInstance().getString(LiveVideoConfig.LIVE_GOUP_1V2_ENGLISH_SKIPED, "-1",
                         ShareDataManager.SHAREDATA_USER);
                 boolean isSkip = skipPlanId.equals(planId);
-                if (bundle.getInt("pattern") == 8 && !isNeed && !isSkip) {
-
+                // 英文名不在支持列表中，且当前场次没有跳过
+                if (bundle.getInt("pattern") == 8 && !isSupported && !isSkip) {
                     start1v2PlayBack(context, bundle, where);
                 } else {
                     boolean isGently = bundle.getBoolean("isGently");

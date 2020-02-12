@@ -1,6 +1,5 @@
 package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
-import com.xueersi.common.base.BaseActivity;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.LoginRegistersConfig;
@@ -10,9 +9,6 @@ import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.englishname.config.EnglishNameConfig;
-
-import java.security.PrivateKey;
 
 public class LiveAppUserInfo {
     private static LiveAppUserInfo mInstance;
@@ -20,6 +16,8 @@ public class LiveAppUserInfo {
     private String mPsAppId;
     private String mPsimId;
     private String mPsimPwd;
+    // 小组课专用英文名
+    private String mGroupClassName;
     private String mIrcNick;
     ShareDataManager mShareDataManager;
     private LiveAppUserInfo(){
@@ -220,7 +218,14 @@ public class LiveAppUserInfo {
      */
     public void setPsimPwd(String psimPwd){
         mPsimPwd = psimPwd;
+    }
 
+    public void setGroupClassName(String groupClassName){
+        mGroupClassName = groupClassName;
+    }
+
+    public String getGroupClassName(){
+        return !StringUtils.isEmpty(mGroupClassName)?mGroupClassName:UserBll.getInstance().getMyUserInfoEntity().getEnglishName();
     }
 
     /**
@@ -267,7 +272,7 @@ public class LiveAppUserInfo {
         UserBll.getInstance().saveUserNameAudio(englishNameAudio);
     }
 
-    public boolean isNeedEnglishName(){
+    public boolean isSupportedEnglishName(){
         return mShareDataManager.getBoolean(LiveVideoConfig.LIVE_GOUP_1V2_ENGLISH_CHECK, false,
                 ShareDataManager.SHAREDATA_USER);
     }

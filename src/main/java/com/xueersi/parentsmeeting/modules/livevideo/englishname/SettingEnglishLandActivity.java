@@ -261,6 +261,8 @@ public class SettingEnglishLandActivity extends XesActivity {
 
                 //  XESToastUtils.showToast(stringResp.result);
                 UserBll.getInstance().setUserEnglishInfo(selectName, sex);
+                // 小组课专用名称，与UserBll用户中心不通用
+                LiveAppUserInfo.getInstance().setGroupClassName(selectName);
                 LiveAppUserInfo.getInstance().setEnglishNameAudio(audioPath);
                 continueToVideo();
             }
@@ -288,7 +290,6 @@ public class SettingEnglishLandActivity extends XesActivity {
     }
 
     private void sexShow() {
-
         startNameLottie(true);
     }
 
@@ -296,9 +297,6 @@ public class SettingEnglishLandActivity extends XesActivity {
     private void sexViewShow() {
         ivBoy.setVisibility(View.VISIBLE);
         ivGirl.setVisibility(View.VISIBLE);
-
-
-
     }
 
     private void sexSelect() {
@@ -348,8 +346,10 @@ public class SettingEnglishLandActivity extends XesActivity {
                 sex = UserBll.getInstance().getMyUserInfoEntity().getSex();
             }
 
-            // 跳过后，不在请求接口。直接更新缓存，让ui按缓存显示。
-            UserBll.getInstance().setUserEnglishInfo(selectName, sex);
+            // 跳过后，不在请求接口。直接更新缓存，让ui按缓存显示。同时此处更新的是小组课专用名称，不更新用户信息。
+            LiveAppUserInfo.getInstance().setGroupClassName(selectName);
+//            UserBll.getInstance().setUserEnglishInfo(selectName, sex);
+
             if(!TextUtils.isEmpty(planId)){
                 mShareDataManager.put(LiveVideoConfig.LIVE_GOUP_1V2_ENGLISH_SKIPED, planId,
                         ShareDataManager.SHAREDATA_USER);

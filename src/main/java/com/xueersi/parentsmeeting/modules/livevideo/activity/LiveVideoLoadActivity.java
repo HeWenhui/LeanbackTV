@@ -286,6 +286,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
         final Bundle bundle = intent.getExtras();
         final String vSectionID = intent.getStringExtra("vSectionID");
         final int liveType = bundle.getInt("type", 0);
+        bundle.putString("planId",vSectionID);
         final int from = intent.getIntExtra("", 0);
         LiveVideoConfig.isLightLive = false;
 
@@ -502,12 +503,13 @@ public class LiveVideoLoadActivity extends BaseActivity {
                             LiveMainHandler.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    String planId = bundle.getString("planId","");
-                                    boolean isNeed = LiveAppUserInfo.getInstance().isNeedEnglishName();
+                                    String planId = bundle.getString("vSectionID","");
+                                    boolean isSupported = LiveAppUserInfo.getInstance().isSupportedEnglishName();
                                     String skipPlanId = mShareDataManager.getString(LiveVideoConfig.LIVE_GOUP_1V2_ENGLISH_SKIPED, "-1",
                                             ShareDataManager.SHAREDATA_USER);
                                     boolean isSkip = skipPlanId.equals(planId);
-                                    if (bundle.getInt("pattern") == 8 && !isNeed && !isSkip) {
+                                    // 没有找到可支持的英文名，且改场次之前没有跳过
+                                    if (bundle.getInt("pattern") == 8 && !isSupported && !isSkip) {
                                         XueErSiRouter.startModule(mContext, "/groupclass" +
                                                         "/englishname"
                                                 , bundle);
@@ -524,13 +526,12 @@ public class LiveVideoLoadActivity extends BaseActivity {
                 PermissionConfig.PERMISSION_CODE_CAMERA, PermissionConfig.PERMISSION_CODE_AUDIO,
                 PermissionConfig.PERMISSION_CODE_STORAGE);
         if (have) {
-            String planId = bundle.getString("planId","");
-            boolean isNeed = LiveAppUserInfo.getInstance().isNeedEnglishName();
+            String planId = bundle.getString("vSectionID","");
+            boolean isSupported = LiveAppUserInfo.getInstance().isSupportedEnglishName();
             String skipPlanId = ShareDataManager.getInstance().getString(LiveVideoConfig.LIVE_GOUP_1V2_ENGLISH_SKIPED, "-1",
                     ShareDataManager.SHAREDATA_USER);
             boolean isSkip = skipPlanId.equals(planId);
-
-            if (bundle.getInt("pattern") == 8 && !isNeed && !isSkip) {
+            if (bundle.getInt("pattern") == 8 && !isSupported && !isSkip) {
                 XueErSiRouter.startModule(mContext, "/groupclass/englishname"
                         , bundle);
             } else {

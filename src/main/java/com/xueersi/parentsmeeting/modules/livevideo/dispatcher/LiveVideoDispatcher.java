@@ -23,7 +23,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEnt
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoSectionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.LiveVideoEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoLoadActivity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
 import com.xueersi.parentsmeeting.share.business.biglive.config.BigLiveCfg;
@@ -127,7 +127,8 @@ public class LiveVideoDispatcher extends AbsDispatcher {
     private void dispatchInfo(Activity srcActivity, Bundle bundle, int requestCode) {
         englishNameBll = new EnglishNameBusiness(srcActivity);
         try {
-            englishNameBll.checkName(bundle);
+            boolean supportName = englishNameBll.checkOverName();
+            ShareDataManager.getInstance().put(LiveVideoConfig.LIVE_GOUP_1V2_ENGLISH_CHECK, supportName, ShareDataManager.SHAREDATA_USER);
         } catch (Exception e){
             e.printStackTrace();
         }
