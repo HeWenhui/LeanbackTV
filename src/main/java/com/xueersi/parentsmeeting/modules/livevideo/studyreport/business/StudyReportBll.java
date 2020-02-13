@@ -114,7 +114,7 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
         }
     }
 
-    public void onFirstRemoteVideoDecoded(final int uid) {
+    public void onFirstRemoteVideoDecoded(final long uid) {
         if (types.contains("" + LiveVideoConfig.STUDY_REPORT.TYPE_AGORA)) {
             return;
         }
@@ -131,7 +131,7 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
                     }
                     final File saveFile = new File(agoradir, System.currentTimeMillis() + ".jpg");
                     mLogtf.d("onFirstRemoteVideoDecoded:saveFile=" + saveFile);
-                    mediaDataObserverPlugin.saveRenderVideoSnapshot(saveFile.getPath(), uid, new MediaDataObserverPlugin.OnRenderVideoShot() {
+                    mediaDataObserverPlugin.saveRenderVideoSnapshot(saveFile.getPath(), (int)uid, new MediaDataObserverPlugin.OnRenderVideoShot() {
                         @Override
                         public void onRenderVideoShot(String path) {
                             Bitmap bitmap = LiveCutImage.cutBitmap(path);
@@ -154,23 +154,23 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
     }
 
     @Override
-    public void onUserJoined(final int uid, int elapsed) {
+    public void onUserJoined(final long uid, int elapsed) {
         handler.post(new Runnable() {
             @Override
             public void run() {
                 createPlugin();
-                mediaDataObserverPlugin.addDecodeBuffer(uid);//720P
+                mediaDataObserverPlugin.addDecodeBuffer((int)uid);//720P
             }
         });
     }
 
     @Override
-    public void onUserOffline(final int uid, int reason) {
+    public void onUserOffline(final long uid, int reason) {
         handler.post(new Runnable() {
             @Override
             public void run() {
                 createPlugin();
-                mediaDataObserverPlugin.removeDecodeBuffer(uid);
+                mediaDataObserverPlugin.removeDecodeBuffer((int)uid);
             }
         });
     }
