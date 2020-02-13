@@ -981,6 +981,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             public void run() {
                 mLogtf.d("showQuestion:type=" + videoQuestionLiveEntity.type);
                 if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(videoQuestionLiveEntity.type)) {
+                    mQueAndBool.add(videoQuestionLiveEntity.id);
                     if ("1".equals(videoQuestionLiveEntity.getIsVoice()) && !mErrorVoiceQue.contains
                             (videoQuestionLiveEntity.id)) {
                         try {
@@ -1002,6 +1003,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         }
                     }
                 } else if (LocalCourseConfig.QUESTION_TYPE_BLANK.equals(videoQuestionLiveEntity.type)) {
+                    mQueAndBool.add(videoQuestionLiveEntity.id);
                     if ("1".equals(videoQuestionLiveEntity.getIsVoice()) && !mErrorVoiceQue.contains
                             (videoQuestionLiveEntity.id)) {
                         try {
@@ -1016,6 +1018,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         showFillBlankQuestion(videoQuestionLiveEntity);
                     }
                 } else if (LocalCourseConfig.QUESTION_TYPE_SUBJECT.equals(videoQuestionLiveEntity.type)) {
+                    mQueAndBool.add(videoQuestionLiveEntity.id);
                     showSubjectiveQuestion(videoQuestionLiveEntity);
                 } else if (LocalCourseConfig.QUESTION_TYPE_SPEECH.equals(videoQuestionLiveEntity.type)) {
                     String id = videoQuestionLiveEntity.id;
