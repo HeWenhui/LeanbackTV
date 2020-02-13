@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/layout_title_bar"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@id/rl_app_title_main"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#FDFDFF">
+
+        <ImageButton
+            android:id="@id/imgbtn_title_bar_back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:background="@color/transparent"
+            android:contentDescription="@null"
+            android:paddingLeft="16dp"
+            android:paddingRight="10dp"
+            android:src="@drawable/cy_bars_bock_icon_normal" />
+
+        <ViewStub
+            android:id="@id/stub_title_bar_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout="@layout/layout_stub_app_title_main_left" />
+
+        <TextView
+            android:id="@id/tv_title_bar_content"
+            style="@style/main_title_text_style"
+            android:layout_width="match_parent"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="90dp"
+            android:layout_marginRight="90dp"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="标题栏" />
+
+        <ViewStub
+            android:id="@id/stub_title_bar_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout="@layout/layout_stub_app_title_main_right" />
+
+        <FrameLayout
+            android:id="@+id/layout_custom"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+
+        <View
+            android:id="@id/v_include_app_title_main_line"
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_alignParentBottom="true"
+            android:background="@color/COLOR_DCDCDC"
+            android:visibility="gone" />
+        <ImageButton
+            android:id="@+id/imgbtn_title_bar_refresh"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@color/transparent"
+            android:contentDescription="@null"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:src="@drawable/icon_tv_play_refresh_search" />
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/view_layout_custom"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
+</LinearLayout>

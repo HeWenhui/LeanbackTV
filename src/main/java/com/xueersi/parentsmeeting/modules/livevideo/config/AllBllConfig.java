@@ -134,6 +134,8 @@ public class AllBllConfig {
             "com.xueersi.parentsmeeting.modules.livevideo.lecadvert.business.LecAdvertIRCBll",
             "com.xueersi.parentsmeeting.modules.livevideo.understand.business.UnderstandIRCBll",
             "com.xueersi.parentsmeeting.modules.livevideo.leclearnreport.business.LecLearnReportIRCBll",
+            "com.xueersi.parentsmeeting.modules.livevideo.miracast.MiracastBll",
+            "com.xueersi.parentsmeeting.modules.livevideo.subscribecourse.SubscribeCourseBll"
     };
 //    public static BllConfigEntity[] live_business_arts = {new BllConfigEntity(getEnTeamPkIRCBllClassPath()),
 //            new BllConfigEntity(getLiveAchievementIRCBllClassPath())};

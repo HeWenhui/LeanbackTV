@@ -321,6 +321,8 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
         this.vPlayer = vPlayer;
     }
 
+
+
     public PlayerService getvPlayer() {
         return vPlayer;
     }

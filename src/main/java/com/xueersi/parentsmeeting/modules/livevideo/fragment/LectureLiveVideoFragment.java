@@ -1,9 +1,14 @@
 package com.xueersi.parentsmeeting.modules.livevideo.fragment;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +16,7 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.xrs.bury.xrsbury.XrsBury;
 import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.lib.framework.utils.ScreenUtils;
@@ -36,11 +42,15 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.BllConfigEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.miracast.MiracastBll;
+import com.xueersi.parentsmeeting.modules.livevideo.miracast.MiracastLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.utils.BuryUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
+import com.xueersi.parentsmeeting.share.business.advert.AdvertSourceUtils;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -50,17 +60,25 @@ import java.util.List;
  * Created by linyuqiang on 2018/7/18.
  * 讲座布局
  */
-public class LectureLiveVideoFragment extends LiveFragmentBase implements ActivityChangeLand {
+public class LectureLiveVideoFragment extends LiveFragmentBase implements ActivityChangeLand, MiracastLiveMediaControllerTop.TvBtnClicklistener, MiracastBll.MiracastLivebackBllCallback {
+    private static final int REQUEST_MUST_PERMISSION = 1;
     private String TAG = "LectureLiveVideoFrameLog";
-    BaseLiveMediaControllerTop baseLiveMediaControllerTop;
+    MiracastLiveMediaControllerTop miracastLiveMediaControllerTop;
     protected BaseLiveMediaControllerBottom liveMediaControllerBottom;
     RelativeLayout bottomContent;
     protected LiveViewAction liveViewAction;
     private PopupWindow mPopupWindows;
     LecLiveVideoAction lecLiveVideoAction;
-    /** onPause状态不暂停视频 */
+
+    private MiracastBll miracastBll;
+    /**
+     * onPause状态不暂停视频
+     */
     PauseNotStopVideoIml pauseNotStopVideoIml;
     boolean firstInitView = false;
+
+    //横屏 投屏的逻辑
+    public boolean shouldShowLetouPage = false;
 
     @Override
     protected boolean onVideoCreate(Bundle savedInstanceState) {
@@ -82,7 +100,8 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
         logger.d("====>initAllBll:" + bottomContent);
         ProxUtil.getProxUtil().put(activity, ActivityChangeLand.class, this);
         mMediaController.setControllerBottom(liveMediaControllerBottom, false);
-        mMediaController.setControllerTop(baseLiveMediaControllerTop);
+        mMediaController.setControllerTop(miracastLiveMediaControllerTop);
+
         setMediaControllerBottomParam();
         videoFragment.setIsAutoOrientation(false);
         pauseNotStopVideoIml = new PauseNotStopVideoIml(activity);
@@ -100,6 +119,8 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
         String stuId = LiveAppUserInfo.getInstance().getStuId();
         LiveGetInfo mGetInfo = LiveVideoLoadActivity.getInfos.get(liveType + "-" + stuId + "-" + mVSectionID);
         mLiveBll.getInfo(mGetInfo);
+
+
     }
 
     @Override
@@ -162,6 +183,7 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
         }
         liveVideoAction.rePlay(modeChange);
         mLiveVideoBll.psRePlay(modeChange);
+
     }
 
     @Override
@@ -186,7 +208,7 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
     }
 
     protected void addBusiness(Activity activity) {
-        ProxUtil.getProxUtil().put(activity, BaseLiveMediaControllerTop.class, baseLiveMediaControllerTop);
+        ProxUtil.getProxUtil().put(activity, BaseLiveMediaControllerTop.class, miracastLiveMediaControllerTop);
         ProxUtil.getProxUtil().put(activity, BaseLiveMediaControllerBottom.class, liveMediaControllerBottom);
         ArrayList<BllConfigEntity> bllConfigEntities = AllBllConfig.getLiveBusinessLec();
         for (int i = 0; i < bllConfigEntities.size(); i++) {
@@ -210,6 +232,10 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
                 }
                 Constructor<? extends LiveBaseBll> constructor = clazz.getConstructor(new Class[]{Activity.class, LiveBll2.class});
                 LiveBaseBll liveBaseBll = constructor.newInstance(activity, mLiveBll);
+                if (liveBaseBll instanceof MiracastBll) {
+                    miracastBll = (MiracastBll) liveBaseBll;
+                    miracastBll.setMiracastLivebackBllCallback(this);
+                }
                 mLiveBll.addBusinessBll(liveBaseBll);
                 logger.d("addBusiness:business=" + className);
             } catch (Exception e) {
@@ -227,11 +253,12 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
         logger.e("========>:initView:" + bottomContent);
         // 预加载布局中退出事件
         mContentView.findViewById(R.id.iv_course_video_back).setVisibility(View.GONE);
-        baseLiveMediaControllerTop = new BaseLiveMediaControllerTop(activity, mMediaController, videoFragment);
+        miracastLiveMediaControllerTop = new MiracastLiveMediaControllerTop(activity, mMediaController, videoFragment);
+        miracastLiveMediaControllerTop.setTvPlayClickListener(this);
         createMediaControllerBottom();
-        liveViewAction.addView(LiveVideoLevel.LEVEL_CTRl, baseLiveMediaControllerTop, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        liveViewAction.addView(LiveVideoLevel.LEVEL_CTRl, miracastLiveMediaControllerTop, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         liveViewAction.addView(LiveVideoLevel.LEVEL_CTRl, liveMediaControllerBottom);
-        baseLiveMediaControllerTop.setAutoOrientation(true);
+//        miracastLiveMediaControllerTop.setAutoOrientation(true);
     }
 
     protected void createMediaControllerBottom() {
@@ -270,6 +297,10 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
         if (mLiveBll != null) {
             mLiveBll.onResume();
         }
+
+        XrsBury.pageStartBury(getResources().getString(R.string.pv_02_84), mGetInfo != null ? mGetInfo.getId() : "",
+                vPlayer != null ? vPlayer.getCurrentPosition() : "",
+                AdvertSourceUtils.getInstance().getSourceid(), AdvertSourceUtils.getInstance().getAdvertid());
     }
 
     @Override
@@ -297,6 +328,9 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
         if (mLiveBll != null) {
             mLiveBll.onPause();
         }
+        XrsBury.pageEndBury(getResources().getString(R.string.pv_02_84), mGetInfo != null ? mGetInfo.getId() : "",
+                vPlayer != null ? vPlayer.getCurrentPosition() : "",
+                AdvertSourceUtils.getInstance().getSourceid(), AdvertSourceUtils.getInstance().getAdvertid());
     }
 
     @Override
@@ -328,9 +362,16 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
             logger.d("onConfigurationChanged:videoView2=" + lp.width + "," + lp.height);
         }
         changeLandAndPort();
+        liveViewAction.removeView(liveMediaControllerBottom);
+        if (mIsLand.get()) {
+            liveViewAction.addView(LiveVideoLevel.LEVEL_CTRl, liveMediaControllerBottom
+                    , new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        }
+
 //        if (lecLiveVideoAction != null) {
 //            lecLiveVideoAction.onConfigurationChanged();
 //        }
+
     }
 
     @Override
@@ -344,7 +385,7 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
     private void changeLandAndPort() {
         ViewGroup group = (ViewGroup) bottomContent.getParent();
         long before = System.currentTimeMillis();
-        if (mIsLand.get()) {
+        if (mIsLand.get()) {//横屏
             if (group != rlContent) {
                 //设置控制
                 ViewGroup controllerContent = (ViewGroup) mContentView.findViewById(R.id.rl_course_video_live_controller_content);
@@ -356,12 +397,14 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
                 ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT);
                 controllerContent.addView(mMediaController, params);
-                mMediaController.setControllerBottom(liveMediaControllerBottom, true);
-                BaseLiveMediaControllerTop baseLiveMediaControllerTop = new BaseLiveMediaControllerTop(activity, mMediaController, videoFragment);
-                mMediaController.setControllerTop(baseLiveMediaControllerTop);
-                controllerContent.addView(baseLiveMediaControllerTop);
-                mMediaController.setAutoOrientation(true);
-                liveMediaControllerBottom.setController(mMediaController);
+                mMediaController.setControllerBottom(liveMediaControllerBottom, false);
+                MiracastLiveMediaControllerTop miracastLiveMediaControllerTop = new MiracastLiveMediaControllerTop(activity, mMediaController, videoFragment);
+                miracastLiveMediaControllerTop.setTvPlayClickListener(this);
+                miracastLiveMediaControllerTop.hildAllView(true);
+                mMediaController.setControllerTop(miracastLiveMediaControllerTop);
+                controllerContent.addView(miracastLiveMediaControllerTop);
+//                mMediaController.setAutoOrientation(true);
+//                liveMediaControllerBottom.setController(mMediaController);
                 if (mGetInfo != null) {
                     mMediaController.setFileName(mGetInfo.getName());
                 }
@@ -408,11 +451,13 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
                 ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT);
                 controllerContent.addView(mMediaController, params);
-                mMediaController.setControllerBottom(liveMediaControllerBottom, true);
-                BaseLiveMediaControllerTop baseLiveMediaControllerTop = new BaseLiveMediaControllerTop(activity, mMediaController, videoFragment);
-                mMediaController.setControllerTop(baseLiveMediaControllerTop);
-                controllerContent.addView(baseLiveMediaControllerTop);
-                mMediaController.setAutoOrientation(true);
+                mMediaController.setControllerBottom(liveMediaControllerBottom, false);
+                MiracastLiveMediaControllerTop miracastLiveMediaControllerTop = new MiracastLiveMediaControllerTop(activity, mMediaController, videoFragment);
+                miracastLiveMediaControllerTop.hildAllView(false);
+                miracastLiveMediaControllerTop.setTvPlayClickListener(this);
+                mMediaController.setControllerTop(miracastLiveMediaControllerTop);
+                controllerContent.addView(miracastLiveMediaControllerTop);
+//                mMediaController.setAutoOrientation(true);
                 liveMediaControllerBottom.setController(mMediaController);
                 if (mGetInfo != null) {
                     mMediaController.setFileName(mGetInfo.getName());
@@ -454,6 +499,14 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
                         mPopupWindows.dismiss();
                     }
                 });
+            }
+
+            //
+            if (shouldShowLetouPage) {
+                if (miracastBll != null) {
+                    shouldShowLetouPage = false;
+                    miracastBll.showPager(getContentView());
+                }
             }
         }
         //在后台被回收，再启动。会没有初始化view
@@ -517,5 +570,53 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
         if (videoFragment != null) {
             videoFragment.changeLOrP();
         }
+    }
+
+    /**
+     * 电视投屏按钮 点击事件
+     *
+     * @param view
+     */
+    @Override
+    public void onTvPlayClick(View view) {
+        BuryUtil.click(R.string.click_03_63_044, mGetInfo!=null?mGetInfo.getId():"");
+        if (mIsLand.get()) {
+            shouldShowLetouPage = true;
+            changeLOrP();
+        } else {
+            if (miracastBll != null) {
+                miracastBll.showPager(getContentView());
+            }
+        }
+
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public void requestReadPhoneStatesPermissions() {
+        if (isAdded()){
+            requestPermissions(new String[]{Manifest.permission.READ_PHONE_STATE}, REQUEST_MUST_PERMISSION);
+        }
+
+    }
+
+    @Override
+    public void onSearchRequestPromession() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requestReadPhoneStatesPermissions();
+        }
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (miracastBll != null) {
+            if (requestCode == 1) {
+                if (grantResults!=null&&grantResults.length>=1&&grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    miracastBll.startSearch();
+                }
+            }
+        }
+
     }
 }

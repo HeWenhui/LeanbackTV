@@ -61,4 +61,28 @@
          参数: 讲座id</!-->
     <string name="show_03_84_020">{"buryId":\"show_03_84_020\","levelone":\"03\","leveltwo":\"84\","levelthree":\"020\","businessinfo$json":{"lecture_id":\"%1$s\"}}</string>
 
+    <!--说明:show_轻直播间_设备连接成功
+    参数: 课程id-->
+    <string name="show_03_63_049">{"buryId":\"show_03_63_049\","levelone":\"03\","leveltwo":\"63\","levelthree":\"049\","businessinfo$json":{"course_id":\"%1$s\"}}</string>
+    <!--说明:show_轻直播间_在电视上播放成功
+        参数: 课程id-->
+    <string name="show_03_63_050">{"buryId":\"show_03_63_050\","levelone":\"03\","leveltwo":\"63\","levelthree":\"050\","businessinfo$json":{"course_id":\"%1$s\"}}</string>
+    <!--说明:show_回放-轻直播间_设备连接成功
+        参数: 课程id-->
+    <string name="show_03_84_024">{"buryId":\"show_03_84_024\","levelone":\"03\","leveltwo":\"84\","levelthree":\"024\","businessinfo$json":{"course_id":\"%1$s\"}}</string>
+    <!--说明:show_回放-轻直播间_在电视上播放成功
+        参数: 课程id-->
+    <string name="show_03_84_025">{"buryId":\"show_03_84_025\","levelone":\"03\","leveltwo":\"84\","levelthree":\"025\","businessinfo$json":{"course_id":\"%1$s\"}}</string>
+    <!--说明:成功搜索到电视
+		参数: 课程id-->
+    <string name="show_03_63_047">{"buryId":\" show_03_63_047\","levelone":\"03\","leveltwo":\"63\","levelthree":\"047\","businessinfo$json":{"course_id":\"%1$s\"}}</string>
+    <!--说明:未搜索到电视
+        参数: 课程id-->
+    <string name="show_03_63_048">{"buryId":\" show_03_63_048\","levelone":\"03\","leveltwo":\"63\","levelthree":\"048\","businessinfo$json":{"course_id":\"%1$s\"}}</string>
+    <!--说明:成功搜索到电视
+        参数: 课程id-->
+    <string name="show_03_84_022">{"buryId":\" show_03_84_022\","levelone":\"03\","leveltwo":\"84\","levelthree":\"022\","businessinfo$json":{"course_id":\"%1$s\"}}</string>
+    <!--说明:未搜索到电视
+        参数: 课程id-->
+    <string name="show_03_84_023">{"buryId":\" show_03_84_023\","levelone":\"03\","leveltwo":\"84\","levelthree":\"023\","businessinfo$json":{"course_id":\"%1$s\"}}</string>
 </resources>
