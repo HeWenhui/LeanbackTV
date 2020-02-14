@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.englishname.business;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.os.Environment;
 import android.text.TextUtils;
 
@@ -51,9 +52,9 @@ public class EnglishNameBusiness extends BaseBll {
     }
 
     public void getFilePath(final Context context){
-        if(LiveAppUserInfo.getInstance().isNeedEnglishName()) {
-            return;
-        }
+//        if(LiveAppUserInfo.getInstance().isSupportedEnglishName()) {
+//            return;
+//        }
         mSettingEnglishNameHttpManager.getDownLoadPath(new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
@@ -72,7 +73,6 @@ public class EnglishNameBusiness extends BaseBll {
      * 下载资源
      *
      * @param context
-     * @param resourceCallback
      */
     public void downloadResource(final Context context ,String url) {
         String mathGamePath = getLocalPath()+"/generate.txt";
@@ -154,46 +154,47 @@ public class EnglishNameBusiness extends BaseBll {
         }.execute(true);
     }
 
-    public void checkName(){
-        if(LiveAppUserInfo.getInstance().isNeedEnglishName()) {
-           return;
-        }
+    /**
+     * 检查用户英文名是否在支持的名字列表中
+     */
+    public boolean checkOverName(){
         String userName = UserBll.getInstance().getMyUserInfoEntity().getEnglishName();
-        if(TextUtils.isEmpty(userName)) {
-            return;
-        }
-        List<EngLishNameEntity>  listName = new ArrayList<>();
-        List<EngLishNameEntity> listIndex = new ArrayList<>();
-        EngLishNameEntity entity = null;
-        String[] word = new String[]{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
-        EngLishNameEntity index = null;
-        File fileUpload = new File(fileDir, "generate.txt");
-        String nameString = "";
-        if(fileUpload.exists()) {
-             nameString = getStringFromFile(fileUpload.getAbsolutePath(), false);
-        } else {
-            nameString = getStringFromFile("generate.txt", true);
-        }
-        int indexPosition = 0;
-        for (int j = 0; j < word.length; j++) {
-            index = new EngLishNameEntity();
-            index.setWordIndex(word[j]);
-            listIndex.add(index);
-        }
-        List<EngLishNameEntity> nameList = mEnlishNameParser.pareseEnglishName(nameString,1,listIndex);
-        List<EngLishNameEntity> nameList2 = mEnlishNameParser.pareseEnglishName(nameString,2,listIndex);
-        if (nameList==null || nameList2 ==null) {
-            mShareDataManager.put(LiveVideoConfig.LIVE_GOUP_1V2_ENGLISH_CHECK,true,ShareDataManager.SHAREDATA_USER);
-            return;
-        }
-        nameList.addAll(nameList2);
-        for (int i = 0; i < nameList.size(); i++) {
-            if(TextUtils.equals(nameList.get(i).getName(),userName)) {
-                UserBll.getInstance().saveUserNameAudio(nameList.get(i).getAudioPath());
-                mShareDataManager.put(LiveVideoConfig.LIVE_GOUP_1V2_ENGLISH_CHECK,true,ShareDataManager.SHAREDATA_USER);
-                return;
+        if(!TextUtils.isEmpty(userName)) {
+            List<EngLishNameEntity> listIndex = new ArrayList<>();
+            String[] word = new String[]{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
+            EngLishNameEntity index = null;
+            File fileUpload = new File(fileDir, "generate.txt");
+            String nameString = "";
+            if (fileUpload.exists()) {
+                // FIXME: String 未来可能过大
+                nameString = getStringFromFile(fileUpload.getAbsolutePath(), false);
+            } else {
+                nameString = getStringFromFile("generate.txt", true);
+            }
+            for (int j = 0; j < word.length; j++) {
+                index = new EngLishNameEntity();
+                index.setWordIndex(word[j]);
+                listIndex.add(index);
+            }
+            // 男孩姓名
+            List<EngLishNameEntity> nameList = mEnlishNameParser.pareseEnglishName(nameString, 1, listIndex);
+            // 女孩姓名
+            List<EngLishNameEntity> nameList2 = mEnlishNameParser.pareseEnglishName(nameString, 2, listIndex);
+            // ??
+//            if (nameList == null || nameList2 == null) {
+//                return true;
+//            }
+            nameList.addAll(nameList2);
+            for (int i = 0; i < nameList.size(); i++) {
+                if (TextUtils.equals(nameList.get(i).getName(), userName)) {
+                    UserBll.getInstance().saveUserNameAudio(nameList.get(i).getAudioPath());
+                    return true;
+                }
             }
         }
+        // 没有找到支持的英文名则清空音频路径
+        UserBll.getInstance().saveUserNameAudio("");
+        return false;
     }
 
 
