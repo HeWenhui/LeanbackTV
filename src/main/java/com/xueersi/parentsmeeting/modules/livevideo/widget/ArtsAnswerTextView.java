@@ -3,18 +3,16 @@ package com.xueersi.parentsmeeting.modules.livevideo.widget;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
 import com.xueersi.common.util.FontCache;
-import com.xueersi.lib.framework.drawable.DrawableHelper;
+import com.xueersi.common.resources.DrawableHelper;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 
 

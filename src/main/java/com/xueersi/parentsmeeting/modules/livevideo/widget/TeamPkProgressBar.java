@@ -3,7 +3,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.widget;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
@@ -17,7 +16,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 
-import com.xueersi.lib.framework.drawable.DrawableHelper;
+import com.xueersi.common.resources.DrawableHelper;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 
 

@@ -58,7 +58,7 @@ import com.xueersi.component.cloud.config.XesCloudConfig;
 import com.xueersi.component.cloud.entity.CloudUploadEntity;
 import com.xueersi.component.cloud.entity.XesCloudResult;
 import com.xueersi.component.cloud.listener.XesStsUploadListener;
-import com.xueersi.lib.framework.drawable.DrawableHelper;
+import com.xueersi.common.resources.DrawableHelper;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;

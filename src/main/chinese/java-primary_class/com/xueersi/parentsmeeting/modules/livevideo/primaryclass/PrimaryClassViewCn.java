@@ -3,7 +3,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.primaryclass;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.xueersi.lib.framework.drawable.DrawableHelper;
+import com.xueersi.common.resources.DrawableHelper;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.log.logger.Logger;
