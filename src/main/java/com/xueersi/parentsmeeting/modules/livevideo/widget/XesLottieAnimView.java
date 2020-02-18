@@ -162,12 +162,6 @@ public class XesLottieAnimView extends LottieAnimationView {
     }
 
     @Override
-    public void setAnimation(int rawRes) {
-        super.setAnimation(rawRes);
-        lottieCompostionLoaded = false;
-    }
-
-    @Override
     public void setAnimation(String assetName) {
         super.setAnimation(assetName);
         lottieCompostionLoaded = false;
@@ -591,7 +585,7 @@ public class XesLottieAnimView extends LottieAnimationView {
     /**
      * 更新目标区域点击态的绘制
      *
-     * @param statePress
+     * @param state
      */
     private void updateTargeImgArea(int state) {
         if (mTargetImgState != state) {
