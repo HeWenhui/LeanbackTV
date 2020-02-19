@@ -1173,6 +1173,7 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
                 BigLivePlayBackEntity.StuLiveInfo stuLiveInfo = new BigLivePlayBackEntity.StuLiveInfo();
                 stuLiveInfo.setClassId(stuLiveInfoJsonObj.optString("classId"));
                 stuLiveInfo.setTeamId(stuLiveInfoJsonObj.optString("teamId"));
+                stuLiveInfo.setCourseId(stuLiveInfoJsonObj.optString("courseId"));
                 playBackEntity.setStuLiveInfo(stuLiveInfo);
             }
 
