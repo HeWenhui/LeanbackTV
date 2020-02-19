@@ -14,6 +14,9 @@ import com.xueersi.common.entity.MyUserInfoEntity;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.route.XueErSiRouter;
+import com.xueersi.common.route.module.ModuleHandler;
+import com.xueersi.common.route.module.entity.Module;
+import com.xueersi.common.route.module.entity.ModuleData;
 import com.xueersi.common.route.module.moduleInterface.AbsDispatcher;
 import com.xueersi.common.route.module.startParam.ParamKey;
 import com.xueersi.common.sharedata.ShareDataManager;
@@ -162,6 +165,14 @@ public class LiveVideoDispatcher extends AbsDispatcher {
                 big_live_type = jsonObject.optInt("bigLiveStatus", big_live_type);
                 planVersion = jsonObject.optInt("planVersion",
                         DispatcherConfig.BIGLIVE_GRAY_CONTROL_PLANVERSION_DEFAULT);
+                if(type == TYPE_LECTURE  && big_live_type !=DispatcherConfig.PUBLIC_GRAY_CONTROL_BIG_LIVE){
+                    Module m = new Module();
+                    m.moduleName = "livepublic";
+                    m.param = paramsJson;
+                    m.moduleType = 0;
+                    ModuleHandler.start(srcActivity, m);
+                    return;
+                }
                 if (type == TYPE_LIVE) {
                     //startLive();
                     enterLive();
@@ -183,6 +194,13 @@ public class LiveVideoDispatcher extends AbsDispatcher {
                 XESToastUtils.showToast(activity, "数据异常");
             }
         } else {
+            int liveType = bundle.getInt("type", 0);
+            if (liveType == TYPE_LECTURE){
+                Module m = new Module();
+                m.moduleName = "livepublic";
+                ModuleHandler.start(srcActivity, new ModuleData(m, bundle));
+                return;
+            }
             Intent intent = new Intent(srcActivity, LiveVideoLoadActivity.class);
             intent.putExtras(bundle);
             srcActivity.startActivityForResult(intent, requestCode);
@@ -339,18 +357,19 @@ public class LiveVideoDispatcher extends AbsDispatcher {
                             }
                         }, dataLoadEntity);
 
-            } else {
-                dispatcherBll.getPublic(chapterName, planId, teacherId, gotoClassTime,
-                        new AbstractBusinessDataCallBack() {
-                            @Override
-                            public void onDataSucess(Object... objData) {
-                                PublicEntity publicEntity = (PublicEntity) objData[0];
-                                if (publicEntity != null) {
-                                    playLivePlayBackVideo(publicEntity);
-                                }
-                            }
-                        }, dataLoadEntity);
             }
+//            else {
+//                dispatcherBll.getPublic(chapterName, planId, teacherId, gotoClassTime,
+//                        new AbstractBusinessDataCallBack() {
+//                            @Override
+//                            public void onDataSucess(Object... objData) {
+//                                PublicEntity publicEntity = (PublicEntity) objData[0];
+//                                if (publicEntity != null) {
+//                                    playLivePlayBackVideo(publicEntity);
+//                                }
+//                            }
+//                        }, dataLoadEntity);
+//            }
 
         }
     }
@@ -388,52 +407,52 @@ public class LiveVideoDispatcher extends AbsDispatcher {
     }
 
 
-    public void playLivePlayBackVideo(PublicEntity publicLiveCourseEntity) {
-        // 播放数据设定
-        ShareDataManager dataManager = ShareDataManager.getInstance();
-        VideoLivePlayBackEntity videoEntity = new VideoLivePlayBackEntity();
-        videoEntity.setCourseId(publicLiveCourseEntity.getCourseId());
-        videoEntity.setCourseName(publicLiveCourseEntity.getCourseName());
-        videoEntity.setPlayVideoId(publicLiveCourseEntity.getCourseId());
-        videoEntity.setPlayVideoName(publicLiveCourseEntity.getCourseName());
-        videoEntity.setVideoPath(publicLiveCourseEntity.getPlayBackUrl());
-        videoEntity.setvCourseSendPlayVideoTime(dataManager.getInt(LocalCourseConfig.SENDPLAYVIDEOTIME, 180,
-                SHAREDATA_USER));
-        videoEntity.setVideoCacheKey(publicLiveCourseEntity.getPlayBackUrl());
-        videoEntity.setLiveId(publicLiveCourseEntity.getCourseId());
-        videoEntity.setvLivePlayBackType(LocalCourseConfig.LIVETYPE_LECTURE);
-        videoEntity.setVisitTimeKey(LocalCourseConfig.LIVETYPE_LECTURE + "-" + publicLiveCourseEntity.getCourseId() +
-                "-" + publicLiveCourseEntity.getTeacherId());
-
-        videoEntity.setLstVideoQuestion(publicLiveCourseEntity.getLstVideoQuestion());
-        videoEntity.setvCourseSendPlayVideoTime(publicLiveCourseEntity.getSendPlayVideoTime());
-        videoEntity.setGotoClassTime(publicLiveCourseEntity.getGotoClassTime());
-        videoEntity.setOnlineNums(publicLiveCourseEntity.getOnlineNums());
-        videoEntity.setStreamTimes(publicLiveCourseEntity.getStreamTimes());
-        //测试代码
-//        publicLiveCourseEntity.setGently(true);
-
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("videoliveplayback", videoEntity);
-        bundle.putString("planId", planId);
-        bundle.putInt("type", 2);
-        bundle.putBoolean("isGently",publicLiveCourseEntity.isGently());
-        //轻直播需要参数
-        if (publicLiveCourseEntity.isGently()){
-            bundle.putString("gentlyNotice",publicLiveCourseEntity.getGentlyNotice());
-            if (publicLiveCourseEntity.getLpWeChatEntity() != null){
-                bundle.putInt("tipType",publicLiveCourseEntity.getLpWeChatEntity().getTipType());
-            }
-        }
-        if ("720P".equals(publicLiveCourseEntity.getRadioType())) {
-            LiveVideoEnter.intentToLectureLivePlayBackVideo(activity, bundle,
-                    activity.getClass().getSimpleName());
-        } else {
-            // LiveVideoEnter.intentTo(activity, bundle, activity.getClass().getSimpleName());
-            // FIXME: 2019/9/6  线上bug 直播间有字符串比较逻辑 此次需写死 ：PublicLiveDetailActivity
-            LiveVideoEnter.intentTo(activity, bundle, "PublicLiveDetailActivity");
-        }
-    }
+//    public void playLivePlayBackVideo(PublicEntity publicLiveCourseEntity) {
+//        // 播放数据设定
+//        ShareDataManager dataManager = ShareDataManager.getInstance();
+//        VideoLivePlayBackEntity videoEntity = new VideoLivePlayBackEntity();
+//        videoEntity.setCourseId(publicLiveCourseEntity.getCourseId());
+//        videoEntity.setCourseName(publicLiveCourseEntity.getCourseName());
+//        videoEntity.setPlayVideoId(publicLiveCourseEntity.getCourseId());
+//        videoEntity.setPlayVideoName(publicLiveCourseEntity.getCourseName());
+//        videoEntity.setVideoPath(publicLiveCourseEntity.getPlayBackUrl());
+//        videoEntity.setvCourseSendPlayVideoTime(dataManager.getInt(LocalCourseConfig.SENDPLAYVIDEOTIME, 180,
+//                SHAREDATA_USER));
+//        videoEntity.setVideoCacheKey(publicLiveCourseEntity.getPlayBackUrl());
+//        videoEntity.setLiveId(publicLiveCourseEntity.getCourseId());
+//        videoEntity.setvLivePlayBackType(LocalCourseConfig.LIVETYPE_LECTURE);
+//        videoEntity.setVisitTimeKey(LocalCourseConfig.LIVETYPE_LECTURE + "-" + publicLiveCourseEntity.getCourseId() +
+//                "-" + publicLiveCourseEntity.getTeacherId());
+//
+//        videoEntity.setLstVideoQuestion(publicLiveCourseEntity.getLstVideoQuestion());
+//        videoEntity.setvCourseSendPlayVideoTime(publicLiveCourseEntity.getSendPlayVideoTime());
+//        videoEntity.setGotoClassTime(publicLiveCourseEntity.getGotoClassTime());
+//        videoEntity.setOnlineNums(publicLiveCourseEntity.getOnlineNums());
+//        videoEntity.setStreamTimes(publicLiveCourseEntity.getStreamTimes());
+//        //测试代码
+////        publicLiveCourseEntity.setGently(true);
+//
+//        Bundle bundle = new Bundle();
+//        bundle.putSerializable("videoliveplayback", videoEntity);
+//        bundle.putString("planId", planId);
+//        bundle.putInt("type", 2);
+//        bundle.putBoolean("isGently",publicLiveCourseEntity.isGently());
+//        //轻直播需要参数
+//        if (publicLiveCourseEntity.isGently()){
+//            bundle.putString("gentlyNotice",publicLiveCourseEntity.getGentlyNotice());
+//            if (publicLiveCourseEntity.getLpWeChatEntity() != null){
+//                bundle.putInt("tipType",publicLiveCourseEntity.getLpWeChatEntity().getTipType());
+//            }
+//        }
+//        if ("720P".equals(publicLiveCourseEntity.getRadioType())) {
+//            LiveVideoEnter.intentToLectureLivePlayBackVideo(activity, bundle,
+//                    activity.getClass().getSimpleName());
+//        } else {
+//            // LiveVideoEnter.intentTo(activity, bundle, activity.getClass().getSimpleName());
+//            // FIXME: 2019/9/6  线上bug 直播间有字符串比较逻辑 此次需写死 ：PublicLiveDetailActivity
+//            LiveVideoEnter.intentTo(activity, bundle, "PublicLiveDetailActivity");
+//        }
+//    }
 
 
     /**
@@ -609,11 +628,12 @@ public class LiveVideoDispatcher extends AbsDispatcher {
             LiveVideoEnter.intentToLiveVideoActivityLecture(activity, sectionId,
                     LiveVideoBusinessConfig
                             .ENTER_FROM_22, isBigLive);
-        } else {
-            LiveVideoEnter.intentToLiveVideoActivityLecture(activity, sectionId,
-                    LiveVideoBusinessConfig
-                            .ENTER_FROM_22);
         }
+//        else {
+//            LiveVideoEnter.intentToLiveVideoActivityLecture(activity, sectionId,
+//                    LiveVideoBusinessConfig
+//                            .ENTER_FROM_22);
+//        }
     }
 
     private void startHeart() {

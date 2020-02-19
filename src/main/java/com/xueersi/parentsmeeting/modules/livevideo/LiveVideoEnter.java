@@ -274,44 +274,44 @@ public class LiveVideoEnter {
      * @param vSectionID 节id
      * @param from       入口
      */
-    public static void intentToLiveVideoActivityLecture(final Activity context, final String vSectionID,
-                                                        final int from) {
-        if (TextUtils.isEmpty(vSectionID)) {
-            Toast.makeText(context, "直播场次不能为空", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-
-        LiveAssetsLoadUtil.loadAssertsResource(context, new LoadFileCallBack() {
-            @Override
-            public void start() {
-
-            }
-
-            @Override
-            public void success() {
-
-                Bundle bundle = new Bundle();
-                bundle.putString("vSectionID", vSectionID);
-                bundle.putInt("type", LiveVideoConfig.LIVE_TYPE_LECTURE);
-                bundle.putBoolean("loadAsserts", true);
-                bundle.putInt(ENTER_ROOM_FROM, from);
-                LiveVideoLoadActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
-            }
-
-            @Override
-            public void progress(float progress, int type) {
-
-            }
-
-            @Override
-            public void fail(int errorCode, String errorMsg) {
-
-            }
-        });
-
-
-    }
+//    public static void intentToLiveVideoActivityLecture(final Activity context, final String vSectionID,
+//                                                        final int from) {
+//        if (TextUtils.isEmpty(vSectionID)) {
+//            Toast.makeText(context, "直播场次不能为空", Toast.LENGTH_SHORT).show();
+//            return;
+//        }
+//
+//
+//        LiveAssetsLoadUtil.loadAssertsResource(context, new LoadFileCallBack() {
+//            @Override
+//            public void start() {
+//
+//            }
+//
+//            @Override
+//            public void success() {
+//
+//                Bundle bundle = new Bundle();
+//                bundle.putString("vSectionID", vSectionID);
+//                bundle.putInt("type", LiveVideoConfig.LIVE_TYPE_LECTURE);
+//                bundle.putBoolean("loadAsserts", true);
+//                bundle.putInt(ENTER_ROOM_FROM, from);
+//                LiveVideoLoadActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
+//            }
+//
+//            @Override
+//            public void progress(float progress, int type) {
+//
+//            }
+//
+//            @Override
+//            public void fail(int errorCode, String errorMsg) {
+//
+//            }
+//        });
+//
+//
+//    }
 
     /**
      * 跳转到直播,直播辅导
@@ -494,11 +494,12 @@ public class LiveVideoEnter {
                 if (bundle.getInt("pattern") == 8 && !isSupported && !isSkip) {
                     start1v2PlayBack(context, bundle, where);
                 } else {
-                    boolean isGently = bundle.getBoolean("isGently");
-                    if (isGently){
-                        com.xueersi.parentsmeeting.modules.livevideo.fragment.
-                                LightlivePlaybackVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
-                    }else {
+//                    boolean isGently = bundle.getBoolean("isGently");
+//                    if (isGently){
+//                        com.xueersi.parentsmeeting.modules.livevideo.fragment.
+//                                LightlivePlaybackVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
+//                    }else
+                        {
                         com.xueersi.parentsmeeting.modules.livevideo.fragment.
                                 LivePlaybackVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
                     }

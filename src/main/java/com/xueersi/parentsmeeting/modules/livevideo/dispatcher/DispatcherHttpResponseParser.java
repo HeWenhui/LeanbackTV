@@ -26,7 +26,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoSectionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoSpeedEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.entity.LPWeChatEntity;
+//import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.entity.LPWeChatEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.BigLivePlayBackEntity;
@@ -1104,24 +1104,24 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
 
                 publicLiveCourseEntity.setStreamTimes(jsonObject.optString("streamTimes", "[]"));
                 // 轻直播需要字段
-                publicLiveCourseEntity.setGently(jsonObject.optInt("isGently", 0) == 1);
-                publicLiveCourseEntity.setGentlyNotice(jsonObject.optString(" gentlyNotice"));
-                /** 联系老师功能*/
-                if (jsonObject.has("lpInfo")){
-                    JSONObject lpInfo = jsonObject.optJSONObject("lpInfo");
-                    LPWeChatEntity lpEntity = new LPWeChatEntity();
-                    lpEntity.setTipType(lpInfo.optInt("tipType"));
-                    lpEntity.setTipInfo(lpInfo.optString("tipInfo"));
-                    lpEntity.setWxQrUrl(lpInfo.optString("wxQrUrl"));
-                    lpEntity.setExistWx(lpInfo.optInt("existWx"));
-                    if (lpInfo.has("wxInfo")){
-                        JSONObject teaInfo  = lpInfo.optJSONObject("wxInfo");
-                        lpEntity.setTeacherWx(teaInfo.optString("teaWx"));
-                        lpEntity.setTeacherName(teaInfo.optString("teaName"));
-                        lpEntity.setTeacherImg(teaInfo.optString("teaImg"));
-                    }
-                    publicLiveCourseEntity.setLpWeChatEntity(lpEntity);
-                }
+//                publicLiveCourseEntity.setGently(jsonObject.optInt("isGently", 0) == 1);
+//                publicLiveCourseEntity.setGentlyNotice(jsonObject.optString(" gentlyNotice"));
+//                /** 联系老师功能*/
+//                if (jsonObject.has("lpInfo")){
+//                    JSONObject lpInfo = jsonObject.optJSONObject("lpInfo");
+//                    LPWeChatEntity lpEntity = new LPWeChatEntity();
+//                    lpEntity.setTipType(lpInfo.optInt("tipType"));
+//                    lpEntity.setTipInfo(lpInfo.optString("tipInfo"));
+//                    lpEntity.setWxQrUrl(lpInfo.optString("wxQrUrl"));
+//                    lpEntity.setExistWx(lpInfo.optInt("existWx"));
+//                    if (lpInfo.has("wxInfo")){
+//                        JSONObject teaInfo  = lpInfo.optJSONObject("wxInfo");
+//                        lpEntity.setTeacherWx(teaInfo.optString("teaWx"));
+//                        lpEntity.setTeacherName(teaInfo.optString("teaName"));
+//                        lpEntity.setTeacherImg(teaInfo.optString("teaImg"));
+//                    }
+//                    publicLiveCourseEntity.setLpWeChatEntity(lpEntity);
+//                }
                 publicLiveCourseEntity.setGotoClassTime(jsonObject.optLong("gotoClassTime"));
 
             }

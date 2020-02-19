@@ -574,30 +574,30 @@ public class DispatcherBll extends BaseBll {
         }
     }
 
-    public void getPublic(final String courseName, final String courseId, final String teacherId,
-                          final String gotoClassTime,
-                          final AbstractBusinessDataCallBack callBack, DataLoadEntity dataLoadEntity) {
-        if (dataLoadEntity == null) {
-            dataLoadEntity = new DataLoadEntity(mContext);
-        }
-        postDataLoadEvent(dataLoadEntity.beginLoading());
-        dispatcherHttpManager.publicLiveCourseQuestion(courseId, teacherId, gotoClassTime,
-                new HttpCallBack(dataLoadEntity) {
-                    public void onPmSuccess(ResponseEntity responseEntity) {
-                        PublicEntity publicLiveCourseEntity =
-                                dispatcherHttpResponseParser.publicLiveCourseQuestionParser(responseEntity);
-                        if (publicLiveCourseEntity != null) {
-                            publicLiveCourseEntity.setCourseId(courseId);
-                            publicLiveCourseEntity.setCourseName(courseName);
-                            publicLiveCourseEntity.setTeacherId(teacherId);
-                            if (!TextUtils.isEmpty(gotoClassTime) && TextUtils.isDigitsOnly(gotoClassTime) && !publicLiveCourseEntity.isGently()) {
-                                publicLiveCourseEntity.setGotoClassTime(Long.parseLong(gotoClassTime));
-                            }
-                        }
-                        callBack.onDataSucess(publicLiveCourseEntity);
-                    }
-                });
-    }
+//    public void getPublic(final String courseName, final String courseId, final String teacherId,
+//                          final String gotoClassTime,
+//                          final AbstractBusinessDataCallBack callBack, DataLoadEntity dataLoadEntity) {
+//        if (dataLoadEntity == null) {
+//            dataLoadEntity = new DataLoadEntity(mContext);
+//        }
+//        postDataLoadEvent(dataLoadEntity.beginLoading());
+//        dispatcherHttpManager.publicLiveCourseQuestion(courseId, teacherId, gotoClassTime,
+//                new HttpCallBack(dataLoadEntity) {
+//                    public void onPmSuccess(ResponseEntity responseEntity) {
+//                        PublicEntity publicLiveCourseEntity =
+//                                dispatcherHttpResponseParser.publicLiveCourseQuestionParser(responseEntity);
+//                        if (publicLiveCourseEntity != null) {
+//                            publicLiveCourseEntity.setCourseId(courseId);
+//                            publicLiveCourseEntity.setCourseName(courseName);
+//                            publicLiveCourseEntity.setTeacherId(teacherId);
+//                            if (!TextUtils.isEmpty(gotoClassTime) && TextUtils.isDigitsOnly(gotoClassTime) && !publicLiveCourseEntity.isGently()) {
+//                                publicLiveCourseEntity.setGotoClassTime(Long.parseLong(gotoClassTime));
+//                            }
+//                        }
+//                        callBack.onDataSucess(publicLiveCourseEntity);
+//                    }
+//                });
+//    }
 
 
     /**

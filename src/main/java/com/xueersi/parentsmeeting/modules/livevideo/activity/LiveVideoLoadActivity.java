@@ -299,59 +299,60 @@ public class LiveVideoLoadActivity extends BaseActivity {
             //大班整合-讲座
             if (isBigLiveRoom()) {
                 enterBigLive(bundle, vSectionID, liveType, from, "0", httpManager);
-            } else {
-                httpManager.liveLectureGetInfo(vSectionID, new HttpCallBack(mDataLoadEntity,
-                        false) {
-                    @Override
-                    public void onPmSuccess(ResponseEntity responseEntity) {
-                        LiveHttpResponseParser mHttpResponseParser =
-                                new LiveHttpResponseParser(LiveVideoLoadActivity.this);
-                        JSONObject object = (JSONObject) responseEntity.getJsonObject();
-                        LiveTopic mLiveTopic = new LiveTopic();
-                        LiveGetInfo mGetInfo = mHttpResponseParser.parseLiveGetInfo(object,
-                                mLiveTopic, liveType, from);
-                        if (mGetInfo == null) {
-                            XESToastUtils.showToast(LiveVideoLoadActivity.this, "服务器异常");
-                            finish();
-                            return;
-                        }
-                        String stuId = LiveAppUserInfo.getInstance().getStuId();
-                        getInfos.put(liveType + "-" + stuId + "-" + vSectionID, mGetInfo);
-                        if (!mGetInfo.isGently()) {
-                            LiveVideoConfig.isLightLive = false;
-                            com.xueersi.parentsmeeting.modules.livevideo.fragment.LecVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
-                        } else {
-                            LiveVideoConfig.isLightLive = true;
-                            bundle.putBoolean("isGently", true);
-                            com.xueersi.parentsmeeting.modules.livevideo.fragment.LightLiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
-                        }
-
-                        finish();
-                    }
-
-                    @Override
-                    public void onPmFailure(Throwable error, String msg) {
-                        XESToastUtils.showToast("初始化失败");
-                        finish();
-                    }
-
-                    @Override
-                    public void onPmError(ResponseEntity responseEntity) {
-//                    XESToastUtils.showToast(LiveVideoLoadActivity.this, responseEntity
-//                    .getErrorMsg());
-                        int status = responseEntity.getmStatus();
-                        if (10 == status) {
-//                        Intent data = new Intent();
-//                        data.putExtra("msg", "请升级APP");
-//                        setResult(ShareBusinessConfig.LIVE_APP_UPDATE, data);
-//                        finish();
-                        } else {
-                            XESToastUtils.showToast(responseEntity.getErrorMsg());
-                            finishAndExit();
-                        }
-                    }
-                });
             }
+//            else {
+//                httpManager.liveLectureGetInfo(vSectionID, new HttpCallBack(mDataLoadEntity,
+//                        false) {
+//                    @Override
+//                    public void onPmSuccess(ResponseEntity responseEntity) {
+//                        LiveHttpResponseParser mHttpResponseParser =
+//                                new LiveHttpResponseParser(LiveVideoLoadActivity.this);
+//                        JSONObject object = (JSONObject) responseEntity.getJsonObject();
+//                        LiveTopic mLiveTopic = new LiveTopic();
+//                        LiveGetInfo mGetInfo = mHttpResponseParser.parseLiveGetInfo(object,
+//                                mLiveTopic, liveType, from);
+//                        if (mGetInfo == null) {
+//                            XESToastUtils.showToast(LiveVideoLoadActivity.this, "服务器异常");
+//                            finish();
+//                            return;
+//                        }
+//                        String stuId = LiveAppUserInfo.getInstance().getStuId();
+//                        getInfos.put(liveType + "-" + stuId + "-" + vSectionID, mGetInfo);
+//                        if (!mGetInfo.isGently()) {
+//                            LiveVideoConfig.isLightLive = false;
+//                            com.xueersi.parentsmeeting.modules.livevideo.fragment.LecVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+//                        } else {
+//                            LiveVideoConfig.isLightLive = true;
+//                            bundle.putBoolean("isGently", true);
+//                            com.xueersi.parentsmeeting.modules.livevideo.fragment.LightLiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+//                        }
+//
+//                        finish();
+//                    }
+//
+//                    @Override
+//                    public void onPmFailure(Throwable error, String msg) {
+//                        XESToastUtils.showToast("初始化失败");
+//                        finish();
+//                    }
+//
+//                    @Override
+//                    public void onPmError(ResponseEntity responseEntity) {
+////                    XESToastUtils.showToast(LiveVideoLoadActivity.this, responseEntity
+////                    .getErrorMsg());
+//                        int status = responseEntity.getmStatus();
+//                        if (10 == status) {
+////                        Intent data = new Intent();
+////                        data.putExtra("msg", "请升级APP");
+////                        setResult(ShareBusinessConfig.LIVE_APP_UPDATE, data);
+////                        finish();
+//                        } else {
+//                            XESToastUtils.showToast(responseEntity.getErrorMsg());
+//                            finishAndExit();
+//                        }
+//                    }
+//                });
+//            }
         } else if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
 
             if (isBigLiveRoom()) {
