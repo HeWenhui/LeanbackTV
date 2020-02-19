@@ -51,4 +51,8 @@ public class LivePluginGrayConfig {
     public static final int MOUDLE_AI_COURSEWARE = 127;
     /** 课件预加载 **/
     public static final int MOUDLE_COURSEWARE_PRELOAD = 128;
+
+    /** 教师评价 **/
+    public static final int MOUDLE_TEACHER_FEEDBACK = 151;
+
 }
