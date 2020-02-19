@@ -488,6 +488,8 @@ public class LiveVideoDispatcher extends AbsDispatcher {
         if (entity.getConfigs() != null) {
             videoEntity.setProtocol(entity.getConfigs().getProtocol());
             videoEntity.setFileId(entity.getConfigs().getFileId());
+            videoEntity.setBeforeClassFileId(entity.getConfigs().getBeforeClassFileId());
+            videoEntity.setAfterClassFileId(entity.getConfigs().getAfterClassFileId());
         }
         Bundle bundle = new Bundle();
         bundle.putSerializable("videoliveplayback", videoEntity);
@@ -514,6 +516,7 @@ public class LiveVideoDispatcher extends AbsDispatcher {
         videoEntity.setPlayVideoName(entity.getPlanInfo().getName());
         videoEntity.setNowTime(entity.getNowTime());
         videoEntity.setOffset(offset);
+        videoEntity.setSkinType(entity.getSkinType());
 
         if (entity.getConfigs() != null) {
             videoEntity.setVideoPath(entity.getConfigs().getVideoFile());
@@ -555,12 +558,15 @@ public class LiveVideoDispatcher extends AbsDispatcher {
         if (entity.getConfigs() != null) {
             videoEntity.setProtocol(entity.getConfigs().getProtocol());
             videoEntity.setFileId(entity.getConfigs().getFileId());
+            videoEntity.setBeforeClassFileId(entity.getConfigs().getBeforeClassFileId());
+            videoEntity.setAfterClassFileId(entity.getConfigs().getAfterClassFileId());
         }
         Bundle bundle = new Bundle();
         bundle.putSerializable("videoliveplayback", videoEntity);
         bundle.putInt("type", LocalCourseConfig.LIVETYPE_LIVE);
         bundle.putString("planId", planId);
         bundle.putBoolean("isBigLive", true);
+        bundle.putInt("skinType",entity.getSkinType());
         LiveVideoEnter.intentTo(activity, bundle, activity.getClass().getSimpleName());
     }
 

@@ -131,6 +131,7 @@ public class LiveBusinessResponseParser extends HttpResponseParser {
                 LiveGetInfo.StudentLiveInfoEntity studentLiveInfoEntity = new LiveGetInfo.StudentLiveInfoEntity();
                 studentLiveInfoEntity.setClassId(stuLiveInfoObj.optString("classId"));
                 studentLiveInfoEntity.setTeamId(stuLiveInfoObj.optString("teamId"));
+                studentLiveInfoEntity.setCourseId(stuLiveInfoObj.optString("courseId"));
 
                 boolean isExpe = "-1".equals(studentLiveInfoEntity.getClassId());
                 if (isExpe) {
@@ -165,6 +166,7 @@ public class LiveBusinessResponseParser extends HttpResponseParser {
             //解析一级配置信息
             if (data.has("configs")) {
                 JSONObject cfgJsonObj = data.getJSONObject("configs");
+                liveGetInfo.setSkinType(cfgJsonObj.optInt("skinType"));
                 liveGetInfo.setMainTeacherVieo(cfgJsonObj.optString("mainTeacherVideo"));
                 liveGetInfo.setCounselorTeacherVideo(cfgJsonObj.optString("counselorTeacherVideo"));
                 liveGetInfo.setIrcNick(cfgJsonObj.optString("stuIrcId"));
@@ -227,6 +229,7 @@ public class LiveBusinessResponseParser extends HttpResponseParser {
             JSONObject liveStatusJsonObj = data.optJSONObject("liveStatus");
             if (liveStatusJsonObj != null) {
                 liveGetInfo.getLiveStatus().setStartClass(liveStatusJsonObj.optBoolean("startClass"));
+                liveGetInfo.getLiveStatus().setStreamMode(liveStatusJsonObj.optInt("streamMode"));
             }
 
 

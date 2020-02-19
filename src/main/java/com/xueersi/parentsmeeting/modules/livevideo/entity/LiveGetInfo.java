@@ -1948,6 +1948,22 @@ public class LiveGetInfo {
     private boolean bigLive;
 
 
+    /**大班整合小学**/
+    private boolean bigLivePrimarySchool = true;
+
+    public int getSkinType() {
+        return skinType;
+    }
+
+    public void setSkinType(int skinType) {
+        this.skinType = skinType;
+    }
+
+    /**
+     * 大班整合 皮肤类型
+     */
+    private int skinType;
+
     public String getMainTeacherVieo() {
         return mainTeacherVieo;
     }
@@ -2055,12 +2071,23 @@ public class LiveGetInfo {
          **/
         private boolean startClass;
 
+        /**当前视频流模式：课前辅导/主讲/课后辅导 */
+        private int streamMode;
+
         public boolean isStartClass() {
             return startClass;
         }
 
         public void setStartClass(boolean startClass) {
             this.startClass = startClass;
+        }
+
+        public int getStreamMode() {
+            return streamMode;
+        }
+
+        public void setStreamMode(int streamMode) {
+            this.streamMode = streamMode;
         }
     }
 
@@ -2183,6 +2210,9 @@ public class LiveGetInfo {
         this.creatTime = creatTime;
     }
 
+    public boolean isBigLivePrimarySchool() {
+        return skinType == 1;
+    }
     public void setTeamStuIds(ArrayList<String> teamStuIds) {
         this.teamStuIds = teamStuIds;
     }

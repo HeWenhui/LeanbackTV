@@ -395,7 +395,8 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
         liveGetInfo.setGetChatRecordUrl(mVideoEntity.getGetChatRecordUrl());
         liveGetInfo.setGetMetadataUrl(mVideoEntity.getGetMetadataUrl());
         liveGetInfo.setIrcRoomsJson(mVideoEntity.getIrcRoomsJson());
-
+        //设置皮肤类型
+        liveGetInfo.setSkinType(mVideoEntity.getSkinType());
       /*  Log.e("ckTrac","=======>liveBackBll_onCreate:"+liveGetInfo.getInitModuleUrl()
                 +":"+liveGetInfo.getGetChatRecordUrl()+":"+liveGetInfo.getGetMetadataUrl());*/
         try {
@@ -884,7 +885,15 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
                     index = i;
                     break;
                 }
-            } else if (LocalCourseConfig.CATEGORY_NB_EXPERIMENT == videoQuestionEntity.getvCategory()) {
+            } else if (LocalCourseConfig.CATEGORY_FUTURE_AI_WARE == videoQuestionEntity.getvCategory()) {
+                // 大班ai主观题课件互动题
+                if (startTime <= playPosition && playPosition < endTime) {
+                    mQuestionEntity = videoQuestionEntity;
+                    hasQuestionShow = true;
+                    index = i;
+                    break;
+                }
+            }else if (LocalCourseConfig.CATEGORY_NB_EXPERIMENT == videoQuestionEntity.getvCategory()) {
                 //大班nb 实验
                 if (startTime <= playPosition && playPosition < endTime) {
                     mQuestionEntity = videoQuestionEntity;
@@ -909,6 +918,14 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
                     break;
                 }
             } else if (LocalCourseConfig.CATEGORY_CATEGORY_ROLE_PLAY == videoQuestionEntity.getvCategory()) {
+                //roleplay
+                if (startTime <= playPosition && playPosition < endTime) {
+                    mQuestionEntity = videoQuestionEntity;
+                    hasQuestionShow = true;
+                    index = i;
+                    break;
+                }
+            }else if (LocalCourseConfig.CATEGORY_MOUDLE_VOTE == videoQuestionEntity.getvCategory()) {
                 //roleplay
                 if (startTime <= playPosition && playPosition < endTime) {
                     mQuestionEntity = videoQuestionEntity;
