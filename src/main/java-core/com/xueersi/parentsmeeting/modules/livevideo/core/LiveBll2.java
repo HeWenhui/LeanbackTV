@@ -1360,14 +1360,14 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                 if (mTopicActions != null && mTopicActions.size() > 0) {
                     for (TopicAction mTopicAction : mTopicActions) {
                         try {
-                            mTopicAction.onTopic(liveTopic, jsonObject, teacherModeChanged);
+                            mTopicAction.onTopic(mLiveTopic, jsonObject, teacherModeChanged);
                         } catch (Exception e) {
                             LiveCrashReport.postCatchedException(new LiveException(TAG, e));
                         }
 
                     }
                 }
-                mLiveTopic.copy(liveTopic);
+                //mLiveTopic.copy(liveTopic);
             } catch (Exception e) {
                 try {
                     if (jsonTokener != null) {
