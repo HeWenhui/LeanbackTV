@@ -244,9 +244,17 @@ public class BigLivePlayBackEntity extends BaseEntity {
 
         private String classId;
         private String teamId;
+        private String courseId;
         /**本队成员**/
         private List<String> teamStudIds;
 
+        public void setCourseId(String courseId) {
+            this.courseId = courseId;
+        }
+
+        public String getCourseId() {
+            return courseId;
+        }
 
         public String getClassId() {
             return classId;

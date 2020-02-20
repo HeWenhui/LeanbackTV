@@ -71,12 +71,12 @@ public class LiveVideoPoint {
         return info;
     }
 
-    private static boolean min = true;
+    private static boolean min = false;
 
-    static {
+   /* static {
         try {
             ArrayList<String> devices = new ArrayList<>();
-            devices.add("PCAM10");//oppo
+            //devices.add("PCAM10");//oppo
             String model = DeviceUtils.getModel();
             for (int i = 0; i < devices.size(); i++) {
                 if (TextUtils.equals(model, devices.get(i))) {
@@ -87,7 +87,7 @@ public class LiveVideoPoint {
         } catch (Exception e) {
             LiveCrashReport.postCatchedException("LiveVideoPoint", e);
         }
-    }
+    }*/
 
     public static boolean initLiveVideoPoint(Activity activity, LiveVideoPoint liveVideoPoint, ViewGroup.LayoutParams lp) {
         final View contentView = activity.findViewById(android.R.id.content);
