@@ -186,6 +186,60 @@ public class LiveBackVideoBll {
         }
     }
 
+    /**
+     * 根据主讲辅导态播放新的视频
+     */
+    public void playNewVideo(int videoPlayStatus) {
+        if (!MediaPlayer.getIsNewIJK()) {
+            if (index < 0) {
+                index = 0;
+            }
+            String url = mWebPaths.get(index++ % mWebPaths.size());
+            logger.d("playNewVideo:url=" + url);
+            liveBackPlayVideoFragment.playNewVideo(Uri.parse(url), mSectionName);
+        } else {
+            //使用PSIJK播放新视屏
+            int protocol = mVideoEntity.getProtocol();
+            if (videoPlayStatus == MediaPlayer.VIDEO_TEACHER_TUTOR_BEFORE_CLASS) {
+                String videoPath = LiveBackVideoPlayerUtils.handleBackVideoPath(mVideoEntity.getBeforeClassFileId());
+                if (!islocal) {
+                    if (protocol == MediaPlayer.VIDEO_PROTOCOL_M3U8) {
+                        videoPath = mVideoEntity.getBeforeClassFileId();
+                    } else {
+                        protocol = MediaPlayer.VIDEO_PROTOCOL_MP4;
+                    }
+                    liveBackPlayVideoFragment.playPSVideo(videoPath, protocol);
+                } else {
+                    liveBackPlayVideoFragment.playPSFile(videoPath, (int) getStartPosition());
+                }
+            }else if(videoPlayStatus == MediaPlayer.VIDEO_TEACHER_TUTOR_AFTER_CLASS){
+                String videoPath = LiveBackVideoPlayerUtils.handleBackVideoPath(mVideoEntity.getAfterClassFileId());
+                if (!islocal) {
+                    if (protocol == MediaPlayer.VIDEO_PROTOCOL_M3U8) {
+                        videoPath = mVideoEntity.getAfterClassFileId();
+                    } else {
+                        protocol = MediaPlayer.VIDEO_PROTOCOL_MP4;
+                    }
+                    liveBackPlayVideoFragment.playPSVideo(videoPath, protocol);
+                } else {
+                    liveBackPlayVideoFragment.playPSFile(videoPath, (int) getStartPosition());
+                }
+            }else {
+                String videoPath = LiveBackVideoPlayerUtils.handleBackVideoPath(mVideoEntity.getVideoPath());
+                if (!islocal) {
+                    if (protocol == MediaPlayer.VIDEO_PROTOCOL_M3U8) {
+                        videoPath = mVideoEntity.getFileId();
+                    } else {
+                        protocol = MediaPlayer.VIDEO_PROTOCOL_MP4;
+                    }
+                    liveBackPlayVideoFragment.playPSVideo(videoPath, protocol);
+                } else {
+                    liveBackPlayVideoFragment.playPSFile(videoPath, (int) getStartPosition());
+                }
+            }
+            liveBackPlayVideoFragment.setmDisplayName(mSectionName);
+        }
+    }
 
     public void savePosition(long fromStart) {
         if (playbackComplete) {
