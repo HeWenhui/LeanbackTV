@@ -529,7 +529,7 @@ public class LiveVideoDispatcher extends AbsDispatcher {
     private void enterBigLivePlayBack(BigLivePlayBackEntity entity) {
         ShareDataManager dataManager = ShareDataManager.getInstance();
         VideoLivePlayBackEntity videoEntity = new VideoLivePlayBackEntity();
-        videoEntity.setCourseId(entity.getPlanInfo().getId());
+        videoEntity.setCourseId(entity.getStuLiveInfo().getCourseId());
         videoEntity.setCourseName(entity.getPlanInfo().getName());
         videoEntity.setPlayVideoId(entity.getPlanInfo().getId());
         videoEntity.setPlayVideoName(entity.getPlanInfo().getName());
