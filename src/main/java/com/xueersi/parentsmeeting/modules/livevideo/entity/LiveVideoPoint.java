@@ -104,6 +104,7 @@ public class LiveVideoPoint {
         if (liveVideoPoint.screenWidth == screenWidth && liveVideoPoint.videoWidth == lp.width && liveVideoPoint.videoHeight == lp.height) {
             return false;
         }
+
         //计算x的几个点
         liveVideoPoint.x2 = (screenWidth - lp.width) / 2;
         //头像的宽度
