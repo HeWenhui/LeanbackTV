@@ -633,7 +633,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-                SurfaceView surfaceV = RtcEngine.CreateRendererView(mContext);
+                SurfaceView surfaceV = workerThread.getRtcEngine().createRendererView();
                 surfaceV.setZOrderOnTop(true);
                 surfaceV.setZOrderMediaOverlay(true);
                 workerThread.getRtcEngine().setupRemoteVideo(surfaceV, uid);
@@ -651,7 +651,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                 doRenderRemoteUi(uid, basePrimaryTeamItem);
             } else {
                 //后进入用户，暂存视频布局
-                SurfaceView surfaceV = RtcEngine.CreateRendererView(mContext);
+                SurfaceView surfaceV = workerThread.getRtcEngine().createRendererView();
                 surfaceV.setZOrderOnTop(true);
                 surfaceV.setZOrderMediaOverlay(true);
                 surfaceViewHashMap.put("" + uid, surfaceV);
@@ -768,7 +768,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-                SurfaceView surfaceV = RtcEngine.CreateRendererView(mContext);
+                SurfaceView surfaceV = workerThread.getRtcEngine().createRendererView();
                 surfaceV.setZOrderOnTop(true);
                 surfaceV.setZOrderMediaOverlay(true);
                 workerThread.preview(true, surfaceV);
