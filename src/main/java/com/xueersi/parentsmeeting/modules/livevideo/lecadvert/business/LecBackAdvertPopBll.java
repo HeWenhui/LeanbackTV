@@ -305,13 +305,15 @@ public class LecBackAdvertPopBll {
     void onNewIntent(Intent intent) {
         ViewGroup parents = (ViewGroup) videoView.getParent();
         if (parents != null) {
-            parents.removeView(videoView);
-            ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT);
+            //为空，应该是没有移除过 https://bugly.qq.com/v2/crash-reporting/crashes/a0df5ed682/707369?pid=1
             if (mParent != null) {
+                parents.removeView(videoView);
+                ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT);
                 mParent.addView(videoView, params);
             } else {
+                XrsCrashReport.d(TAG, "onNewIntent:parents=" + parents);
                 LiveCrashReport.postCatchedException(new LiveException("TAG"));
             }
         }
