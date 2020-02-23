@@ -18,7 +18,6 @@ public class LiveAppUserInfo {
     private String mPsAppId;
     private String mPsimId;
     private String mPsimPwd;
-    private String mIrcNick;
     ShareDataManager mShareDataManager;
     private LiveAppUserInfo(){
         init();
@@ -228,16 +227,6 @@ public class LiveAppUserInfo {
         mPsAppId = null;
         mPsimId = null;
         mPsimPwd = null;
-        mIrcNick = null;
-    }
-
-
-    public void setIrcNick(String ircNick){
-        mIrcNick = ircNick;
-    }
-
-    public String getIrcNick(){
-        return mIrcNick;
     }
 
     /**
