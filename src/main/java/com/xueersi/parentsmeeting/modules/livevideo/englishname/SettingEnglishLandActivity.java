@@ -123,10 +123,11 @@ public class SettingEnglishLandActivity extends XesActivity {
     String audioPath = "";
     EnglishNameConfirmDialog englishNameConfirmDialog;
 
-    ImageButton imgBtnClose;
+    TextView tvSkip;
 
     boolean isLive = true;
     String where = "";
+    String planId = "";
     AppBarLayout mAppBarLayout;
 
     ImageView ivLine;
@@ -161,9 +162,14 @@ public class SettingEnglishLandActivity extends XesActivity {
 
         isLive = getIntent().getExtras().getBoolean("engish1v2Type", true);
         where = getIntent().getExtras().getString("where");
+        planId = getIntent().getExtras().getString("planId","");
         boolean isNeed = mShareDataManager.getBoolean(LiveVideoConfig.LIVE_GOUP_1V2_ENGLISH_CHECK, false,
                 ShareDataManager.SHAREDATA_USER);
-        if (isNeed) {
+        String skipPlanId = mShareDataManager.getString(LiveVideoConfig.LIVE_GOUP_1V2_ENGLISH_SKIPED, "-1",
+                ShareDataManager.SHAREDATA_USER);
+        // 直播中相同场次已经跳过名字选择，则不再弹出名字选择。
+        boolean isSkip = isLive && skipPlanId.equals(planId);
+        if (isNeed || isSkip) {
             continueToVideo();
         }
         int sexDfault = LiveAppUserInfo.getInstance().getSexProcess();
@@ -197,7 +203,7 @@ public class SettingEnglishLandActivity extends XesActivity {
                 etSearch.setText("");
             }
         });
-        imgBtnClose.setOnClickListener(new View.OnClickListener() {
+        tvSkip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showDialog();
@@ -282,7 +288,6 @@ public class SettingEnglishLandActivity extends XesActivity {
     }
 
     private void sexShow() {
-
         startNameLottie(true);
     }
 
@@ -290,9 +295,6 @@ public class SettingEnglishLandActivity extends XesActivity {
     private void sexViewShow() {
         ivBoy.setVisibility(View.VISIBLE);
         ivGirl.setVisibility(View.VISIBLE);
-
-
-
     }
 
     private void sexSelect() {
@@ -334,12 +336,21 @@ public class SettingEnglishLandActivity extends XesActivity {
 
         @Override
         public void dialogCancel() {
-            selectName = LiveVideoConfig.ENGLISH_NAME_DEFAULT_BOY;
-            sex = LiveVideoConfig.LIVE_GROUP_CLASS_USER_SEX_BOY;
-            if (sex == LiveVideoConfig.LIVE_GROUP_CLASS_USER_SEX_GIRL) {
-                selectName = LiveVideoConfig.ENGLISH_NAME_DEFAULT_GRIL;
+//            if(TextUtils.isEmpty(UserBll.getInstance().getMyUserInfoEntity().getEnglishName())){
+//                selectName = LiveVideoConfig.ENGLISH_NAME_DEFAULT_BOY;
+//                sex = LiveVideoConfig.LIVE_GROUP_CLASS_USER_SEX_BOY;
+//            }else{
+//                selectName = UserBll.getInstance().getMyUserInfoEntity().getEnglishName();
+//                sex = UserBll.getInstance().getMyUserInfoEntity().getSex();
+//            }
+
+            // 跳过后，不在请求接口。ui显示会直接拿默认值student。
+//            UserBll.getInstance().setUserEnglishInfo(selectName, sex);
+
+            if(!TextUtils.isEmpty(planId)){
+                mShareDataManager.put(LiveVideoConfig.LIVE_GOUP_1V2_ENGLISH_SKIPED, planId,
+                        ShareDataManager.SHAREDATA_USER);
             }
-            saveEnglishName();
             continueToVideo();
         }
     };
@@ -360,7 +371,7 @@ public class SettingEnglishLandActivity extends XesActivity {
         etSearch = findViewById(R.id.et_groupclass_setting_english_name_search);
         recyclerSearch = findViewById(R.id.rv_setting_english_name_search_list);
         tvRecommendHint = findViewById(R.id.tv_setting_english_name_recommend_hint);
-        imgBtnClose = findViewById(R.id.imgbtn_live_setting_english_name_close);
+        tvSkip = findViewById(R.id.tv_groupclass_setting_english_name_skip);
         tvSearchEmpty =  findViewById(R.id.tv_groupclass_setting_english_name_search_empty);
         mAppBarLayout  =  findViewById(R.id.abl_groupclass_setting_english_name_title);
         ivLine =  findViewById(R.id.v_group_class_grouping_line);

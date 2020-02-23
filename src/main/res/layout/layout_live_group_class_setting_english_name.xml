@@ -193,6 +193,17 @@
             android:layout_width="106dp"
             android:layout_height="38dp"
             android:background="@drawable/bg_groupclass_setting_english_conform_click" />
+
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:id="@+id/tv_groupclass_setting_english_name_skip"
+            android:layout_gravity="center_vertical"
+            android:text="@string/skip"
+            android:textColor="#FD963E"
+            android:gravity="center"
+            android:paddingLeft="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="38dp"  />
+
     </LinearLayout>
     <LinearLayout
         android:layout_centerHorizontal="true"
@@ -200,12 +211,6 @@
         android:layout_marginTop="33dp"
         android:gravity="right"
         android:layout_height="wrap_content">
-    <ImageButton
-        android:id="@+id/imgbtn_live_setting_english_name_close"
-        android:layout_gravity="left"
-        android:background="@drawable/selector_page_livevideo_praise_list_lovely_close_style"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
     </LinearLayout>
 
 </RelativeLayout>

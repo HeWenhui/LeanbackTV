@@ -174,6 +174,7 @@ public class DispatcherBll extends BaseBll {
 
         bundle.putInt("type", 3);
         bundle.putInt("isArts", result.getIsArts());
+        bundle.putString("planId", sectionEntit.getvSectionID());
         bundle.putInt("pattern", result.getPattern());
         if (!StringUtils.isSpace(sectionEntity.getExamPaperUrl())) {
             if (result.getIsArts() == 1) {

@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
-import com.xueersi.common.base.BaseActivity;
+import android.text.TextUtils;
+
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.LoginRegistersConfig;
@@ -10,9 +11,6 @@ import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.englishname.config.EnglishNameConfig;
-
-import java.security.PrivateKey;
 
 public class LiveAppUserInfo {
     private static LiveAppUserInfo mInstance;
@@ -220,7 +218,6 @@ public class LiveAppUserInfo {
      */
     public void setPsimPwd(String psimPwd){
         mPsimPwd = psimPwd;
-
     }
 
     /**
@@ -243,9 +240,13 @@ public class LiveAppUserInfo {
         return mIrcNick;
     }
 
+    /**
+     * 2020/2/12 修改，当前字段只针对小组课使用。并不通用。
+     */
     public String getEnglishNameProcess() {
-        return mShareDataManager.getString(LoginRegistersConfig.SP_USER_ENGLISH_NAME, "",
+        String englishName = mShareDataManager.getString(LoginRegistersConfig.SP_USER_ENGLISH_NAME, "",
                 ShareDataManager.SHAREDATA_USER);
+        return !TextUtils.isEmpty(englishName)? englishName:LiveVideoConfig.ENGLISH_NAME_DEFAULT_BOY;
     }
     public int getSexProcess() {
         return mShareDataManager.getInt(LoginRegistersConfig.SP_USER_SEX, 3,
@@ -267,7 +268,7 @@ public class LiveAppUserInfo {
         UserBll.getInstance().saveUserNameAudio(englishNameAudio);
     }
 
-    public boolean isNeedEnglishName(){
+    public boolean isSupportedEnglishName(){
         return mShareDataManager.getBoolean(LiveVideoConfig.LIVE_GOUP_1V2_ENGLISH_CHECK, false,
                 ShareDataManager.SHAREDATA_USER);
     }
