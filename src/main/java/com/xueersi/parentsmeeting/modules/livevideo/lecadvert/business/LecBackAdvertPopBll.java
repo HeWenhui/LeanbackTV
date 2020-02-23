@@ -20,6 +20,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.common.base.XrsCrashReport;
 import com.xueersi.common.event.MiniEvent;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.lib.framework.utils.ScreenUtils;
@@ -35,6 +36,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoInter;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
@@ -166,7 +169,7 @@ public class LecBackAdvertPopBll {
 
     public void onConfigurationChanged(Configuration newConfig) {
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rlQuestionContent.getLayoutParams();
-        logger.d( "onConfigurationChanged:mIsLand=" + mIsLand);
+        logger.d("onConfigurationChanged:mIsLand=" + mIsLand);
         if (mIsLand.get()) {
             lp.height = RelativeLayout.LayoutParams.WRAP_CONTENT;
             lp.addRule(RelativeLayout.BELOW, 0);
@@ -267,6 +270,7 @@ public class LecBackAdvertPopBll {
         //有对应权限或者系统版本小于7.0
         if (isPermission || Build.VERSION.SDK_INT < 24) {
             mParent = (ViewGroup) videoView.getParent();
+            XrsCrashReport.d(TAG, "createRealVideo:mParent=" + mParent);
             if (mParent != null) {
                 mParent.removeView(videoView);
             }
@@ -305,7 +309,11 @@ public class LecBackAdvertPopBll {
             ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT);
-            mParent.addView(videoView, params);
+            if (mParent != null) {
+                mParent.addView(videoView, params);
+            } else {
+                LiveCrashReport.postCatchedException(new LiveException("TAG"));
+            }
         }
     }
 
