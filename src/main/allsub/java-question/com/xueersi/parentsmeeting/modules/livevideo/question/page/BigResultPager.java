@@ -11,11 +11,16 @@ import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.BigResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.BigResultItemEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.item.BigResultAdapter;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 
@@ -92,5 +97,16 @@ public class BigResultPager extends LiveBasePager {
                 }
             }
         });
+    }
+
+    public void flyGoldAndUpdate(VideoQuestionLiveEntity videoQuestionLiveEntity1) {
+        if (LiveVideoConfig.isPrimary) {
+            String testId = videoQuestionLiveEntity1.getvQuestionID();
+            LiveRoomH5CloseEvent event = new LiveRoomH5CloseEvent(bigResultEntitie.getGold(), 0, LiveRoomH5CloseEvent.H5_TYPE_INTERACTION, testId);
+            event.setBasePager(this);
+            event.setCloseByTeahcer(false);
+            event.setQuestionType(1); //判断大题互动
+            EventBus.getDefault().post(event);
+        }
     }
 }

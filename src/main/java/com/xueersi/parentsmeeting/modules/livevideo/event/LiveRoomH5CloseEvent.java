@@ -34,6 +34,10 @@ public class LiveRoomH5CloseEvent {
      * 此次作答是否是 强制提交
      */
     private boolean forceSubmit;
+    /**
+     * 兼容大题互动飞金币动效，大题互动：1
+     */
+    private int questionType;
 
     public void setForceSubmit(boolean forceSubmit) {
         this.forceSubmit = forceSubmit;
@@ -116,5 +120,13 @@ public class LiveRoomH5CloseEvent {
 
     public BasePager getBasePager() {
         return basePager;
+    }
+
+    public int getQuestionType() {
+        return questionType;
+    }
+
+    public void setQuestionType(int questionType) {
+        this.questionType = questionType;
     }
 }

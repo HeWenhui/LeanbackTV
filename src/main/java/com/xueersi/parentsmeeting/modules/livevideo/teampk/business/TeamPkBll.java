@@ -1220,7 +1220,11 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRoomH5CloseEvent(final LiveRoomH5CloseEvent event) {
         latesH5CloseEvent = event;
-
+        if (event.getQuestionType() == 1) {
+         //是大题互动结果页加金币动效
+            showAnswerQuestionAward(event.getmGoldNum(), event.getmEnergyNum(), event.getId());
+            return;
+        }
         logger.e("=======>:onRoomH5CloseEvent:" + event.getId() + ":"
                 + event.getmGoldNum() + ":" + event.getmEnergyNum() + ":" + event.isCloseByTeacher());
         if (h5CloseEvents == null) {
