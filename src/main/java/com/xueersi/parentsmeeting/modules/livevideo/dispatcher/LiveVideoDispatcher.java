@@ -81,6 +81,7 @@ public class LiveVideoDispatcher extends AbsDispatcher {
      * 直播 是否是大班 灰度状态
      */
     private int planVersion = DispatcherConfig.BIGLIVE_GRAY_CONTROL_PLANVERSION_DEFAULT;
+    private String paramsJson;
 
     public interface LiveNewStatus {
         int LIVE_UNBEGIN = 1;//待开始
@@ -139,7 +140,7 @@ public class LiveVideoDispatcher extends AbsDispatcher {
         if (bundle.containsKey(ParamKey.EXTRAKEY_JSONPARAM)) {
             activity = srcActivity;
             dispatcherBll = new DispatcherBll(srcActivity);
-            String paramsJson = bundle.getString(ParamKey.EXTRAKEY_JSONPARAM);
+            paramsJson = bundle.getString(ParamKey.EXTRAKEY_JSONPARAM);
             if (TextUtils.isEmpty(paramsJson)) {
                 XESToastUtils.showToast(activity, "数据异常");
                 return;
@@ -165,7 +166,7 @@ public class LiveVideoDispatcher extends AbsDispatcher {
                 big_live_type = jsonObject.optInt("bigLiveStatus", big_live_type);
                 planVersion = jsonObject.optInt("planVersion",
                         DispatcherConfig.BIGLIVE_GRAY_CONTROL_PLANVERSION_DEFAULT);
-                if(type == TYPE_LECTURE  && big_live_type !=DispatcherConfig.PUBLIC_GRAY_CONTROL_BIG_LIVE){
+                if(type == TYPE_LECTURE  && big_live_type == DispatcherConfig.PUBLIC_GRAY_CONTROL_COMMON){
                     Module m = new Module();
                     m.moduleName = "livepublic";
                     m.param = paramsJson;
@@ -378,6 +379,14 @@ public class LiveVideoDispatcher extends AbsDispatcher {
         @Override
         public void onDataSucess(Object... objData) {
             PublicLiveGrayEntity mPublicLiveGrayEntity = (PublicLiveGrayEntity) objData[0];
+            if (mPublicLiveGrayEntity.getStatus() != DispatcherConfig.PUBLIC_GRAY_CONTROL_BIG_LIVE){
+                Module m = new Module();
+                m.moduleName = "livepublic";
+                m.param = paramsJson;
+                m.moduleType = 0;
+                ModuleHandler.start(activity, m);
+                return;
+            }
             startLecture(mPublicLiveGrayEntity.getStatus() == DispatcherConfig.PUBLIC_GRAY_CONTROL_BIG_LIVE);
         }
 
