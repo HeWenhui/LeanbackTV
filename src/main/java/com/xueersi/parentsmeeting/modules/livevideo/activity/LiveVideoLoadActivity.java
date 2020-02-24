@@ -28,7 +28,6 @@ import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.FileLogger;
-import com.xueersi.parentsmeeting.modules.livevideo.LiveAssetsLoadUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.CoursewarePreload;
 import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.PreloadStaticStorage;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
@@ -105,9 +104,8 @@ public class LiveVideoLoadActivity extends BaseActivity {
 //            bundle.putString("vSectionID", vSectionID);
 //            intent.putExtras(bundle);
 //        }
-        int liveType = bundle.getInt("type", 0);
         //如果没有token，只能重新点击进入了
-        if (StringUtils.isEmpty(token) && liveType != LiveVideoConfig.LIVE_TYPE_LECTURE) {
+        if (StringUtils.isEmpty(token)) {
             XESToastUtils.showToast(this, "登录信息失效，重新登录");
             StableLogHashMap logHashMap = new StableLogHashMap();
             logHashMap.put("create_times", "" + CREATE_TIMES);
@@ -121,80 +119,10 @@ public class LiveVideoLoadActivity extends BaseActivity {
         CREATE_TIMES++;
 
         mDataLoadEntity = new DataLoadEntity(this);
-        boolean loadAsserts = getIntent().getBooleanExtra("loadAsserts", false);
-        if (!loadAsserts && LiveVideoConfig.assetsDownloadTag) {
-            loadAssertsResource();
-        } else {
-            mDataLoadEntity.beginLoading();
+                    mDataLoadEntity.beginLoading();
             DataLoadManager.newInstance().loadDataStyle(LiveVideoLoadActivity.this,
                     mDataLoadEntity);
-            initData();
-        }
-    }
-
-    private boolean initData = false;
-
-    /**
-     * 加载assert 文件
-     */
-    private void loadAssertsResource() {
-
-
-        //服务端获取
-        DownLoadFileInfo info = LiveVideoConfig.getDownLoadFileInfo();
-
-        LoadFileUtils.loadFileFromServer(this, info, new LoadFileCallBack() {
-            @Override
-            public void start() {
-                //XESToastUtils.showToast(LiveVideoLoadActivity.this, "开始加载");
-                mDataLoadEntity.beginLoading();
-                DataLoadManager.newInstance().loadDataStyle(LiveVideoLoadActivity.this,
-                        mDataLoadEntity);
-            }
-
-            @Override
-            public void success() {
-                if (initData) {
-                    logger.e("loadAssertsResource:success", new Exception());
-                    LiveCrashReport.postCatchedException(TAG, new Exception());
-                    return;
-                }
-                initData = true;
-                initData();
-                //XESToastUtils.showToast(LiveVideoLoadActivity.this, "加载成功");
-            }
-
-            @Override
-            public void progress(float progress, int type) {
-                if (type == 0) {
-                    mDataLoadEntity.setProgressTip("加载中" + (int) (progress) + "%");
-                } else {
-                    mDataLoadEntity.setProgressTip("解压中...");
-                }
-                mDataLoadEntity.beginLoading();
-                mDataLoadEntity.setCurrentLoadingStatus(DataLoadEntity.DATA_PROGRESS);
-                DataLoadManager.newInstance().loadDataStyle(LiveVideoLoadActivity.this,
-                        mDataLoadEntity);
-
-            }
-
-            @Override
-            public void fail(int errorCode, String errorMsg) {
-                if (!LiveAssetsLoadUtil.planB("livevdieo", LiveVideoLoadActivity.this)) {
-                    XESToastUtils.showToast(LiveVideoLoadActivity.this, "加载失败,  请重试");
-                    mDataLoadEntity.webDataSuccess();
-                    DataLoadManager.newInstance().loadDataStyle(LiveVideoLoadActivity.this,
-                            mDataLoadEntity);
-                    finish();
-                } else {
-                    mDataLoadEntity.webDataSuccess();
-                    DataLoadManager.newInstance().loadDataStyle(LiveVideoLoadActivity.this,
-                            mDataLoadEntity);
-                }
-                UmsAgentManager.umsAgentDebug(LiveVideoLoadActivity.this, ModuleHandler.TAG,
-                        "fail:errorCode=" + errorCode + ",errorMsg=" + errorMsg);
-            }
-        });
+        initData();
 
     }
 
@@ -300,59 +228,6 @@ public class LiveVideoLoadActivity extends BaseActivity {
             if (isBigLiveRoom()) {
                 enterBigLive(bundle, vSectionID, liveType, from, "0", httpManager);
             }
-//            else {
-//                httpManager.liveLectureGetInfo(vSectionID, new HttpCallBack(mDataLoadEntity,
-//                        false) {
-//                    @Override
-//                    public void onPmSuccess(ResponseEntity responseEntity) {
-//                        LiveHttpResponseParser mHttpResponseParser =
-//                                new LiveHttpResponseParser(LiveVideoLoadActivity.this);
-//                        JSONObject object = (JSONObject) responseEntity.getJsonObject();
-//                        LiveTopic mLiveTopic = new LiveTopic();
-//                        LiveGetInfo mGetInfo = mHttpResponseParser.parseLiveGetInfo(object,
-//                                mLiveTopic, liveType, from);
-//                        if (mGetInfo == null) {
-//                            XESToastUtils.showToast(LiveVideoLoadActivity.this, "服务器异常");
-//                            finish();
-//                            return;
-//                        }
-//                        String stuId = LiveAppUserInfo.getInstance().getStuId();
-//                        getInfos.put(liveType + "-" + stuId + "-" + vSectionID, mGetInfo);
-//                        if (!mGetInfo.isGently()) {
-//                            LiveVideoConfig.isLightLive = false;
-//                            com.xueersi.parentsmeeting.modules.livevideo.fragment.LecVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
-//                        } else {
-//                            LiveVideoConfig.isLightLive = true;
-//                            bundle.putBoolean("isGently", true);
-//                            com.xueersi.parentsmeeting.modules.livevideo.fragment.LightLiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
-//                        }
-//
-//                        finish();
-//                    }
-//
-//                    @Override
-//                    public void onPmFailure(Throwable error, String msg) {
-//                        XESToastUtils.showToast("初始化失败");
-//                        finish();
-//                    }
-//
-//                    @Override
-//                    public void onPmError(ResponseEntity responseEntity) {
-////                    XESToastUtils.showToast(LiveVideoLoadActivity.this, responseEntity
-////                    .getErrorMsg());
-//                        int status = responseEntity.getmStatus();
-//                        if (10 == status) {
-////                        Intent data = new Intent();
-////                        data.putExtra("msg", "请升级APP");
-////                        setResult(ShareBusinessConfig.LIVE_APP_UPDATE, data);
-////                        finish();
-//                        } else {
-//                            XESToastUtils.showToast(responseEntity.getErrorMsg());
-//                            finishAndExit();
-//                        }
-//                    }
-//                });
-//            }
         } else if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
 
             if (isBigLiveRoom()) {
