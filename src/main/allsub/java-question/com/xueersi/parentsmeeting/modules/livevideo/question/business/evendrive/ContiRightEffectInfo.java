@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 
+import com.airbnb.lottie.AssertUtil;
 import com.airbnb.lottie.LottieAnimationView;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 /**
@@ -29,7 +30,7 @@ public class ContiRightEffectInfo  extends LottieEffectInfo {
                                     int height) {
         Bitmap resultBitmap = null;
         try {
-            resultBitmap = BitmapFactory.decodeStream(animationView.getContext().getAssets().open(replaceFileName));
+            resultBitmap = BitmapFactory.decodeStream(AssertUtil.xrsAssertOpen(animationView.getContext(),replaceFileName));
         }catch (Exception e){
            e.printStackTrace();
         }

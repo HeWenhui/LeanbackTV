@@ -70,7 +70,7 @@ public class LottieEffectInfo {
         Bitmap resultBitMap = null;
         InputStream in = null;
         try {
-            in = new FileInputStream(imgDir + File.separator + fileName);
+            in = AssertUtil.open(imgDir + File.separator + fileName);
             resultBitMap = BitmapFactory.decodeStream(in);
             in.close();
         } catch (Exception e) {
@@ -274,7 +274,7 @@ public class LottieEffectInfo {
     public JsonReader getJsonReader(Context context) {
         JsonReader jsonReader = null;
         try {
-            InputStream in = context.getAssets().open(jsonFilePath);
+            InputStream in = AssertUtil.xrsAssertOpen(context,jsonFilePath);
             jsonReader = new JsonReader(new InputStreamReader(in));
         } catch (IOException e) {
             e.printStackTrace();
