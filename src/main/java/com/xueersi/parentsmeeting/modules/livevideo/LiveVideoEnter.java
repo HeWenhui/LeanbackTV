@@ -133,7 +133,8 @@ public class LiveVideoEnter {
      * @param from       入口
      */
     @Deprecated
-    public static boolean intentToLiveVideoActivity(Activity context, String courseId, String vSectionID, int from) {
+    public static boolean intentToLiveVideoActivity(Activity context, String courseId,
+                                                    String vSectionID, int from) {
 
         if (TextUtils.isEmpty(vSectionID)) {
             Toast.makeText(context, "直播场次不能为空", Toast.LENGTH_SHORT).show();
@@ -155,7 +156,8 @@ public class LiveVideoEnter {
      * @param vSectionID 节id
      * @param from       入口
      */
-    public static boolean intentToLiveVideoActivity(final Activity context, final String vStuCourseID, final String
+    public static boolean intentToLiveVideoActivity(final Activity context,
+                                                    final String vStuCourseID, final String
             courseId, final String vSectionID, final int from, boolean isBigLive) {
 
         if (TextUtils.isEmpty(vSectionID)) {
@@ -183,7 +185,10 @@ public class LiveVideoEnter {
      * @param context
      * @param vSectionID
      */
-    public static boolean intentToAuditClassActivity(final Activity context, final String stuCouId, final String vSectionID, final boolean isBigLive) {
+    public static boolean intentToAuditClassActivity(final Activity context,
+                                                     final String stuCouId,
+                                                     final String vSectionID,
+                                                     final boolean isBigLive) {
 
         //低端机设备检测页拦截
         if (ShareDataManager.getInstance().getBoolean(ShareBusinessConfig
@@ -193,7 +198,7 @@ public class LiveVideoEnter {
             context.startActivity(intent);
             return false;
         }
-        AuditClassLiveActivity.intentTo(context, stuCouId, vSectionID,isBigLive);
+        AuditClassLiveActivity.intentTo(context, stuCouId, vSectionID, isBigLive);
         return true;
     }
 
@@ -205,7 +210,8 @@ public class LiveVideoEnter {
      * @param vSectionID 节id
      * @param from       入口
      */
-    public static void intentToLiveVideoActivityLecture(final Activity context, final String vSectionID,
+    public static void intentToLiveVideoActivityLecture(final Activity context,
+                                                        final String vSectionID,
                                                         final int from, final boolean isBiglive) {
         if (TextUtils.isEmpty(vSectionID)) {
             Toast.makeText(context, "直播场次不能为空", Toast.LENGTH_SHORT).show();
@@ -222,7 +228,6 @@ public class LiveVideoEnter {
     }
 
 
-
     /**
      * 跳转到直播,直播辅导
      *
@@ -232,7 +237,9 @@ public class LiveVideoEnter {
      * @param from          入口
      */
     @Deprecated
-    public static void intentToLiveVideoActivityTutorial(final Activity context, final String vSectionID, final String currentDutyId,
+    public static void intentToLiveVideoActivityTutorial(final Activity context,
+                                                         final String vSectionID,
+                                                         final String currentDutyId,
                                                          final int from) {
         if (TextUtils.isEmpty(vSectionID)) {
             Toast.makeText(context, "节id不能为空", Toast.LENGTH_SHORT).show();
@@ -338,7 +345,8 @@ public class LiveVideoEnter {
      * @param context
      * @param bundle
      */
-    public static boolean intentTo(final Activity context, final Bundle bundle, final String where) {
+    public static boolean intentTo(final Activity context, final Bundle bundle,
+                                   final String where) {
 
         int pattern = bundle.getInt("pattern", 1);
         if (ShareDataManager.getInstance().getBoolean(ShareBusinessConfig
@@ -381,16 +389,38 @@ public class LiveVideoEnter {
                         LiveMainHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                com.xueersi.parentsmeeting.modules.livevideo.fragment.
-                                        LivePlaybackVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
+                                String planId = bundle.getString("planId", "");
+                                boolean isSupported = LiveAppUserInfo.getInstance().isSupportedEnglishName();
+                                String skipPlanId =
+                                        ShareDataManager.getInstance().getString(LiveVideoConfig.LIVE_GOUP_1V2_ENGLISH_SKIPED, "-1",
+                                                ShareDataManager.SHAREDATA_USER);
+                                boolean isSkip = skipPlanId.equals(planId);
+                                // 英文名不在支持列表中，且当前场次没有跳过
+                                if (bundle.getInt("pattern") == 8 && !isSupported && !isSkip) {
+                                    start1v2PlayBack(context, bundle, where);
+                                } else {
+                                    com.xueersi.parentsmeeting.modules.livevideo.fragment.
+                                            LivePlaybackVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
+                                }
                             }
                         });
                     }
                 },
                 PermissionConfig.PERMISSION_CODE_AUDIO, PermissionConfig.PERMISSION_CODE_STORAGE);
         if (have) {
-            com.xueersi.parentsmeeting.modules.livevideo.fragment.
-                    LivePlaybackVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
+            String planId = bundle.getString("planId", "");
+            boolean isSupported = LiveAppUserInfo.getInstance().isSupportedEnglishName();
+            String skipPlanId =
+                    ShareDataManager.getInstance().getString(LiveVideoConfig.LIVE_GOUP_1V2_ENGLISH_SKIPED, "-1",
+                    ShareDataManager.SHAREDATA_USER);
+            boolean isSkip = skipPlanId.equals(planId);
+            // 英文名不在支持列表中，且当前场次没有跳过
+            if (bundle.getInt("pattern") == 8 && !isSupported && !isSkip) {
+                start1v2PlayBack(context, bundle, where);
+            } else {
+                com.xueersi.parentsmeeting.modules.livevideo.fragment.
+                        LivePlaybackVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
+            }
         }
     }
 
@@ -433,7 +463,8 @@ public class LiveVideoEnter {
                 });
 //                StableLogHashMap logHashMap = new StableLogHashMap("init_back");
 //                logHashMap.put("status", "" + init);
-//                UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LogConfig.LIVE_X5_LOG, logHashMap.getData());
+//                UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LogConfig
+//                .LIVE_X5_LOG, logHashMap.getData());
                 if (!init) {
                     return;
                 }
@@ -458,10 +489,13 @@ public class LiveVideoEnter {
      * @param context
      * @param bundle
      */
-    public static boolean intentToExperience(final Activity context, final Bundle bundle, final String where) {
+    public static boolean intentToExperience(final Activity context, final Bundle bundle,
+                                             final String where) {
 //        ExperEnter.intentToExperience(context, bundle, where);
-        ReflexCenter.invokeMethodWithParams("com.xueersi.parentsmeeting.modules.livevideo.enter.ExperEnter",
-                "intentToExperience", new Class[]{Activity.class, Bundle.class, String.class}, new Object[]{context, bundle, where});
+        ReflexCenter.invokeMethodWithParams("com.xueersi.parentsmeeting.modules.livevideo.enter" +
+                        ".ExperEnter",
+                "intentToExperience", new Class[]{Activity.class, Bundle.class, String.class},
+                new Object[]{context, bundle, where});
         return true;
     }
 
