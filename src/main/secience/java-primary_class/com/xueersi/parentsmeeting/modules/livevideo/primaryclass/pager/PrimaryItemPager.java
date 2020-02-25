@@ -404,11 +404,16 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
 //                                    if (mRtcEngine != null) {
 //                                        mRtcEngine.setVideoEncoderConfiguration(configuration);
 //                                    }
+
+                                    RTCEngine mRtcEngine = workerThread.getRtcEngine();
+                                    if (mRtcEngine != null) {
+                                        mRtcEngine.setRemoteMirror(true);
+                                    }
                                 }
                             });
                             leaveChannel = false;
-                            final RtcEngine rtcEngine = workerThread.getAgoraRtcEngine();
-                            if (rtcEngine != null) {
+                            /*final RtcEngine rtcEngine = workerThread.getAgoraRtcEngine();
+                            if (rtcEngine == null) {
                                 workerThread.execute(new Runnable() {
                                     @Override
                                     public void run() {
@@ -427,7 +432,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                                         }
                                     }
                                 });
-                            }
+                            }*/
                             workerThread.joinChannel(new CloudWorkerThreadPool.OnJoinChannel() {
                                 @Override
                                 public void onJoinChannel(int joinChannel) {
