@@ -63,8 +63,8 @@ public class ArtsPraiseLottieEffectInfo extends LottieEffectInfo {
             paint.setTextSize(TEXT_SIZE);
             paint.setTextAlign(Paint.Align.LEFT);
             paint.setStyle(Paint.Style.FILL);
-            Typeface typeface = Typeface.createFromAsset(animationView.getContext().getAssets(), "fangzhengcuyuan.ttf");
-            paint.setTypeface(typeface);
+//            Typeface typeface = Typeface.createFromAsset(animationView.getContext().getAssets(), "fangzhengcuyuan.ttf");
+//            paint.setTypeface(typeface);
             paint.setColor(Color.parseColor(TEXT_COLOR));
             paint.setShadowLayer(7, 1, 1, Color.parseColor(SHADOW_COLOR));
             paint.setFakeBoldText(true);

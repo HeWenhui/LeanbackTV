@@ -55,28 +55,28 @@ public class SmallEnglishEvaluateTeacherPager extends BaseEvaluateTeacherPaper {
 
     @Override
     public void initData() {
-        Typeface fontFace = Typeface.createFromAsset(mContext.getAssets(), "fangzhengcuyuan.ttf");
+//        Typeface fontFace = Typeface.createFromAsset(mContext.getAssets(), "fangzhengcuyuan.ttf");
         optCheckCorlor = 0xFFB73800;
         optUncheckColor = 0xFF7B6E6E;
         scoreCheckColor = 0xFFB73800;
         scoreUncheckColor = 0xFF7B6E6E;
-        tvMainName.setTypeface(fontFace);
-        tvTutorName.setTypeface(fontFace);
-        tvResultCountDown.setTypeface(fontFace);
-        rbMainUnSat.setTypeface(fontFace);
-        rbMainSat.setTypeface(fontFace);
-        rbMainVerySat.setTypeface(fontFace);
-        rbTutorSat.setTypeface(fontFace);
-        rbTutorUnSat.setTypeface(fontFace);
-        rbTutorVerySat.setTypeface(fontFace);
-        cbMainOpt1.setTypeface(fontFace);
-        cbMainOpt2.setTypeface(fontFace);
-        cbMainOpt3.setTypeface(fontFace);
-        cbMainOpt4.setTypeface(fontFace);
-        cbTutorOpt1.setTypeface(fontFace);
-        cbTutorOpt2.setTypeface(fontFace);
-        cbTutorOpt3.setTypeface(fontFace);
-        cbTutorOpt4.setTypeface(fontFace);
+//        tvMainName.setTypeface(fontFace);
+//        tvTutorName.setTypeface(fontFace);
+//        tvResultCountDown.setTypeface(fontFace);
+//        rbMainUnSat.setTypeface(fontFace);
+//        rbMainSat.setTypeface(fontFace);
+//        rbMainVerySat.setTypeface(fontFace);
+//        rbTutorSat.setTypeface(fontFace);
+//        rbTutorUnSat.setTypeface(fontFace);
+//        rbTutorVerySat.setTypeface(fontFace);
+//        cbMainOpt1.setTypeface(fontFace);
+//        cbMainOpt2.setTypeface(fontFace);
+//        cbMainOpt3.setTypeface(fontFace);
+//        cbMainOpt4.setTypeface(fontFace);
+//        cbTutorOpt1.setTypeface(fontFace);
+//        cbTutorOpt2.setTypeface(fontFace);
+//        cbTutorOpt3.setTypeface(fontFace);
+//        cbTutorOpt4.setTypeface(fontFace);
         super.initData();
     }
 

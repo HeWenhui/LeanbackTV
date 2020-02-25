@@ -311,11 +311,11 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                 vwvVoiceChatWave.start();
             }
         }, 100);
-        Typeface fontFace = Typeface.createFromAsset(mContext.getAssets(), "fangzhengcuyuan.ttf");
-        tvVoiceCount.setTypeface(fontFace);
-        tvVoiceContent.setTypeface(fontFace);
-        tvMessageCount.setTypeface(fontFace);
-        etMessageContent.setTypeface(fontFace);
+//        Typeface fontFace = Typeface.createFromAsset(mContext.getAssets(), "fangzhengcuyuan.ttf");
+//        tvVoiceCount.setTypeface(fontFace);
+//        tvVoiceContent.setTypeface(fontFace);
+//        tvMessageCount.setTypeface(fontFace);
+//        etMessageContent.setTypeface(fontFace);
         return mView;
     }
 

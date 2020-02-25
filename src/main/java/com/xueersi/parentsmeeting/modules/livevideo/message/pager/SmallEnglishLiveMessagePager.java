@@ -385,12 +385,12 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
             }
         }, 100);
 
-        Typeface fontFace = Typeface.createFromAsset(mContext.getAssets(), "fangzhengcuyuan.ttf");
-        btnMessageStartVoice.setTypeface(fontFace);
-        etMessageContent.setTypeface(fontFace);
-        tvMessageCount.setTypeface(fontFace);
-        tvMessageVoiceContent.setTypeface(fontFace);
-        tvMessageVoiceCount.setTypeface(fontFace);
+//        Typeface fontFace = Typeface.createFromAsset(mContext.getAssets(), "fangzhengcuyuan.ttf");
+//        btnMessageStartVoice.setTypeface(fontFace);
+//        etMessageContent.setTypeface(fontFace);
+//        tvMessageCount.setTypeface(fontFace);
+//        tvMessageVoiceContent.setTypeface(fontFace);
+//        tvMessageVoiceCount.setTypeface(fontFace);
         return mView;
     }
 
