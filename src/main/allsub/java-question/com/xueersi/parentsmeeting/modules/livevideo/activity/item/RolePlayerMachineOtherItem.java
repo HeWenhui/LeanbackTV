@@ -182,7 +182,7 @@ public class RolePlayerMachineOtherItem extends RolePlayerItem {
             @Override
             public void onCompletion(Object o, AudioPlayerManager audioPlayerManager) {
                 logger.i( "完成播放");
-                //解决闪退直播间问题
+                //解决闪退直播间的问题
                 if(mAudioPlayerManager != null){
                     mAudioPlayerManager.release();
                     mAudioPlayerManager = null;
