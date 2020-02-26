@@ -18,7 +18,6 @@ import android.widget.TextView;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.XESToastUtils;
-import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.module.audio.safeaudioplayer.AudioPlayerManager;
 import com.xueersi.parentsmeeting.module.audio.safeaudioplayer.PlayerCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -183,8 +182,12 @@ public class RolePlayerMachineOtherItem extends RolePlayerItem {
             @Override
             public void onCompletion(Object o, AudioPlayerManager audioPlayerManager) {
                 logger.i( "完成播放");
-                mAudioPlayerManager.release();
-                mAudioPlayerManager = null;
+                //解决闪退直播间的问题
+                if(mAudioPlayerManager != null){
+                    mAudioPlayerManager.release();
+                    mAudioPlayerManager = null;
+                }
+
                 if(isRolePlay){
                     logger.i("机器播完，开启下一条");
                     nextMsg();

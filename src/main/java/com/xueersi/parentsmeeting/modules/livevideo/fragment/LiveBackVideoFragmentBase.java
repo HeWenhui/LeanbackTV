@@ -340,6 +340,8 @@ public abstract class LiveBackVideoFragmentBase extends Fragment {
         }
         // 注销事件
         EventBus.getDefault().unregister(this);
+        BaseApplication baseApplication = BaseApplication.getInstance();
+        baseApplication.removeActivty(activity);
     }
 
     @Override
