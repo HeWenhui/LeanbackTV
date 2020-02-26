@@ -78,7 +78,7 @@ public class LiveVideoDispatcher extends AbsDispatcher {
     /**
      * 讲座是否是大班 灰度状态
      **/
-    private int big_live_type = -1;
+//    private int big_live_type = -1;
     /**
      * 直播 是否是大班 灰度状态
      */
@@ -165,12 +165,11 @@ public class LiveVideoDispatcher extends AbsDispatcher {
                 //视频标记点位置
                 offset = jsonObject.optLong("offset");
                 // 大班灰度状态
-                big_live_type = jsonObject.optInt("bigLiveStatus", big_live_type);
+//                big_live_type = jsonObject.optInt("bigLiveStatus", big_live_type);
                 planVersion = jsonObject.optInt("planVersion",
                         DispatcherConfig.BIGLIVE_GRAY_CONTROL_PLANVERSION_DEFAULT);
                 liveRoomType = jsonObject.optInt("liveRoomType",0);
-                if(type == TYPE_LECTURE  && (big_live_type == DispatcherConfig.PUBLIC_GRAY_CONTROL_COMMON ||
-                        liveRoomType == DispatcherConfig.PUBLIC_TYPE_COMMON || liveRoomType == DispatcherConfig.PUBLIC_TYPE_LIGHTLIVE)){
+                if(type == TYPE_LECTURE  && (liveRoomType == DispatcherConfig.PUBLIC_TYPE_COMMON || liveRoomType == DispatcherConfig.PUBLIC_TYPE_LIGHTLIVE)){
                     Module m = new Module();
                     m.moduleName = "livepublic";
                     m.param = paramsJson;
@@ -385,7 +384,7 @@ public class LiveVideoDispatcher extends AbsDispatcher {
         @Override
         public void onDataSucess(Object... objData) {
             PublicLiveGrayEntity mPublicLiveGrayEntity = (PublicLiveGrayEntity) objData[0];
-            if (mPublicLiveGrayEntity.getStatus() != DispatcherConfig.PUBLIC_GRAY_CONTROL_BIG_LIVE){
+            if (mPublicLiveGrayEntity.getStatus() != DispatcherConfig.PUBLIC_TYPE_BIGLIVE){
                 Module m = new Module();
                 m.moduleName = "livepublic";
                 m.param = paramsJson;
@@ -393,7 +392,7 @@ public class LiveVideoDispatcher extends AbsDispatcher {
                 ModuleHandler.start(activity, m);
                 return;
             }
-            startLecture(mPublicLiveGrayEntity.getStatus() == DispatcherConfig.PUBLIC_GRAY_CONTROL_BIG_LIVE);
+            startLecture(mPublicLiveGrayEntity.getStatus() == DispatcherConfig.PUBLIC_TYPE_BIGLIVE);
         }
 
         @Override
@@ -410,11 +409,9 @@ public class LiveVideoDispatcher extends AbsDispatcher {
      * @return
      */
     private void enterLecture() {
-        if (big_live_type == DispatcherConfig.PUBLIC_GRAY_CONTROL_BIG_LIVE || liveRoomType == DispatcherConfig.PUBLIC_TYPE_BIGLIVE) {
+        if (liveRoomType == DispatcherConfig.PUBLIC_TYPE_BIGLIVE) {
             startLecture(true);
-        } else if (big_live_type == DispatcherConfig.PUBLIC_GRAY_CONTROL_COMMON) {
-            startLecture(false);
-        } else if (big_live_type == DispatcherConfig.PUBLIC_GRAY_CONTROL_DEFALUT) {
+        }  else if (liveRoomType == DispatcherConfig.PUBLIC_TYPE_UNKNOW) {
             dataLoadEntity = new DataLoadEntity(activity);
             dispatcherBll.publicLiveIsGrayLecture(planId, true, publicGrayControlCallBack,
                     dataLoadEntity);

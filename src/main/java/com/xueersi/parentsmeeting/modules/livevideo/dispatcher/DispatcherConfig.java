@@ -32,12 +32,12 @@ public class DispatcherConfig {
     public static final int  BIGLIVE_GRAY_CONTROL_PLANVERSION_DEFAULT = -1;
     /** 大班整合 直播灰测普通直播 **/
     public static final int BIGLIVE_GRAY_CONTROL_PLANVERSION_COMMON = 0;
-
-    public static final int PUBLIC_TYPE_UNKNOW = 0;
-
-    public static final int PUBLIC_TYPE_COMMON = 1;
-
-    public static final int PUBLIC_TYPE_BIGLIVE = 2;
-
-    public static final int PUBLIC_TYPE_LIGHTLIVE= 0;
+    /** 未知类型*/
+    public static final int PUBLIC_TYPE_UNKNOW = -1;
+    /** 普通直播 公益直播*/
+    public static final int PUBLIC_TYPE_COMMON = 0;
+    /** 大班直播*/
+    public static final int PUBLIC_TYPE_BIGLIVE = 1;
+    /** 轻直播*/
+    public static final int PUBLIC_TYPE_LIGHTLIVE= 2;
 }
