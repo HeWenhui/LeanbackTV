@@ -72,6 +72,8 @@ public class LiveVideoDispatcher extends AbsDispatcher {
     String teacherId;
     String gotoClassTime;
     private long offset;
+    /** 讲座类型 0未知，1普通讲座 2大班讲座 3轻直播*/
+    private int liveRoomType;
     private DispatcherBll dispatcherBll;
     /**
      * 讲座是否是大班 灰度状态
@@ -166,7 +168,9 @@ public class LiveVideoDispatcher extends AbsDispatcher {
                 big_live_type = jsonObject.optInt("bigLiveStatus", big_live_type);
                 planVersion = jsonObject.optInt("planVersion",
                         DispatcherConfig.BIGLIVE_GRAY_CONTROL_PLANVERSION_DEFAULT);
-                if(type == TYPE_LECTURE  && big_live_type == DispatcherConfig.PUBLIC_GRAY_CONTROL_COMMON){
+                liveRoomType = jsonObject.optInt("liveRoomType",0);
+                if(type == TYPE_LECTURE  && (big_live_type == DispatcherConfig.PUBLIC_GRAY_CONTROL_COMMON ||
+                        liveRoomType == DispatcherConfig.PUBLIC_TYPE_COMMON || liveRoomType == DispatcherConfig.PUBLIC_TYPE_LIGHTLIVE)){
                     Module m = new Module();
                     m.moduleName = "livepublic";
                     m.param = paramsJson;
@@ -406,7 +410,7 @@ public class LiveVideoDispatcher extends AbsDispatcher {
      * @return
      */
     private void enterLecture() {
-        if (big_live_type == DispatcherConfig.PUBLIC_GRAY_CONTROL_BIG_LIVE) {
+        if (big_live_type == DispatcherConfig.PUBLIC_GRAY_CONTROL_BIG_LIVE || liveRoomType == DispatcherConfig.PUBLIC_TYPE_BIGLIVE) {
             startLecture(true);
         } else if (big_live_type == DispatcherConfig.PUBLIC_GRAY_CONTROL_COMMON) {
             startLecture(false);
