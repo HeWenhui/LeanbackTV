@@ -40,6 +40,8 @@ public class ObjectUtils {
         if (object == null) {
             return null;
         }
+        FileOutputStream fileOutputStream = null;
+        ObjectOutputStream objectOutputStream = null;
         try {
             File dir = new File(context.getCacheDir(), "livesave");
             if (!dir.exists()) {
@@ -53,8 +55,8 @@ public class ObjectUtils {
 //                }
             }
             File file = new File(dir, "" + object.hashCode());
-            FileOutputStream fileOutputStream = new FileOutputStream(file);
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+            fileOutputStream = new FileOutputStream(file);
+            objectOutputStream = new ObjectOutputStream(fileOutputStream);
             objectOutputStream.writeObject(object);
             objectOutputStream.flush();
             logger.d("saveObj:file=" + file + ",length=" + file.length());
@@ -62,6 +64,21 @@ public class ObjectUtils {
         } catch (Exception e) {
             logger.d("saveObj:e=", e);
             LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+        } finally {
+            if (fileOutputStream != null) {
+                try {
+                    fileOutputStream.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            if (objectOutputStream != null) {
+                try {
+                    objectOutputStream.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
         return null;
     }
@@ -70,12 +87,14 @@ public class ObjectUtils {
         if (filePath == null) {
             return null;
         }
+        FileInputStream fileInputStream = null;
+        ObjectInputStream objectInputStream = null;
         try {
             FileObj fileObj = new FileObj();
             File file = new File(filePath);
-            FileInputStream fileOutputStream = new FileInputStream(file);
-            ObjectInputStream objectOutputStream = new ObjectInputStream(fileOutputStream);
-            Object object = objectOutputStream.readObject();
+            fileInputStream = new FileInputStream(file);
+            objectInputStream = new ObjectInputStream(fileInputStream);
+            Object object = objectInputStream.readObject();
             fileObj.object = object;
             fileObj.length = file.length();
             logger.d("getSaveObj:file=" + file.getPath() + ",length=" + file.length() + ",object=" + object);
@@ -83,6 +102,21 @@ public class ObjectUtils {
         } catch (Exception e) {
             logger.d("getSaveObj:e=", e);
             LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+        } finally {
+            if (fileInputStream != null) {
+                try {
+                    fileInputStream.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            if (objectInputStream != null) {
+                try {
+                    objectInputStream.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
         return null;
     }
