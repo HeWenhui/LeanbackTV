@@ -134,7 +134,7 @@ public class LivePlaybackVideoActivity extends LiveBackVideoActivityBase {
         }
         try {
             VideoLivePlayBackEntity serializable = (VideoLivePlayBackEntity) bundle.getSerializable(
-                    "videoliveplayback");
+                    LiveVideoConfig.videoliveplayback);
             if (serializable != null) {
                 HashMap<String, String> hashMap = new HashMap();
                 if (serializable.getvLivePlayBackType() == LocalCourseConfig.LIVETYPE_RECORDED) {
