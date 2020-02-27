@@ -168,7 +168,7 @@ public class LiveVideoDispatcher extends AbsDispatcher {
 //                big_live_type = jsonObject.optInt("bigLiveStatus", big_live_type);
                 planVersion = jsonObject.optInt("planVersion",
                         DispatcherConfig.BIGLIVE_GRAY_CONTROL_PLANVERSION_DEFAULT);
-                liveRoomType = jsonObject.optInt("liveRoomType",0);
+                liveRoomType = jsonObject.optInt("liveRoomType",DispatcherConfig.PUBLIC_TYPE_UNKNOW);
                 if(type == TYPE_LECTURE  && (liveRoomType == DispatcherConfig.PUBLIC_TYPE_COMMON || liveRoomType == DispatcherConfig.PUBLIC_TYPE_LIGHTLIVE)){
                     Module m = new Module();
                     m.moduleName = "livepublic";

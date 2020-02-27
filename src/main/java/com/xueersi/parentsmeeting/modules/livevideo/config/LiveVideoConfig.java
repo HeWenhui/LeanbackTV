@@ -393,4 +393,9 @@ public class LiveVideoConfig {
     public static final String LIVE_GOUP_1V2_ENGLISH_CHECK = "live_goup_1v2_english_name_check";
     /** 是否跳过了名字设置 */
     public static final String LIVE_GOUP_1V2_ENGLISH_SKIPED = "live_goup_1v2_english_name_skip";
+
+    public static String videoliveplayback="videoliveplayback";
+    public static String videoliveplaybackStr="videoliveplaybackStr";
+    public static String videoTutorEntity="videoTutorEntity";
+    public static String videoTutorEntityStr="videoTutorEntityStr";
 }

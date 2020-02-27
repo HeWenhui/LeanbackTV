@@ -46,8 +46,10 @@ public class LiveNetCheckTip {
                 && curTimeStamp - tipShowTimestamp >= 5 * 60 * 1000) {
             tipShowTimestamp = System.currentTimeMillis();
             Toast toast = Toast.makeText(context, null, Toast.LENGTH_LONG);
-            toast.setText(tips);
-            toast.show();
+            if (toast!=null) {
+                toast.setText(tips);
+                toast.show();
+            }
             stuckCount = 0;
             //日志发送
             LiveLogBill.getInstance().sendStuckLog();

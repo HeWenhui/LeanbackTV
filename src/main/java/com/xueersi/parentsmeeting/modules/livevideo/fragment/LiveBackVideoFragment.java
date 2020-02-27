@@ -69,6 +69,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessage
 import com.xueersi.parentsmeeting.modules.livevideo.remark.business.LiveRemarkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.PlayErrorCodeLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ObjectUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveBackVideoBll;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
@@ -84,6 +85,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.io.File;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -176,8 +178,45 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         setAutoOrientation(false);
         Intent intent = activity.getIntent();
 
-        mVideoMainEntity = (VideoLivePlayBackEntity) intent.getExtras().getSerializable("videoliveplayback");
-        mVideoTutorEntity = (VideoLivePlayBackEntity) intent.getExtras().getSerializable("videoTutorEntity");
+        Bundle bundle = intent.getExtras();
+        mVideoMainEntity = (VideoLivePlayBackEntity) bundle.getSerializable(LiveVideoConfig.videoliveplayback);
+        mVideoTutorEntity = (VideoLivePlayBackEntity) bundle.getSerializable(LiveVideoConfig.videoTutorEntity);
+        if (mVideoMainEntity == null) {
+            String path1 = bundle.getString(LiveVideoConfig.videoliveplaybackStr);
+            ObjectUtils.FileObj fileObj = ObjectUtils.getSaveObj(path1);
+            if (fileObj != null) {
+                mVideoMainEntity = (VideoLivePlayBackEntity) fileObj.object;
+                try {
+                    HashMap<String, String> hashMap = new HashMap<>();
+                    hashMap.put("logtype", LiveVideoConfig.videoliveplayback);
+                    hashMap.put("path1", "" + path1);
+                    hashMap.put("length", "" + fileObj.length);
+                    hashMap.put("entity", "" + mVideoMainEntity);
+                    UmsAgentManager.umsAgentDebug(activity, "LiveBackVideoFragmentIntentTo", hashMap);
+                } catch (Exception e) {
+                    LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+                }
+            }
+        }
+        if (mVideoTutorEntity == null) {
+            String path2 = bundle.getString(LiveVideoConfig.videoTutorEntityStr);
+            if (path2 != null) {
+                ObjectUtils.FileObj fileObj = ObjectUtils.getSaveObj(path2);
+                if (fileObj != null) {
+                    mVideoTutorEntity = (VideoLivePlayBackEntity) fileObj.object;
+                    try {
+                        HashMap<String, String> hashMap = new HashMap<>();
+                        hashMap.put("logtype", LiveVideoConfig.videoTutorEntity);
+                        hashMap.put("path2", "" + path2);
+                        hashMap.put("length", "" + fileObj.length);
+                        hashMap.put("entity", "" + mVideoMainEntity);
+                        UmsAgentManager.umsAgentDebug(activity, "LiveBackVideoFragmentIntentTo", hashMap);
+                    } catch (Exception e) {
+                        LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+                    }
+                }
+            }
+        }
         if (mVideoTutorEntity != null) {
             mVideoTutorEntity.setIsAllowMarkpoint(0);
         }
@@ -254,11 +293,11 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         if (mVideoEntity.getPattern() == LiveVideoConfig.LIVE_PATTERN_GROUP_CLASS) {
             liveViewAction.addView(LiveVideoLevel.LEVEL_CTRl, mPlayBackMediaController, new ViewGroup.LayoutParams
                     (ViewGroup
-                    .LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                            .LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         } else {
             rl_course_video_live_controller_content.addView(mPlayBackMediaController, new ViewGroup.LayoutParams
                     (ViewGroup
-                    .LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                            .LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         }
 
         if (mLiveRemarkBll == null || mVideoEntity.getIsAllowMarkpoint() != 1) {

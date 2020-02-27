@@ -31,6 +31,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEnt
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoSectionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.LiveVideoEnter;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ObjectUtils;
 import com.xueersi.parentsmeeting.share.business.biglive.config.BigLiveCfg;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
@@ -166,10 +167,14 @@ public class DispatcherBll extends BaseBll {
                 sectionEntit.getvSectionID() + LIVE_PLAY_BACK_TUTOR_FLAGE);
 
         Bundle bundle = new Bundle();
-        bundle.putSerializable("videoliveplayback", videoEntity);
-        bundle.putSerializable("videoTutorEntity", tutorEntity);
+        bundle.putSerializable(LiveVideoConfig.videoliveplayback, videoEntity);
+        bundle.putSerializable(LiveVideoConfig.videoTutorEntity, tutorEntity);
+        String path1 = ObjectUtils.saveObj(mContext, videoEntity);
+        bundle.putString(LiveVideoConfig.videoliveplaybackStr, path1);
         if (tutorEntity != null) {
             bundle.putInt("teacherVideoStatus", MediaPlayer.VIDEO_TEACHER_MAIN);
+            String path2 = ObjectUtils.saveObj(mContext, tutorEntity);
+            bundle.putString(LiveVideoConfig.videoTutorEntityStr, path2);
         }
 
         bundle.putInt("type", 3);
