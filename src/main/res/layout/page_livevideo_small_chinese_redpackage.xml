@@ -80,7 +80,7 @@
         android:paddingTop="-10dp"
         android:text="8"
         android:textColor="@color/COLOR_EA4D43"
-        android:textSize="85dp"
+        android:textSize="80dp"
         app:layout_constraintBottom_toBottomOf="@id/iv_livevideo_small_chinese_red_package_background"
         app:layout_constraintLeft_toLeftOf="@id/iv_livevideo_small_chinese_red_package_open_tip"
         app:layout_constraintRight_toRightOf="@id/iv_livevideo_small_chinese_red_package_open_tip" />
