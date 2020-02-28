@@ -81,6 +81,7 @@
         android:text="8"
         android:textColor="@color/COLOR_EA4D43"
         android:textSize="80dp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@id/iv_livevideo_small_chinese_red_package_background"
         app:layout_constraintLeft_toLeftOf="@id/iv_livevideo_small_chinese_red_package_open_tip"
         app:layout_constraintRight_toRightOf="@id/iv_livevideo_small_chinese_red_package_open_tip" />
@@ -94,6 +95,7 @@
         android:text="金币"
         android:textColor="@color/COLOR_EA4D43"
         android:textSize="16dp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@id/fzcytv_livevideo_small_chinese_red_package_red_value"
         app:layout_constraintLeft_toRightOf="@id/fzcytv_livevideo_small_chinese_red_package_red_value" />
 </android.support.constraint.ConstraintLayout>
