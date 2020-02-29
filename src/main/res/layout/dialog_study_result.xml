@@ -18,7 +18,7 @@
             android:layout_alignParentRight="true"
             android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"
-            android:background="@drawable/cy_main_guanbi_icon_normal"
+            android:background="@drawable/livevideo_guanbi_icon_normal"
             android:scaleType="fitCenter" />
 
         <com.xueersi.parentsmeeting.modules.livevideo.widget.RoundProgressBar

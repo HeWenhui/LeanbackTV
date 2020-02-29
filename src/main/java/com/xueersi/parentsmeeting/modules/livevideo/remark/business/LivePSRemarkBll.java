@@ -594,7 +594,7 @@
 //            @Override
 //            public void onFinish() {
 //                logger.i("onFinish");
-//                mLiveMediaControllerBottom.getBtMark().setBackgroundResource(R.drawable.bg_bt_live_mark);
+//                mLiveMediaControllerBottom.getBtMark().setBackgroundResource(R.drawable.livevideo_live_mark_img);
 //                mLiveMediaControllerBottom.getBtMark().setText("");
 //                setIsCounting(false);
 //            }

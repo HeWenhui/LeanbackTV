@@ -59,7 +59,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginLeft="20dp"
-            android:background="@drawable/bg_bt_live_mark"
+            android:background="@drawable/livevideo_live_mark_img"
             android:textColor="@color/white"
             android:alpha="0.5"
             android:enabled="false"
