@@ -49,7 +49,7 @@
                 android:layout_marginRight="20dp"
                 android:text="+0"
                 android:textColor="#FF824B"
-                android:textSize="14sp" />
+                android:textSize="12dp" />
 
         </LinearLayout>
 
@@ -111,7 +111,7 @@
             android:layout_alignTop="@+id/lv_arts_answer_result_pse"
             android:text=""
             android:textColor="#ff8C8080"
-            android:textSize="10sp"
+            android:textSize="8dp"
             android:visibility="gone" />
 
     </RelativeLayout>

@@ -41,9 +41,9 @@ public class LivePlaybackVideoActivity extends LiveBackVideoActivityBase {
             return new LiveBackVideoFragment();
         } else {
             //讲座回放
-            if ("PublicLiveDetailActivity".equals(where)) {
-                return new LecBackVideoFragment();
-            }
+//            if ("PublicLiveDetailActivity".equals(where)) {
+//                return new LecBackVideoFragment();
+//            }
             int pattern = getIntent().getIntExtra("pattern", 0);
             isExperience = getIntent().getBooleanExtra("isExperience", false);
             if (!isExperience) {
@@ -99,19 +99,19 @@ public class LivePlaybackVideoActivity extends LiveBackVideoActivityBase {
     @Override
     protected void onRestart() {
         super.onRestart();
-        if (liveVideoFragmentBase instanceof LecBackVideoFragment) {
-            LecBackVideoFragment liveVideoFragmentBase = (LecBackVideoFragment) this.liveVideoFragmentBase;
-            liveVideoFragmentBase.onRestart();
-        }
+//        if (liveVideoFragmentBase instanceof LecBackVideoFragment) {
+//            LecBackVideoFragment liveVideoFragmentBase = (LecBackVideoFragment) this.liveVideoFragmentBase;
+//            liveVideoFragmentBase.onRestart();
+//        }
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        if (liveVideoFragmentBase instanceof LecBackVideoFragment) {
-            LecBackVideoFragment lecBackVideoFragment = (LecBackVideoFragment) liveVideoFragmentBase;
-            lecBackVideoFragment.onNewIntent(intent);
-        }
+//        if (liveVideoFragmentBase instanceof LecBackVideoFragment) {
+//            LecBackVideoFragment lecBackVideoFragment = (LecBackVideoFragment) liveVideoFragmentBase;
+//            lecBackVideoFragment.onNewIntent(intent);
+//        }
     }
 
     /**
@@ -134,7 +134,7 @@ public class LivePlaybackVideoActivity extends LiveBackVideoActivityBase {
         }
         try {
             VideoLivePlayBackEntity serializable = (VideoLivePlayBackEntity) bundle.getSerializable(
-                    "videoliveplayback");
+                    LiveVideoConfig.videoliveplayback);
             if (serializable != null) {
                 HashMap<String, String> hashMap = new HashMap();
                 if (serializable.getvLivePlayBackType() == LocalCourseConfig.LIVETYPE_RECORDED) {

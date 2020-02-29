@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.business.agora;
 import android.content.Context;
 
 import com.xes.ps.rtcstream.RTCEngine;
+import com.xes.ps.rtcstream.listener.RTCConnectionStateType;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 
@@ -36,7 +37,7 @@ public class CloudEngineEventHandler {
     final RTCEngine.IRtcEngineEventListener rtcEngineEventListener = new RTCEngine.IRtcEngineEventListener() {
 
         @Override
-        public void remotefirstVideoRecvWithUid(int uid) {
+        public void remotefirstVideoRecvWithUid(long uid) {
             Iterator<RTCEngine.IRtcEngineEventListener> it = mEventHandlerList.keySet().iterator();
             while (it.hasNext()) {
                 RTCEngine.IRtcEngineEventListener handler = it.next();
@@ -45,7 +46,7 @@ public class CloudEngineEventHandler {
         }
 
         @Override
-        public void remoteUserJoinWitnUid(int uid) {
+        public void remoteUserJoinWitnUid(long uid) {
             Iterator<RTCEngine.IRtcEngineEventListener> it = mEventHandlerList.keySet().iterator();
             while (it.hasNext()) {
                 RTCEngine.IRtcEngineEventListener handler = it.next();
@@ -54,7 +55,7 @@ public class CloudEngineEventHandler {
         }
 
         @Override
-        public void didOfflineOfUid(int uid) {
+        public void didOfflineOfUid(long uid) {
             Iterator<RTCEngine.IRtcEngineEventListener> it = mEventHandlerList.keySet().iterator();
             while (it.hasNext()) {
                 RTCEngine.IRtcEngineEventListener handler = it.next();
@@ -63,7 +64,7 @@ public class CloudEngineEventHandler {
         }
 
         @Override
-        public void didAudioMuted(int uid, boolean muted) {
+        public void didAudioMuted(long uid, boolean muted) {
             Iterator<RTCEngine.IRtcEngineEventListener> it = mEventHandlerList.keySet().iterator();
             while (it.hasNext()) {
                 RTCEngine.IRtcEngineEventListener handler = it.next();
@@ -72,7 +73,7 @@ public class CloudEngineEventHandler {
         }
 
         @Override
-        public void didVideoMuted(int uid, boolean muted) {
+        public void didVideoMuted(long uid, boolean muted) {
             Iterator<RTCEngine.IRtcEngineEventListener> it = mEventHandlerList.keySet().iterator();
             while (it.hasNext()) {
                 RTCEngine.IRtcEngineEventListener handler = it.next();
@@ -95,16 +96,20 @@ public class CloudEngineEventHandler {
         }
 
         @Override
-        public void onConnectionLost() {
-            Iterator<RTCEngine.IRtcEngineEventListener> it = mEventHandlerList.keySet().iterator();
-            while (it.hasNext()) {
-                RTCEngine.IRtcEngineEventListener handler = it.next();
-                handler.onConnectionLost();
+        public void connectionChangedToState(RTCConnectionStateType state, String reason){
+            // 原onConnectionLost逻辑
+            if(state!= null && (state.equals(RTCConnectionStateType.RTCConnectionStateTypeDisconnected)
+                    || state.equals(RTCConnectionStateType.RTCConnectionStateTypeFailed))) {
+                Iterator<RTCEngine.IRtcEngineEventListener> it = mEventHandlerList.keySet().iterator();
+                while (it.hasNext()) {
+                    RTCEngine.IRtcEngineEventListener handler = it.next();
+                    handler.connectionChangedToState(state, reason);
+                }
             }
         }
 
         @Override
-        public void localUserJoindWithUid(int uid) {
+        public void localUserJoindWithUid(long uid) {
             Iterator<RTCEngine.IRtcEngineEventListener> it = mEventHandlerList.keySet().iterator();
             while (it.hasNext()) {
                 RTCEngine.IRtcEngineEventListener handler = it.next();
@@ -113,7 +118,7 @@ public class CloudEngineEventHandler {
         }
 
         @Override
-        public void reportAudioVolumeOfSpeaker(int uid, int volume) {
+        public void reportAudioVolumeOfSpeaker(long uid, int volume) {
             Iterator<RTCEngine.IRtcEngineEventListener> it = mEventHandlerList.keySet().iterator();
             while (it.hasNext()) {
                 RTCEngine.IRtcEngineEventListener handler = it.next();
@@ -122,7 +127,7 @@ public class CloudEngineEventHandler {
         }
 
         @Override
-        public void remotefirstAudioRecvWithUid(int uid) {
+        public void remotefirstAudioRecvWithUid(long uid) {
             Iterator<RTCEngine.IRtcEngineEventListener> it = mEventHandlerList.keySet().iterator();
             while (it.hasNext()) {
                 RTCEngine.IRtcEngineEventListener handler = it.next();
@@ -131,7 +136,7 @@ public class CloudEngineEventHandler {
         }
 
         @Override
-        public void onRemoteVideoStateChanged(int uid, int state) {
+        public void onRemoteVideoStateChanged(long uid, int state) {
             Iterator<RTCEngine.IRtcEngineEventListener> it = mEventHandlerList.keySet().iterator();
             while (it.hasNext()) {
                 RTCEngine.IRtcEngineEventListener handler = it.next();

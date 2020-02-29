@@ -17,7 +17,6 @@ import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoSectionEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.LiveAssetsLoadUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.LiveVideoEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -221,29 +220,9 @@ public class LiveVideoTransferActivity extends BaseActivity {
             finish();
             return false;
         }
-        LiveAssetsLoadUtil.loadAssertsResource(context, new LoadFileCallBack() {
-            @Override
-            public void start() {
-
-            }
-
-            @Override
-            public void success() {
-                com.xueersi.parentsmeeting.modules.livevideo.fragment.LivePlaybackVideoActivity.intentTo(context, bundle,
-                        where, LiveVideoEnter.VIDEO_REQUEST);
-                finish();
-            }
-
-            @Override
-            public void progress(float progress, int type) {
-
-            }
-
-            @Override
-            public void fail(int errorCode, String errorMsg) {
-
-            }
-        });
+        com.xueersi.parentsmeeting.modules.livevideo.fragment.LivePlaybackVideoActivity.intentTo(context, bundle,
+                where, LiveVideoEnter.VIDEO_REQUEST);
+        finish();
         return true;
     }
 

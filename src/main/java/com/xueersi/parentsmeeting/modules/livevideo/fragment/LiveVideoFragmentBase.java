@@ -274,7 +274,7 @@ public class LiveVideoFragmentBase extends Fragment {
         @Override
         public void onVideoCreate() {
             video = "ijk";
-            logger.d("onActivityCreated:frag=" + ((ViewGroup) mContentView.findViewById(R.id.rl_live_video_frag)).getChildCount());
+//            logger.d("onActivityCreated:frag=" + ((ViewGroup) mContentView.findViewById(R.id.rl_live_video_frag)).getChildCount());
             onSelect(savedInstanceState, video);
         }
     }

@@ -9,11 +9,12 @@ import android.view.WindowManager;
 import android.widget.RelativeLayout;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
+import com.xueersi.common.base.BaseActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.page.SpeechCollectivePager;
 
 @Route(path = "/livevideo/praise")
-public class PraiseTestActivity extends Activity {
+public class PraiseTestActivity extends BaseActivity {
     SpeechCollectivePager praiseInteractionPager;
 
     @Override

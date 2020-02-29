@@ -37,14 +37,22 @@ import java.util.List;
  */
 public class BigQuestionSelectLivePager extends BaseLiveBigQuestionPager {
     private RelativeLayout rlQuestionContentQuestion;
-    /** 答案列表 */
+    /**
+     * 答案列表
+     */
     private List<AnswerEntity> mAnswerEntityLst;
     private Button btnSubmit;
-    /** 隐藏试题图标布局 */
+    /**
+     * 隐藏试题图标布局
+     */
     private RelativeLayout rlDown;
-    /** 用户答案 */
+    /**
+     * 用户答案
+     */
     private ArrayList<String> answers = new ArrayList<>();
-    /** 隐藏试题布局 */
+    /**
+     * 隐藏试题布局
+     */
     private ImageView mImgDown;
     private RelativeLayout rlQuestionContent;
     private RelativeLayout rlQuestionHide;
@@ -127,7 +135,9 @@ public class BigQuestionSelectLivePager extends BaseLiveBigQuestionPager {
 
     private Button lastBt;
 
-    /** 答案选择-单选 */
+    /**
+     * 答案选择-单选
+     */
     private class AnswerSelOnClickListener implements OnClickListener {
 
         @Override
@@ -182,7 +192,9 @@ public class BigQuestionSelectLivePager extends BaseLiveBigQuestionPager {
         }
     }
 
-    /** 答案选择- 多选 */
+    /**
+     * 答案选择- 多选
+     */
     private class AnswerMulSelOnClickListener implements OnClickListener {
 
         @Override
@@ -225,7 +237,9 @@ public class BigQuestionSelectLivePager extends BaseLiveBigQuestionPager {
         }
     }
 
-    /** 提交答案 */
+    /**
+     * 提交答案
+     */
     private class SubmitAnswerOnClickListener implements OnClickListener {
 
         @Override
@@ -247,6 +261,9 @@ public class BigQuestionSelectLivePager extends BaseLiveBigQuestionPager {
                     if (resultPager.isAttach()) {
                         liveViewAction.removeView(resultPager.getRootView());
                         onPagerClose.onClose(BigQuestionSelectLivePager.this);
+                        if (!isPlayback) {
+                            resultPager.flyGoldAndUpdate(videoQuestionLiveEntity);
+                        }
                     }
                 }
             }, LiveQueConfig.BIG_TEST_CLOSE);
@@ -337,6 +354,9 @@ public class BigQuestionSelectLivePager extends BaseLiveBigQuestionPager {
             public void onClose(LiveBasePager basePager) {
                 liveViewAction.removeView(basePager.getRootView());
                 onPagerClose.onClose(BigQuestionSelectLivePager.this);
+                if (!isPlayback) {
+                    resultPager.flyGoldAndUpdate(videoQuestionLiveEntity);
+                }
             }
         });
         if (isForce == 1) {
@@ -346,6 +366,9 @@ public class BigQuestionSelectLivePager extends BaseLiveBigQuestionPager {
                     if (resultPager.isAttach()) {
                         liveViewAction.removeView(resultPager.getRootView());
                         onPagerClose.onClose(BigQuestionSelectLivePager.this);
+                        if (!isPlayback) {
+                            resultPager.flyGoldAndUpdate(videoQuestionLiveEntity);
+                        }
                     }
                 }
             }, LiveQueConfig.BIG_TEST_CLOSE);

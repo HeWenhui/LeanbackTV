@@ -220,7 +220,7 @@
             android:layout_height="40dp"
             android:layout_marginTop="10dp"
             android:alpha="0.5"
-            android:background="@drawable/bg_bt_live_mark"
+            android:background="@drawable/livevideo_live_mark_img"
             android:enabled="false"
             android:textColor="@color/white"
             android:visibility="gone" />

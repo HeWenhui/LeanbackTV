@@ -7,8 +7,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuSegmentEn
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LiveModuleConfigInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LivePlugin;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.SubGroupEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.SubMemberEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.entity.LPWeChatEntity;
+//import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.SubMemberEntity;
+//import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.entity.LPWeChatEntity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -399,37 +399,37 @@ public class LiveGetInfo {
     /** 轻直播公告*/
     private String gentlyNotice;
     /** 是否是轻直播 0否 1是*/
-    private boolean isGently;
+//    private boolean isGently;
 
-    private LPWeChatEntity lpWeChatEntity;
+//    private LPWeChatEntity lpWeChatEntity;
     /** 聊天人数增加开关 1开 0关*/
-    private int chatSwitch;
+//    private int chatSwitch;
 
     private String streamTimes;
+//
+//    public String getGentlyNotice() {
+//        return gentlyNotice;
+//    }
+//
+//    public void setGentlyNotice(String gentlyNotice) {
+//        this.gentlyNotice = gentlyNotice;
+//    }
 
-    public String getGentlyNotice() {
-        return gentlyNotice;
-    }
-
-    public void setGentlyNotice(String gentlyNotice) {
-        this.gentlyNotice = gentlyNotice;
-    }
-
-    public boolean isGently() {
-        return isGently;
-    }
-
-    public void setIsGently(boolean isGently) {
-        this.isGently = isGently;
-    }
-
-    public LPWeChatEntity getLpWeChatEntity() {
-        return lpWeChatEntity;
-    }
-
-    public void setLpWeChatEntity(LPWeChatEntity lpWeChatEntity) {
-        this.lpWeChatEntity = lpWeChatEntity;
-    }
+//    public boolean isGently() {
+//        return isGently;
+//    }
+//
+//    public void setIsGently(boolean isGently) {
+//        this.isGently = isGently;
+//    }
+//
+//    public LPWeChatEntity getLpWeChatEntity() {
+//        return lpWeChatEntity;
+//    }
+//
+//    public void setLpWeChatEntity(LPWeChatEntity lpWeChatEntity) {
+//        this.lpWeChatEntity = lpWeChatEntity;
+//    }
 
     public String getStreamTimes() {
         return streamTimes;
@@ -439,13 +439,13 @@ public class LiveGetInfo {
         this.streamTimes = streamTimes;
     }
 
-    public int getChatSwitch() {
-        return chatSwitch;
-    }
-
-    public void setChatSwitch(int chatSwitch) {
-        this.chatSwitch = chatSwitch;
-    }
+//    public int getChatSwitch() {
+//        return chatSwitch;
+//    }
+//
+//    public void setChatSwitch(int chatSwitch) {
+//        this.chatSwitch = chatSwitch;
+//    }
 
     public LiveStatus getLiveStatus() {
         return liveStatus;
@@ -1948,6 +1948,22 @@ public class LiveGetInfo {
     private boolean bigLive;
 
 
+    /**大班整合小学**/
+    private boolean bigLivePrimarySchool = true;
+
+    public int getSkinType() {
+        return skinType;
+    }
+
+    public void setSkinType(int skinType) {
+        this.skinType = skinType;
+    }
+
+    /**
+     * 大班整合 皮肤类型
+     */
+    private int skinType;
+
     public String getMainTeacherVieo() {
         return mainTeacherVieo;
     }
@@ -2055,12 +2071,23 @@ public class LiveGetInfo {
          **/
         private boolean startClass;
 
+        /**当前视频流模式：课前辅导/主讲/课后辅导 */
+        private int streamMode;
+
         public boolean isStartClass() {
             return startClass;
         }
 
         public void setStartClass(boolean startClass) {
             this.startClass = startClass;
+        }
+
+        public int getStreamMode() {
+            return streamMode;
+        }
+
+        public void setStreamMode(int streamMode) {
+            this.streamMode = streamMode;
         }
     }
 
@@ -2183,6 +2210,9 @@ public class LiveGetInfo {
         this.creatTime = creatTime;
     }
 
+    public boolean isBigLivePrimarySchool() {
+        return skinType == 1;
+    }
     public void setTeamStuIds(ArrayList<String> teamStuIds) {
         this.teamStuIds = teamStuIds;
     }

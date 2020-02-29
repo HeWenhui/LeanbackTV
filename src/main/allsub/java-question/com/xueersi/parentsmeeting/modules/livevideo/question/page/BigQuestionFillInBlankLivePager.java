@@ -317,6 +317,9 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveBigQuestionPager im
                 public void run() {
                     liveViewAction.removeView(resultPager.getRootView());
                     onPagerClose.onClose(BigQuestionFillInBlankLivePager.this);
+                    if (!isPlayback) {
+                        resultPager.flyGoldAndUpdate(videoQuestionLiveEntity);
+                    }
                 }
             }, LiveQueConfig.BIG_TEST_CLOSE);
             return;
@@ -405,6 +408,9 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveBigQuestionPager im
             public void onClose(LiveBasePager basePager) {
                 liveViewAction.removeView(basePager.getRootView());
                 onPagerClose.onClose(BigQuestionFillInBlankLivePager.this);
+                if (!isPlayback) {
+                    resultPager.flyGoldAndUpdate(videoQuestionLiveEntity);
+                }
             }
         });
         //强制提交，结果页关闭
@@ -415,6 +421,9 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveBigQuestionPager im
                     if (resultPager.isAttach()) {
                         liveViewAction.removeView(resultPager.getRootView());
                         onPagerClose.onClose(BigQuestionFillInBlankLivePager.this);
+                        if (!isPlayback) {
+                            resultPager.flyGoldAndUpdate(videoQuestionLiveEntity);
+                        }
                     }
                 }
             }, LiveQueConfig.BIG_TEST_CLOSE);

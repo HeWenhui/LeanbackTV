@@ -15,7 +15,6 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.JsonReader;
-import android.util.Log;
 import android.view.MotionEvent;
 
 import com.airbnb.lottie.LottieAnimationView;
@@ -28,7 +27,7 @@ import com.airbnb.lottie.model.animatable.AnimatableValue;
 import com.airbnb.lottie.model.layer.Layer;
 import com.airbnb.lottie.utils.Utils;
 import com.airbnb.lottie.value.Keyframe;
-import com.xueersi.lib.framework.drawable.DrawableHelper;
+import com.xueersi.common.resources.DrawableHelper;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 
 import java.lang.reflect.Field;
@@ -160,12 +159,6 @@ public class XesLottieAnimView extends LottieAnimationView {
             });
         }
 
-    }
-
-    @Override
-    public void setAnimation(int rawRes) {
-        super.setAnimation(rawRes);
-        lottieCompostionLoaded = false;
     }
 
     @Override
@@ -592,7 +585,7 @@ public class XesLottieAnimView extends LottieAnimationView {
     /**
      * 更新目标区域点击态的绘制
      *
-     * @param statePress
+     * @param state
      */
     private void updateTargeImgArea(int state) {
         if (mTargetImgState != state) {

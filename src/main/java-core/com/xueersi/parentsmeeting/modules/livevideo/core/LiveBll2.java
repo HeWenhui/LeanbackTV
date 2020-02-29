@@ -36,6 +36,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.NewIRCMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.business.UselessNotice;
+import com.xueersi.parentsmeeting.modules.livevideo.business.UserOnline;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.CoursewarePreload;
@@ -43,6 +44,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.LivePlu
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LiveModuleConfigInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LivePlugin;
 import com.xueersi.parentsmeeting.modules.livevideo.business.graycontrol.entity.LivePluginRequestParam;
+import com.xueersi.parentsmeeting.modules.livevideo.config.UserOnlineCfg;
 import com.xueersi.parentsmeeting.modules.livevideo.utils.LiveWebLog;
 import com.xueersi.parentsmeeting.share.business.biglive.config.BigLiveCfg;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveActivityState;
@@ -654,8 +656,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         //缓存磐石 psimId ，psimpwd
         LiveAppUserInfo.getInstance().setPsimId(getInfo.getPsId());
         LiveAppUserInfo.getInstance().setPsimPwd(getInfo.getPsPwd());
-        //设置ircNIck
-        LiveAppUserInfo.getInstance().setIrcNick(getInfo.getIrcNick());
+
         updatePsInfo(getInfo);
 
         //房间号默认取第一个
@@ -1367,7 +1368,8 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
 
                     }
                 }
-                //mLiveTopic.copy(liveTopic);
+
+               // mLiveTopic.copy(liveTopic);
             } catch (Exception e) {
                 try {
                     if (jsonTokener != null) {
@@ -1395,6 +1397,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                 String oldMode = mLiveTopic.getMode();
                 mLiveTopic.setMode(mode);
                 mGetInfo.setMode(mode);
+                updateStreamMode(mode);
                 boolean isPresent = isPresent(mode);
                 if (mVideoAction != null) {
                     mVideoAction.onModeChange(mode, isPresent);
@@ -1417,7 +1420,29 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         }
     }
 
-
+    /**
+     * 更新视频流状态信息
+     * @param mode
+     */
+    private void updateStreamMode(String mode) {
+        try {
+            if(mGetInfo != null){
+                if(LiveTopic.MODE_CLASS.equals(mode)){
+                    //切换到主讲态
+                    mGetInfo.getLiveStatus().setStreamMode(UserOnlineCfg.STREAM_MODE_MAIN);
+                }else if(LiveTopic.MODE_TRANING.equals(mode)){
+                    //切换到辅导态
+                   if(mGetInfo.getLiveStatus().getStreamMode() == UserOnlineCfg.STREAM_MODE_MAIN){
+                       mGetInfo.getLiveStatus().setStreamMode(UserOnlineCfg.STREAM_MODE_COUNT_AFTER);
+                   }else{
+                       mGetInfo.getLiveStatus().setStreamMode(UserOnlineCfg.STREAM_MODE_COUNT_BEFOR);
+                   }
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 
 
     /**
@@ -1932,7 +1957,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                         mLiveModuleConfigInfo = (LiveModuleConfigInfo) JsonUtil.jsonToObject(jsonString,
                                 LiveModuleConfigInfo.class);
                         mGetInfo.setLiveModuleConfigInfo(mLiveModuleConfigInfo);
-                        String preloadUrl = mGetInfo.getProperties(LivePluginGrayConfig.MOUDLE_FUTURE_COURSEWARE, "preloadUrl");
+                        String preloadUrl = mGetInfo.getProperties(LivePluginGrayConfig.MOUDLE_COURSEWARE_PRELOAD, "preloadurl");
                         if (!TextUtils.isEmpty(preloadUrl)) {
                             String liveId = mGetInfo.getId();
                             CoursewarePreload coursewarePreload = new CoursewarePreload(mContext, -1);

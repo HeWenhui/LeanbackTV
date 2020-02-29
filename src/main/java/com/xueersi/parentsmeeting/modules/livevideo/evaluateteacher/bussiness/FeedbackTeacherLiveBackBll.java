@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness;
 
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
@@ -50,6 +51,7 @@ public class FeedbackTeacherLiveBackBll extends LiveBackBaseBll {
     public void onCreate(VideoLivePlayBackEntity mVideoEntity, LiveGetInfo liveGetInfo, HashMap<String, Object>
             businessShareParamMap) {
         super.onCreate(mVideoEntity, liveGetInfo, businessShareParamMap);
+        Log.i("FeedbackTeacher", "back Bill onCreate");
         mHttpManager = liveBackBll.getmHttpManager();
         this.mVideoEntity = mVideoEntity;
         mParser = new EvaluateResponseParser();
@@ -121,6 +123,7 @@ public class FeedbackTeacherLiveBackBll extends LiveBackBaseBll {
                 int status = responseEntity.getmStatus();
                 if (status == 1) {
                     JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+                    Log.i("checkIfShowFeedback",jsonObject.toString());
                     //is_trigger 是否触发，1：可以，0：不可以
                     int is_trigger = jsonObject.optInt("isTrigger");
                     String url = null;

@@ -879,6 +879,8 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
         }
         // 注销事件
         EventBus.getDefault().unregister(this);
+        BaseApplication baseApplication = BaseApplication.getInstance();
+        baseApplication.removeActivty(this);
     }
 
     @Override
