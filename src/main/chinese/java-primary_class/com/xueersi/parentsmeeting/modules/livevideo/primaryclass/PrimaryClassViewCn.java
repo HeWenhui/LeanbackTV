@@ -124,6 +124,8 @@ public class PrimaryClassViewCn implements PrimaryClassView {
         TextView tv_livevideo_primary_team_name = view.findViewById(R.id.tv_livevideo_primary_team_name);
         tv_livevideo_primary_team_name.setTextColor(0xff408474);
 //        setPkMid(tv_livevideo_primary_team_name_mid, ivLivePrimaryClassKuangjiaImgNormal.getWidth(), ivLivePrimaryClassKuangjiaImgNormal.getHeight());
+        ImageView iv_live_halfbody_pk_state = view.findViewById(R.id.iv_live_halfbody_pk_state);
+        iv_live_halfbody_pk_state.setImageResource(R.drawable.bg_live_ke_energy_zhunbei_icon_normal_cn);
     }
 
     @Override
@@ -231,7 +233,7 @@ public class PrimaryClassViewCn implements PrimaryClassView {
 
     /** {@link R.layout#item_primary_class_team_other_video } */
     @Override
-    public void decorateItemOther(View view,int index) {
+    public void decorateItemOther(View view, int index) {
         RelativeLayout rl_livevideo_course_item_video_off = view.findViewById(R.id.rl_livevideo_course_item_video_off);
         rl_livevideo_course_item_video_off.setBackgroundResource(R.drawable.shape_primary_item_empty_back_cn);
         RelativeLayout rl_livevideo_course_item_video_ufo = view.findViewById(R.id.rl_livevideo_course_item_video_ufo);
