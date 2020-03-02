@@ -54,6 +54,7 @@
                 android:scaleType="centerInside"
                 android:src="@drawable/livevideo_alertview_tosmoke_img_disable" />
 
+
             <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
                 android:id="@id/tv_teampk_aipartner_award_coin"
                 android:layout_width="wrap_content"
