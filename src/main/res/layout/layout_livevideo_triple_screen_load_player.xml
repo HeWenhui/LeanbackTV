@@ -4,7 +4,7 @@
     android:id="@+id/layout_livevideo_triple_screen_loading"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/COLOR_3C000000">
+    android:background="@color/transparent_60">
 
     <ImageView
         android:id="@+id/iv_livevideo_triple_screen_loading"
