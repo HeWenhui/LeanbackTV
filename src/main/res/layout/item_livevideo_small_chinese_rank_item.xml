@@ -25,9 +25,9 @@
 
     <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
         android:id="@id/tv_livevideo_rank_item_right"
-        android:layout_width="40dp"
+        android:layout_width="42dp"
         android:layout_height="wrap_content"
-        android:gravity="right"
+        android:gravity="center"
         app:layout_constraintRight_toRightOf="parent"
         tools:text="100%" />
 </android.support.constraint.ConstraintLayout>
