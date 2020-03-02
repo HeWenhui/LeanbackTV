@@ -51,7 +51,7 @@
             <ImageView
                 android:layout_width="94dp"
                 android:layout_height="18dp"
-                android:scaleType="centerCrop"
+                android:scaleType="centerInside"
                 android:src="@drawable/livevideo_alertview_tosmoke_img_disable" />
 
             <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
