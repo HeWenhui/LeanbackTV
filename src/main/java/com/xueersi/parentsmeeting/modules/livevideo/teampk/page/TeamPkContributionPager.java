@@ -290,6 +290,7 @@ public class TeamPkContributionPager extends TeamPkBasePager {
         if (starList != null && starList.size() > 0) {
             AnimInfo info;
             TeamEnergyAndContributionStarEntity.ContributionStar starInfo;
+            String stuName="";
             for (int i = 0; i < starList.size(); i++) {
                 info = animInfos.get(i);
                 starInfo = starList.get(i);
@@ -298,8 +299,14 @@ public class TeamPkContributionPager extends TeamPkBasePager {
                 info.getHeadImgInfo().setValue(starInfo.getAvaterPath());
                 // 绑定名字信息
                 info.getNameInfo().setShow(true);
-                info.getNameInfo().setValue(TextUtils.isEmpty(starInfo.getRealname()) ? starInfo.getNickname() :
-                        starInfo.getRealname());
+                //名字超过4个字截断
+                stuName = TextUtils.isEmpty(starInfo.getRealname()) ? starInfo.getNickname() :starInfo.getRealname();
+                if(!TextUtils.isEmpty(stuName)){
+                    if(stuName.length()>4){
+                        stuName = stuName.substring(0,4);
+                    }
+                }
+                info.getNameInfo().setValue(stuName);
                 // 绑定 能量信息
                 info.getEnergyInfo().setShow(true);
                 info.getEnergyInfo().setValue("+" + starInfo.getEnergy());
