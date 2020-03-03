@@ -283,6 +283,8 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
                 //防止重复添加金话筒
                 if(mGoldView != null && liveViewAction != null){
                     liveViewAction.removeView(mGoldView.getRootView());
+                    //移除的同时停止录音
+                    stopRecord();
                 }
 
                 if (mGoldView == null) {
