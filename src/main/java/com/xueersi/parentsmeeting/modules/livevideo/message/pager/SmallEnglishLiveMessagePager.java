@@ -984,7 +984,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (StringUtils.isEmpty(charSequence)) {
                     btMessageSend.setEnabled(false);
-                    btMessageSend.setBackgroundResource(R.drawable.play_chat_sent_btn_disabled);
+                    btMessageSend.setBackgroundResource(R.drawable.play_chat_sent_btn_disabled_v2);
                 } else {
                     btMessageSend.setEnabled(true);
                     btMessageSend.setBackgroundResource(R.drawable.selector_livevideo_small_english_chat_send);

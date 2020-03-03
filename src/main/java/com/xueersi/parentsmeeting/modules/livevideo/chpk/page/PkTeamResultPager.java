@@ -548,8 +548,8 @@ public class PkTeamResultPager extends SoundEffectPager {
         lottieEffectInfo.setTargetFileFilter(targetFileNames);
         lottieEffectInfo.setTextSize("img_2.png", 30);
         lottieEffectInfo.setTextSize("img_8.png", 30);
-        lottieEffectInfo.setTextSize("img_1.png", 33);
-        lottieEffectInfo.setTextSize("img_7.png", 33);
+        lottieEffectInfo.setTextSize("img_1.png", 30);
+        lottieEffectInfo.setTextSize("img_7.png", 30);
 
         int color = Color.parseColor("#73510A");
         lottieEffectInfo.setTextColor(color);

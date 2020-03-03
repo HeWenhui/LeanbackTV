@@ -632,6 +632,9 @@ public class SpeechBulletScreenPager extends LiveBasePager implements ScienceSpe
     public void showShortToast(final String tips) {
         ShortToastDialog shortToastDialog = new ShortToastDialog(mContext);
         shortToastDialog.setMsg(tips);
+        if (shortToastDialog.getAlertDialog().getWindow() != null) {
+            shortToastDialog.getAlertDialog().getWindow().setDimAmount(0f);
+        }
 //        shortToastDialog.setTypeface(Typeface.createFromAsset(mContext.getAssets(), "fangzhengcuyuan.ttf"));
         shortToastDialog.showDialog();
     }

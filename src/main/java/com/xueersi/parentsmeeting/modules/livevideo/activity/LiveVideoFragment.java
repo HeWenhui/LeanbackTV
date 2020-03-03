@@ -297,6 +297,9 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                 if (LiveVideoConfig.isPrimary || isSmallEnglish || LiveVideoConfig.isSmallChinese) {
                     SwitchRouteSuccessDialog switchRouteSuccessDialog = new SwitchRouteSuccessDialog(activity);
                     switchRouteSuccessDialog.updateView(this.userEyePos);
+                    if (switchRouteSuccessDialog.getAlertDialog().getWindow() != null) {
+                        switchRouteSuccessDialog.getAlertDialog().getWindow().setDimAmount(0f);
+                    }
                     switchRouteSuccessDialog.showDialogAutoClose(2000);
                 } else {
                     XESToastUtils.showToast(activity, "线路" + this.userEyePos + "切换成功");

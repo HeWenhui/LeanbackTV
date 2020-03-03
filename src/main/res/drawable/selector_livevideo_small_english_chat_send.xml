@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@drawable/play_chat_sent_btn_click" android:state_pressed="true"></item>
-    <item android:drawable="@drawable/play_chat_sent_btn_nor"></item>
+    <item android:drawable="@drawable/play_chat_sent_btn_click_v2" android:state_pressed="true"></item>
+    <item android:drawable="@drawable/play_chat_sent_btn_nor_v2"></item>
 
 
 </selector>
