@@ -21,7 +21,6 @@ import com.tal.speech.speechrecognizer.PCMFormat;
 import com.tal.speech.speechrecognizer.ResultCode;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechParamEntity;
-import com.tal.speech.utils.SpeechEvaluatorUtils;
 import com.tal.speech.utils.SpeechUtils;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
@@ -281,6 +280,13 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
         post(new Runnable() {
             @Override
             public void run() {
+                //防止重复添加金话筒
+                if(mGoldView != null && liveViewAction != null){
+                    liveViewAction.removeView(mGoldView.getRootView());
+                    //移除的同时停止录音
+                    stopRecord();
+                }
+
                 if (mGoldView == null) {
                     mGoldView = new MicroPhonePager(mContext, GoldMicroPhoneBll.this);
                 }

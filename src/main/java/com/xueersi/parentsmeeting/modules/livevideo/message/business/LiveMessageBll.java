@@ -462,34 +462,35 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
 //                        liveMessageLandEntities);
 //            }
         }
-
-        mLiveMessagePager.setGetInfo(getInfo);
-        mLiveMessagePager.urlclick = urlclick;
-        mLiveMessagePager.setPeopleCount(peopleCount);
-        mLiveMessagePager.setIrcState(mLiveBll);
-        mLiveMessagePager.onModeChange(mLiveBll.getMode());
-        mLiveMessagePager.setIsRegister(isRegister);
-        if (peopleCount.get() > 0) {
-            mLiveMessagePager.onUserList("", new User[peopleCount.get()]);
-        }
-        if (text != null) {
-            mLiveMessagePager.setEtMessageContentText(text);
-        } else {
-            mLiveMessagePager.setEtMessageContentText("");
-        }
-        mLiveMessagePager.setHaveFlowers(isHaveFlowers);
-        mLiveMessagePager.closeChat(isCloseChat);
-        if (mode != null) {
-            mLiveMessagePager.onopenchat(openchat, mode, false);
-        }
-        rlLiveMessageContent.addView(mLiveMessagePager.getRootView(), params);
-        //如果旧的聊天数据没解析完，更新新的Adapter
-        if (oldLiveMessagePager != null) {
-            oldLiveMessagePager.setOtherMessageAdapter(mLiveMessagePager.getMessageAdapter());
-        }
+        if (mLiveMessagePager != null){
+            mLiveMessagePager.setGetInfo(getInfo);
+            mLiveMessagePager.urlclick = urlclick;
+            mLiveMessagePager.setPeopleCount(peopleCount);
+            mLiveMessagePager.setIrcState(mLiveBll);
+            mLiveMessagePager.onModeChange(mLiveBll.getMode());
+            mLiveMessagePager.setIsRegister(isRegister);
+            if (peopleCount.get() > 0) {
+                mLiveMessagePager.onUserList("", new User[peopleCount.get()]);
+            }
+            if (text != null) {
+                mLiveMessagePager.setEtMessageContentText(text);
+            } else {
+                mLiveMessagePager.setEtMessageContentText("");
+            }
+            mLiveMessagePager.setHaveFlowers(isHaveFlowers);
+            mLiveMessagePager.closeChat(isCloseChat);
+            if (mode != null) {
+                mLiveMessagePager.onopenchat(openchat, mode, false);
+            }
+            rlLiveMessageContent.addView(mLiveMessagePager.getRootView(), params);
+            //如果旧的聊天数据没解析完，更新新的Adapter
+            if (oldLiveMessagePager != null) {
+                oldLiveMessagePager.setOtherMessageAdapter(mLiveMessagePager.getMessageAdapter());
+            }
 //        if (oldLiveMessagePager instanceof LiveMessageLandPager) {
 //            oldLiveMessagePager.setHaveFlowers(false);
 //        }
+        }
     }
 
     public void setLiveGetInfo(LiveGetInfo getInfo) {
