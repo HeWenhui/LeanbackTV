@@ -165,7 +165,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:text="参与投票题"
-                android:textColor="@color/COLOR_73510A"
+                android:textColor="@color/COLOR_824D23"
                 android:textSize="12sp"
                 android:textStyle="bold" />
 
