@@ -88,7 +88,7 @@
             android:layout_gravity="center_horizontal"
             android:gravity="center"
             android:text="@string/livevideo_chpk_how_to_win"
-            android:textColor="#824D23"
+            android:textColor="@color/COLOR_824D23"
             android:textSize="13sp"
             android:textStyle="bold" />
 
@@ -105,7 +105,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:text="答对互动题"
-                android:textColor="#824D23"
+                android:textColor="@color/COLOR_824D23"
                 android:textSize="12sp"
                 android:textStyle="bold" />
 
@@ -135,7 +135,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:text="参与互动题"
-                android:textColor="#824D23"
+                android:textColor="@color/COLOR_824D23"
                 android:textSize="12sp"
                 android:textStyle="bold" />
 
@@ -165,7 +165,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:text="参与投票题"
-                android:textColor="#824D23"
+                android:textColor="@color/COLOR_824D23"
                 android:textSize="12sp"
                 android:textStyle="bold" />
 

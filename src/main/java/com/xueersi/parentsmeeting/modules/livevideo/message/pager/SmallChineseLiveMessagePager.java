@@ -344,7 +344,7 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
                 break;
             default:
                 color = nameColors[0];
-                messageColor = messageColors[entity.getType()];
+                messageColor = messageColors[0];
 //                                Log.w(TAG, "5:" + messageColor);
                 break;
         }
@@ -372,7 +372,7 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
             } else {
                 tvMessageItem.setText(spanttt);
             }
-            tvMessageItem.append(entity.getText());
+            tvMessageItem.append(messageSpan);
             logger.i(tvMessageItem.getText());
         } else {
             tvMessageItem.setAutoLinkMask(0);
