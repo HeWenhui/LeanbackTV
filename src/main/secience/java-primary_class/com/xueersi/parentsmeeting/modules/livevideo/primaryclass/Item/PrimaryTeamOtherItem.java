@@ -82,8 +82,8 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
     public void updateViews(TeamMate entity, int position, Object objTag) {
         super.updateViews(entity, position, objTag);
         String string = "" + entity.getName();
-        if (string.length() > 5) {
-            string = string.substring(0, 5) + "...";
+        if (string.length() > 4) {
+            string = string.substring(0, 4) + "...";
         }
         tv_livevideo_primary_team_people_name.setText(string);
     }
