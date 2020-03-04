@@ -240,7 +240,7 @@ public class WorkerThreadPool {
                 dir.mkdirs();
             }
             mRtcEngine.setLogFile(new File(dir, "agora-rtc.log").getPath());
-            mRtcEngine.enableDualStreamMode(true);
+            mRtcEngine.enableDualStreamMode(false);
             if (isExternalAudio) {
                 mRtcEngine.setRecordingAudioFrameParameters(16000, 1, RAW_AUDIO_FRAME_OP_MODE_READ_WRITE, 1024);
                 mRtcEngine.setExternalAudioSource(true, 16000, 1);
