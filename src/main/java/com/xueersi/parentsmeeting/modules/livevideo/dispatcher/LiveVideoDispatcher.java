@@ -199,7 +199,7 @@ public class LiveVideoDispatcher extends AbsDispatcher {
             }
         } else {
             int liveType = bundle.getInt("type", 0);
-            if (liveType == TYPE_LECTURE){
+            if (liveType == LiveVideoConfig.LIVE_TYPE_LECTURE){
                 Module m = new Module();
                 m.moduleName = "livepublic";
                 ModuleHandler.start(srcActivity, new ModuleData(m, bundle));
