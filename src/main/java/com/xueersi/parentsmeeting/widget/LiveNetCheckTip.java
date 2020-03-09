@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.liveLog.LiveLogBill;
 
 public class LiveNetCheckTip {
@@ -45,11 +46,7 @@ public class LiveNetCheckTip {
         if (stuckCount == 1 && curTimeStamp - stuckStartTimestamp <= 60 * 1000
                 && curTimeStamp - tipShowTimestamp >= 5 * 60 * 1000) {
             tipShowTimestamp = System.currentTimeMillis();
-            Toast toast = Toast.makeText(context, null, Toast.LENGTH_LONG);
-            if (toast!=null) {
-                toast.setText(tips);
-                toast.show();
-            }
+            XESToastUtils.showToastLong(context,tips);
             stuckCount = 0;
             //日志发送
             LiveLogBill.getInstance().sendStuckLog();
