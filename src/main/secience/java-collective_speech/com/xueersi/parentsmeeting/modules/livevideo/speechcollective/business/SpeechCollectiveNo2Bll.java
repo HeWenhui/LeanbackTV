@@ -15,6 +15,7 @@ import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechParamEntity;
 import com.tal.speech.utils.SpeechEvaluatorUtils;
 import com.tal.speech.utils.SpeechUtils;
+import com.xueersi.common.base.XrsCrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.permission.XesPermission;
@@ -439,6 +440,7 @@ public class SpeechCollectiveNo2Bll {
             });
         }
         if (teacherPraiseEventReg != null) {
+            XrsCrashReport.d(TAG,"stop");
             LiveEventBus.getDefault(context).unregister(teacherPraiseEventReg);
             teacherPraiseEventReg = null;
         }
