@@ -1215,6 +1215,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                 mLogtf.i("onTopic(equals):topicstr=" + topicstr);
                 return;
             }
+
             logger.e("======>onTopic:" + topicstr);
             if ( hasCachNotice()  || TextUtils.isEmpty(topicstr)) {
                 return;
