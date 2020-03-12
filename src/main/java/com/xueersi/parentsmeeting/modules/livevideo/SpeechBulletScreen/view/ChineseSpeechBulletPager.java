@@ -259,11 +259,11 @@ public class ChineseSpeechBulletPager extends LiveBasePager implements ScienceSp
             }
         });
         //设置方正粗圆字体
-        Typeface fontFace = Typeface.createFromAsset(mContext.getAssets(), "fangzhengcuyuan.ttf");
-        etSpeechbulWords.setTypeface(fontFace);
-        tvSpeechbulTitle.setTypeface(fontFace);
-        tvSpeechbulCount.setTypeface(fontFace);
-        tvSpeechbulTitleCount.setTypeface(fontFace);
+      //  Typeface fontFace = Typeface.createFromAsset(mContext.getAssets(), "fangzhengcuyuan.ttf");
+//        etSpeechbulWords.setTypeface(fontFace);
+//        tvSpeechbulTitle.setTypeface(fontFace);
+//        tvSpeechbulCount.setTypeface(fontFace);
+//        tvSpeechbulTitleCount.setTypeface(fontFace);
         root.setClickable(true);
         return mView;
     }
@@ -701,7 +701,7 @@ public class ChineseSpeechBulletPager extends LiveBasePager implements ScienceSp
     private void showStartSpeechBulletToast() {
         PrimaryChineseToastDialog startSpeechBulletToast = new PrimaryChineseToastDialog(mContext);
         startSpeechBulletToast.setText("老师开启了语音弹幕");
-        startSpeechBulletToast.setTypeface(Typeface.createFromAsset(mContext.getAssets(), "fangzhengcuyuan.ttf"));
+//        startSpeechBulletToast.setTypeface(Typeface.createFromAsset(mContext.getAssets(), "fangzhengcuyuan.ttf"));
         startSpeechBulletToast.showDialogAutoClose(2000);
     }
 

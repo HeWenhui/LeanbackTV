@@ -81,7 +81,11 @@ public class PrimaryTeamMyItem extends BasePrimaryTeamPeopleItem {
     @Override
     public void updateViews(TeamMate entity, int position, Object objTag) {
         super.updateViews(entity, position, objTag);
-        tv_livevideo_primary_team_people_name.setText(entity.getName());
+        String string = "" + entity.getName();
+        if (string.length() > 4) {
+            string = string.substring(0, 4) + "...";
+        }
+        tv_livevideo_primary_team_people_name.setText(string);
         iv_livevideo_primary_team_energy.setText("" + totalEnergy);
     }
 

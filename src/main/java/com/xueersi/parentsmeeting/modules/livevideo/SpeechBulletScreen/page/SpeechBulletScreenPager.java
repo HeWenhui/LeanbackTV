@@ -234,11 +234,11 @@ public class SpeechBulletScreenPager extends LiveBasePager implements ScienceSpe
         vwvSpeechbulWave.setColors(colors);
         vwvSpeechbulWave.setBackColor(Color.TRANSPARENT);
         //设置方正粗圆字体
-        Typeface fontFace = Typeface.createFromAsset(mContext.getAssets(), "fangzhengcuyuan.ttf");
-        etSpeechbulWords.setTypeface(fontFace);
-        tvSpeechbulTitle.setTypeface(fontFace);
-        tvSpeechbulCount.setTypeface(fontFace);
-        tvSpeechbulCloseTip.setTypeface(fontFace);
+       // Typeface fontFace = Typeface.createFromAsset(mContext.getAssets(), "fangzhengcuyuan.ttf");
+//        etSpeechbulWords.setTypeface(fontFace);
+//        tvSpeechbulTitle.setTypeface(fontFace);
+//        tvSpeechbulCount.setTypeface(fontFace);
+//        tvSpeechbulCloseTip.setTypeface(fontFace);
         mView.setClickable(true);
         return mView;
     }
@@ -632,7 +632,10 @@ public class SpeechBulletScreenPager extends LiveBasePager implements ScienceSpe
     public void showShortToast(final String tips) {
         ShortToastDialog shortToastDialog = new ShortToastDialog(mContext);
         shortToastDialog.setMsg(tips);
-        shortToastDialog.setTypeface(Typeface.createFromAsset(mContext.getAssets(), "fangzhengcuyuan.ttf"));
+        if (shortToastDialog.getAlertDialog().getWindow() != null) {
+            shortToastDialog.getAlertDialog().getWindow().setDimAmount(0f);
+        }
+//        shortToastDialog.setTypeface(Typeface.createFromAsset(mContext.getAssets(), "fangzhengcuyuan.ttf"));
         shortToastDialog.showDialog();
     }
 

@@ -54,24 +54,24 @@ public class PrimaryScienceEvaluateTeacherPager extends BaseEvaluateTeacherPaper
         super.initListener();
     }
     private void setTextTypeFace(){
-        Typeface fontFace = Typeface.createFromAsset(mContext.getAssets(), "fangzhengcuyuan.ttf");
-        tvMainName.setTypeface(fontFace);
-        tvTutorName.setTypeface(fontFace);
-        tvResultCountDown.setTypeface(fontFace);
-        rbMainUnSat.setTypeface(fontFace);
-        rbMainSat.setTypeface(fontFace);
-        rbMainVerySat.setTypeface(fontFace);
-        rbTutorSat.setTypeface(fontFace);
-        rbTutorUnSat.setTypeface(fontFace);
-        rbTutorVerySat.setTypeface(fontFace);
-        cbMainOpt1.setTypeface(fontFace);
-        cbMainOpt2.setTypeface(fontFace);
-        cbMainOpt3.setTypeface(fontFace);
-        cbMainOpt4.setTypeface(fontFace);
-        cbTutorOpt1.setTypeface(fontFace);
-        cbTutorOpt2.setTypeface(fontFace);
-        cbTutorOpt3.setTypeface(fontFace);
-        cbTutorOpt4.setTypeface(fontFace);
+//        Typeface fontFace = Typeface.createFromAsset(mContext.getAssets(), "fangzhengcuyuan.ttf");
+//        tvMainName.setTypeface(fontFace);
+//        tvTutorName.setTypeface(fontFace);
+//        tvResultCountDown.setTypeface(fontFace);
+//        rbMainUnSat.setTypeface(fontFace);
+//        rbMainSat.setTypeface(fontFace);
+//        rbMainVerySat.setTypeface(fontFace);
+//        rbTutorSat.setTypeface(fontFace);
+//        rbTutorUnSat.setTypeface(fontFace);
+//        rbTutorVerySat.setTypeface(fontFace);
+//        cbMainOpt1.setTypeface(fontFace);
+//        cbMainOpt2.setTypeface(fontFace);
+//        cbMainOpt3.setTypeface(fontFace);
+//        cbMainOpt4.setTypeface(fontFace);
+//        cbTutorOpt1.setTypeface(fontFace);
+//        cbTutorOpt2.setTypeface(fontFace);
+//        cbTutorOpt3.setTypeface(fontFace);
+//        cbTutorOpt4.setTypeface(fontFace);
     }
     @Override
     public void initData() {

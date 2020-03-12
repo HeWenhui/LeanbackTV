@@ -15,6 +15,7 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.xueersi.common.resources.DocsDirCompat;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
 import com.tencent.smtt.export.external.interfaces.ConsoleMessage;
 import com.tencent.smtt.export.external.interfaces.WebResourceRequest;
@@ -1156,8 +1157,9 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
             logger.d("PrimaryPreLoad:onStart");
             try {
                 mView.findViewById(R.id.ll_livevideo_subject_loadingl_content).setVisibility(View.GONE);
-                GifDrawable gifDrawable = new GifDrawable(mContext.getResources(),
-                        R.drawable.livevide_courseware_primary_load);
+//                GifDrawable gifDrawable = new GifDrawable(mContext.getResources(),
+//                        R.drawable.livevide_courseware_primary_load);
+                GifDrawable gifDrawable = new GifDrawable(DocsDirCompat.getCompatPath(mContext,"livevide_courseware_primary_load.gif"));
                 rlSubjectLoading.setBackground(gifDrawable);
                 gifDrawable.start();
             } catch (Throwable e) {

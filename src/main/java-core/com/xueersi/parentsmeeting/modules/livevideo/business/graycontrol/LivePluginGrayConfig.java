@@ -43,6 +43,16 @@ public class LivePluginGrayConfig {
     public static final int MOUDLE_SPEECH_ASSESS = 65;
     /** 轻互动聊天面板 **/
     public static final int MODULE_FORUM_INTERACTION = 68;
+    /** 战队pk **/
+    public static final int MODULE_TEAM_PK = 100;
     /** roleplay */
 //    public static final int MODULE_ROLE_PLAY = 90;
+    /** ai主观题课件互动题 **/
+    public static final int MOUDLE_AI_COURSEWARE = 127;
+    /** 课件预加载 **/
+    public static final int MOUDLE_COURSEWARE_PRELOAD = 128;
+
+    /** 教师评价 **/
+    public static final int MOUDLE_TEACHER_FEEDBACK = 151;
+
 }

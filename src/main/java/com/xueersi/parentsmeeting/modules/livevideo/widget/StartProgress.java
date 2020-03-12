@@ -154,14 +154,14 @@ public class StartProgress extends RelativeLayout {
         tv_live_star_result_count = (TextView) findViewById(R.id.tv_live_star_result_count);
         tv_live_star_result_fluent = (TextView) findViewById(R.id.tv_live_star_result_fluent);
         tv_live_star_result_accuracy = (TextView) findViewById(R.id.tv_live_star_result_accuracy);
-        Typeface fontFace = Typeface.createFromAsset(getContext().getAssets(),
-                "fangzhengcuyuan.ttf");
-        tv_live_star_result_sorce.setTypeface(fontFace);
-        tv_live_star_result_count.setTypeface(fontFace);
-        tv_live_star_result_fluent.setTypeface(fontFace);
-        tv_live_star_result_accuracy.setTypeface(fontFace);
+//        Typeface fontFace = Typeface.createFromAsset(getContext().getAssets(),
+//                "fangzhengcuyuan.ttf");
+//        tv_live_star_result_sorce.setTypeface(fontFace);
+//        tv_live_star_result_count.setTypeface(fontFace);
+//        tv_live_star_result_fluent.setTypeface(fontFace);
+//        tv_live_star_result_accuracy.setTypeface(fontFace);
         TextView borderText = tv_live_star_result_sorce.getBorderText();
-        borderText.setTypeface(fontFace);
+//        borderText.setTypeface(fontFace);
         tv_live_star_result_sorce.invalidate();
         initDynamics();
     }

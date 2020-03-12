@@ -31,7 +31,7 @@
             android:layout_alignParentRight="true"
             android:layout_marginTop="11dp"
             android:layout_marginRight="11dp"
-            android:src="@drawable/cy_main_guanbi_icon_normal" />
+            android:src="@drawable/livevideo_guanbi_icon_normal" />
 
     </RelativeLayout>
     <LinearLayout

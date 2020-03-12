@@ -49,8 +49,8 @@
             android:singleLine="true"
             android:text="宋珂珂宋珂珂宋珂珂"
             android:textColor="@color/white"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+            android:textSize="14dp"
+             />
 
         <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
             android:id="@id/tv_teampk_open_box_winner_coin"
@@ -67,8 +67,8 @@
             android:singleLine="true"
             android:text="+15"
             android:textColor="@color/COLOR_FF8F24"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+            android:textSize="12dp"
+             />
 
         <FrameLayout
             android:id="@id/fl_teampk_aipatner_chip_contanier"
@@ -103,7 +103,7 @@
             android:layout_toRightOf="@id/fl_teampk_aipatner_chip_contanier"
             android:text="+29"
             android:textColor="@color/COLOR_FF8F24"
-            android:textSize="14sp" />
+            android:textSize="12dp" />
 
     </RelativeLayout>
 

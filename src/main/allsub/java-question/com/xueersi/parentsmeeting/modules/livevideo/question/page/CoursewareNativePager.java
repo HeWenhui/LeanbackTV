@@ -20,6 +20,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xueersi.common.base.XrsCrashReport;
+import com.xueersi.common.resources.DocsDirCompat;
 import com.xueersi.lib.framework.utils.listener.OnUnDoubleClickListener;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
@@ -1879,7 +1880,8 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             logger.d("PrimaryPreLoad:onStart");
             try {
                 mView.findViewById(R.id.ll_livevideo_subject_loadingl_content).setVisibility(View.GONE);
-                GifDrawable gifDrawable = new GifDrawable(mContext.getResources(), R.drawable.livevide_courseware_primary_load);
+//                GifDrawable gifDrawable = new GifDrawable(mContext.getResources(), R.drawable.livevide_courseware_primary_load);
+                GifDrawable gifDrawable = new GifDrawable(DocsDirCompat.getCompatPath(mContext,"livevide_courseware_primary_load.gif"));
                 rlSubjectLoading.setBackground(gifDrawable);
                 gifDrawable.start();
             } catch (Throwable e) {

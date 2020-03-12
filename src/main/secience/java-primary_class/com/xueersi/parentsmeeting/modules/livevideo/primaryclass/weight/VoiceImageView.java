@@ -2,14 +2,12 @@ package com.xueersi.parentsmeeting.modules.livevideo.primaryclass.weight;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
-import com.xueersi.lib.framework.drawable.DrawableHelper;
-import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.common.resources.DrawableHelper;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;

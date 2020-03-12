@@ -27,7 +27,7 @@ import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
 import com.xueersi.lib.framework.are.ContextManager;
-import com.xueersi.lib.framework.drawable.DrawableHelper;
+import com.xueersi.common.resources.DrawableHelper;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -548,8 +548,8 @@ public class PkTeamResultPager extends SoundEffectPager {
         lottieEffectInfo.setTargetFileFilter(targetFileNames);
         lottieEffectInfo.setTextSize("img_2.png", 30);
         lottieEffectInfo.setTextSize("img_8.png", 30);
-        lottieEffectInfo.setTextSize("img_1.png", 33);
-        lottieEffectInfo.setTextSize("img_7.png", 33);
+        lottieEffectInfo.setTextSize("img_1.png", 30);
+        lottieEffectInfo.setTextSize("img_7.png", 30);
 
         int color = Color.parseColor("#73510A");
         lottieEffectInfo.setTextColor(color);

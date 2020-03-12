@@ -1063,12 +1063,7 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
      */
     public Typeface getTypeface(Context context) {
         Typeface tf = null;
-        try {
-            tf = Typeface.createFromAsset(context.getAssets(), "fangzhengcuyuan.ttf");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+
         return tf;
     }
 

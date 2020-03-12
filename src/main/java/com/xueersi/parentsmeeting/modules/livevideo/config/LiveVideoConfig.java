@@ -8,8 +8,6 @@ import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.are.RunningEnvironment;
-import com.xueersi.parentsmeeting.modules.livevideo.LiveAssetsLoadUtil;
-
 import java.util.Calendar;
 import java.util.HashMap;
 
@@ -371,51 +369,6 @@ public class LiveVideoConfig {
 
     public static boolean assetsDownloadTag = true;
 
-    public static DownLoadFileInfo getDownLoadFileInfo() {
-        DownLoadFileInfo info = AppBll.getInstance().getDownLoadFileByFileName("assets.zip");
-        if (info == null) {
-            info = new DownLoadFileInfo();
-            info.fileName = "assets.zip";
-            info.fileMD5 = "0026c20e191b4adab347af523fc1e62c";
-            info.fileType = 0;
-            info.fileUrl = "https://xeswxapp.oss-cn-beijing.aliyuncs.com/Android/asserts/livevideo/1.0.1/assets.zip";
-            info.needManualDownload = true;
-            info.id = 0;
-        }
-        info.dirPath = Environment.getExternalStorageDirectory().getAbsolutePath();
-
-        UmsAgentManager.umsAgentDebug(RunningEnvironment.sAppContext, LiveAssetsLoadUtil.TAG, "assets message:" + info.toString());
-
-        /*if (XueErSiRunningEnvironment.debug) {
-            info.dirPath = Environment.getExternalStorageDirectory().getAbsolutePath();
-        } else {
-            info.dirPath  = LoadFileUtils.geCacheFile(RunningEnvironment.sAppContext, "downloadAssets").getAbsolutePath();
-        }*/
-        return info;
-    }
-
-    public static DownLoadFileInfo getDownLoadLightFileInfo() {
-        DownLoadFileInfo info = AppBll.getInstance().getDownLoadFileByFileName("lightassets.zip");
-        if (info == null) {
-            info = new DownLoadFileInfo();
-            info.fileName = "lightassets.zip";
-            info.fileMD5 = "eb60cc1be12223100007a74d489be72d";
-            info.fileType = 0;
-            info.fileUrl = "https://wxapp.xesimg.com/files/moudle/xesmall/assets.zip";
-            info.needManualDownload = true;
-            info.id = 0;
-        }
-        info.dirPath = Environment.getExternalStorageDirectory().getAbsolutePath();
-
-        UmsAgentManager.umsAgentDebug(RunningEnvironment.sAppContext, LiveAssetsLoadUtil.TAG, "assets message:" + info.toString());
-
-        /*if (XueErSiRunningEnvironment.debug) {
-            info.dirPath = Environment.getExternalStorageDirectory().getAbsolutePath();
-        } else {
-            info.dirPath  = LoadFileUtils.geCacheFile(RunningEnvironment.sAppContext, "downloadAssets").getAbsolutePath();
-        }*/
-        return info;
-    }
 
     public final static String LIVE_PLAY_BACK_TUTOR_FLAGE = "_t";
     /** 性别-未知 */
@@ -440,4 +393,9 @@ public class LiveVideoConfig {
     public static final String LIVE_GOUP_1V2_ENGLISH_CHECK = "live_goup_1v2_english_name_check";
     /** 是否跳过了名字设置 */
     public static final String LIVE_GOUP_1V2_ENGLISH_SKIPED = "live_goup_1v2_english_name_skip";
+
+    public static String videoliveplayback="videoliveplayback";
+    public static String videoliveplaybackStr="videoliveplaybackStr";
+    public static String videoTutorEntity="videoTutorEntity";
+    public static String videoTutorEntityStr="videoTutorEntityStr";
 }

@@ -118,7 +118,7 @@
             android:gravity="center"
             android:includeFontPadding="false"
             android:text="排名"
-            android:textSize="12sp" />
+            android:textSize="12dp" />
 
         <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
             android:id="@id/tv_livevideo_rank_subtitle_mid"
@@ -129,17 +129,17 @@
             android:gravity="center"
             android:includeFontPadding="false"
             android:text="学员"
-            android:textSize="12sp" />
+            android:textSize="12dp" />
 
         <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
             style="@style/text_font11_ffffff_style"
-            android:layout_width="36dp"
+            android:layout_width="38dp"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:gravity="center"
             android:includeFontPadding="false"
             android:text="正确率"
-            android:textSize="12sp" />
+            android:textSize="12dp" />
     </RelativeLayout>
 
     <ListView

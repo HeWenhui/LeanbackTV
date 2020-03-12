@@ -61,9 +61,9 @@ public class SpeechCollectivePager extends BasePager {
         promtGroup = view.findViewById(R.id.rl_livevideo_open_close_layout);
         promtView = view.findViewById(R.id.iv_livevideo_open_close);
         waveGroup = view.findViewById(R.id.fl_livevideo_wave_layout);
-        Typeface fontFace = Typeface.createFromAsset(mContext.getAssets(), "fangzhengcuyuan.ttf");
-        countDownView.setTypeface(fontFace);
-        promtView.setTypeface(fontFace);
+//        Typeface fontFace = Typeface.createFromAsset(mContext.getAssets(), "fangzhengcuyuan.ttf");
+//        countDownView.setTypeface(fontFace);
+//        promtView.setTypeface(fontFace);
 
         promtGroup.setVisibility(View.VISIBLE);
         promtView.setText("老师开启了集体发言\n踊跃参与吧！");

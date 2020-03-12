@@ -67,7 +67,7 @@ import com.xueersi.component.cloud.entity.XesCloudResult;
 import com.xueersi.component.cloud.listener.XesStsUploadListener;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.are.ContextManager;
-import com.xueersi.lib.framework.drawable.DrawableHelper;
+import com.xueersi.common.resources.DrawableHelper;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
@@ -385,12 +385,12 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
             }
         }, 100);
 
-        Typeface fontFace = Typeface.createFromAsset(mContext.getAssets(), "fangzhengcuyuan.ttf");
-        btnMessageStartVoice.setTypeface(fontFace);
-        etMessageContent.setTypeface(fontFace);
-        tvMessageCount.setTypeface(fontFace);
-        tvMessageVoiceContent.setTypeface(fontFace);
-        tvMessageVoiceCount.setTypeface(fontFace);
+//        Typeface fontFace = Typeface.createFromAsset(mContext.getAssets(), "fangzhengcuyuan.ttf");
+//        btnMessageStartVoice.setTypeface(fontFace);
+//        etMessageContent.setTypeface(fontFace);
+//        tvMessageCount.setTypeface(fontFace);
+//        tvMessageVoiceContent.setTypeface(fontFace);
+//        tvMessageVoiceCount.setTypeface(fontFace);
         return mView;
     }
 
@@ -984,7 +984,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (StringUtils.isEmpty(charSequence)) {
                     btMessageSend.setEnabled(false);
-                    btMessageSend.setBackgroundResource(R.drawable.play_chat_sent_btn_disabled);
+                    btMessageSend.setBackgroundResource(R.drawable.play_chat_sent_btn_disabled_v2);
                 } else {
                     btMessageSend.setEnabled(true);
                     btMessageSend.setBackgroundResource(R.drawable.selector_livevideo_small_english_chat_send);

@@ -81,7 +81,11 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
     @Override
     public void updateViews(TeamMate entity, int position, Object objTag) {
         super.updateViews(entity, position, objTag);
-        tv_livevideo_primary_team_people_name.setText(entity.getName());
+        String string = "" + entity.getName();
+        if (string.length() > 4) {
+            string = string.substring(0, 4) + "...";
+        }
+        tv_livevideo_primary_team_people_name.setText(string);
     }
 
     @Override
@@ -279,7 +283,7 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
         });
     }
 
-    public void onRemoteVideoStateChanged(int uid, final int state) {
+    public void onRemoteVideoStateChanged(long uid, final int state) {
         this.state = state;
         mLogtf.d("onRemoteVideoStateChanged:uid=" + uid + ",state=" + state + ",look=" + entity.isLook() + ",videoStatus=" + videoStatus);
         if (entity.isLook() && videoStatus) {

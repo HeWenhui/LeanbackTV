@@ -175,7 +175,7 @@ public class WorkerThreadPool {
 
                 mRtcEngine.setClientRole(cRole);
                 if (audioCallBack) {
-                    mRtcEngine.enableAudioVolumeIndication(500, 3,false);
+                    mRtcEngine.enableAudioVolumeIndication(500, 3);
                     mRtcEngine.muteAllRemoteAudioStreams(true);
                 }
                 logger.d("configEngine " + cRole + " " + mEngineConfig.mVideoProfile);

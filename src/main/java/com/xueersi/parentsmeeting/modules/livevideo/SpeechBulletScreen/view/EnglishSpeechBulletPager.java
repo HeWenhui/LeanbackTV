@@ -311,12 +311,12 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
     }
 
     private void loadPrimarySkin() {
-        Typeface fontFace = Typeface.createFromAsset(mContext.getAssets(), "fangzhengcuyuan.ttf");
-        etSpeechbulWords.setTypeface(fontFace);
-        tvSpeechbulTitle.setTypeface(fontFace);
-        tvSpeechbulTitleCount.setTypeface(fontFace);
-        tvSpeechbulCount.setTypeface(fontFace);
-        tvSpeechbulCloseTip.setTypeface(fontFace);
+//        Typeface fontFace = Typeface.createFromAsset(mContext.getAssets(), "fangzhengcuyuan.ttf");
+//        etSpeechbulWords.setTypeface(fontFace);
+//        tvSpeechbulTitle.setTypeface(fontFace);
+//        tvSpeechbulTitleCount.setTypeface(fontFace);
+//        tvSpeechbulCount.setTypeface(fontFace);
+//        tvSpeechbulCloseTip.setTypeface(fontFace);
     }
 
     /**
@@ -616,7 +616,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
         if (isSmallEnglish) {
             SmallEnglishMicTipDialog startSpeechBulletToast = new SmallEnglishMicTipDialog(mContext);
             startSpeechBulletToast.setText(tips);
-            startSpeechBulletToast.setTypeface(Typeface.createFromAsset(mContext.getAssets(), "fangzhengcuyuan.ttf"));
+//            startSpeechBulletToast.setTypeface(Typeface.createFromAsset(mContext.getAssets(), "fangzhengcuyuan.ttf"));
             startSpeechBulletToast.showDialogAutoClose(2000);
         } else {
             Toast toast = new Toast(mContext);

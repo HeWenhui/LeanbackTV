@@ -41,6 +41,10 @@ public class LiveEventBus {
 
                 @Override
                 public synchronized void unregister(Object subscriber) {
+                    if (subscriber == null) {
+                        LiveCrashReport.postCatchedException(new Exception());
+                        return;
+                    }
                     super.unregister(subscriber);
                 }
             };

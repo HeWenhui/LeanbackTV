@@ -22,6 +22,7 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
@@ -100,7 +101,11 @@ public class LiveDanmaku implements LiveDanmakuPro {
     }
 
     public void onLiveInited(LiveGetInfo getInfo) {
-        initDanmaku();
+        String educationStage = "";
+        if (getInfo != null) {
+            educationStage = getInfo.getEducationStage();
+        }
+        initDanmaku(educationStage);
         VideoChatStatusChange videoChatStatusChange = ProxUtil.getProvide(mContext, VideoChatStatusChange.class);
         if (videoChatStatusChange != null) {
             videoChatStatusChange.addVideoChatStatusChange(new VideoChatStatusChange.ChatStatusChange() {
@@ -123,7 +128,7 @@ public class LiveDanmaku implements LiveDanmakuPro {
         }
     }
 
-    protected void initDanmaku() {
+    protected void initDanmaku(String educationStage) {
         Intent intent = mContext.getIntent();
         boolean isPrimary = intent.getBooleanExtra("isPrimary", false);
         boolean isSmallChinese = intent.getBooleanExtra("isSmallChinese", false);
@@ -184,6 +189,27 @@ public class LiveDanmaku implements LiveDanmakuPro {
             };
             mCacheStufferAdapter = new SmallEnglishCacheProxy();
         } else {
+            if (LiveVideoConfig.EDUCATION_STAGE_1.equals(educationStage) || LiveVideoConfig.EDUCATION_STAGE_2.equals
+                    (educationStage)) {
+                flowsDrawLittleTips[0] = R.drawable.bg_livevideo_heart_small2;
+                flowsDrawLittleTips[1] = R.drawable.bg_livevideo_tea_middle2;
+                flowsDrawLittleTips[2] = R.drawable.bg_livevideo_icecream_big2;
+
+                flowsTips[0] = "送老师一颗小心心，老师也喜欢你哟~";
+                flowsTips[1] = "送老师一杯暖心茉莉茶，老师嗓子好舒服~";
+                flowsTips[2] = "送老师一个冰淇淋，夏天好凉爽~";
+                //3 4初高中
+            } else if (LiveVideoConfig.EDUCATION_STAGE_3.equals(educationStage) || LiveVideoConfig
+                    .EDUCATION_STAGE_4.equals(educationStage)) {
+
+                flowsDrawLittleTips[0] = R.drawable.bg_livevideo_sugar_small2;
+                flowsDrawLittleTips[1] = R.drawable.bg_livevideo_flower_3_4_middle2;
+                flowsDrawLittleTips[2] = R.drawable.bg_livevideo_mic_big2;
+
+                flowsTips[0] = "送老师一颗润喉糖，老师嗓子很舒服并想高歌一曲！";
+                flowsTips[1] = "送老师一朵鲜花，老师超感动并回了一个么么哒！";
+                flowsTips[2] = "送老师一个金话筒，老师讲课更有劲儿了！";
+            }
             cacheStuffer = new SpannedCacheStuffer();
             mParser = createParser(mContext.getResources().openRawResource(R.raw.comments));
             mCacheStufferAdapter = new BaseCacheProxy();

@@ -50,7 +50,7 @@
             android:id="@id/iv_video_mark_points"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/bg_bt_live_mark"
+            android:src="@drawable/livevideo_live_mark_img"
             android:layout_alignParentRight="true"
             android:visibility="gone" />
     </RelativeLayout>

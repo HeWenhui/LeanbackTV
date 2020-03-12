@@ -14,7 +14,7 @@ public class LiveQueHttpConfig {
     public static String LIVE_GET_COURSEWARE_TESTS = LiveHttpConfig.LIVE_HOST_SCIENCE + "/LiveExam/getCourseWareTests";
     /** 获得课件-理科 */
     public static String LIVE_GET_COURSEWARE_TESTS_CN = LiveHttpConfig.HTTP_LIVE_CHINESE_HOST + "/LiveExam/getCourseWareTests";
-    /** 获得课件-英语 http://wiki.xesv5.com/pages/viewpage.action?pageId=12954621 */
+    /** 获得课件-英语 https://wiki.zhiyinlou.com/pages/viewpage.action?pageId=31364820 */
     public static String LIVE_GET_COURSEWARE_TESTS_EN = LiveHttpConfig.HTTP_APP_ENGLISH_HOST + "/v2/commonTestInfo/getTestInfos";
 
     // http://live.xueersi.com/science/Tutorship/getCourseWareTest

@@ -40,6 +40,10 @@ public class BigLivePlayBackEntity extends BaseEntity {
     /** 统计视频播放key */
     private String visitTimeKey;
 
+    /**皮肤类型**/
+    private int skinType;
+
+
 
     public long getNowTime() {
         return nowTime;
@@ -111,6 +115,14 @@ public class BigLivePlayBackEntity extends BaseEntity {
 
     public void setVisitTimeKey(String visitTimeKey) {
         this.visitTimeKey = visitTimeKey;
+    }
+
+    public int getSkinType() {
+        return skinType;
+    }
+
+    public void setSkinType(int skinType) {
+        this.skinType = skinType;
     }
 
 
@@ -232,9 +244,17 @@ public class BigLivePlayBackEntity extends BaseEntity {
 
         private String classId;
         private String teamId;
+        private String courseId;
         /**本队成员**/
         private List<String> teamStudIds;
 
+        public void setCourseId(String courseId) {
+            this.courseId = courseId;
+        }
+
+        public String getCourseId() {
+            return courseId;
+        }
 
         public String getClassId() {
             return classId;
@@ -438,6 +458,8 @@ public class BigLivePlayBackEntity extends BaseEntity {
         /** 回放协议 */
         private int protocol;
         private String fileId;
+        private String beforeClassFileId;
+        private String afterClassFileId;
 
         /**聊天信息接口**/
         private String getChatRecordUrl;
@@ -525,6 +547,22 @@ public class BigLivePlayBackEntity extends BaseEntity {
 
         public void setFileId(String fileId) {
             this.fileId = fileId;
+        }
+
+        public String getBeforeClassFileId() {
+            return beforeClassFileId;
+        }
+
+        public void setBeforeClassFileId(String beforeClassFileId) {
+            this.beforeClassFileId = beforeClassFileId;
+        }
+
+        public String getAfterClassFileId() {
+            return afterClassFileId;
+        }
+
+        public void setAfterClassFileId(String afterClassFileId) {
+            this.afterClassFileId = afterClassFileId;
         }
     }
 

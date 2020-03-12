@@ -886,7 +886,7 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
     public Typeface getTypeface(Context context) {
         Typeface tf = null;
         try {
-            tf = Typeface.createFromAsset(context.getAssets(), "fangzhengcuyuan.ttf");
+//            tf = Typeface.createFromAsset(context.getAssets(), "fangzhengcuyuan.ttf");
         } catch (Exception e) {
             e.printStackTrace();
             return null;

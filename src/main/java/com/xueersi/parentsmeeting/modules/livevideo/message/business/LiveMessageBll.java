@@ -19,9 +19,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveViewAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RoomAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XesAtomicInteger;
-import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.entity.LPWeChatEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.http.LightLiveHttpManager;
-import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.http.LightLiveHttpResponseParser;
+//import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.entity.LPWeChatEntity;
+//import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.http.LightLiveHttpManager;
+//import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.http.LightLiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoLevel;
@@ -37,12 +37,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.message.pager.EvenDriveLiveM
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.HalfBodyArtsLiveMsgPager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.HalfBodyLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.HalfBodyPrimaryLiveMessagePager;
-import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LectureLiveMessagePager;
-import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LightLiveMessageLandPager;
-import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LightLiveMessagePortPager;
-import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessageLandPager;
+//import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LectureLiveMessagePager;
+//import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LightLiveMessageLandPager;
+//import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LightLiveMessagePortPager;
+//import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessageLandPager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessagePager;
-import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessagePortPager;
+//import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessagePortPager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessageStandPager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.PreSchoolLiveMainMsgPager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.PreSchoolLiveTrainMsgPager;
@@ -423,17 +423,18 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
 //                mLiveMessagePager = new LiveMessagePager(activity, questionBll, baseLiveMediaControllerBottom,
 // liveMessageLandEntities);
 //            }
-            if (liveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {
-                if(LiveVideoConfig.isLightLive){
-                    BaseLiveMessagePager liveMessagePager = new LightLiveMessageLandPager(activity, this,
-                            null, baseLiveMediaControllerBottom, liveMessageLandEntities, liveMessagePortEntities,isCloseChat);
-                    mLiveMessagePager = liveMessagePager;
-                }else {
-                    LiveMessagePager liveMessagePager =
-                        new LectureLiveMessagePager(activity, baseLiveMediaControllerBottom, liveMessageLandEntities, liveMessagePortEntities);
-                    mLiveMessagePager = liveMessagePager;
-                }
-            } else {
+//            if (liveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {
+//                if(LiveVideoConfig.isLightLive){
+//                    BaseLiveMessagePager liveMessagePager = new LightLiveMessageLandPager(activity, this,
+//                            null, baseLiveMediaControllerBottom, liveMessageLandEntities, liveMessagePortEntities,isCloseChat);
+//                    mLiveMessagePager = liveMessagePager;
+//                }else {
+//                    LiveMessagePager liveMessagePager =
+//                        new LectureLiveMessagePager(activity, baseLiveMediaControllerBottom, liveMessageLandEntities, liveMessagePortEntities);
+//                    mLiveMessagePager = liveMessagePager;
+//                }
+//            } else
+                {
                 long before = System.currentTimeMillis();
                 if (!isSmallEnglish && !LiveVideoConfig.isSmallChinese) {
                     LiveMessagePager liveMessagePager = new EvenDriveLiveMessagePager(activity,
@@ -452,42 +453,43 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
                 logger.d("initView:time1=" + (System.currentTimeMillis() - before));
             }
         } else {
-            if(LiveVideoConfig.isLightLive){
-                mLiveMessagePager = new LightLiveMessagePortPager(activity, this, liveMessagePortEntities,
-                        liveMessageLandEntities);
-                ((LightLiveMessagePortPager) mLiveMessagePager).setLiveHttpManager(liveHttpManager);
-            }else {
-                mLiveMessagePager = new LiveMessagePortPager(activity, this, liveMessagePortEntities,
-                        liveMessageLandEntities);
+//            if(LiveVideoConfig.isLightLive){
+//                mLiveMessagePager = new LightLiveMessagePortPager(activity, this, liveMessagePortEntities,
+//                        liveMessageLandEntities);
+//                ((LightLiveMessagePortPager) mLiveMessagePager).setLiveHttpManager(liveHttpManager);
+//            }else {
+//                mLiveMessagePager = new LiveMessagePortPager(activity, this, liveMessagePortEntities,
+//                        liveMessageLandEntities);
+//            }
+        }
+        if (mLiveMessagePager != null){
+            mLiveMessagePager.setGetInfo(getInfo);
+            mLiveMessagePager.urlclick = urlclick;
+            mLiveMessagePager.setPeopleCount(peopleCount);
+            mLiveMessagePager.setIrcState(mLiveBll);
+            mLiveMessagePager.onModeChange(mLiveBll.getMode());
+            mLiveMessagePager.setIsRegister(isRegister);
+            if (peopleCount.get() > 0) {
+                mLiveMessagePager.onUserList("", new User[peopleCount.get()]);
             }
-        }
-
-        mLiveMessagePager.setGetInfo(getInfo);
-        mLiveMessagePager.urlclick = urlclick;
-        mLiveMessagePager.setPeopleCount(peopleCount);
-        mLiveMessagePager.setIrcState(mLiveBll);
-        mLiveMessagePager.onModeChange(mLiveBll.getMode());
-        mLiveMessagePager.setIsRegister(isRegister);
-        if (peopleCount.get() > 0) {
-            mLiveMessagePager.onUserList("", new User[peopleCount.get()]);
-        }
-        if (text != null) {
-            mLiveMessagePager.setEtMessageContentText(text);
-        } else {
-            mLiveMessagePager.setEtMessageContentText("");
-        }
-        mLiveMessagePager.setHaveFlowers(isHaveFlowers);
-        mLiveMessagePager.closeChat(isCloseChat);
-        if (mode != null) {
-            mLiveMessagePager.onopenchat(openchat, mode, false);
-        }
-        rlLiveMessageContent.addView(mLiveMessagePager.getRootView(), params);
-        //如果旧的聊天数据没解析完，更新新的Adapter
-        if (oldLiveMessagePager != null) {
-            oldLiveMessagePager.setOtherMessageAdapter(mLiveMessagePager.getMessageAdapter());
-        }
-        if (oldLiveMessagePager instanceof LiveMessageLandPager) {
-            oldLiveMessagePager.setHaveFlowers(false);
+            if (text != null) {
+                mLiveMessagePager.setEtMessageContentText(text);
+            } else {
+                mLiveMessagePager.setEtMessageContentText("");
+            }
+            mLiveMessagePager.setHaveFlowers(isHaveFlowers);
+            mLiveMessagePager.closeChat(isCloseChat);
+            if (mode != null) {
+                mLiveMessagePager.onopenchat(openchat, mode, false);
+            }
+            rlLiveMessageContent.addView(mLiveMessagePager.getRootView(), params);
+            //如果旧的聊天数据没解析完，更新新的Adapter
+            if (oldLiveMessagePager != null) {
+                oldLiveMessagePager.setOtherMessageAdapter(mLiveMessagePager.getMessageAdapter());
+            }
+//        if (oldLiveMessagePager instanceof LiveMessageLandPager) {
+//            oldLiveMessagePager.setHaveFlowers(false);
+//        }
         }
     }
 

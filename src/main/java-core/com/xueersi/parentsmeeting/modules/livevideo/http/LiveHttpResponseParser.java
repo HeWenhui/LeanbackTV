@@ -21,7 +21,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEnti
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuAimResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuSegmentEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.EvenDriveEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.entity.LPWeChatEntity;
+//import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.entity.LPWeChatEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.entity.SuperSpeakerRedPackageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.EnglishPk;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
@@ -625,36 +625,36 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             }
 
             /** 轻直播公告*/
-            getInfo.setGentlyNotice(data.optString("gentlyNotice"));
-            /** 是否是轻直播 0否 1是*/
-            getInfo.setIsGently(data.optInt("isGently", 0) == 1 ? true : false);
-            /** 联系老师功能*/
-            if (data.has("lpInfo")) {
-                JSONObject lpInfo = data.optJSONObject("lpInfo");
-                LPWeChatEntity lpEntity = new LPWeChatEntity();
-                lpEntity.setTipType(lpInfo.optInt("tipType"));
-                lpEntity.setTipInfo(lpInfo.optString("tipInfo"));
-                lpEntity.setWxQrUrl(lpInfo.optString("wxQrUrl"));
-                lpEntity.setExistWx(lpInfo.optInt("existWx"));
-                if (lpInfo.has("wxInfo")) {
-                    JSONObject teaInfo = lpInfo.optJSONObject("wxInfo");
-                    lpEntity.setTeacherWx(teaInfo.optString("teaWx"));
-                    lpEntity.setTeacherName(teaInfo.optString("teaName"));
-                    lpEntity.setTeacherImg(teaInfo.optString("teaImg"));
-                }
-                getInfo.setLpWeChatEntity(lpEntity);
-
-            }
-            getInfo.setChatSwitch(data.optInt("chatSwitch"));
+//            getInfo.setGentlyNotice(data.optString("gentlyNotice"));
+//            /** 是否是轻直播 0否 1是*/
+//            getInfo.setIsGently(data.optInt("isGently", 0) == 1 ? true : false);
+//            /** 联系老师功能*/
+//            if (data.has("lpInfo")) {
+//                JSONObject lpInfo = data.optJSONObject("lpInfo");
+//                LPWeChatEntity lpEntity = new LPWeChatEntity();
+//                lpEntity.setTipType(lpInfo.optInt("tipType"));
+//                lpEntity.setTipInfo(lpInfo.optString("tipInfo"));
+//                lpEntity.setWxQrUrl(lpInfo.optString("wxQrUrl"));
+//                lpEntity.setExistWx(lpInfo.optInt("existWx"));
+//                if (lpInfo.has("wxInfo")) {
+//                    JSONObject teaInfo = lpInfo.optJSONObject("wxInfo");
+//                    lpEntity.setTeacherWx(teaInfo.optString("teaWx"));
+//                    lpEntity.setTeacherName(teaInfo.optString("teaName"));
+//                    lpEntity.setTeacherImg(teaInfo.optString("teaImg"));
+//                }
+//                getInfo.setLpWeChatEntity(lpEntity);
+//
+//            }
+//            getInfo.setChatSwitch(data.optInt("chatSwitch"));
             //订阅系列讲座用字段
-            getInfo.setSeriesLectureId(data.optInt("seriesLectureId"));
-            getInfo.setSeriesLectureName(data.optString("seriesLectureName"));
-            getInfo.setIsSeriesLectureSub(data.optInt("isSeriesLectureSub"));
-            getInfo.setBubbleSwitch(data.optInt("bubbleSwitch"));
-            getInfo.setBubbleText(data.optString("bubbleText"));
-            getInfo.setPopupMainTitle(data.optString("popupMainTitle"));
-            getInfo.setPopupSubTitle(data.optString("popupSubTitle"));
-            getInfo.setSubSuccessTitle(data.optString("subSuccessTitle"));
+//            getInfo.setSeriesLectureId(data.optInt("seriesLectureId"));
+//            getInfo.setSeriesLectureName(data.optString("seriesLectureName"));
+//            getInfo.setIsSeriesLectureSub(data.optInt("isSeriesLectureSub"));
+//            getInfo.setBubbleSwitch(data.optInt("bubbleSwitch"));
+//            getInfo.setBubbleText(data.optString("bubbleText"));
+//            getInfo.setPopupMainTitle(data.optString("popupMainTitle"));
+//            getInfo.setPopupSubTitle(data.optString("popupSubTitle"));
+//            getInfo.setSubSuccessTitle(data.optString("subSuccessTitle"));
             return getInfo;
         } catch (JSONException e) {
             logger.e("parseLiveGetInfo", e);
