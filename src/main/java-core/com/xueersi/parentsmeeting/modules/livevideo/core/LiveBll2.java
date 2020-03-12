@@ -1132,12 +1132,12 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                 initDispathcHandler();
                 lastDelayTime = timeDelay;
             }
-            Log.e("LiveBusinssFragement","====>OldLive_notice_timeDelay:"+timeDelay);
+            Log.e("LiveBusinssFragement","====>OldLive_notice_timeDelay:type="+mtype+":"+timeDelay);
 
             Runnable dispatchTask = new Runnable() {
                 @Override
                 public void run() {
-                    Log.e("LiveBusinssFragement","====>OldLive_notice_realdispatch_notice called:");
+                    Log.e("LiveBusinssFragement","====>OldLive_notice_realdispatch_notice called:type="+mtype);
 
                     long delayMillis = 0;
                     if (isFlatfish == 1) {
@@ -1420,7 +1420,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                 initDispathcHandler();
                 lastDelayTime = timeDelay;
             }
-            Log.e("LiveBusinssFragement","====>BigLive_notice_timeDelay:"+timeDelay);
+            Log.e("LiveBusinssFragement","====>BigLive_notice_timeDelay:type="+mtype+":"+timeDelay);
             Runnable dispatchNoticeTask = new Runnable() {
 
                 @Override
@@ -1430,7 +1430,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                         onTeacherMode(mode);
                     }
                     List<NoticeAction> noticeActions = mNoticeActionMap.get(mtype);
-                    Log.e("LiveBusinssFragement","====>BigLive_notice_realdispathc:clalled");
+                    Log.e("LiveBusinssFragement","====>BigLive_notice_realdispathc:clalled:type="+mtype);
                     if (noticeActions != null && noticeActions.size() > 0) {
                         for (NoticeAction noticeAction : noticeActions) {
                             try {
