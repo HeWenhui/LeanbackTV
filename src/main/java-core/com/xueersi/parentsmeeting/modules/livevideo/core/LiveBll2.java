@@ -1095,7 +1095,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
 
 
         /**上一次收到notice的真实时间**/
-        long lastNoiceTime = 0L;
+        long lastNoticeTime = 0L;
         /**上一次notice 消峰延时时间**/
         long lastDelayTime = 0L;
 
@@ -1110,35 +1110,31 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         private void oldLiveDispatchNotice(final String sourceNick, final String target,
                                            final JSONObject object, final int mtype, final long seiTimetamp) {
             //////////////////////
-
-            long timeDelay = getDelayTimeByType(mtype);
-            timeDelay = timeDelay >= 0?timeDelay:0;
-
+            long timeDelay = oldLiveGetTimeByType(mtype);
             long noticeTimeOffset = 0L;
             //计算2次notice 之间的时间差
-            if(lastNoiceTime > 0){
-                noticeTimeOffset = System.currentTimeMillis() - lastNoiceTime;
+            if(lastNoticeTime > 0){
+                noticeTimeOffset = System.currentTimeMillis() - lastNoticeTime;
                 noticeTimeOffset = noticeTimeOffset > 0 ? noticeTimeOffset:0;
             }
-            lastNoiceTime = System.currentTimeMillis();
+            lastNoticeTime = System.currentTimeMillis();
 
             // 消峰规则算出需要消峰
-            if(timeDelay > 0){
+            if(timeDelay >= 0){
                 //上一次延时时间
                 if(lastDelayTime > 0){
                     //保证 延时消息有序
-                    timeDelay = Math.max((lastDelayTime - noticeTimeOffset+100),timeDelay);
+                    timeDelay = (lastDelayTime - noticeTimeOffset) > 0 ? (lastDelayTime + timeDelay):timeDelay;
                 }
                 initDispathcHandler();
                 lastDelayTime = timeDelay;
             }
-            Log.e("LiveBusinssFragement","====>OldLive_notice_timeDelay:type="+mtype+":"+timeDelay);
+            Log.e("EliminationRule","====>OldLive_notice_timeDelay:type="+mtype+":"+timeDelay);
 
             Runnable dispatchTask = new Runnable() {
                 @Override
                 public void run() {
-                    Log.e("LiveBusinssFragement","====>OldLive_notice_realdispatch_notice called:type="+mtype);
-
+                    Log.e("EliminationRule","====>OldLive_notice_realdispatch_notice_1:type="+mtype);
                     long delayMillis = 0;
                     if (isFlatfish == 1) {
                         long currentSeiTimetamp = liveVideoBll.getCurrentSeiTimetamp();
@@ -1158,12 +1154,17 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                         }
                         logger.i("onNotice:getCurrentSeiTimetamp:time=" + seiTimetamp + "," + new Date(seiTimetamp)
                                 + ",time2=" + currentSeiTimetamp + "," + new Date(seiTimetamp) + ",delayMillis=" + delayMillis);
+
+                        Log.e("EliminationRule","===>FlatFish_seiTimetamp:"+seiTimetamp+","+new Date(seiTimetamp)+",videoTime="
+                                +currentSeiTimetamp+","+new Date(currentSeiTimetamp)+",delayTime="+delayMillis);
+
                     }
                     final List<NoticeAction> noticeActions = mNoticeActionMap.get(mtype);
                     if (noticeActions != null && noticeActions.size() > 0) {
                         Runnable runnable = new Runnable() {
                             @Override
                             public void run() {
+                                Log.e("EliminationRule","OldLive_notice_realdispatch_notice_2:type="+mtype);
                                 for (NoticeAction noticeAction : noticeActions) {
                                     try {
                                         noticeAction.onNotice(sourceNick, target, object, mtype);
@@ -1400,27 +1401,26 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         private void dispatchNoitce(final String sourceNick, final String target, final JSONObject object,
                                     final int mtype) throws JSONException {
             long timeDelay = getDelayTimeByType(mtype);
-            timeDelay = timeDelay >= 0?timeDelay:0;
-
             long noticeTimeOffset = 0L;
             //计算2次notice 之间的时间差
-            if(lastNoiceTime > 0){
-                noticeTimeOffset = System.currentTimeMillis() - lastNoiceTime;
+
+            if(lastNoticeTime > 0){
+                noticeTimeOffset = System.currentTimeMillis() - lastNoticeTime;
                 noticeTimeOffset = noticeTimeOffset > 0 ? noticeTimeOffset:0;
             }
-            lastNoiceTime = System.currentTimeMillis();
+            lastNoticeTime = System.currentTimeMillis();
 
             // 消峰规则算出需要消峰
-            if(timeDelay > 0){
+            if(timeDelay >= 0){
                 //上一次延时时间
                 if(lastDelayTime > 0){
                     //保证 延时消息有序
-                    timeDelay = Math.max((lastDelayTime - noticeTimeOffset+100),timeDelay);
+                    timeDelay = (lastDelayTime - noticeTimeOffset) > 0 ? (lastDelayTime + timeDelay):timeDelay;
                 }
                 initDispathcHandler();
                 lastDelayTime = timeDelay;
             }
-            Log.e("LiveBusinssFragement","====>BigLive_notice_timeDelay:type="+mtype+":"+timeDelay);
+            Log.e("EliminationRule","====>BigLive_notice_timeDelay:type="+mtype+":"+timeDelay);
             Runnable dispatchNoticeTask = new Runnable() {
 
                 @Override
@@ -1430,7 +1430,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                         onTeacherMode(mode);
                     }
                     List<NoticeAction> noticeActions = mNoticeActionMap.get(mtype);
-                    Log.e("LiveBusinssFragement","====>BigLive_notice_realdispathc:clalled:type="+mtype);
+                    Log.e("EliminationRule","====>BigLive_notice_realdispathc:clalled:type="+mtype);
                     if (noticeActions != null && noticeActions.size() > 0) {
                         for (NoticeAction noticeAction : noticeActions) {
                             try {
@@ -1577,7 +1577,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
      * @return
      */
     private long oldLiveGetTimeByType(int mtype){
-       long reuslt = 0L;
+       long reuslt = -1L;
        if(mGetInfo != null && mGetInfo.getIsEliminationPeak() == 1){
            reuslt = getDelayTimeByType(mtype);
        }
@@ -1590,7 +1590,8 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
      * @return
      */
     private long getDelayTimeByType(int mtype) {
-        long delayTime = 0L;
+        //默认值-1区分是否有消峰配置
+        long delayTime = -1L;
         if(mGetInfo != null && mGetInfo.getEliminationMap() != null && mGetInfo.getEliminationMap().size() > 0){
             Long time = mGetInfo.getEliminationMap().get(mtype);
             if(time != null){
