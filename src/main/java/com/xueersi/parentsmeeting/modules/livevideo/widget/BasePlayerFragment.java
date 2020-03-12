@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Rect;
-import android.media.AudioAttributes;
-import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -178,7 +176,6 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
 
     //自检提醒
     private LiveNetCheckTip mLiveNetCheckTip;
-
     public void playNewVideo() {
         if (mUri != null && mDisplayName != null) {
             playNewVideo(mUri, mDisplayName);
@@ -238,68 +235,12 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
 //        vPlayerHandler.sendEmptyMessage(OPEN_FILE);
 //    }
 
-    private AudioManager audioManager;
-    private MyOnAudioFocusChangeListener audioFocusChangeListener;
-
-    private class MyOnAudioFocusChangeListener implements AudioManager.OnAudioFocusChangeListener {
-        float oldleftVolume = 1.0f;
-        float oldrightVolume = 1.0f;
-        int lastfocusChange = -1234;
-
-        @Override
-        public void onAudioFocusChange(int focusChange) {
-            //监听系统播放状态的改变
-            logger.d("onAudioFocusChange:focusChange=" + focusChange + ",lastfocusChange=" + lastfocusChange + ",left=" + oldleftVolume);
-            if (lastfocusChange == focusChange) {
-                return;
-            }
-            lastfocusChange = focusChange;
-            //暂时失去AudioFocus，可以很快再次获取AudioFocus，可以不释放播放资源
-//            if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT ||
-//                    focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK) {
-//
-//            } else if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
-//                //获取了AudioFocus，如果当前处于播放暂停状态，并且这个暂停状态不是用户手动点击的暂停，才会继续播放
-//                setVolume(oldleftVolume, oldrightVolume);
-//            } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
-//                // 会长时间的失去AudioFoucs,就不在监听远程播放
-//                oldleftVolume = leftVolume;
-//                oldrightVolume = rightVolume;
-//                setVolume(0.0f, 0.0f);
-//            }
-        }
-    }
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activity = (BaseActivity) getActivity();
         mPortVideoHeight = VideoBll.getVideoDefaultHeight(activity);
         mShareDataManager = ShareDataManager.getInstance();
-        audioFocusChangeListener = new MyOnAudioFocusChangeListener();
-        audioManager = (AudioManager) activity.getSystemService(Context.AUDIO_SERVICE);
-        if (audioManager != null) {
-            int result = audioManager.requestAudioFocus(audioFocusChangeListener, AudioManager.STREAM_RING, AudioManager.AUDIOFOCUS_GAIN);
-            logger.d("onCreate:requestAudioFocus:result=" + result);
-        }
-    }
-
-    boolean pause = false;
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (pause && audioManager != null) {
-            int result = audioManager.requestAudioFocus(audioFocusChangeListener, AudioManager.STREAM_RING, AudioManager.AUDIOFOCUS_GAIN);
-            logger.d("onResume:requestAudioFocus:result=" + result);
-        }
-        pause = false;
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        pause = true;
     }
 
     @Override
@@ -426,9 +367,9 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
 
     public void setMuteMode(boolean muteMode) {
         this.muteMode = muteMode;
-        if (muteMode) {
+        if (muteMode){
             setVolume(0, 0);
-        } else {
+        }else {
             setVolume(VP.DEFAULT_STEREO_VOLUME, VP.DEFAULT_STEREO_VOLUME);
         }
     }
@@ -1464,9 +1405,6 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         super.onDestroy();
         if (vPlayer != null) {
             vPlayer.psExit();
-        }
-        if (audioManager != null) {
-            audioManager.abandonAudioFocus(audioFocusChangeListener);
         }
     }
 }

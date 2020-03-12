@@ -792,7 +792,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
         super.onResume();
         FileLogger.runActivity = this;
         //关闭系统后台声音
-//        AudioPlayer.requestAudioFocus(this);
+        AudioPlayer.requestAudioFocus(this);
 
         // 设置视频可播放
         mIsPlayerEnable = true;
