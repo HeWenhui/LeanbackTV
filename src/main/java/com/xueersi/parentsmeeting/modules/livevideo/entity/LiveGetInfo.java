@@ -604,6 +604,8 @@ public class LiveGetInfo {
     private String popupSubTitle;
     /** 订阅成功标题*/
     private String subSuccessTitle;
+    /** irc businessId*/
+    private String liveTypeId;
 
     public VideoConfigEntity getVideoConfigEntity() {
         return videoConfigEntity;
@@ -2319,5 +2321,13 @@ public class LiveGetInfo {
 
     public void setSubSuccessTitle(String subSuccessTitle) {
         this.subSuccessTitle = subSuccessTitle;
+    }
+
+    public String getLiveTypeId() {
+        return liveTypeId;
+    }
+
+    public void setLiveTypeId(String liveTypeId) {
+        this.liveTypeId = liveTypeId;
     }
 }

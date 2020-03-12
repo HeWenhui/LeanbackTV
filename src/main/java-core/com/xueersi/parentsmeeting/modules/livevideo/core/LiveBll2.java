@@ -675,7 +675,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         s += ",liveType=" + mLiveType + ",channel=" + channel;
         String nickname = getInfo.getIrcNick();
         mIRCMessage = new NewIRCMessage(mBaseActivity, nickname, mGetInfo.getId(),
-                mGetInfo.getStudentLiveInfo().getClassId(), channelArray);
+                mGetInfo.getStudentLiveInfo().getClassId(),mGetInfo.getLiveTypeId(), channelArray);
         mIRCcallback = new BigLiveIRCCallBackImp();
         mIRCMessage.setCallback(mIRCcallback);
         mIRCMessage.create();
@@ -856,11 +856,11 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         }
         if (TextUtils.isEmpty(eChannel) || LiveTopic.MODE_CLASS.equals(getMode())) {
             channel = "#" + channel;
-            mIRCMessage = new NewIRCMessage(mBaseActivity, nickname, mGetInfo.getId(), classId, channel);
+            mIRCMessage = new NewIRCMessage(mBaseActivity, nickname, mGetInfo.getId(), classId, mGetInfo.getLiveTypeId(),channel);
         } else {
             channel = "#" + channel;
             eChannel = "#" + eChannel;
-            mIRCMessage = new NewIRCMessage(mBaseActivity, nickname, mGetInfo.getId(), classId, channel, eChannel);
+            mIRCMessage = new NewIRCMessage(mBaseActivity, nickname, mGetInfo.getId(), classId,mGetInfo.getLiveTypeId() ,channel, eChannel);
         }
 
 

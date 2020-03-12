@@ -83,13 +83,15 @@ public class NewIRCMessage implements IIRCMessage {
     private String eventid = "NewIRCMessage";
     private Map<String, String> analysis;
     private UUID mSid = UUID.randomUUID();
+    private String businessId;
 
-    public NewIRCMessage(Context context, String nickname, String liveId, String classId, String... channel) {
+    public NewIRCMessage(Context context, String nickname, String liveId, String classId,String businessId, String... channel) {
         this.mChannels = channel;
         this.mNickname = nickname;
         this.mContext = context;
         this.liveId = liveId;
         this.classId = classId;
+        this.businessId = businessId;
         mLogtf = new LogToFile(context, TAG);
         mLogtf.clear();
         mLogtf.d("NewIRCMessage:channel=" + channel + ",nickname=" + nickname);
@@ -868,7 +870,11 @@ public class NewIRCMessage implements IIRCMessage {
         } else {
             liveInfo.classId = "";
         }
-        liveInfo.businessId = "1";
+        if (businessId != null){
+            liveInfo.businessId = businessId;
+        } else {
+            liveInfo.businessId = "1";
+        }
         if (LiveAppUserInfo.getInstance().getAreaCode() != null) {
             liveInfo.location = LiveAppUserInfo.getInstance().getAreaCode();
         } else {

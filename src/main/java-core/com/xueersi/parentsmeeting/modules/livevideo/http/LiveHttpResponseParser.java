@@ -623,6 +623,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 getInfo.setRecordStandliveEntity(recordStandliveEntity);
                 getInfo.setMode(LiveTopic.MODE_CLASS);
             }
+            getInfo.setLiveTypeId(data.optString("liveTypeId"));
 
             /** 轻直播公告*/
 //            getInfo.setGentlyNotice(data.optString("gentlyNotice"));

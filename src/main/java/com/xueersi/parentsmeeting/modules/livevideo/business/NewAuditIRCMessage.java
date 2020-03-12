@@ -80,12 +80,14 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
     //消息序号
     private long[] preMsgId = new long[]{0};
     private HashMap<Long, String> msgMap = new HashMap<>();
+    private String businessId;
 
-    public NewAuditIRCMessage(LiveEnvironment liveEnvironment, String nickname, String liveId, String classId, String channel) {
+    public NewAuditIRCMessage(LiveEnvironment liveEnvironment, String nickname, String liveId, String classId,String businessId, String channel) {
         this.mChannel = channel;
         this.mNickname = nickname;
         this.liveId = liveId;
         this.classId = classId;
+        this.businessId = businessId;
         mContext = liveEnvironment.getActivity();
         workSpaceDir = new File(mContext.getCacheDir(), "irc/workspace");
         mLogtf = liveEnvironment.createLogToFile(TAG);
@@ -658,7 +660,11 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
         } else {
             liveInfo.classId = "";
         }
-        liveInfo.businessId = "1";
+        if (businessId != null){
+            liveInfo.businessId = businessId;
+        } else {
+            liveInfo.businessId = "1";
+        }
         if (LiveAppUserInfo.getInstance().getAreaCode() != null) {
             liveInfo.location = LiveAppUserInfo.getInstance().getAreaCode();
         } else {
