@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -39,7 +40,7 @@ import java.util.HashMap;
  * @date 2018/6/22
  */
 public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoView.SurfaceCallback,
-        BackMediaPlayerControl , LiveMediaController.MediaPlayerControl {
+        BackMediaPlayerControl, LiveMediaController.MediaPlayerControl {
 
     /** 播放器的控制对象 */
     protected IPlayBackMediaCtr mMediaController;
@@ -482,5 +483,22 @@ public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoV
 
     public VideoView getVideoView() {
         return videoView;
+    }
+
+    /** 停止音量的时候，是不是播放中 */
+    private boolean oldisPlaying = false;
+
+    @Override
+    protected void onAudioGain(boolean gain) {
+        logger.d("onAudioGain:gain=" + gain + ",oldisPlaying=" + oldisPlaying);
+        if (gain) {
+            if (oldisPlaying) {
+                start();
+            }
+        } else {
+            //获取了AudioFocus，如果当前处于播放暂停状态，并且这个暂停状态不是用户手动点击的暂停，才会继续播放
+            oldisPlaying = isPlaying();
+            pause();
+        }
     }
 }

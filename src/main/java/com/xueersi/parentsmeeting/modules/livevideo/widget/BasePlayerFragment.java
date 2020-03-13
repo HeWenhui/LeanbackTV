@@ -244,32 +244,32 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
     private MyOnAudioFocusChangeListener audioFocusChangeListener;
 
     private class MyOnAudioFocusChangeListener implements AudioManager.OnAudioFocusChangeListener {
-        float oldleftVolume = 1.0f;
-        float oldrightVolume = 1.0f;
         int lastfocusChange = -1234;
 
         @Override
         public void onAudioFocusChange(int focusChange) {
             //监听系统播放状态的改变
-            logger.d("onAudioFocusChange:focusChange=" + focusChange + ",lastfocusChange=" + lastfocusChange + ",left=" + oldleftVolume);
+            logger.d("onAudioFocusChange:focusChange=" + focusChange + ",lastfocusChange=" + lastfocusChange);
             if (lastfocusChange == focusChange) {
                 return;
             }
             lastfocusChange = focusChange;
             //暂时失去AudioFocus，可以很快再次获取AudioFocus，可以不释放播放资源
-//            if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT ||
-//                    focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK) {
-//
-//            } else if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
-//                //获取了AudioFocus，如果当前处于播放暂停状态，并且这个暂停状态不是用户手动点击的暂停，才会继续播放
-//                setVolume(oldleftVolume, oldrightVolume);
-//            } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
-//                // 会长时间的失去AudioFoucs,就不在监听远程播放
-//                oldleftVolume = leftVolume;
-//                oldrightVolume = rightVolume;
-//                setVolume(0.0f, 0.0f);
-//            }
+            if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT ||
+                    focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK) {
+                onAudioGain(false);
+            } else if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
+                //获取了AudioFocus，如果当前处于播放暂停状态，并且这个暂停状态不是用户手动点击的暂停，才会继续播放
+                onAudioGain(true);
+            } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
+                // 会长时间的失去AudioFoucs,就不在监听远程播放
+                onAudioGain(false);
+            }
         }
+    }
+
+    protected void onAudioGain(boolean gain) {
+
     }
 
     @Override
