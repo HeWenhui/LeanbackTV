@@ -3,6 +3,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.core;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Message;
 import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Log;
@@ -36,7 +38,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.NewIRCMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.business.UselessNotice;
-import com.xueersi.parentsmeeting.modules.livevideo.business.UserOnline;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.CoursewarePreload;
@@ -72,6 +73,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.video.TeacherIsPresent;
 import com.xueersi.ui.dialog.ConfirmAlertDialog;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
@@ -81,6 +83,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -95,6 +98,7 @@ import static com.xueersi.common.sharedata.ShareDataManager.SHAREDATA_NOT_CLEAR;
  */
 public class LiveBll2 extends BaseBll implements TeacherIsPresent {
 
+    private static final int MSG_TYPE_DISPATCH_NOTICE = 1;
     Logger logger = LoggerFactory.getLogger("LiveBll2");
     /**
      * 需处理 topic 业务集合
@@ -178,6 +182,10 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
     String lastChannelId;
     AbstractBusinessDataCallBack grayControl;
     private int isFlatfish = 0;
+    /**notice 分发handler 用于消峰处理**/
+    private Handler mDispathcHandler;
+    //private HashMap<Integer, Long> mNoticeDelayTimeMap;
+    private HandlerThread mNoticeDispatchHT;
 
     /**
      * 直播的
@@ -1004,7 +1012,8 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
 
         @Override
         public void onDisconnect(IRCConnection connection, boolean isQuitting) {
-            delayMillis = -1;
+           // delayMillis = -1;
+            clearCachNotice();
             if (mMessageActions != null && mMessageActions.size() > 0) {
                 for (MessageAction mesAction : mMessageActions) {
                     mesAction.onDisconnect(connection, isQuitting);
@@ -1036,7 +1045,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
             onTopic(channel, topic, "", 0, true, channel);
         }
 
-        long delayMillis = -1;
+       // long delayMillis = -1;
 
         @Override
         public void onNotice(final String sourceNick, String sourceLogin, String sourceHostname, final String target, String
@@ -1074,65 +1083,130 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                     default:
                         break;
                 }
-                //////////////////////
-                if (isFlatfish == 1) {
-                    long currentSeiTimetamp = liveVideoBll.getCurrentSeiTimetamp();
-                    if (seiTimetamp > 0) {
-                        if (currentSeiTimetamp > 0) {
-                            delayMillis = seiTimetamp - currentSeiTimetamp;
-                        }
-                        StableLogHashMap stableLogHashMap = new StableLogHashMap("noticedelay");
-                        stableLogHashMap.put("type", "" + mtype);
-                        stableLogHashMap.put("vts", "" + seiTimetamp);
-                        stableLogHashMap.put("delaymillis", "" + delayMillis);
-                        stableLogHashMap.put("status", "" + (currentSeiTimetamp > 0));
-                        liveAndBackDebugIml.umsAgentDebugInter(LiveVideoConfig.LIVE_NOTICE_DELAY, stableLogHashMap.getData());
-                        if (delayMillis > 3000) {
-                            delayMillis = 3000;
-                        }
-                    }
-                    logger.i("onNotice:getCurrentSeiTimetamp:time=" + seiTimetamp + "," + new Date(seiTimetamp)
-                            + ",time2=" + currentSeiTimetamp + "," + new Date(seiTimetamp) + ",delayMillis=" + delayMillis);
-                }
-                final List<NoticeAction> noticeActions = mNoticeActionMap.get(mtype);
-                if (noticeActions != null && noticeActions.size() > 0) {
-                    Runnable runnable = new Runnable() {
-                        @Override
-                        public void run() {
-                            for (NoticeAction noticeAction : noticeActions) {
-                                try {
-                                    noticeAction.onNotice(sourceNick, target, object, mtype);
-                                } catch (Exception e) {
-                                    LiveCrashReport.postCatchedException(new LiveException(TAG, e));
-                                }
-                            }
-                            delayMillis = -1;
-                        }
-                    };
-                    if (delayMillis > 0) {
-                        LiveMainHandler.postDelayed(runnable, delayMillis);
-                    } else {
-                        runnable.run();
-                    }
-                } else {
-                    if (UselessNotice.isUsed(mtype)) {
-                        try {
-                            HashMap<String, String> hashMap = new HashMap<>();
-                            hashMap.put("logtype", "onNotice");
-                            hashMap.put("livetype", "" + mLiveType);
-                            hashMap.put("liveid", "" + mLiveId);
-                            hashMap.put("arts", "" + mGetInfo.getIsArts());
-                            hashMap.put("pattern", "" + mGetInfo.getPattern());
-                            hashMap.put("type", "" + mtype);
-                            UmsAgentManager.umsAgentDebug(mContext, LogConfig.LIVE_NOTICE_UNKNOW, hashMap);
-                        } catch (Exception e) {
-                            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
-                        }
-                    }
-                }
+                //分发消息
+                oldLiveDispatchNotice(sourceNick, target, object, mtype, seiTimetamp);
             } catch (Exception e) {
                 logger.e("onNotice", e);
                 LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+            }
+        }
+
+
+
+
+        /**上一次收到notice的真实时间**/
+        long lastNoticeTime = 0L;
+        /**上一次notice 消峰延时时间**/
+        long lastDelayTime = 0L;
+
+        /**
+         * 分发notice 消息
+         * @param sourceNick
+         * @param target
+         * @param object
+         * @param mtype
+         * @param seiTimetamp
+         */
+        private void oldLiveDispatchNotice(final String sourceNick, final String target,
+                                           final JSONObject object, final int mtype, final long seiTimetamp) {
+            //////////////////////
+            long timeDelay = oldLiveGetTimeByType(mtype);
+            long noticeTimeOffset = 0L;
+            //计算2次notice 之间的时间差
+            if(lastNoticeTime > 0){
+                noticeTimeOffset = System.currentTimeMillis() - lastNoticeTime;
+                noticeTimeOffset = noticeTimeOffset > 0 ? noticeTimeOffset:0;
+            }
+            lastNoticeTime = System.currentTimeMillis();
+
+            // 消峰规则算出需要消峰
+            if(timeDelay >= 0){
+                //上一次延时时间
+                if(lastDelayTime > 0){
+                    //保证 延时消息有序
+                    timeDelay = (lastDelayTime - noticeTimeOffset) > 0 ? (lastDelayTime + timeDelay):timeDelay;
+                }
+                initDispathcHandler();
+                lastDelayTime = timeDelay;
+            }
+            Log.e("EliminationRule","====>OldLive_notice_timeDelay:type="+mtype+":"+timeDelay);
+
+            Runnable dispatchTask = new Runnable() {
+                @Override
+                public void run() {
+                    Log.e("EliminationRule","====>OldLive_notice_realdispatch_notice_1:type="+mtype);
+                    long delayMillis = 0;
+                    if (isFlatfish == 1) {
+                        long currentSeiTimetamp = liveVideoBll.getCurrentSeiTimetamp();
+                        if (seiTimetamp > 0) {
+                            if (currentSeiTimetamp > 0) {
+                                delayMillis = seiTimetamp - currentSeiTimetamp;
+                            }
+                            StableLogHashMap stableLogHashMap = new StableLogHashMap("noticedelay");
+                            stableLogHashMap.put("type", "" + mtype);
+                            stableLogHashMap.put("vts", "" + seiTimetamp);
+                            stableLogHashMap.put("delaymillis", "" + delayMillis);
+                            stableLogHashMap.put("status", "" + (currentSeiTimetamp > 0));
+                            liveAndBackDebugIml.umsAgentDebugInter(LiveVideoConfig.LIVE_NOTICE_DELAY, stableLogHashMap.getData());
+                            if (delayMillis > 3000) {
+                                delayMillis = 3000;
+                            }
+                        }
+                        logger.i("onNotice:getCurrentSeiTimetamp:time=" + seiTimetamp + "," + new Date(seiTimetamp)
+                                + ",time2=" + currentSeiTimetamp + "," + new Date(seiTimetamp) + ",delayMillis=" + delayMillis);
+
+                        Log.e("EliminationRule","===>FlatFish_seiTimetamp:"+seiTimetamp+","+new Date(seiTimetamp)+",videoTime="
+                                +currentSeiTimetamp+","+new Date(currentSeiTimetamp)+",delayTime="+delayMillis);
+
+                    }
+                    final List<NoticeAction> noticeActions = mNoticeActionMap.get(mtype);
+                    if (noticeActions != null && noticeActions.size() > 0) {
+                        Runnable runnable = new Runnable() {
+                            @Override
+                            public void run() {
+                                Log.e("EliminationRule","OldLive_notice_realdispatch_notice_2:type="+mtype);
+                                for (NoticeAction noticeAction : noticeActions) {
+                                    try {
+                                        noticeAction.onNotice(sourceNick, target, object, mtype);
+                                    } catch (Exception e) {
+                                        LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+                                    }
+                                }
+
+                               // delayMillis = -1;
+                            }
+                        };
+                        if (delayMillis > 0) {
+                           // LiveMainHandler.postDelayed(runnable, delayMillis);
+                            mDispathcHandler.postDelayed(runnable,delayMillis);
+                        } else {
+                            runnable.run();
+                        }
+                    } else {
+                        if (UselessNotice.isUsed(mtype)) {
+                            try {
+                                HashMap<String, String> hashMap = new HashMap<>();
+                                hashMap.put("logtype", "onNotice");
+                                hashMap.put("livetype", "" + mLiveType);
+                                hashMap.put("liveid", "" + mLiveId);
+                                hashMap.put("arts", "" + mGetInfo.getIsArts());
+                                hashMap.put("pattern", "" + mGetInfo.getPattern());
+                                hashMap.put("type", "" + mtype);
+                                UmsAgentManager.umsAgentDebug(mContext, LogConfig.LIVE_NOTICE_UNKNOW, hashMap);
+                            } catch (Exception e) {
+                                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+                            }
+                        }
+                    }
+                }
+            };
+
+            if(timeDelay > 0 && mDispathcHandler != null){
+                Message message = Message.obtain(mDispathcHandler,dispatchTask);
+                message.what = MSG_TYPE_DISPATCH_NOTICE;
+                mDispathcHandler.sendMessageDelayed(message,timeDelay);
+            }else{
+                dispatchTask.run();
             }
         }
 
@@ -1142,8 +1216,9 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                 mLogtf.i("onTopic(equals):topicstr=" + topicstr);
                 return;
             }
+
             logger.e("======>onTopic:" + topicstr);
-            if (delayMillis > 0 || TextUtils.isEmpty(topicstr)) {
+            if ( hasCachNotice()  || TextUtils.isEmpty(topicstr)) {
                 return;
             }
             lastTopicstr = topicstr;
@@ -1268,6 +1343,16 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
     }
 
     /**
+     * 清空缓存notice
+     */
+    private void clearCachNotice() {
+        if(mDispathcHandler != null){
+            mDispathcHandler.removeCallbacksAndMessages(null);
+        }
+    }
+
+
+    /**
      * 大班整合 IRC 回调
      */
     private class BigLiveIRCCallBackImp extends IRCCallBackImp {
@@ -1296,49 +1381,100 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                 JSONObject object = new JSONObject(notice);
                 int mtype = object.getInt("type");
                 com.xueersi.lib.log.Loger.e("LiveBll2", "=======>onNotice:" + mtype + ":" + object.toString());
-
-                if (XESCODE.LIVE_BUSINESS_MODE_CHANGE == mtype) {
-                    String mode = object.getString("mode");
-                    onTeacherMode(mode);
-                }
-
-                List<NoticeAction> noticeActions = mNoticeActionMap.get(mtype);
-                if (noticeActions != null && noticeActions.size() > 0) {
-                    for (NoticeAction noticeAction : noticeActions) {
-                        try {
-                            noticeAction.onNotice(sourceNick, target, object, mtype);
-                        } catch (Exception e) {
-                            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
-                        }
-                    }
-                } else {
-                    if (UselessNotice.isUsed(mtype)) {
-                        try {
-                            HashMap<String, String> hashMap = new HashMap<>();
-                            hashMap.put("logtype", "onNotice");
-                            hashMap.put("livetype", "" + mLiveType);
-                            hashMap.put("liveid", "" + mLiveId);
-                            hashMap.put("arts", "" + mGetInfo.getIsArts());
-                            hashMap.put("pattern", "" + mGetInfo.getPattern());
-                            hashMap.put("type", "" + mtype);
-                            UmsAgentManager.umsAgentDebug(mContext, LogConfig.LIVE_NOTICE_UNKNOW, hashMap);
-                        } catch (Exception e) {
-                            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
-                        }
-                    }
-                }
+                dispatchNoitce(sourceNick, target, object, mtype);
             } catch (Exception e) {
                 logger.e("onNotice", e);
                 LiveCrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
 
+
+
+        /**
+         * 分发notice 指令
+         * @param sourceNick
+         * @param target
+         * @param object
+         * @param mtype
+         * @throws JSONException
+         */
+        private void dispatchNoitce(final String sourceNick, final String target, final JSONObject object,
+                                    final int mtype) throws JSONException {
+            long timeDelay = getDelayTimeByType(mtype);
+            long noticeTimeOffset = 0L;
+            //计算2次notice 之间的时间差
+
+            if(lastNoticeTime > 0){
+                noticeTimeOffset = System.currentTimeMillis() - lastNoticeTime;
+                noticeTimeOffset = noticeTimeOffset > 0 ? noticeTimeOffset:0;
+            }
+            lastNoticeTime = System.currentTimeMillis();
+
+            // 消峰规则算出需要消峰
+            if(timeDelay >= 0){
+                //上一次延时时间
+                if(lastDelayTime > 0){
+                    //保证 延时消息有序
+                    timeDelay = (lastDelayTime - noticeTimeOffset) > 0 ? (lastDelayTime + timeDelay):timeDelay;
+                }
+                initDispathcHandler();
+                lastDelayTime = timeDelay;
+            }
+            Log.e("EliminationRule","====>BigLive_notice_timeDelay:type="+mtype+":"+timeDelay);
+            Runnable dispatchNoticeTask = new Runnable() {
+
+                @Override
+                public void run() {
+                    if (XESCODE.LIVE_BUSINESS_MODE_CHANGE == mtype) {
+                        String mode = object.optString("mode");
+                        onTeacherMode(mode);
+                    }
+                    List<NoticeAction> noticeActions = mNoticeActionMap.get(mtype);
+                    Log.e("EliminationRule","====>BigLive_notice_realdispathc:clalled:type="+mtype);
+                    if (noticeActions != null && noticeActions.size() > 0) {
+                        for (NoticeAction noticeAction : noticeActions) {
+                            try {
+                                noticeAction.onNotice(sourceNick, target, object, mtype);
+                            } catch (Exception e) {
+                                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+                            }
+                        }
+                    } else {
+                        if (UselessNotice.isUsed(mtype)) {
+                            try {
+                                HashMap<String, String> hashMap = new HashMap<>();
+                                hashMap.put("logtype", "onNotice");
+                                hashMap.put("livetype", "" + mLiveType);
+                                hashMap.put("liveid", "" + mLiveId);
+                                hashMap.put("arts", "" + mGetInfo.getIsArts());
+                                hashMap.put("pattern", "" + mGetInfo.getPattern());
+                                hashMap.put("type", "" + mtype);
+                                UmsAgentManager.umsAgentDebug(mContext, LogConfig.LIVE_NOTICE_UNKNOW, hashMap);
+                            } catch (Exception e) {
+                                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+                            }
+                        }
+                    }
+                }
+            };
+
+            if(mDispathcHandler != null && timeDelay > 0 ){
+                Message message = Message.obtain(mDispathcHandler,dispatchNoticeTask);
+                message.what = MSG_TYPE_DISPATCH_NOTICE;
+                mDispathcHandler.sendMessageDelayed(message,timeDelay);
+            }else{
+                dispatchNoticeTask.run();
+            }
+        }
+
+
         public void sendTopic(String channel, String topicstr, String setBy, long date, boolean changed,
                               String channelId) {
-            logger.e("======>onTopic:" + topicstr);
-            if (TextUtils.isEmpty(topicstr)) {
+            logger.e("======>LiveBll2_onTopic_111:" + topicstr);
+            if (hasCachNotice() || TextUtils.isEmpty(topicstr)) {
                 return;
             }
+            logger.e("======>LiveBll2_sendTopic_222:" + topicstr);
             lastTopicstr = topicstr;
             JSONTokener jsonTokener = null;
             try {
@@ -1384,6 +1520,20 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         }
     }
 
+    /**
+     * 初始化 分发handler
+     */
+    private void initDispathcHandler() {
+        if(mDispathcHandler == null){
+            if(mNoticeDispatchHT != null){
+                mNoticeDispatchHT.quit();
+            }
+            mNoticeDispatchHT = new HandlerThread("LiveBll_Notice_Dispatch");
+            mNoticeDispatchHT.start();
+            mDispathcHandler = new Handler(mNoticeDispatchHT.getLooper());
+        }
+    }
+
 
     /**
      * 老师模式变换
@@ -1418,6 +1568,50 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
             e.printStackTrace();
             LiveCrashReport.postCatchedException(new LiveException(TAG, e));
         }
+    }
+
+
+    /**
+     * 老直播间 获取消峰时间控制
+     * @param mtype
+     * @return
+     */
+    private long oldLiveGetTimeByType(int mtype){
+       long reuslt = -1L;
+       if(mGetInfo != null && mGetInfo.getIsEliminationPeak() == 1){
+           reuslt = getDelayTimeByType(mtype);
+       }
+       return reuslt;
+    }
+
+    /**
+     * 大班获取延时时间
+     * @param notice 指令号
+     * @return
+     */
+    private long getDelayTimeByType(int mtype) {
+        //默认值-1区分是否有消峰配置
+        long delayTime = -1L;
+        if(mGetInfo != null && mGetInfo.getEliminationMap() != null && mGetInfo.getEliminationMap().size() > 0){
+            Long time = mGetInfo.getEliminationMap().get(mtype);
+            if(time != null){
+                Random random = new Random();
+                delayTime = (long) (Math.random() * time);
+            }
+        }
+        Log.e("ckTrac","======>LiveBll2:getDelayTimeByType="+delayTime);
+        return delayTime;
+    }
+
+
+    /**
+     * 是否还存在缓存notice
+     * @return
+     */
+    private boolean hasCachNotice(){
+        boolean hascachNotice =  mDispathcHandler != null &&  mDispathcHandler.hasMessages(MSG_TYPE_DISPATCH_NOTICE);
+        Log.e("ckTrac","===>LiveBll2:"+hascachNotice);
+        return hascachNotice;
     }
 
     /**
@@ -1735,6 +1929,12 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
             mTimerTask.cancel();
             mTimerTask = null;
         }
+
+        if(mNoticeDispatchHT != null){
+            mNoticeDispatchHT.quit();
+        }
+        //清楚延时任务
+        clearCachNotice();
         LiveWebLog.stop();
     }
 

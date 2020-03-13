@@ -84,7 +84,7 @@ public class AllBllConfig {
             "com.xueersi.parentsmeeting.modules.livevideo.understand.business.UnderstandIRCBll",
             "com.xueersi.parentsmeeting.modules.livevideo.praiselist.business.ArtsPraiseListBll",
             "com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.presenter.EnglishSpeechBulletIRCBll",
-            "com.xueersi.parentsmeeting.modules.livevideo.worddictation.business.WordDictationIRCBll",
+//            "com.xueersi.parentsmeeting.modules.livevideo.worddictation.business.WordDictationIRCBll",
             "com.xueersi.parentsmeeting.modules.livevideo.teacherpraise.business.TeacherPraiseBll",
             "com.xueersi.parentsmeeting.modules.livevideo.question.business.ArtsAnswerResultBll",
             "com.xueersi.parentsmeeting.modules.livevideo.practice.PraiseTutorBll",

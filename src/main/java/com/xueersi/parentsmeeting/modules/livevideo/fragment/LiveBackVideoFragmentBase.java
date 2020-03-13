@@ -127,7 +127,7 @@ public abstract class LiveBackVideoFragmentBase extends Fragment {
     /** 播放器核心服务 */
     protected PlayerService vPlayer;
     /** onPause状态不暂停视频 */
-    protected AtomicBoolean onPauseNotStopVideo = new AtomicBoolean(false);
+    protected AtomicBoolean onPauseNotStopVideo = new AtomicBoolean(true);
     /** 是否可以自动横竖屏转换 */
     private boolean mIsAutoOrientation = true;
     /** 业务层 */
@@ -264,7 +264,7 @@ public abstract class LiveBackVideoFragmentBase extends Fragment {
         super.onResume();
         FileLogger.runActivity = activity;
         //关闭系统后台声音
-        AudioPlayer.requestAudioFocus(activity);
+//        AudioPlayer.requestAudioFocus(activity);
 
         // 设置视频可播放
         liveBackPlayVideoFragment.setIsPlayerEnable(true);

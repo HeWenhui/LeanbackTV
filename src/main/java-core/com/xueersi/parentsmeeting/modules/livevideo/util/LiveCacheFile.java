@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.util;
 import android.content.Context;
 import android.os.Environment;
 
+import com.xueersi.common.base.XrsCrashReport;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
@@ -22,7 +23,12 @@ public class LiveCacheFile {
     public static File getCacheDir(Context context, String cache) {
         File alldir;
         String msg = "";
-        File cacheDir = context.getExternalCacheDir();
+        File cacheDir = null;
+        try{
+            cacheDir = context.getExternalCacheDir();
+        }catch (Exception e) {
+            XrsCrashReport.postCatchedException(e);
+        }
         if (cacheDir != null) {
             alldir = new File(cacheDir, cache);
             //外置存储失败。直接存到内置

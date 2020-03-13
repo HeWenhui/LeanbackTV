@@ -5,6 +5,7 @@ import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.google.gson.JsonObject;
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
 import com.xueersi.common.http.HttpResponseParser;
 import com.xueersi.common.http.ResponseEntity;
@@ -608,6 +609,24 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             evenDriveInfo.setIsOpenStimulation(data.optInt("isOpenStimulation"));
             getInfo.setEvenDriveInfo(evenDriveInfo);
             getInfo.setIsFlatfish(data.optInt("isFlatfish", 0));
+
+            // 2020319 版本新增消峰功能
+            getInfo.setIsEliminationPeak(data.optInt("isEliminationPeak",0));
+            JSONArray jsonArray = data.optJSONArray("eliminationRule");
+            if(jsonArray != null && jsonArray.length() > 0){
+                 JSONObject ruls = (JSONObject) jsonArray.get(0);
+                long time = ruls.optLong("maxDelayMS");
+                JSONArray eliArray = ruls.optJSONArray("eliminationList");
+                if(eliArray != null && eliArray.length() >0){
+                    HashMap<Integer,Long> rulsMap = new HashMap<>();
+                    for (int i = 0; i < eliArray.length(); i++) {
+                       int noticeCode = eliArray.optInt(i);
+                        rulsMap.put(noticeCode,time);
+                    }
+                    getInfo.setEliminationMap(rulsMap);
+                }
+            }
+
 
             //英语1V2小组课
             JSONObject recordStandLiveJson = data.optJSONObject("recordStandlive");

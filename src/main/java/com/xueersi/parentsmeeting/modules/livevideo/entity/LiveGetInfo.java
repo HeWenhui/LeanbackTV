@@ -396,6 +396,13 @@ public class LiveGetInfo {
     private String getMetadataUrl;
     private int isFlatfish=1;
 
+    /**老直播间是否开启消峰功能**/
+    private int isEliminationPeak;
+
+    /**消峰配置信息**/
+    private HashMap<Integer,Long> eliminationMap;
+
+
     /** 轻直播公告*/
     private String gentlyNotice;
     /** 是否是轻直播 0否 1是*/
@@ -446,6 +453,26 @@ public class LiveGetInfo {
 //    public void setChatSwitch(int chatSwitch) {
 //        this.chatSwitch = chatSwitch;
 //    }
+
+
+    public int getIsEliminationPeak() {
+        return isEliminationPeak;
+    }
+
+    public void setIsEliminationPeak(int isEliminationPeak) {
+        this.isEliminationPeak = isEliminationPeak;
+    }
+
+
+    public HashMap<Integer, Long> getEliminationMap() {
+        return eliminationMap;
+    }
+
+    public void setEliminationMap(HashMap<Integer, Long> eliminationMap) {
+        this.eliminationMap = eliminationMap;
+    }
+
+
 
     public LiveStatus getLiveStatus() {
         return liveStatus;
