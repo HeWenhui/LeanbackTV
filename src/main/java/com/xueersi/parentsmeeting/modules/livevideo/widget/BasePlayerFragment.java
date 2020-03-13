@@ -6,6 +6,7 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.media.AudioAttributes;
+import android.media.AudioFocusRequest;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Build;
@@ -239,6 +240,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
 //    }
 
     private AudioManager audioManager;
+    private AudioFocusRequest mAudioFocusRequest;
     private MyOnAudioFocusChangeListener audioFocusChangeListener;
 
     private class MyOnAudioFocusChangeListener implements AudioManager.OnAudioFocusChangeListener {
@@ -279,8 +281,26 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         audioFocusChangeListener = new MyOnAudioFocusChangeListener();
         audioManager = (AudioManager) activity.getSystemService(Context.AUDIO_SERVICE);
         if (audioManager != null) {
-            int result = audioManager.requestAudioFocus(audioFocusChangeListener, AudioManager.STREAM_RING, AudioManager.AUDIOFOCUS_GAIN);
-            logger.d("onCreate:requestAudioFocus:result=" + result);
+            request();
+        }
+    }
+
+    private void request() {
+        if (Build.VERSION.SDK_INT <= 26) {
+            int result = audioManager.requestAudioFocus(audioFocusChangeListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+            logger.d("request:requestAudioFocus:result1=" + result);
+        } else {//API26 废弃了原来的获取方法
+            //下面两个常量参数试过很多 都无效，最终反编译了其他app才搞定，汗~
+            mAudioFocusRequest = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
+                    .setAudioAttributes(new AudioAttributes.Builder()
+                            .setUsage(AudioAttributes.USAGE_MEDIA)
+                            .setContentType(AudioAttributes.CONTENT_TYPE_MOVIE)
+                            .build())
+                    .setAcceptsDelayedFocusGain(true)
+                    .setOnAudioFocusChangeListener(audioFocusChangeListener)
+                    .build();
+            int result = audioManager.requestAudioFocus(mAudioFocusRequest);
+            logger.d("request:requestAudioFocus:result2=" + result);
         }
     }
 
@@ -290,8 +310,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
     public void onResume() {
         super.onResume();
         if (pause && audioManager != null) {
-            int result = audioManager.requestAudioFocus(audioFocusChangeListener, AudioManager.STREAM_RING, AudioManager.AUDIOFOCUS_GAIN);
-            logger.d("onResume:requestAudioFocus:result=" + result);
+            request();
         }
         pause = false;
     }
@@ -1466,7 +1485,13 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
             vPlayer.psExit();
         }
         if (audioManager != null) {
-            audioManager.abandonAudioFocus(audioFocusChangeListener);
+            if (Build.VERSION.SDK_INT <= 26) {
+                audioManager.abandonAudioFocus(audioFocusChangeListener);
+            } else {
+                if (Build.VERSION.SDK_INT > 26 && mAudioFocusRequest != null) {
+                    audioManager.abandonAudioFocusRequest(mAudioFocusRequest);
+                }
+            }
         }
     }
 }
