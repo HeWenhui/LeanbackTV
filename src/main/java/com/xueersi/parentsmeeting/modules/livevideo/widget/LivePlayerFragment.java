@@ -21,6 +21,7 @@ import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.framework.utils.ActivityUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VideoScreenReceiver;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -78,7 +79,6 @@ public class LivePlayerFragment extends TripleScreenBasePlayerFragment implement
 
     @Override
     public void onResume() {
-        logger.d("onResume");
         super.onResume();
         if (isInitialized()) {
             KeyguardManager keyguardManager = (KeyguardManager) activity.getSystemService(Activity.KEYGUARD_SERVICE);
@@ -94,6 +94,17 @@ public class LivePlayerFragment extends TripleScreenBasePlayerFragment implement
                 playNewVideo();
             }
         }
+    }
+
+    @Override
+    protected void resumeRequest() {
+        logger.d("resumeRequest:hasloss=" + hasloss);
+        if (hasloss) {
+            leftVolume = oldleftVolume;
+            rightVolume = oldrightVolume;
+            setVolume(leftVolume, rightVolume);
+        }
+        super.resumeRequest();
     }
 
     @Override
@@ -116,22 +127,8 @@ public class LivePlayerFragment extends TripleScreenBasePlayerFragment implement
         SCREEN_FILTER.addAction(Intent.ACTION_SCREEN_OFF);
     }
 
-    private ScreenReceiver mScreenReceiver;
+    private VideoScreenReceiver mScreenReceiver;
     private UserPresentReceiver mUserPresentReceiver;
-
-    private class ScreenReceiver extends BroadcastReceiver {
-        private boolean screenOn = true;
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
-                screenOn = false;
-                stopPlayer();
-            } else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
-                screenOn = true;
-            }
-        }
-    }
 
     private class UserPresentReceiver extends BroadcastReceiver {
         @Override
@@ -151,7 +148,7 @@ public class LivePlayerFragment extends TripleScreenBasePlayerFragment implement
     private void manageReceivers() {
         if (!mReceiverRegistered) {
             // 屏幕点亮广播
-            mScreenReceiver = new ScreenReceiver();
+            mScreenReceiver = new VideoScreenReceiver();
             activity.registerReceiver(mScreenReceiver, SCREEN_FILTER);
             // 解锁广播
             mUserPresentReceiver = new UserPresentReceiver();
@@ -355,5 +352,20 @@ public class LivePlayerFragment extends TripleScreenBasePlayerFragment implement
         }
     }
 
+    float oldleftVolume = 1.0f;
+    float oldrightVolume = 1.0f;
 
+    @Override
+    public void onAudioGain(boolean gain) {
+        super.onAudioGain(gain);
+        logger.d("onAudioGain:gain=" + gain + ",oldleftVolume=" + oldleftVolume);
+        if (gain) {
+            setVolume(oldleftVolume, oldrightVolume);
+        } else {
+            // 会长时间的失去AudioFoucs,就不在监听远程播放
+            oldleftVolume = leftVolume;
+            oldrightVolume = rightVolume;
+            setVolume(0.0f, 0.0f);
+        }
+    }
 }

@@ -30,6 +30,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.xueersi.parentsmeeting.module.videoplayer.media.VideoScreenReceiver;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIml;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoInter;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
@@ -220,7 +221,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
     /** 是否完成了当前视频的播放 */
     private boolean mCloseComplete = false;
 
-    private ScreenReceiver mScreenReceiver;
+    private VideoScreenReceiver mScreenReceiver;
     private UserPresentReceiver mUserPresentReceiver;
 
     private PauseNotStopVideoIml pauseNotStopVideoIml;
@@ -231,20 +232,6 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
     public static final int VIDEO_CANCLE = 211;
     /** 播放器java崩溃 */
     public static final int VIDEO_CRASH = 1200;
-
-    private class ScreenReceiver extends BroadcastReceiver {
-        private boolean screenOn = true;
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
-                screenOn = false;
-                stopPlayer();
-            } else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
-                screenOn = true;
-            }
-        }
-    }
 
     private class UserPresentReceiver extends BroadcastReceiver {
         @Override
@@ -259,7 +246,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
     private void manageReceivers() {
         if (!mReceiverRegistered) {
             // 屏幕点亮广播
-            mScreenReceiver = new ScreenReceiver();
+            mScreenReceiver = new VideoScreenReceiver();
             registerReceiver(mScreenReceiver, SCREEN_FILTER);
             // 解锁广播
             mUserPresentReceiver = new UserPresentReceiver();
