@@ -15,9 +15,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.OrientationEventListener;
 import android.view.SurfaceHolder;
 import android.view.View;
@@ -158,7 +156,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
     private int mStatusBarHeight = 0;
     /** 播放器的屏幕高 */
     protected int mPortVideoHeight = 0;
-    float leftVolume = VP.DEFAULT_STEREO_VOLUME, rightVolume = VP.DEFAULT_STEREO_VOLUME;
+    protected float leftVolume = VP.DEFAULT_STEREO_VOLUME, rightVolume = VP.DEFAULT_STEREO_VOLUME;
 
     /** 放播放器的 io.vov.vitamio.widget.CenterLayout */
     protected ViewGroup viewRoot;
@@ -244,32 +242,30 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
     private MyOnAudioFocusChangeListener audioFocusChangeListener;
 
     private class MyOnAudioFocusChangeListener implements AudioManager.OnAudioFocusChangeListener {
-        int lastfocusChange = -1234;
 
         @Override
         public void onAudioFocusChange(int focusChange) {
             //监听系统播放状态的改变
-            logger.d("onAudioFocusChange:focusChange=" + focusChange + ",lastfocusChange=" + lastfocusChange);
-            if (lastfocusChange == focusChange) {
-                return;
-            }
-            lastfocusChange = focusChange;
-            //暂时失去AudioFocus，可以很快再次获取AudioFocus，可以不释放播放资源
+            logger.d("onAudioFocusChange:focusChange=" + focusChange);
+            //暂时失去AudioFocus
             if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT ||
                     focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK) {
                 onAudioGain(false);
             } else if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
-                //获取了AudioFocus，如果当前处于播放暂停状态，并且这个暂停状态不是用户手动点击的暂停，才会继续播放
+                //获取了AudioFocus
                 onAudioGain(true);
             } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
-                // 会长时间的失去AudioFoucs,就不在监听远程播放
+                // 会长时间的失去AudioFoucs
                 onAudioGain(false);
             }
         }
     }
 
-    protected void onAudioGain(boolean gain) {
+    /** 失去焦点 */
+    protected boolean hasloss = false;
 
+    protected void onAudioGain(boolean gain) {
+        hasloss = !gain;
     }
 
     @Override
@@ -285,10 +281,11 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         }
     }
 
-    private void request() {
+    private int request() {
         if (Build.VERSION.SDK_INT <= 26) {
             int result = audioManager.requestAudioFocus(audioFocusChangeListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
             logger.d("request:requestAudioFocus:result1=" + result);
+            return result;
         } else {//API26 废弃了原来的获取方法
             //下面两个常量参数试过很多 都无效，最终反编译了其他app才搞定，汗~
             mAudioFocusRequest = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
@@ -301,6 +298,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                     .build();
             int result = audioManager.requestAudioFocus(mAudioFocusRequest);
             logger.d("request:requestAudioFocus:result2=" + result);
+            return result;
         }
     }
 
@@ -310,9 +308,14 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
     public void onResume() {
         super.onResume();
         if (pause && audioManager != null) {
-            request();
+            resumeRequest();
         }
         pause = false;
+    }
+
+    protected void resumeRequest() {
+        int result = request();
+        hasloss = result != AudioManager.AUDIOFOCUS_GAIN;
     }
 
     @Override
@@ -1277,7 +1280,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
 
     @Override
     public void onSurfaceDestroyed(SurfaceHolder holder) {
-        logger.d("onSurfaceDestroyed");
+        logger.d("onSurfaceDestroyed:hasloss=" + hasloss);
         if (vPlayer != null && vPlayer.isInitialized()) {
             if (vPlayer.isPlaying()) {
                 vPlayer.pause();
@@ -1287,7 +1290,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
             //TODO 这个会影响暂停视频，返回后台继续播放。但是悬浮窗还需要
             PauseNotStopVideoInter onPauseNotStopVideo = ProxUtil.getProxUtil().get(activity, PauseNotStopVideoInter.class);
             //onPauseNotStopVideo 应该不会空
-            if (onPauseNotStopVideo == null || onPauseNotStopVideo.getPause()) {
+            if ((onPauseNotStopVideo == null || onPauseNotStopVideo.getPause()) && !hasloss) {
                 if (mIsPlayerEnable && vPlayer.needResume()) {
                     vPlayer.start();
                 }

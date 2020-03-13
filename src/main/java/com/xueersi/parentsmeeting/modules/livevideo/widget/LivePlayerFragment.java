@@ -78,7 +78,6 @@ public class LivePlayerFragment extends TripleScreenBasePlayerFragment implement
 
     @Override
     public void onResume() {
-        logger.d("onResume");
         super.onResume();
         if (isInitialized()) {
             KeyguardManager keyguardManager = (KeyguardManager) activity.getSystemService(Activity.KEYGUARD_SERVICE);
@@ -94,6 +93,17 @@ public class LivePlayerFragment extends TripleScreenBasePlayerFragment implement
                 playNewVideo();
             }
         }
+    }
+
+    @Override
+    protected void resumeRequest() {
+        logger.d("resumeRequest:hasloss=" + hasloss);
+        if (hasloss) {
+            leftVolume = oldleftVolume;
+            rightVolume = oldrightVolume;
+            setVolume(leftVolume, rightVolume);
+        }
+        super.resumeRequest();
     }
 
     @Override
@@ -355,5 +365,20 @@ public class LivePlayerFragment extends TripleScreenBasePlayerFragment implement
         }
     }
 
+    float oldleftVolume = 1.0f;
+    float oldrightVolume = 1.0f;
 
+    @Override
+    protected void onAudioGain(boolean gain) {
+        super.onAudioGain(gain);
+        logger.d("onAudioGain:gain=" + gain + ",oldleftVolume=" + oldleftVolume);
+        if (gain) {
+            setVolume(oldleftVolume, oldrightVolume);
+        } else {
+            // 会长时间的失去AudioFoucs,就不在监听远程播放
+            oldleftVolume = leftVolume;
+            oldrightVolume = rightVolume;
+            setVolume(0.0f, 0.0f);
+        }
+    }
 }

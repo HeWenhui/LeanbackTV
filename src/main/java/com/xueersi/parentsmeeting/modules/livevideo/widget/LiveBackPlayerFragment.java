@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
-import android.media.AudioManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -27,7 +26,6 @@ import com.xueersi.parentsmeeting.module.videoplayer.config.LogConfig;
 import com.xueersi.parentsmeeting.module.videoplayer.media.BackMediaPlayerControl;
 import com.xueersi.parentsmeeting.module.videoplayer.media.IPlayBackMediaCtr;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
-import com.xueersi.parentsmeeting.module.videoplayer.media.MediaController2;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
@@ -136,9 +134,14 @@ public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoV
     }
 
     @Override
-    public void onResume() {
-        logger.d("onResume");
-        super.onResume();
+    protected void resumeRequest() {
+        logger.d("resumeRequest:hasloss=" + hasloss + ",oldisPlaying=" + oldisPlaying);
+        if (hasloss) {
+            if (oldisPlaying) {
+                start();
+            }
+        }
+        super.resumeRequest();
     }
 
     @Override
@@ -490,6 +493,7 @@ public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoV
 
     @Override
     protected void onAudioGain(boolean gain) {
+        super.onAudioGain(gain);
         logger.d("onAudioGain:gain=" + gain + ",oldisPlaying=" + oldisPlaying);
         if (gain) {
             if (oldisPlaying) {
