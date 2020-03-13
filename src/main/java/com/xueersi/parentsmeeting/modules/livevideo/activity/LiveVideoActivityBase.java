@@ -34,6 +34,7 @@ import android.widget.Toast;
 
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoOnAudioFocusChangeListener;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoOnAudioGain;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VideoPhoneState;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoScreenReceiver;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIml;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoInter;
@@ -661,8 +662,12 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
     float oldrightVolume = 1.0f;
 
     @Override
-    public void onAudioGain(boolean gain) {
+    public final void onAudioGain(boolean gain) {
+        boolean oldhasloss = hasloss;
         hasloss = !gain;
+        if (oldhasloss == hasloss) {
+            return;
+        }
         logger.d("onAudioGain:gain=" + gain + ",oldleftVolume=" + oldleftVolume);
         if (gain) {
             setVolume(oldleftVolume, oldrightVolume);
@@ -806,7 +811,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
     }
 
     protected void createPlayer() {
-        vPlayer = new PlayerService(this);
+        vPlayer = new PlayerService(this, true);
         vPlayer.onCreate();
         mServiceConnected = true;
         if (mSurfaceCreated)
@@ -815,6 +820,12 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
         // 设置当前是否为横屏
         setFileName(); // 设置视频显示名称
         showLongMediaController();
+        vPlayer.setVideoPhoneState(new VideoPhoneState() {
+            @Override
+            public void state(boolean start) {
+                onAudioGain(!start);
+            }
+        });
     }
 
     protected boolean onVideoCreate(Bundle savedInstanceState) {

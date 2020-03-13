@@ -479,8 +479,7 @@ public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoV
     private boolean oldisPlaying = false;
 
     @Override
-    public void onAudioGain(boolean gain) {
-        super.onAudioGain(gain);
+    public void onRealAudioGain(boolean gain) {
         logger.d("onAudioGain:gain=" + gain + ",oldisPlaying=" + oldisPlaying);
         if (gain) {
             if (oldisPlaying) {
