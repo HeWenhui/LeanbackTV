@@ -1055,34 +1055,6 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                 final int mtype = object.getInt("type");
                 long seiTimetamp = object.optLong("vts", -1);
                 com.xueersi.lib.log.Loger.e("LiveBll2", "=======>onNotice:" + mtype + ":" + this);
-                ///////播放器相关/////////
-                switch (mtype) {
-                    case XESCODE.MODECHANGE:
-                        String mode = object.getString("mode");
-                        if (mode != null && mIRCMessage != null && mGetInfo != null && mGetInfo.ePlanInfo != null) {
-                            mIRCMessage.modeChange(mode);
-                        }
-                        if (!(mLiveTopic.getMode().equals(mode))) {
-                            String oldMode = mLiveTopic.getMode();
-                            mLiveTopic.setMode(mode);
-                            mGetInfo.setMode(mode);
-                            boolean isPresent = isPresent(mode);
-                            if (mVideoAction != null) {
-                                mVideoAction.onModeChange(mode, isPresent);
-                                mLogtf.d(SysLogLable.switchLiveMode, "onNotice:mode=" + mode + ",isPresent=" + isPresent);
-                                if (!isPresent) {
-                                    mVideoAction.onTeacherNotPresent(true);
-                                }
-                            }
-                            liveVideoBll.onModeChange(mode, isPresent);
-                            for (int i = 0; i < businessBlls.size(); i++) {
-                                businessBlls.get(i).onModeChange(oldMode, mode, isPresent);
-                            }
-                        }
-                        break;
-                    default:
-                        break;
-                }
                 //分发消息
                 oldLiveDispatchNotice(sourceNick, target, object, mtype, seiTimetamp);
             } catch (Exception e) {
@@ -1135,6 +1107,12 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                 @Override
                 public void run() {
                     Log.e("EliminationRule","====>OldLive_notice_realdispatch_notice_1:type="+mtype);
+
+                     if(XESCODE.MODECHANGE == mtype){
+                         Log.e("EliminationRule","====>OldLive_notice_realdispatch_notice_2:type="+mtype);
+                         onTeacherModeChange(object);
+                     }
+
                     long delayMillis = 0;
                     if (isFlatfish == 1) {
                         long currentSeiTimetamp = liveVideoBll.getCurrentSeiTimetamp();
@@ -1207,6 +1185,30 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                 mDispathcHandler.sendMessageDelayed(message,timeDelay);
             }else{
                 dispatchTask.run();
+            }
+        }
+
+        private void onTeacherModeChange(JSONObject object){
+            String mode = object.optString("mode");
+            if (mode != null && mIRCMessage != null && mGetInfo != null && mGetInfo.ePlanInfo != null) {
+                mIRCMessage.modeChange(mode);
+            }
+            if (!(mLiveTopic.getMode().equals(mode))) {
+                String oldMode = mLiveTopic.getMode();
+                mLiveTopic.setMode(mode);
+                mGetInfo.setMode(mode);
+                boolean isPresent = isPresent(mode);
+                if (mVideoAction != null) {
+                    mVideoAction.onModeChange(mode, isPresent);
+                    mLogtf.d(SysLogLable.switchLiveMode, "onNotice:mode=" + mode + ",isPresent=" + isPresent);
+                    if (!isPresent) {
+                        mVideoAction.onTeacherNotPresent(true);
+                    }
+                }
+                liveVideoBll.onModeChange(mode, isPresent);
+                for (int i = 0; i < businessBlls.size(); i++) {
+                    businessBlls.get(i).onModeChange(oldMode, mode, isPresent);
+                }
             }
         }
 
