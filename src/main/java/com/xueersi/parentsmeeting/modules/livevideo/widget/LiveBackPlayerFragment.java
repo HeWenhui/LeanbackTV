@@ -23,6 +23,7 @@ import com.xueersi.lib.framework.utils.ThreadMap;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.module.videoplayer.config.LogConfig;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VideoScreenReceiver;
 import com.xueersi.parentsmeeting.module.videoplayer.media.BackMediaPlayerControl;
 import com.xueersi.parentsmeeting.module.videoplayer.media.IPlayBackMediaCtr;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
@@ -166,23 +167,9 @@ public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoV
         SCREEN_FILTER.addAction(Intent.ACTION_SCREEN_OFF);
     }
 
-    private ScreenReceiver mScreenReceiver;
+    private VideoScreenReceiver mScreenReceiver;
     private UserPresentReceiver mUserPresentReceiver;
     private HeadsetPlugReceiver mHeadsetPlugReceiver;
-
-    private class ScreenReceiver extends BroadcastReceiver {
-        private boolean screenOn = true;
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
-                screenOn = false;
-                stopPlayer();
-            } else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
-                screenOn = true;
-            }
-        }
-    }
 
     private class UserPresentReceiver extends BroadcastReceiver {
         @Override
@@ -222,7 +209,7 @@ public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoV
     private void manageReceivers() {
         if (!mReceiverRegistered) {
             // 屏幕点亮广播
-            mScreenReceiver = new ScreenReceiver();
+            mScreenReceiver = new VideoScreenReceiver();
             activity.registerReceiver(mScreenReceiver, SCREEN_FILTER);
             // 解锁广播
             mUserPresentReceiver = new UserPresentReceiver();
@@ -492,7 +479,7 @@ public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoV
     private boolean oldisPlaying = false;
 
     @Override
-    protected void onAudioGain(boolean gain) {
+    public void onAudioGain(boolean gain) {
         super.onAudioGain(gain);
         logger.d("onAudioGain:gain=" + gain + ",oldisPlaying=" + oldisPlaying);
         if (gain) {

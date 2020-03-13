@@ -37,6 +37,8 @@ import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VideoOnAudioFocusChangeListener;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VideoOnAudioGain;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.module.videoplayer.ps.MediaErrorInfo;
 import com.xueersi.parentsmeeting.module.videoplayer.ps.PSIJK;
@@ -63,7 +65,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Created by linyuqiang on 2018/8/3.
  * 直播和回放的基础控制
  */
-public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCallback, LiveProvide {
+public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCallback, LiveProvide, VideoOnAudioGain {
     protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     BaseActivity activity;
     /** 视频的名称，用于显示在播放器上面的信息栏 */
@@ -239,32 +241,12 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
 
     private AudioManager audioManager;
     private AudioFocusRequest mAudioFocusRequest;
-    private MyOnAudioFocusChangeListener audioFocusChangeListener;
-
-    private class MyOnAudioFocusChangeListener implements AudioManager.OnAudioFocusChangeListener {
-
-        @Override
-        public void onAudioFocusChange(int focusChange) {
-            //监听系统播放状态的改变
-            logger.d("onAudioFocusChange:focusChange=" + focusChange);
-            //暂时失去AudioFocus
-            if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT ||
-                    focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK) {
-                onAudioGain(false);
-            } else if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
-                //获取了AudioFocus
-                onAudioGain(true);
-            } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
-                // 会长时间的失去AudioFoucs
-                onAudioGain(false);
-            }
-        }
-    }
+    private AudioManager.OnAudioFocusChangeListener audioFocusChangeListener;
 
     /** 失去焦点 */
     protected boolean hasloss = false;
 
-    protected void onAudioGain(boolean gain) {
+    public void onAudioGain(boolean gain) {
         hasloss = !gain;
     }
 
@@ -274,7 +256,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         activity = (BaseActivity) getActivity();
         mPortVideoHeight = VideoBll.getVideoDefaultHeight(activity);
         mShareDataManager = ShareDataManager.getInstance();
-        audioFocusChangeListener = new MyOnAudioFocusChangeListener();
+        audioFocusChangeListener = new VideoOnAudioFocusChangeListener(this);
         audioManager = (AudioManager) activity.getSystemService(Context.AUDIO_SERVICE);
         if (audioManager != null) {
             request();
