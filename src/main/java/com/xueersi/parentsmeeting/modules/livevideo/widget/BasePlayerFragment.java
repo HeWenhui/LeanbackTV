@@ -1277,7 +1277,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
 
     @Override
     public void onSurfaceDestroyed(SurfaceHolder holder) {
-        logger.d("onSurfaceDestroyed:hasloss=" + hasloss);
+        logger.d("onSurfaceDestroyed:hasloss=" + hasloss + ",enable=" + mIsPlayerEnable);
         if (vPlayer != null && vPlayer.isInitialized()) {
             if (vPlayer.isPlaying()) {
                 vPlayer.pause();
