@@ -39,6 +39,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoOnAudioFocusChangeListener;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoOnAudioGain;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VideoPhoneState;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.module.videoplayer.ps.MediaErrorInfo;
 import com.xueersi.parentsmeeting.module.videoplayer.ps.PSIJK;
@@ -246,8 +247,16 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
     /** 失去焦点 */
     protected boolean hasloss = false;
 
-    public void onAudioGain(boolean gain) {
+    public final void onAudioGain(boolean gain) {
+        boolean oldhasloss = hasloss;
         hasloss = !gain;
+        if (oldhasloss != hasloss) {
+            onRealAudioGain(gain);
+        }
+    }
+
+    public void onRealAudioGain(boolean gain) {
+
     }
 
     @Override
@@ -371,7 +380,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
     }
 
     public PlayerService createPlayer() {
-        vPlayer = new PlayerService(activity);
+        vPlayer = new PlayerService(activity, true);
         vPlayer.onCreate();
         mServiceConnected = true;
         if (mSurfaceCreated) {// 链接成功后尝试开始播放
@@ -380,6 +389,12 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         // 设置当前是否为横屏
         setFileName(); // 设置视频显示名称
         showLongMediaController();
+        vPlayer.setVideoPhoneState(new VideoPhoneState() {
+            @Override
+            public void state(boolean start) {
+                onAudioGain(!start);
+            }
+        });
         return vPlayer;
     }
 

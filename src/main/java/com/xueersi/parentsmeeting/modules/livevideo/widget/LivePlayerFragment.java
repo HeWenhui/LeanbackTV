@@ -356,8 +356,7 @@ public class LivePlayerFragment extends TripleScreenBasePlayerFragment implement
     float oldrightVolume = 1.0f;
 
     @Override
-    public void onAudioGain(boolean gain) {
-        super.onAudioGain(gain);
+    public void onRealAudioGain(boolean gain) {
         logger.d("onAudioGain:gain=" + gain + ",oldleftVolume=" + oldleftVolume);
         if (gain) {
             setVolume(oldleftVolume, oldrightVolume);
