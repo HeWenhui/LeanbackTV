@@ -1096,7 +1096,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                 //上一次延时时间
                 if(lastDelayTime > 0){
                     //保证 延时消息有序
-                    timeDelay = (lastDelayTime - noticeTimeOffset) > 0 ? (lastDelayTime + timeDelay):timeDelay;
+                    timeDelay = Math.max((lastDelayTime-noticeTimeOffset+100),timeDelay);//(lastDelayTime - noticeTimeOffset) > 0 ? (lastDelayTime + timeDelay):timeDelay;
                 }
                 initDispathcHandler();
                 lastDelayTime = timeDelay;
@@ -1417,7 +1417,8 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                 //上一次延时时间
                 if(lastDelayTime > 0){
                     //保证 延时消息有序
-                    timeDelay = (lastDelayTime - noticeTimeOffset) > 0 ? (lastDelayTime + timeDelay):timeDelay;
+                    timeDelay = Math.max((lastDelayTime - noticeTimeOffset+100),timeDelay);
+                    //(lastDelayTime - noticeTimeOffset) > 0 ? (lastDelayTime + timeDelay):timeDelay;
                 }
                 initDispathcHandler();
                 lastDelayTime = timeDelay;
