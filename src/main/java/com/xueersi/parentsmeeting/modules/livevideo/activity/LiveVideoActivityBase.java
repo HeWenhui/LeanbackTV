@@ -919,6 +919,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mIsPlayerEnable = false;
         if (!mCreated)
             return;
         // 统计退出
