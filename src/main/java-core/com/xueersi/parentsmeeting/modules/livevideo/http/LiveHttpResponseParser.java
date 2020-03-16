@@ -21,6 +21,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEner
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuAimResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuSegmentEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.EvenDriveEntity;
 //import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.entity.LPWeChatEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.entity.SuperSpeakerRedPackageEntity;
@@ -621,7 +622,10 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     HashMap<Integer,Long> rulsMap = new HashMap<>();
                     for (int i = 0; i < eliArray.length(); i++) {
                        int noticeCode = eliArray.optInt(i);
-                        rulsMap.put(noticeCode,time);
+                       //目前先过滤掉1104  不进行消峰
+                        if(XESCODE.ARTS_SEND_QUESTION != noticeCode){
+                            rulsMap.put(noticeCode,time);
+                        }
                     }
                     getInfo.setEliminationMap(rulsMap);
                 }
