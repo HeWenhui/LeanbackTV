@@ -685,8 +685,20 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     @Override
     public void onResume() {
         super.onResume();
-        if (isInitialized() && pausePlay) {
-            vPlayer.pause();
+        if (isInitialized()) {
+            if (pausePlay) {
+                final float leftVolume = liveBackPlayVideoFragment.getLeftVolume();
+                final float rightVolume = liveBackPlayVideoFragment.getRightVolume();
+                vPlayer.setVolume(0f, 0f);
+                vPlayer.start();
+                sendPlayVideoHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        vPlayer.setVolume(leftVolume, rightVolume);
+                        vPlayer.pause();
+                    }
+                }, 170);
+            }
         }
         if (liveBackVideoBll != null) {
             liveBackVideoBll.onResume();
@@ -695,9 +707,11 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
             liveBackBll.onReusme();
         }
         //还原声音
-        BasePlayerFragment videoFragment = ProxUtil.getProxUtil().get(activity, BasePlayerFragment.class);
-        if (videoFragment != null && !videoFragment.isMuteMode()) {//静音模式下不要次操作
-            videoFragment.setVolume(1f, 1f);
+        if (!pausePlay) {
+            BasePlayerFragment videoFragment = ProxUtil.getProxUtil().get(activity, BasePlayerFragment.class);
+            if (videoFragment != null && !videoFragment.isMuteMode()) {//静音模式下不要次操作
+                videoFragment.setVolume(1f, 1f);
+            }
         }
     }
 

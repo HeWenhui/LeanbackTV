@@ -257,7 +257,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         }
         mLiveTopic.setMode(LiveTopic.MODE_CLASS);
         boolean isBigLive = mBaseActivity.getIntent().getBooleanExtra("isBigLive", false);
-        Log.e("ckTrac", "=====>LiveBll2_isBigLive=" + isBigLive);
+       // Log.e("ckTrac", "=====>LiveBll2_isBigLive=" + isBigLive);
         if (isBigLive) {
             liveAndBackDebugIml = new LiveDebugBigClassIml(context, mLiveType, mLiveId, mCourseId, false);
         } else {
@@ -1055,34 +1055,6 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                 final int mtype = object.getInt("type");
                 long seiTimetamp = object.optLong("vts", -1);
                 com.xueersi.lib.log.Loger.e("LiveBll2", "=======>onNotice:" + mtype + ":" + this);
-                ///////播放器相关/////////
-                switch (mtype) {
-                    case XESCODE.MODECHANGE:
-                        String mode = object.getString("mode");
-                        if (mode != null && mIRCMessage != null && mGetInfo != null && mGetInfo.ePlanInfo != null) {
-                            mIRCMessage.modeChange(mode);
-                        }
-                        if (!(mLiveTopic.getMode().equals(mode))) {
-                            String oldMode = mLiveTopic.getMode();
-                            mLiveTopic.setMode(mode);
-                            mGetInfo.setMode(mode);
-                            boolean isPresent = isPresent(mode);
-                            if (mVideoAction != null) {
-                                mVideoAction.onModeChange(mode, isPresent);
-                                mLogtf.d(SysLogLable.switchLiveMode, "onNotice:mode=" + mode + ",isPresent=" + isPresent);
-                                if (!isPresent) {
-                                    mVideoAction.onTeacherNotPresent(true);
-                                }
-                            }
-                            liveVideoBll.onModeChange(mode, isPresent);
-                            for (int i = 0; i < businessBlls.size(); i++) {
-                                businessBlls.get(i).onModeChange(oldMode, mode, isPresent);
-                            }
-                        }
-                        break;
-                    default:
-                        break;
-                }
                 //分发消息
                 oldLiveDispatchNotice(sourceNick, target, object, mtype, seiTimetamp);
             } catch (Exception e) {
@@ -1124,17 +1096,23 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                 //上一次延时时间
                 if(lastDelayTime > 0){
                     //保证 延时消息有序
-                    timeDelay = (lastDelayTime - noticeTimeOffset) > 0 ? (lastDelayTime + timeDelay):timeDelay;
+                    timeDelay = Math.max((lastDelayTime-noticeTimeOffset+100),timeDelay);//(lastDelayTime - noticeTimeOffset) > 0 ? (lastDelayTime + timeDelay):timeDelay;
                 }
                 initDispathcHandler();
                 lastDelayTime = timeDelay;
             }
-            Log.e("EliminationRule","====>OldLive_notice_timeDelay:type="+mtype+":"+timeDelay);
+           // Log.e("EliminationRule","====>OldLive_notice_timeDelay:type="+mtype+":"+timeDelay);
 
             Runnable dispatchTask = new Runnable() {
                 @Override
                 public void run() {
-                    Log.e("EliminationRule","====>OldLive_notice_realdispatch_notice_1:type="+mtype);
+                   // Log.e("EliminationRule","====>OldLive_notice_realdispatch_notice_1:type="+mtype);
+
+                     if(XESCODE.MODECHANGE == mtype){
+                        // Log.e("EliminationRule","====>OldLive_notice_realdispatch_notice_2:type="+mtype);
+                         onTeacherModeChange(object);
+                     }
+
                     long delayMillis = 0;
                     if (isFlatfish == 1) {
                         long currentSeiTimetamp = liveVideoBll.getCurrentSeiTimetamp();
@@ -1154,9 +1132,11 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                         }
                         logger.i("onNotice:getCurrentSeiTimetamp:time=" + seiTimetamp + "," + new Date(seiTimetamp)
                                 + ",time2=" + currentSeiTimetamp + "," + new Date(seiTimetamp) + ",delayMillis=" + delayMillis);
+/*
 
                         Log.e("EliminationRule","===>FlatFish_seiTimetamp:"+seiTimetamp+","+new Date(seiTimetamp)+",videoTime="
                                 +currentSeiTimetamp+","+new Date(currentSeiTimetamp)+",delayTime="+delayMillis);
+*/
 
                     }
                     final List<NoticeAction> noticeActions = mNoticeActionMap.get(mtype);
@@ -1164,7 +1144,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                         Runnable runnable = new Runnable() {
                             @Override
                             public void run() {
-                                Log.e("EliminationRule","OldLive_notice_realdispatch_notice_2:type="+mtype);
+                               // Log.e("EliminationRule","OldLive_notice_realdispatch_notice_2:type="+mtype);
                                 for (NoticeAction noticeAction : noticeActions) {
                                     try {
                                         noticeAction.onNotice(sourceNick, target, object, mtype);
@@ -1207,6 +1187,30 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                 mDispathcHandler.sendMessageDelayed(message,timeDelay);
             }else{
                 dispatchTask.run();
+            }
+        }
+
+        private void onTeacherModeChange(JSONObject object){
+            String mode = object.optString("mode");
+            if (mode != null && mIRCMessage != null && mGetInfo != null && mGetInfo.ePlanInfo != null) {
+                mIRCMessage.modeChange(mode);
+            }
+            if (!(mLiveTopic.getMode().equals(mode))) {
+                String oldMode = mLiveTopic.getMode();
+                mLiveTopic.setMode(mode);
+                mGetInfo.setMode(mode);
+                boolean isPresent = isPresent(mode);
+                if (mVideoAction != null) {
+                    mVideoAction.onModeChange(mode, isPresent);
+                    mLogtf.d(SysLogLable.switchLiveMode, "onNotice:mode=" + mode + ",isPresent=" + isPresent);
+                    if (!isPresent) {
+                        mVideoAction.onTeacherNotPresent(true);
+                    }
+                }
+                liveVideoBll.onModeChange(mode, isPresent);
+                for (int i = 0; i < businessBlls.size(); i++) {
+                    businessBlls.get(i).onModeChange(oldMode, mode, isPresent);
+                }
             }
         }
 
@@ -1415,12 +1419,14 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                 //上一次延时时间
                 if(lastDelayTime > 0){
                     //保证 延时消息有序
-                    timeDelay = (lastDelayTime - noticeTimeOffset) > 0 ? (lastDelayTime + timeDelay):timeDelay;
+                    timeDelay = Math.max((lastDelayTime - noticeTimeOffset+100),timeDelay);
+                    //(lastDelayTime - noticeTimeOffset) > 0 ? (lastDelayTime + timeDelay):timeDelay;
                 }
                 initDispathcHandler();
                 lastDelayTime = timeDelay;
             }
-            Log.e("EliminationRule","====>BigLive_notice_timeDelay:type="+mtype+":"+timeDelay);
+          //
+            //  Log.e("EliminationRule","====>BigLive_notice_timeDelay:type="+mtype+":"+timeDelay);
             Runnable dispatchNoticeTask = new Runnable() {
 
                 @Override
@@ -1430,7 +1436,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                         onTeacherMode(mode);
                     }
                     List<NoticeAction> noticeActions = mNoticeActionMap.get(mtype);
-                    Log.e("EliminationRule","====>BigLive_notice_realdispathc:clalled:type="+mtype);
+                   // Log.e("EliminationRule","====>BigLive_notice_realdispathc:clalled:type="+mtype);
                     if (noticeActions != null && noticeActions.size() > 0) {
                         for (NoticeAction noticeAction : noticeActions) {
                             try {
@@ -1599,7 +1605,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
                 delayTime = (long) (Math.random() * time);
             }
         }
-        Log.e("ckTrac","======>LiveBll2:getDelayTimeByType="+delayTime);
+       // Log.e("ckTrac","======>LiveBll2:getDelayTimeByType="+delayTime);
         return delayTime;
     }
 
@@ -1610,7 +1616,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
      */
     private boolean hasCachNotice(){
         boolean hascachNotice =  mDispathcHandler != null &&  mDispathcHandler.hasMessages(MSG_TYPE_DISPATCH_NOTICE);
-        Log.e("ckTrac","===>LiveBll2:"+hascachNotice);
+       // Log.e("ckTrac","===>LiveBll2:"+hascachNotice);
         return hascachNotice;
     }
 

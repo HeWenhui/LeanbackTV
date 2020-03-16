@@ -189,6 +189,7 @@ public class LiveVideoFragmentBase extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        videoFragment.setIsPlayerEnable(false);
         boolean isRegistered = EventBus.getDefault().isRegistered(this);
         logger.d("onDestroy:isRegistered=" + isRegistered);
     }
