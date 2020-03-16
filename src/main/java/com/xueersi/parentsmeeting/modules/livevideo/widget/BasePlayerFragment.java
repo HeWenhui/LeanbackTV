@@ -180,7 +180,6 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
 
     //自检提醒
     private LiveNetCheckTip mLiveNetCheckTip;
-
     public void playNewVideo() {
         if (mUri != null && mDisplayName != null) {
             playNewVideo(mUri, mDisplayName);

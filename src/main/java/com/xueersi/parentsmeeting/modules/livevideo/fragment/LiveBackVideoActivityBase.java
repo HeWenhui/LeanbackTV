@@ -80,7 +80,7 @@ public abstract class LiveBackVideoActivityBase extends XesActivity {
         BuglyLog.i(TAG, "onResume");
         FileLogger.runActivity = this;
         //关闭系统后台声音
-//        AudioPlayer.requestAudioFocus(this);
+        AudioPlayer.requestAudioFocus(this);
     }
 
 
