@@ -264,7 +264,7 @@ public abstract class LiveBackVideoFragmentBase extends Fragment {
         super.onResume();
         FileLogger.runActivity = activity;
         //关闭系统后台声音
-        AudioPlayer.requestAudioFocus(activity);
+//        AudioPlayer.requestAudioFocus(activity);
 
         // 设置视频可播放
         liveBackPlayVideoFragment.setIsPlayerEnable(true);
