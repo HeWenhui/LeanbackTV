@@ -998,6 +998,8 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
 
         }
         resultEntity.setEvent(questionEntitys);
+
+        resultEntity.setLiveTypeId(jsonObject.optString("liveTypeId"));
         return resultEntity;
     }
 

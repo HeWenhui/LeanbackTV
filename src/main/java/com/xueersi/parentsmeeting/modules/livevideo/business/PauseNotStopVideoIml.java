@@ -26,7 +26,7 @@ public class PauseNotStopVideoIml implements PauseNotStopVideoInter {
 
     @Override
     public void setPause(boolean pause) {
-        onPauseNotStopVideo.set(pause);
+        onPauseNotStopVideo.set(true);
     }
 
     @Override

@@ -90,6 +90,7 @@ public class LiveBusinessResponseParser extends HttpResponseParser {
                 liveGetInfo.setName(planInfoJsonObj.optString("name"));
                 //直播类型
                 liveGetInfo.setLiveType(planInfoJsonObj.optInt("type"));
+                liveGetInfo.setLiveTypeId(planInfoJsonObj.optString("liveTypeId"));
 
                 //设置当前主/辅 讲模式
                 int mode = planInfoJsonObj.optInt("mode", 0);

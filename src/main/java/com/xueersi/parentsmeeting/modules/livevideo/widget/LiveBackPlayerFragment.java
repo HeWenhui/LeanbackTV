@@ -23,10 +23,10 @@ import com.xueersi.lib.framework.utils.ThreadMap;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.module.videoplayer.config.LogConfig;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VideoScreenReceiver;
 import com.xueersi.parentsmeeting.module.videoplayer.media.BackMediaPlayerControl;
 import com.xueersi.parentsmeeting.module.videoplayer.media.IPlayBackMediaCtr;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
-import com.xueersi.parentsmeeting.module.videoplayer.media.MediaController2;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
@@ -39,7 +39,7 @@ import java.util.HashMap;
  * @date 2018/6/22
  */
 public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoView.SurfaceCallback,
-        BackMediaPlayerControl , LiveMediaController.MediaPlayerControl {
+        BackMediaPlayerControl, LiveMediaController.MediaPlayerControl {
 
     /** 播放器的控制对象 */
     protected IPlayBackMediaCtr mMediaController;
@@ -135,9 +135,14 @@ public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoV
     }
 
     @Override
-    public void onResume() {
-        logger.d("onResume");
-        super.onResume();
+    protected void resumeRequest() {
+        logger.d("resumeRequest:hasloss=" + hasloss + ",oldisPlaying=" + oldisPlaying);
+        if (hasloss) {
+            if (oldisPlaying) {
+                start();
+            }
+        }
+        super.resumeRequest();
     }
 
     @Override
@@ -162,23 +167,9 @@ public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoV
         SCREEN_FILTER.addAction(Intent.ACTION_SCREEN_OFF);
     }
 
-    private ScreenReceiver mScreenReceiver;
+    private VideoScreenReceiver mScreenReceiver;
     private UserPresentReceiver mUserPresentReceiver;
     private HeadsetPlugReceiver mHeadsetPlugReceiver;
-
-    private class ScreenReceiver extends BroadcastReceiver {
-        private boolean screenOn = true;
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
-                screenOn = false;
-                stopPlayer();
-            } else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
-                screenOn = true;
-            }
-        }
-    }
 
     private class UserPresentReceiver extends BroadcastReceiver {
         @Override
@@ -218,7 +209,7 @@ public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoV
     private void manageReceivers() {
         if (!mReceiverRegistered) {
             // 屏幕点亮广播
-            mScreenReceiver = new ScreenReceiver();
+            mScreenReceiver = new VideoScreenReceiver();
             activity.registerReceiver(mScreenReceiver, SCREEN_FILTER);
             // 解锁广播
             mUserPresentReceiver = new UserPresentReceiver();
@@ -482,5 +473,22 @@ public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoV
 
     public VideoView getVideoView() {
         return videoView;
+    }
+
+    /** 停止音量的时候，是不是播放中 */
+    private boolean oldisPlaying = false;
+
+    @Override
+    public void onRealAudioGain(boolean gain) {
+        logger.d("onAudioGain:gain=" + gain + ",oldisPlaying=" + oldisPlaying);
+        if (gain) {
+            if (oldisPlaying) {
+                start();
+            }
+        } else {
+            //获取了AudioFocus，如果当前处于播放暂停状态，并且这个暂停状态不是用户手动点击的暂停，才会继续播放
+            oldisPlaying = isPlaying();
+            pause();
+        }
     }
 }

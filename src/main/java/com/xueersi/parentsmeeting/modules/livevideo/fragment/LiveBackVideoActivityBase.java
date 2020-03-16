@@ -88,7 +88,7 @@ public abstract class LiveBackVideoActivityBase extends XesActivity {
     public void onPause() {
         super.onPause();
         BuglyLog.i(TAG, "onPause");
-        AudioPlayer.abandAudioFocus(this);
+//        AudioPlayer.abandAudioFocus(this);
         XesMobAgent.userMarkVideoDestory(MobEnumUtil.MARK_VIDEO_ONPAUSE);
     }
 

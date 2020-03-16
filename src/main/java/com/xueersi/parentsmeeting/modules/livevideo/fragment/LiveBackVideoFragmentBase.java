@@ -127,7 +127,7 @@ public abstract class LiveBackVideoFragmentBase extends Fragment {
     /** 播放器核心服务 */
     protected PlayerService vPlayer;
     /** onPause状态不暂停视频 */
-    protected AtomicBoolean onPauseNotStopVideo = new AtomicBoolean(false);
+    protected AtomicBoolean onPauseNotStopVideo = new AtomicBoolean(true);
     /** 是否可以自动横竖屏转换 */
     private boolean mIsAutoOrientation = true;
     /** 业务层 */
@@ -291,9 +291,13 @@ public abstract class LiveBackVideoFragmentBase extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        AudioPlayer.abandAudioFocus(activity);
+//        AudioPlayer.abandAudioFocus(activity);
         XesMobAgent.userMarkVideoDestory(MobEnumUtil.MARK_VIDEO_ONPAUSE);
-        liveBackPlayVideoFragment.setIsPlayerEnable(false);
+//        if(onPauseNotStopVideo.get()){
+//            liveBackPlayVideoFragment.setIsPlayerEnable(true);
+//        }else {
+//            liveBackPlayVideoFragment.setIsPlayerEnable(false);
+//        }
         if (!mCreated) {
             return;
         }
@@ -304,10 +308,17 @@ public abstract class LiveBackVideoFragmentBase extends Fragment {
             } else {
                 savePosition();
             }
-            if (vPlayer != null && vPlayer.isPlaying() && !onPauseNotStopVideo.get()) {
-                liveBackPlayVideoFragment.setIsPlayerEnable(false);
+            if (vPlayer != null) {
+                if (vPlayer.isPlaying()) {
+                    if (onPauseNotStopVideo.get()) {
+                        liveBackPlayVideoFragment.setIsPlayerEnable(true);
+                    } else {
+                        stopPlayer();
+                    }
+                } else {
+                    liveBackPlayVideoFragment.setIsPlayerEnable(false);
+                }
                 // 暂停播放// com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil.getProxUtil().get(activity, PauseNotStopVideoInter.class)
-                stopPlayer();
             } else {
                 liveBackPlayVideoFragment.setIsPlayerEnable(true);
             }
@@ -328,7 +339,7 @@ public abstract class LiveBackVideoFragmentBase extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-
+        liveBackPlayVideoFragment.setIsPlayerEnable(false);
         if (!mCreated) {
             return;
         }
