@@ -9,6 +9,7 @@ import com.tal100.chatsdk.IChatClientListener;
 import com.tal100.chatsdk.IPeerChatListener;
 import com.tal100.chatsdk.IRoomChatListener;
 import com.tal100.chatsdk.PMDefs;
+import com.tencent.cos.xml.utils.StringUtils;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.AppUtils;
@@ -663,7 +664,7 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
         } else {
             liveInfo.classId = "";
         }
-        if (businessId != null){
+        if (!StringUtils.isEmpty(businessId)){
             liveInfo.businessId = businessId;
         } else {
             liveInfo.businessId = "1";

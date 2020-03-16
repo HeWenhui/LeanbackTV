@@ -8,6 +8,7 @@ import com.tal100.chatsdk.IChatClientListener;
 import com.tal100.chatsdk.IPeerChatListener;
 import com.tal100.chatsdk.IRoomChatListener;
 import com.tal100.chatsdk.PMDefs;
+import com.tencent.cos.xml.utils.StringUtils;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.network.IpAddressUtil;
@@ -874,7 +875,7 @@ public class NewIRCMessage implements IIRCMessage {
         } else {
             liveInfo.classId = "";
         }
-        if (businessId != null){
+        if (!StringUtils.isEmpty(businessId)){
             liveInfo.businessId = businessId;
         } else {
             liveInfo.businessId = "1";
