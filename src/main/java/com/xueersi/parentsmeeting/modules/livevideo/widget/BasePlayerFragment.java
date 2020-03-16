@@ -438,6 +438,14 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         return false;
     }
 
+    public float getLeftVolume() {
+        return leftVolume;
+    }
+
+    public float getRightVolume() {
+        return rightVolume;
+    }
+
     /**
      * 是否静音模式
      */
