@@ -668,9 +668,9 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
         } else {
             liveInfo.businessId = "1";
         }
-        if (AppConfig.DEBUG){
-            XESToastUtils.showToastLong(mContext,"businessId : " + businessId);
-        }
+//        if (AppConfig.DEBUG){
+//            XESToastUtils.showToastLong(mContext,"businessId : " + businessId);
+//        }
         if (LiveAppUserInfo.getInstance().getAreaCode() != null) {
             liveInfo.location = LiveAppUserInfo.getInstance().getAreaCode();
         } else {
