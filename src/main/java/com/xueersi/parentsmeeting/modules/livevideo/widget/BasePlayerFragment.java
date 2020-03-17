@@ -180,6 +180,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
 
     //自检提醒
     private LiveNetCheckTip mLiveNetCheckTip;
+
     public void playNewVideo() {
         if (mUri != null && mDisplayName != null) {
             playNewVideo(mUri, mDisplayName);
@@ -241,7 +242,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
 
     private AudioManager audioManager;
     private AudioFocusRequest mAudioFocusRequest;
-    private AudioManager.OnAudioFocusChangeListener audioFocusChangeListener;
+    private VideoOnAudioFocusChangeListener audioFocusChangeListener;
 
     /** 失去焦点 */
     protected boolean hasloss = false;
@@ -1499,6 +1500,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                     audioManager.abandonAudioFocusRequest(mAudioFocusRequest);
                 }
             }
+            audioFocusChangeListener.destory();
         }
     }
 }

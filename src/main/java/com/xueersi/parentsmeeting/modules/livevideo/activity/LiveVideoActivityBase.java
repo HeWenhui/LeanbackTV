@@ -309,7 +309,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
 
     private AudioManager audioManager;
     private AudioFocusRequest mAudioFocusRequest;
-    private AudioManager.OnAudioFocusChangeListener audioFocusChangeListener;
+    private VideoOnAudioFocusChangeListener audioFocusChangeListener;
 
     private Handler vPlayerHandler = new Handler(Looper.getMainLooper()) {
         @Override
@@ -945,6 +945,16 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
         EventBus.getDefault().unregister(this);
         BaseApplication baseApplication = BaseApplication.getInstance();
         baseApplication.removeActivty(this);
+        if (audioManager != null) {
+            if (Build.VERSION.SDK_INT <= 26) {
+                audioManager.abandonAudioFocus(audioFocusChangeListener);
+            } else {
+                if (Build.VERSION.SDK_INT > 26 && mAudioFocusRequest != null) {
+                    audioManager.abandonAudioFocusRequest(mAudioFocusRequest);
+                }
+            }
+            audioFocusChangeListener.destory();
+        }
     }
 
     @Override
