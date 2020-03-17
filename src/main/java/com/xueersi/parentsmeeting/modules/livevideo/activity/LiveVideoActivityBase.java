@@ -884,6 +884,9 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
                 }
             }
         }
+        if (audioFocusChangeListener != null) {
+            audioFocusChangeListener.setPause(false);
+        }
     }
 
     protected void resumeRequest() {
@@ -913,6 +916,9 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
                 // 暂停播放
                 stopPlayer();
             }
+        }
+        if (audioFocusChangeListener != null) {
+            audioFocusChangeListener.setPause(true);
         }
     }
 

@@ -311,6 +311,9 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
             resumeRequest();
         }
         pause = false;
+        if (audioFocusChangeListener != null) {
+            audioFocusChangeListener.setPause(false);
+        }
     }
 
     protected void resumeRequest() {
@@ -322,6 +325,9 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
     public void onPause() {
         super.onPause();
         pause = true;
+        if (audioFocusChangeListener != null) {
+            audioFocusChangeListener.setPause(true);
+        }
     }
 
     @Override
