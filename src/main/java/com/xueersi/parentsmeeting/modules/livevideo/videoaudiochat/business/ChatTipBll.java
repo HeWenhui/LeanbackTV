@@ -213,8 +213,8 @@ public class ChatTipBll {
         logToFile.d("initView:x2=" + LiveVideoPoint.getInstance().x2 + ",method=" + method + ",destory=" + destory);
         final int bottom = LiveVideoPoint.getInstance().screenHeight - LiveVideoPoint.getInstance().y4 + 200;
         vgRaisehand.setPadding(vgRaisehand.getLeft(), bottom, vgRaisehand.getRight(), bottom);
-        liveViewAction.addView(new LiveVideoLevel(3), rl_livevideo_agora_content);
-        liveViewAction.addView(new LiveVideoLevel(4), vgRaisehand, lpRaisehand);
+        liveViewAction.addView(new LiveVideoLevel(-4), rl_livevideo_agora_content);
+        liveViewAction.addView(new LiveVideoLevel(-3), vgRaisehand, lpRaisehand);
         rl_livevideo_chat_raisehand = vgRaisehand.findViewById(R.id.rl_livevideo_chat_raisehand);
         bt_livevideo_chat_raisehand = vgRaisehand.findViewById(R.id.bt_livevideo_chat_raisehand);
         tv_livevideo_chat_raisehand = vgRaisehand.findViewById(R.id.tv_livevideo_chat_raisehand);
