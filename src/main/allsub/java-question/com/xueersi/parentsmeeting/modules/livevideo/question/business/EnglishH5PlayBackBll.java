@@ -396,6 +396,9 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
 
     PauseNotStopVideoInter pauseNotStopVideoIml;
 
+    private float oldLeftVolume;
+    private float oldRightVolume;
+
     /** onPause状态不暂停视频 */
 //    AtomicBoolean onPauseNotStopVideo = new AtomicBoolean(false);
     private void setPauseNotStop(boolean pauseNotStop) {
@@ -414,7 +417,15 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
         //声音设置为0
         BasePlayerFragment videoFragment = ProxUtil.getProxUtil().get(mContext, BasePlayerFragment.class);
         if (videoFragment != null) {
-            videoFragment.setVolume(0, 0);
+            if (pauseNotStop) {
+                if (videoFragment.getLeftVolume() > 0.0f) {
+                    oldLeftVolume = videoFragment.getLeftVolume();
+                    oldRightVolume = videoFragment.getRightVolume();
+                    videoFragment.setVolume(0, 0);
+                }
+            } else {
+                videoFragment.setVolume(oldLeftVolume, oldRightVolume);
+            }
         }
 //        }
     }
