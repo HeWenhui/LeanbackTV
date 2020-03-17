@@ -125,6 +125,10 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
             if (praiseInteractionPager != null && praiseInteractionPager.getRootView() != null) {
                 removeView(praiseInteractionPager.getRootView());
             }
+            LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
+            if (studentLiveInfo != null) {
+                goldNum = studentLiveInfo.getGoldNum();
+            }
             praiseInteractionPager = new PraiseInteractionPager(mContext, goldNum, this, contextLiveAndBackDebug, mGetInfo);
 
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
