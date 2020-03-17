@@ -32,6 +32,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.xueersi.parentsmeeting.module.audio.safeaudioplayer.AppAudioFocusChangeListener;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoOnAudioFocusChangeListener;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoOnAudioGain;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoPhoneState;
@@ -310,6 +311,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
     private AudioManager audioManager;
     private AudioFocusRequest mAudioFocusRequest;
     private VideoOnAudioFocusChangeListener audioFocusChangeListener;
+    private AppAudioFocusChangeListener appAudioFocusChangeListener;
 
     private Handler vPlayerHandler = new Handler(Looper.getMainLooper()) {
         @Override
@@ -628,6 +630,8 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
         onSelect(savedInstanceState, video);
         pauseNotStopVideoIml = new PauseNotStopVideoIml(this, onPauseNotStopVideo);
         audioFocusChangeListener = new VideoOnAudioFocusChangeListener(this);
+        appAudioFocusChangeListener = AppAudioFocusChangeListener.getInstance();
+        appAudioFocusChangeListener.addOnAudioFocusChangeListener(audioFocusChangeListener);
         audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         if (audioManager != null) {
             request();
@@ -636,7 +640,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
 
     private int request() {
         if (Build.VERSION.SDK_INT <= 26) {
-            int result = audioManager.requestAudioFocus(audioFocusChangeListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+            int result = audioManager.requestAudioFocus(appAudioFocusChangeListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
             logger.d("request:requestAudioFocus:result1=" + result);
             return result;
         } else {//API26 废弃了原来的获取方法
@@ -647,7 +651,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
                             .setContentType(AudioAttributes.CONTENT_TYPE_MOVIE)
                             .build())
                     .setAcceptsDelayedFocusGain(true)
-                    .setOnAudioFocusChangeListener(audioFocusChangeListener)
+                    .setOnAudioFocusChangeListener(appAudioFocusChangeListener)
                     .build();
             int result = audioManager.requestAudioFocus(mAudioFocusRequest);
             logger.d("request:requestAudioFocus:result2=" + result);
@@ -947,10 +951,16 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
         baseApplication.removeActivty(this);
         if (audioManager != null) {
             if (Build.VERSION.SDK_INT <= 26) {
-                audioManager.abandonAudioFocus(audioFocusChangeListener);
+                int size = appAudioFocusChangeListener.removeOnAudioFocusChangeListener(audioFocusChangeListener);
+                if (size == 0) {
+                    audioManager.abandonAudioFocus(appAudioFocusChangeListener);
+                }
             } else {
                 if (Build.VERSION.SDK_INT > 26 && mAudioFocusRequest != null) {
-                    audioManager.abandonAudioFocusRequest(mAudioFocusRequest);
+                    int size = appAudioFocusChangeListener.removeOnAudioFocusChangeListener(audioFocusChangeListener);
+                    if (size == 0) {
+                        audioManager.abandonAudioFocusRequest(mAudioFocusRequest);
+                    }
                 }
             }
             audioFocusChangeListener.destory();
