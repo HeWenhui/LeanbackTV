@@ -276,9 +276,14 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
     }
 
     private int request() {
+        int result = appAudioFocusChangeListener.getResult();
+        if (result == 1) {
+            return 1;
+        }
         if (Build.VERSION.SDK_INT <= 26) {
-            int result = audioManager.requestAudioFocus(appAudioFocusChangeListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+            result = audioManager.requestAudioFocus(appAudioFocusChangeListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
             logger.d("request:requestAudioFocus:result1=" + result);
+            appAudioFocusChangeListener.setResult(result);
             return result;
         } else {//API26 废弃了原来的获取方法
             //下面两个常量参数试过很多 都无效，最终反编译了其他app才搞定，汗~
@@ -290,8 +295,9 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                     .setAcceptsDelayedFocusGain(true)
                     .setOnAudioFocusChangeListener(appAudioFocusChangeListener)
                     .build();
-            int result = audioManager.requestAudioFocus(mAudioFocusRequest);
+            result = audioManager.requestAudioFocus(mAudioFocusRequest);
             logger.d("request:requestAudioFocus:result2=" + result);
+            appAudioFocusChangeListener.setResult(result);
             return result;
         }
     }
