@@ -1018,9 +1018,11 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
 
     @Override
     protected void onUserBackPressed() {
-        boolean userBackPressed = liveBackBll.onUserBackPressed();
-        if (!userBackPressed) {
-            super.onUserBackPressed();
+        if (liveBackBll != null) {
+            boolean userBackPressed = liveBackBll.onUserBackPressed();
+            if (!userBackPressed) {
+                super.onUserBackPressed();
+            }
         }
     }
 
