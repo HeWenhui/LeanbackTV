@@ -614,9 +614,11 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                                     LiveMainHandler.post(new Runnable() {
                                         @Override
                                         public void run() {
-                                            mRolePlayerPager.updateRolePlayList(message);
-                                            //对方提前读完
-                                            mRolePlayerPager.nextRextMessage(position);
+                                            if (mRolePlayerPager != null) {
+                                                mRolePlayerPager.updateRolePlayList(message);
+                                                //对方提前读完
+                                                mRolePlayerPager.nextRextMessage(position);
+                                            }
                                         }
                                     });
 
