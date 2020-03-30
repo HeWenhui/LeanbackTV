@@ -897,13 +897,17 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     @Override
     protected void onPausePlayer() {
         super.onPausePlayer();
-        liveBackBll.onPausePlayer();
+        if(liveBackBll != null){
+            liveBackBll.onPausePlayer();
+        }
     }
 
     @Override
     protected void onStartPlayer() {
         super.onStartPlayer();
-        liveBackBll.onStartPlayer();
+        if(liveBackBll != null){
+            liveBackBll.onStartPlayer();
+        }
     }
 
     /** 扫描是否有需要弹出的互动题 */
