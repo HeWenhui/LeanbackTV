@@ -9,6 +9,8 @@ import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Rect;
+import android.media.AudioAttributes;
+import android.media.AudioFocusRequest;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Build;
@@ -30,6 +32,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.xueersi.parentsmeeting.module.audio.safeaudioplayer.AppAudioFocusChangeListener;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VideoOnAudioFocusChangeListener;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VideoOnAudioGain;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VideoPhoneState;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VideoScreenReceiver;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIml;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoInter;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
@@ -87,7 +94,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author 林玉强
  */
 public class LiveVideoActivityBase extends XesActivity implements LiveMediaController.MediaPlayerControl,
-        VideoView.SurfaceCallback, LiveProvide {
+        VideoView.SurfaceCallback, LiveProvide, VideoOnAudioGain {
     private String TAG = "LiveVideoActivityBaseLog";
     /** 布局默认资源 */
     protected int mLayoutVideo = R.layout.activity_video_live;
@@ -220,31 +227,17 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
     /** 是否完成了当前视频的播放 */
     private boolean mCloseComplete = false;
 
-    private ScreenReceiver mScreenReceiver;
+    private VideoScreenReceiver mScreenReceiver;
     private UserPresentReceiver mUserPresentReceiver;
 
     private PauseNotStopVideoIml pauseNotStopVideoIml;
-    protected AtomicBoolean onPauseNotStopVideo = new AtomicBoolean(false);
+    protected AtomicBoolean onPauseNotStopVideo = new AtomicBoolean(true);
     /** 播放器请求 */
     public static final int VIDEO_REQUEST = 210;
     /** 播放器用户返回 */
     public static final int VIDEO_CANCLE = 211;
     /** 播放器java崩溃 */
     public static final int VIDEO_CRASH = 1200;
-
-    private class ScreenReceiver extends BroadcastReceiver {
-        private boolean screenOn = true;
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
-                screenOn = false;
-                stopPlayer();
-            } else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
-                screenOn = true;
-            }
-        }
-    }
 
     private class UserPresentReceiver extends BroadcastReceiver {
         @Override
@@ -259,7 +252,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
     private void manageReceivers() {
         if (!mReceiverRegistered) {
             // 屏幕点亮广播
-            mScreenReceiver = new ScreenReceiver();
+            mScreenReceiver = new VideoScreenReceiver();
             registerReceiver(mScreenReceiver, SCREEN_FILTER);
             // 解锁广播
             mUserPresentReceiver = new UserPresentReceiver();
@@ -313,6 +306,12 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
     private static final int CLOSE_COMPLETE = 22;
     String video;
     float leftVolume = VP.DEFAULT_STEREO_VOLUME, rightVolume = VP.DEFAULT_STEREO_VOLUME;
+
+
+    private AudioManager audioManager;
+    private AudioFocusRequest mAudioFocusRequest;
+    private VideoOnAudioFocusChangeListener audioFocusChangeListener;
+    private AppAudioFocusChangeListener appAudioFocusChangeListener;
 
     private Handler vPlayerHandler = new Handler(Looper.getMainLooper()) {
         @Override
@@ -630,6 +629,64 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
         video = "ijk";
         onSelect(savedInstanceState, video);
         pauseNotStopVideoIml = new PauseNotStopVideoIml(this, onPauseNotStopVideo);
+        audioFocusChangeListener = new VideoOnAudioFocusChangeListener(this);
+        appAudioFocusChangeListener = AppAudioFocusChangeListener.getInstance();
+        appAudioFocusChangeListener.addOnAudioFocusChangeListener(audioFocusChangeListener);
+        audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        if (audioManager != null) {
+            request();
+        }
+    }
+
+    private int request() {
+        int result = appAudioFocusChangeListener.getResult();
+        if (result == 1) {
+            return 1;
+        }
+        if (Build.VERSION.SDK_INT <= 26) {
+            result = audioManager.requestAudioFocus(appAudioFocusChangeListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+            logger.d("request:requestAudioFocus:result1=" + result);
+            appAudioFocusChangeListener.setResult(result);
+            return result;
+        } else {//API26 废弃了原来的获取方法
+            //下面两个常量参数试过很多 都无效，最终反编译了其他app才搞定，汗~
+            mAudioFocusRequest = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
+                    .setAudioAttributes(new AudioAttributes.Builder()
+                            .setUsage(AudioAttributes.USAGE_MEDIA)
+                            .setContentType(AudioAttributes.CONTENT_TYPE_MOVIE)
+                            .build())
+                    .setAcceptsDelayedFocusGain(true)
+                    .setOnAudioFocusChangeListener(appAudioFocusChangeListener)
+                    .build();
+            result = audioManager.requestAudioFocus(mAudioFocusRequest);
+            logger.d("request:requestAudioFocus:result2=" + result);
+            appAudioFocusChangeListener.setResult(result);
+            return result;
+        }
+    }
+
+    /** 失去焦点 */
+    protected boolean hasloss = false;
+
+    float oldleftVolume = 1.0f;
+    float oldrightVolume = 1.0f;
+
+    @Override
+    public final void onAudioGain(boolean gain) {
+        boolean oldhasloss = hasloss;
+        hasloss = !gain;
+        if (oldhasloss == hasloss) {
+            return;
+        }
+        logger.d("onAudioGain:gain=" + gain + ",oldleftVolume=" + oldleftVolume);
+        if (gain) {
+            setVolume(oldleftVolume, oldrightVolume);
+        } else {
+            // 会长时间的失去AudioFoucs,就不在监听远程播放
+            oldleftVolume = leftVolume;
+            oldrightVolume = rightVolume;
+            setVolume(0.0f, 0.0f);
+        }
     }
 
     private void showDialog(final Bundle savedInstanceState) {
@@ -764,7 +821,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
     }
 
     protected void createPlayer() {
-        vPlayer = new PlayerService(this);
+        vPlayer = new PlayerService(this, true);
         vPlayer.onCreate();
         mServiceConnected = true;
         if (mSurfaceCreated)
@@ -773,31 +830,35 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
         // 设置当前是否为横屏
         setFileName(); // 设置视频显示名称
         showLongMediaController();
+        vPlayer.setVideoPhoneState(new VideoPhoneState() {
+            @Override
+            public void state(boolean start) {
+                onAudioGain(!start);
+            }
+        });
     }
 
     protected boolean onVideoCreate(Bundle savedInstanceState) {
         return true;
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (!mCreated)
-            return;
-    }
-
+    boolean pause = false;
 
     @Override
     public void onResume() {
         super.onResume();
         FileLogger.runActivity = this;
         //关闭系统后台声音
-        AudioPlayer.requestAudioFocus(this);
+//        AudioPlayer.requestAudioFocus(this);
 
         // 设置视频可播放
         mIsPlayerEnable = true;
         if (!mCreated)
             return;
+        if (pause && audioManager != null) {
+            resumeRequest();
+        }
+        pause = false;
         if (isInitialized()) {
             KeyguardManager keyguardManager = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
             if (!keyguardManager.inKeyguardRestrictedInputMode()) {
@@ -823,23 +884,41 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
                 }
             }
         }
+        if (audioFocusChangeListener != null) {
+            audioFocusChangeListener.setPause(false);
+        }
     }
 
+    protected void resumeRequest() {
+        if (hasloss) {
+            leftVolume = oldleftVolume;
+            rightVolume = oldrightVolume;
+            setVolume(leftVolume, rightVolume);
+        }
+        int result = request();
+        hasloss = result != AudioManager.AUDIOFOCUS_GAIN;
+    }
 
     @Override
     public void onPause() {
         super.onPause();
-        AudioPlayer.abandAudioFocus(this);
+        pause = true;
+//        AudioPlayer.abandAudioFocus(this);
         XesMobAgent.userMarkVideoDestory(MobEnumUtil.MARK_VIDEO_ONPAUSE);
         // 设置视频不可播放
-        mIsPlayerEnable = false;
+        if (!pauseNotStopVideoIml.getPause()) {
+            mIsPlayerEnable = false;
+        }
         if (!mCreated)
             return;
-        if (isInitialized()) {
+        if (!pauseNotStopVideoIml.getPause() && isInitialized()) {
             if (vPlayer != null && vPlayer.isPlaying() && !onPauseNotStopVideo.get()) {
                 // 暂停播放
                 stopPlayer();
             }
+        }
+        if (audioFocusChangeListener != null) {
+            audioFocusChangeListener.setPause(true);
         }
     }
 
@@ -856,6 +935,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mIsPlayerEnable = false;
         if (!mCreated)
             return;
         // 统计退出
@@ -881,6 +961,22 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
         EventBus.getDefault().unregister(this);
         BaseApplication baseApplication = BaseApplication.getInstance();
         baseApplication.removeActivty(this);
+        if (audioManager != null) {
+            if (Build.VERSION.SDK_INT <= 26) {
+                int size = appAudioFocusChangeListener.removeOnAudioFocusChangeListener(audioFocusChangeListener);
+                if (size == 0) {
+                    audioManager.abandonAudioFocus(appAudioFocusChangeListener);
+                }
+            } else {
+                if (Build.VERSION.SDK_INT > 26 && mAudioFocusRequest != null) {
+                    int size = appAudioFocusChangeListener.removeOnAudioFocusChangeListener(audioFocusChangeListener);
+                    if (size == 0) {
+                        audioManager.abandonAudioFocusRequest(mAudioFocusRequest);
+                    }
+                }
+            }
+            audioFocusChangeListener.destory();
+        }
     }
 
     @Override
@@ -1699,7 +1795,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
             }
             vPlayer.releaseSurface();
             PauseNotStopVideoInter onPauseNotStopVideo = ProxUtil.getProxUtil().get(this, PauseNotStopVideoInter.class);
-            if (onPauseNotStopVideo == null || onPauseNotStopVideo.getPause()) {
+            if ((onPauseNotStopVideo == null || onPauseNotStopVideo.getPause()) && !hasloss) {
                 if (mIsPlayerEnable && vPlayer.needResume())
                     vPlayer.start();
             }

@@ -5,6 +5,9 @@ import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Rect;
+import android.media.AudioAttributes;
+import android.media.AudioFocusRequest;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -12,9 +15,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.OrientationEventListener;
 import android.view.SurfaceHolder;
 import android.view.View;
@@ -29,6 +30,7 @@ import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.AppUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.module.audio.safeaudioplayer.AppAudioFocusChangeListener;
 import com.xueersi.parentsmeeting.module.videoplayer.LiveLogUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.business.VideoBll;
 import com.xueersi.parentsmeeting.module.videoplayer.config.AvformatOpenInputError;
@@ -36,6 +38,9 @@ import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VideoOnAudioFocusChangeListener;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VideoOnAudioGain;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VideoPhoneState;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.module.videoplayer.ps.MediaErrorInfo;
 import com.xueersi.parentsmeeting.module.videoplayer.ps.PSIJK;
@@ -62,7 +67,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Created by linyuqiang on 2018/8/3.
  * 直播和回放的基础控制
  */
-public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCallback, LiveProvide {
+public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCallback, LiveProvide, VideoOnAudioGain {
     protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     BaseActivity activity;
     /** 视频的名称，用于显示在播放器上面的信息栏 */
@@ -155,7 +160,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
     private int mStatusBarHeight = 0;
     /** 播放器的屏幕高 */
     protected int mPortVideoHeight = 0;
-    float leftVolume = VP.DEFAULT_STEREO_VOLUME, rightVolume = VP.DEFAULT_STEREO_VOLUME;
+    protected float leftVolume = VP.DEFAULT_STEREO_VOLUME, rightVolume = VP.DEFAULT_STEREO_VOLUME;
 
     /** 放播放器的 io.vov.vitamio.widget.CenterLayout */
     protected ViewGroup viewRoot;
@@ -176,6 +181,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
 
     //自检提醒
     private LiveNetCheckTip mLiveNetCheckTip;
+
     public void playNewVideo() {
         if (mUri != null && mDisplayName != null) {
             playNewVideo(mUri, mDisplayName);
@@ -235,12 +241,93 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
 //        vPlayerHandler.sendEmptyMessage(OPEN_FILE);
 //    }
 
+    private AudioManager audioManager;
+    private AudioFocusRequest mAudioFocusRequest;
+    private VideoOnAudioFocusChangeListener audioFocusChangeListener;
+    private AppAudioFocusChangeListener appAudioFocusChangeListener;
+    /** 失去焦点 */
+    protected boolean hasloss = false;
+
+    public final void onAudioGain(boolean gain) {
+        boolean oldhasloss = hasloss;
+        hasloss = !gain;
+        if (oldhasloss != hasloss) {
+            onRealAudioGain(gain);
+        }
+    }
+
+    public void onRealAudioGain(boolean gain) {
+
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activity = (BaseActivity) getActivity();
         mPortVideoHeight = VideoBll.getVideoDefaultHeight(activity);
         mShareDataManager = ShareDataManager.getInstance();
+        audioFocusChangeListener = new VideoOnAudioFocusChangeListener(this);
+        appAudioFocusChangeListener = AppAudioFocusChangeListener.getInstance();
+        appAudioFocusChangeListener.addOnAudioFocusChangeListener(audioFocusChangeListener);
+        audioManager = (AudioManager) activity.getSystemService(Context.AUDIO_SERVICE);
+        if (audioManager != null) {
+            request();
+        }
+    }
+
+    private int request() {
+        int result = appAudioFocusChangeListener.getResult();
+        if (result == 1) {
+            return 1;
+        }
+        if (Build.VERSION.SDK_INT <= 26) {
+            result = audioManager.requestAudioFocus(appAudioFocusChangeListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+            logger.d("request:requestAudioFocus:result1=" + result);
+            appAudioFocusChangeListener.setResult(result);
+            return result;
+        } else {//API26 废弃了原来的获取方法
+            //下面两个常量参数试过很多 都无效，最终反编译了其他app才搞定，汗~
+            mAudioFocusRequest = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
+                    .setAudioAttributes(new AudioAttributes.Builder()
+                            .setUsage(AudioAttributes.USAGE_MEDIA)
+                            .setContentType(AudioAttributes.CONTENT_TYPE_MOVIE)
+                            .build())
+                    .setAcceptsDelayedFocusGain(true)
+                    .setOnAudioFocusChangeListener(appAudioFocusChangeListener)
+                    .build();
+            result = audioManager.requestAudioFocus(mAudioFocusRequest);
+            logger.d("request:requestAudioFocus:result2=" + result);
+            appAudioFocusChangeListener.setResult(result);
+            return result;
+        }
+    }
+
+    boolean pause = false;
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (pause && audioManager != null) {
+            resumeRequest();
+        }
+        pause = false;
+        if (audioFocusChangeListener != null) {
+            audioFocusChangeListener.setPause(false);
+        }
+    }
+
+    protected void resumeRequest() {
+        int result = request();
+        hasloss = result != AudioManager.AUDIOFOCUS_GAIN;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        pause = true;
+        if (audioFocusChangeListener != null) {
+            audioFocusChangeListener.setPause(true);
+        }
     }
 
     @Override
@@ -308,7 +395,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
     }
 
     public PlayerService createPlayer() {
-        vPlayer = new PlayerService(activity);
+        vPlayer = new PlayerService(activity, true);
         vPlayer.onCreate();
         mServiceConnected = true;
         if (mSurfaceCreated) {// 链接成功后尝试开始播放
@@ -317,6 +404,12 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         // 设置当前是否为横屏
         setFileName(); // 设置视频显示名称
         showLongMediaController();
+        vPlayer.setVideoPhoneState(new VideoPhoneState() {
+            @Override
+            public void state(boolean start) {
+                onAudioGain(!start);
+            }
+        });
         return vPlayer;
     }
 
@@ -360,6 +453,14 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         return false;
     }
 
+    public float getLeftVolume() {
+        return leftVolume;
+    }
+
+    public float getRightVolume() {
+        return rightVolume;
+    }
+
     /**
      * 是否静音模式
      */
@@ -367,9 +468,9 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
 
     public void setMuteMode(boolean muteMode) {
         this.muteMode = muteMode;
-        if (muteMode){
+        if (muteMode) {
             setVolume(0, 0);
-        }else {
+        } else {
             setVolume(VP.DEFAULT_STEREO_VOLUME, VP.DEFAULT_STEREO_VOLUME);
         }
     }
@@ -1199,7 +1300,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
 
     @Override
     public void onSurfaceDestroyed(SurfaceHolder holder) {
-        logger.d("onSurfaceDestroyed");
+        logger.d("onSurfaceDestroyed:hasloss=" + hasloss + ",enable=" + mIsPlayerEnable);
         if (vPlayer != null && vPlayer.isInitialized()) {
             if (vPlayer.isPlaying()) {
                 vPlayer.pause();
@@ -1209,7 +1310,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
             //TODO 这个会影响暂停视频，返回后台继续播放。但是悬浮窗还需要
             PauseNotStopVideoInter onPauseNotStopVideo = ProxUtil.getProxUtil().get(activity, PauseNotStopVideoInter.class);
             //onPauseNotStopVideo 应该不会空
-            if (onPauseNotStopVideo == null || onPauseNotStopVideo.getPause()) {
+            if ((onPauseNotStopVideo == null || onPauseNotStopVideo.getPause()) && !hasloss) {
                 if (mIsPlayerEnable && vPlayer.needResume()) {
                     vPlayer.start();
                 }
@@ -1405,6 +1506,22 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         super.onDestroy();
         if (vPlayer != null) {
             vPlayer.psExit();
+        }
+        if (audioManager != null) {
+            if (Build.VERSION.SDK_INT <= 26) {
+                int size = appAudioFocusChangeListener.removeOnAudioFocusChangeListener(audioFocusChangeListener);
+                if (size == 0) {
+                    audioManager.abandonAudioFocus(appAudioFocusChangeListener);
+                }
+            } else {
+                if (Build.VERSION.SDK_INT > 26 && mAudioFocusRequest != null) {
+                    int size = appAudioFocusChangeListener.removeOnAudioFocusChangeListener(audioFocusChangeListener);
+                    if (size == 0) {
+                        audioManager.abandonAudioFocusRequest(mAudioFocusRequest);
+                    }
+                }
+            }
+            audioFocusChangeListener.destory();
         }
     }
 }

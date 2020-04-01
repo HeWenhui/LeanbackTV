@@ -482,6 +482,9 @@ public class DispatcherBll extends BaseBll {
         bundle.putBoolean("isExperience", true);
 //        if (videoEntity.getPattern() == LiveVideoConfig.LIVE_PATTERN_COMMON || videoEntity.getPattern() == LiveVideoConfig.LIVE_TYPE_HALFBODY) {
         bundle.putBoolean("newCourse", true);
+        if (entity.getLiveTypeId() != null){
+            bundle.putString("liveTypeId",entity.getLiveTypeId());
+        }
 //        }
         if (!"".equals(entity.getExamPaperUrl())) {
             if (entity.getIsArts() == 1) {

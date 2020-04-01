@@ -26,11 +26,12 @@ public class PauseNotStopVideoIml implements PauseNotStopVideoInter {
 
     @Override
     public void setPause(boolean pause) {
-        onPauseNotStopVideo.set(pause);
+        onPauseNotStopVideo.set(true);
     }
 
     @Override
     public boolean getPause() {
-        return onPauseNotStopVideo.get();
+//        return onPauseNotStopVideo.get();
+        return true;
     }
 }

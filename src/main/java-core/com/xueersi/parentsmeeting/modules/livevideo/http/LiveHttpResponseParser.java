@@ -5,6 +5,7 @@ import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.google.gson.JsonObject;
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
 import com.xueersi.common.http.HttpResponseParser;
 import com.xueersi.common.http.ResponseEntity;
@@ -20,6 +21,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEner
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuAimResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuSegmentEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.EvenDriveEntity;
 //import com.xueersi.parentsmeeting.modules.livevideo.business.lightlive.entity.LPWeChatEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.entity.SuperSpeakerRedPackageEntity;
@@ -609,6 +611,27 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             getInfo.setEvenDriveInfo(evenDriveInfo);
             getInfo.setIsFlatfish(data.optInt("isFlatfish", 0));
 
+            // 2020319 版本新增消峰功能
+            getInfo.setIsEliminationPeak(data.optInt("isEliminationPeak",0));
+            JSONArray jsonArray = data.optJSONArray("eliminationRule");
+            if(jsonArray != null && jsonArray.length() > 0){
+                 JSONObject ruls = (JSONObject) jsonArray.get(0);
+                long time = ruls.optLong("maxDelayMS");
+                JSONArray eliArray = ruls.optJSONArray("eliminationList");
+                if(eliArray != null && eliArray.length() >0){
+                    HashMap<Integer,Long> rulsMap = new HashMap<>();
+                    for (int i = 0; i < eliArray.length(); i++) {
+                       int noticeCode = eliArray.optInt(i);
+                       //目前先过滤掉1104  不进行消峰
+                        if(XESCODE.ARTS_SEND_QUESTION != noticeCode){
+                            rulsMap.put(noticeCode,time);
+                        }
+                    }
+                    getInfo.setEliminationMap(rulsMap);
+                }
+            }
+
+
             //英语1V2小组课
             JSONObject recordStandLiveJson = data.optJSONObject("recordStandlive");
             if (recordStandLiveJson != null) {
@@ -623,6 +646,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 getInfo.setRecordStandliveEntity(recordStandliveEntity);
                 getInfo.setMode(LiveTopic.MODE_CLASS);
             }
+            getInfo.setLiveTypeId(data.optString("liveTypeId"));
 
             /** 轻直播公告*/
 //            getInfo.setGentlyNotice(data.optString("gentlyNotice"));

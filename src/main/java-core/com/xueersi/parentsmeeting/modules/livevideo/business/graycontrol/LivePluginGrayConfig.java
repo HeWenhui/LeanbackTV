@@ -55,4 +55,8 @@ public class LivePluginGrayConfig {
     /** 教师评价 **/
     public static final int MOUDLE_TEACHER_FEEDBACK = 151;
 
+    /**消峰功能**/
+    public static final int MOUDLE_ELIMINATION = 20;
+
+
 }

@@ -25,9 +25,12 @@ public class LiveJsonUtil {
                 Object diffValue = diffJson.get(key);
                 Object lastValue = lastJson.get(key);
                 if (lastValue instanceof JSONObject) {
-                    JSONObject removeJosn = getDiffJson((JSONObject) diffValue, (JSONObject) lastValue);
-                    if ("{}".equals("" + removeJosn)) {
-                        diffJson.remove(key);
+                    //https://bugly.qq.com/v2/crash-reporting/errors/a0df5ed682/454687?pid=1
+                    if (diffValue instanceof JSONObject) {
+                        JSONObject removeJosn = getDiffJson((JSONObject) diffValue, (JSONObject) lastValue);
+                        if ("{}".equals("" + removeJosn)) {
+                            diffJson.remove(key);
+                        }
                     }
                 } else if (lastValue instanceof JSONArray && diffValue instanceof JSONArray) {
                     JSONArray diffArr = (JSONArray) diffValue;

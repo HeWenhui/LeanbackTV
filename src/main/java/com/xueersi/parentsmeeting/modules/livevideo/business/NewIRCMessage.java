@@ -8,11 +8,16 @@ import com.tal100.chatsdk.IChatClientListener;
 import com.tal100.chatsdk.IPeerChatListener;
 import com.tal100.chatsdk.IRoomChatListener;
 import com.tal100.chatsdk.PMDefs;
+import com.tencent.cos.xml.utils.StringUtils;
+import com.xueersi.common.business.AppBll;
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.network.IpAddressUtil;
 import com.xueersi.lib.analytics.umsagent.DeviceInfo;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.are.ContextManager;
+import com.xueersi.lib.framework.utils.AppUtils;
+import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.SysLogLable;
@@ -83,13 +88,15 @@ public class NewIRCMessage implements IIRCMessage {
     private String eventid = "NewIRCMessage";
     private Map<String, String> analysis;
     private UUID mSid = UUID.randomUUID();
+    private String businessId;
 
-    public NewIRCMessage(Context context, String nickname, String liveId, String classId, String... channel) {
+    public NewIRCMessage(Context context, String nickname, String liveId, String classId,String businessId, String... channel) {
         this.mChannels = channel;
         this.mNickname = nickname;
         this.mContext = context;
         this.liveId = liveId;
         this.classId = classId;
+        this.businessId = businessId;
         mLogtf = new LogToFile(context, TAG);
         mLogtf.clear();
         mLogtf.d("NewIRCMessage:channel=" + channel + ",nickname=" + nickname);
@@ -868,7 +875,14 @@ public class NewIRCMessage implements IIRCMessage {
         } else {
             liveInfo.classId = "";
         }
-        liveInfo.businessId = "1";
+        if (!StringUtils.isEmpty(businessId)){
+            liveInfo.businessId = businessId;
+        } else {
+            liveInfo.businessId = "1";
+        }
+//        if (AppConfig.DEBUG){
+//            XESToastUtils.showToastLong(mContext,"businessId : " + businessId);
+//        }
         if (LiveAppUserInfo.getInstance().getAreaCode() != null) {
             liveInfo.location = LiveAppUserInfo.getInstance().getAreaCode();
         } else {

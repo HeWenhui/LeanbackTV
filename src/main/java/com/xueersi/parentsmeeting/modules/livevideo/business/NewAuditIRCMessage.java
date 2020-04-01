@@ -9,8 +9,12 @@ import com.tal100.chatsdk.IChatClientListener;
 import com.tal100.chatsdk.IPeerChatListener;
 import com.tal100.chatsdk.IRoomChatListener;
 import com.tal100.chatsdk.PMDefs;
+import com.tencent.cos.xml.utils.StringUtils;
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.lib.framework.are.ContextManager;
+import com.xueersi.lib.framework.utils.AppUtils;
 import com.xueersi.lib.framework.utils.JsonUtil;
+import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -80,12 +84,14 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
     //消息序号
     private long[] preMsgId = new long[]{0};
     private HashMap<Long, String> msgMap = new HashMap<>();
+    private String businessId;
 
-    public NewAuditIRCMessage(LiveEnvironment liveEnvironment, String nickname, String liveId, String classId, String channel) {
+    public NewAuditIRCMessage(LiveEnvironment liveEnvironment, String nickname, String liveId, String classId,String businessId, String channel) {
         this.mChannel = channel;
         this.mNickname = nickname;
         this.liveId = liveId;
         this.classId = classId;
+        this.businessId = businessId;
         mContext = liveEnvironment.getActivity();
         workSpaceDir = new File(mContext.getCacheDir(), "irc/workspace");
         mLogtf = liveEnvironment.createLogToFile(TAG);
@@ -658,7 +664,14 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
         } else {
             liveInfo.classId = "";
         }
-        liveInfo.businessId = "1";
+        if (!StringUtils.isEmpty(businessId)){
+            liveInfo.businessId = businessId;
+        } else {
+            liveInfo.businessId = "1";
+        }
+//        if (AppConfig.DEBUG){
+//            XESToastUtils.showToastLong(mContext,"businessId : " + businessId);
+//        }
         if (LiveAppUserInfo.getInstance().getAreaCode() != null) {
             liveInfo.location = LiveAppUserInfo.getInstance().getAreaCode();
         } else {

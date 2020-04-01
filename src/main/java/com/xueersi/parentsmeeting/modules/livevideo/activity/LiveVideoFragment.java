@@ -701,6 +701,8 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                     }
                 }
             });
+        }else {
+            videoFragment.setIsPlayerEnable(true);
         }
         if (mLiveBll != null) {
             mLiveBll.onPause();
