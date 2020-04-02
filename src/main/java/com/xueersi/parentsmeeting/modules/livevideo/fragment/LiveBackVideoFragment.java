@@ -1023,6 +1023,8 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
             if (!userBackPressed) {
                 super.onUserBackPressed();
             }
+        } else {
+            super.onUserBackPressed();
         }
     }
 
