@@ -11,6 +11,7 @@ import com.xueersi.common.base.XrsCrashReport;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -582,6 +583,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
                     intent.putExtra("msg", "您的帐号已在其他设备登录，请重新进入直播间");
                     activity.setResult(ShareBusinessConfig.LIVE_USER_KICK, intent);
                     activity.finish();
+                    XESToastUtils.showToast("您的帐号已在其他设备登录，请重新进入直播间");
                 }
             });
         } else {
