@@ -198,13 +198,13 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
             R.drawable.selector_live_halfbody_hotword_666,
             R.drawable.selector_live_halfbody_hotword_2,
             R.drawable.selector_live_halfbody_hotword_ok,
-            R.drawable.selector_live_halfbody_hotword_cry,
+            R.drawable.selector_live_halfbody_hotword_get,
     };
 
     /**
      * 热词消息指令
      **/
-    private String[] mHotwordCmd = {"[e]em_1[e]", "1", "666", "2", "[e]em_16[e]", "[e]em_11[e]"};
+    private String[] mHotwordCmd = {"[e]em_1[e]", "1", "666", "2", "[e]em_16[e]", "[e]em_get[e]"};
 
 
     public HalfBodyLiveMessagePager(Context context, KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener,

@@ -43,6 +43,8 @@ public class LiveMessageEmojiParser {
 
         map.put("[e]em_18[e]", R.drawable.emoji_heart);
         map.put("[e]em_19[e]", R.drawable.emoji_sml);
+        map.put("[e]em_20[e]", R.drawable.emoji_get);
+        map.put("[e]em_get[e]", R.drawable.emoji_hff_list);
     }
 
     /**
@@ -68,8 +70,12 @@ public class LiveMessageEmojiParser {
                 int id = map.get(emo);
                 if (id != 0) {
                     drawable = resources.getDrawable(id);
+                    int scale = 1;
                     if (drawable != null) {
-                        drawable.setBounds(0, 0, bounds, bounds);
+                        if (drawable.getIntrinsicWidth() > drawable.getIntrinsicHeight()) {
+                            scale = drawable.getIntrinsicWidth() / drawable.getIntrinsicHeight();
+                        }
+                        drawable.setBounds(0, 0, bounds * scale, bounds);
                         span = new VerticalImageSpan(drawable);
                         sBuilder.setSpan(span, matcher.start(), matcher.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
