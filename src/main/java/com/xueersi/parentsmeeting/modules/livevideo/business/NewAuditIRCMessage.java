@@ -570,7 +570,7 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
                         target = "TOPIC";
                         mLogtf.d("onTopic:channel=" + channel + ",topic=" + text);
                         if (mIRCCallback != null) {
-                            mIRCCallback.onTopic(channel, target, "", date, false, channel);
+                            mIRCCallback.onTopic(channel, text, "", date, false, channel);
                         }
                     } else if (PMDefs.MessagePriority.MSG_PRIORITY_NOTICE == roomChatMessage.msgPriority) {
                         target = "NOTICE";

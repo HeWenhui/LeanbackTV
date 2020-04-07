@@ -1070,10 +1070,18 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     if (detailInfo.isExper()) {
                         userAnswer.put("times", answer.optInt("times", -1));
                     } else {
-                        JSONArray times = answer.getJSONArray("times");
-                        if (times.length() > 0) {
-                            userAnswer.put("times", "" + times.optInt(0));
-                        } else {
+                        try {
+                            if(answer.has("times")){
+                                JSONArray times = answer.getJSONArray("times");
+                                if (times.length() > 0) {
+                                    userAnswer.put("times", "" + times.optInt(0));
+                                } else {
+                                    userAnswer.put("times", -1);
+                                }
+                            }else {
+                                userAnswer.put("times", -1);
+                            }
+                        }catch (Exception e){
                             userAnswer.put("times", -1);
                         }
                     }
