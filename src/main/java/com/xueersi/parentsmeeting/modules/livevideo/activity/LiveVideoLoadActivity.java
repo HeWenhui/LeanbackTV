@@ -31,6 +31,7 @@ import com.xueersi.lib.log.FileLogger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.CoursewarePreload;
 import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.PreloadStaticStorage;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.BigLiveVideoActivity;
 import com.xueersi.parentsmeeting.share.business.biglive.config.BigLiveCfg;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
