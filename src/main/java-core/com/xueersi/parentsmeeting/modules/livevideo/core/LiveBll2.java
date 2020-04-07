@@ -257,7 +257,7 @@ public class LiveBll2 extends BaseBll implements TeacherIsPresent {
         }
         mLiveTopic.setMode(LiveTopic.MODE_CLASS);
         boolean isBigLive = mBaseActivity.getIntent().getBooleanExtra("isBigLive", false);
-       // Log.e("ckTrac", "=====>LiveBll2_isBigLive=" + isBigLive);
+
         if (isBigLive) {
             liveAndBackDebugIml = new LiveDebugBigClassIml(context, mLiveType, mLiveId, mCourseId, false);
         } else {
