@@ -58,5 +58,8 @@ public class LivePluginGrayConfig {
     /**消峰功能**/
     public static final int MOUDLE_ELIMINATION = 20;
 
+    /** 视频连麦 **/
+    public static final int MOUDLE_VIDEO_CALL = 102;
+
 
 }

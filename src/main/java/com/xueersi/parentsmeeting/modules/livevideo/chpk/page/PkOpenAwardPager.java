@@ -331,6 +331,11 @@ public class PkOpenAwardPager extends SoundEffectPager {
             @Override
             public void onFailure(Call call, IOException e) {
                 super.onFailure(call, e);
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                super.onPmFailure(error, msg);
                 awardClickImage.setClickable(true);
                 showToast("获取宝箱数据失败");
             }
