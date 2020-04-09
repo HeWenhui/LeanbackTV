@@ -37,7 +37,7 @@
             android:process=":livevideo"
             android:screenOrientation="portrait"
             android:theme="@style/style_live_compat"
-            android:exported="false"
+
             android:windowSoftInputMode="adjustUnspecified|stateHidden">
             <intent-filter>
                 <action android:name="com.xueersi.parentsmeeting.action.livevideo" />

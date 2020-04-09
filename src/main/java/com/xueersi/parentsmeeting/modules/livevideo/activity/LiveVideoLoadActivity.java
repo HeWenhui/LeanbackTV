@@ -2,7 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -11,16 +10,12 @@ import com.tencent.smtt.sdk.TbsListener;
 import com.xueersi.common.base.BaseActivity;
 import com.xueersi.common.base.XrsCrashReport;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
-import com.xueersi.common.business.sharebusiness.http.downloadAppfile.entity.DownLoadFileInfo;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.route.XueErSiRouter;
-import com.xueersi.common.route.module.ModuleHandler;
 import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.common.util.LoadFileCallBack;
-import com.xueersi.common.util.LoadFileUtils;
 import com.xueersi.common.util.XrsBroswer;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsConstants;
@@ -30,16 +25,13 @@ import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.FileLogger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.CoursewarePreload;
 import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.PreloadStaticStorage;
-import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
-import com.xueersi.parentsmeeting.share.business.biglive.config.BigLiveCfg;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveAppUserInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LivePlayBackMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveBusinessResponseParser;
@@ -47,6 +39,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveMainHandler;
+import com.xueersi.parentsmeeting.share.business.biglive.config.BigLiveCfg;
 import com.xueersi.ui.dataload.DataLoadEntity;
 import com.xueersi.ui.dataload.DataLoadManager;
 
@@ -73,6 +66,8 @@ public class LiveVideoLoadActivity extends BaseActivity {
     private static int statIndex = 0;
     protected int index;
 
+    public static final String OTHER_ACTIVITY_INTENT = "other_intent";
+
     public LiveVideoLoadActivity() {
         liveVideoLoadActivities.add(this);
         index = statIndex++;
@@ -84,7 +79,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
         EventBus.getDefault().register(this);
         String token = LiveAppUserInfo.getInstance().getTalToken();
         Intent intent = getIntent();
-        Bundle bundle = intent.getExtras();
+//        Bundle bundle = intent.getExtras();
         //scheme 测试
 //        if (bundle == null) {
 //            bundle = new Bundle();
@@ -119,9 +114,9 @@ public class LiveVideoLoadActivity extends BaseActivity {
         CREATE_TIMES++;
 
         mDataLoadEntity = new DataLoadEntity(this);
-                    mDataLoadEntity.beginLoading();
-            DataLoadManager.newInstance().loadDataStyle(LiveVideoLoadActivity.this,
-                    mDataLoadEntity);
+        mDataLoadEntity.beginLoading();
+        DataLoadManager.newInstance().loadDataStyle(LiveVideoLoadActivity.this,
+                mDataLoadEntity);
         initData();
 
     }
@@ -212,13 +207,16 @@ public class LiveVideoLoadActivity extends BaseActivity {
         initData2();
     }
 
+    private Intent otherActivityIntent;
+
     private void initData2() {
 
         Intent intent = getIntent();
+        otherActivityIntent = intent.getParcelableExtra(OTHER_ACTIVITY_INTENT);
         final Bundle bundle = intent.getExtras();
         final String vSectionID = intent.getStringExtra("vSectionID");
         final int liveType = bundle.getInt("type", 0);
-        bundle.putString("planId",vSectionID);
+        bundle.putString("planId", vSectionID);
         final int from = intent.getIntExtra("", 0);
         LiveVideoConfig.isLightLive = false;
 
@@ -303,7 +301,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                             list.add(PermissionConfig.PERMISSION_CODE_CAMERA);
                             gotoHalfBodyChinese(bundle, list);
                         } else {
-                            com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+                            com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentToAfterOther(LiveVideoLoadActivity.this, bundle, otherActivityIntent);
                             finish();
                         }
                     }
@@ -383,7 +381,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                             LiveMainHandler.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    String planId = bundle.getString("vSectionID","");
+                                    String planId = bundle.getString("vSectionID", "");
                                     boolean isSupported = LiveAppUserInfo.getInstance().isSupportedEnglishName();
                                     String skipPlanId = mShareDataManager.getString(LiveVideoConfig.LIVE_GOUP_1V2_ENGLISH_SKIPED, "-1",
                                             ShareDataManager.SHAREDATA_USER);
@@ -394,7 +392,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                                                         "/englishname"
                                                 , bundle);
                                     } else {
-                                        com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+                                        com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentToAfterOther(LiveVideoLoadActivity.this, bundle,otherActivityIntent);
                                     }
                                     finish();
                                 }
@@ -406,7 +404,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                 PermissionConfig.PERMISSION_CODE_CAMERA, PermissionConfig.PERMISSION_CODE_AUDIO,
                 PermissionConfig.PERMISSION_CODE_STORAGE);
         if (have) {
-            String planId = bundle.getString("vSectionID","");
+            String planId = bundle.getString("vSectionID", "");
             boolean isSupported = LiveAppUserInfo.getInstance().isSupportedEnglishName();
             String skipPlanId = ShareDataManager.getInstance().getString(LiveVideoConfig.LIVE_GOUP_1V2_ENGLISH_SKIPED, "-1",
                     ShareDataManager.SHAREDATA_USER);
@@ -415,7 +413,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                 XueErSiRouter.startModule(mContext, "/groupclass/englishname"
                         , bundle);
             } else {
-                com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+                com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentToAfterOther(LiveVideoLoadActivity.this, bundle,otherActivityIntent);
             }
             finish();
         }
@@ -458,7 +456,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                         bundle.putInt("skinType", mGetInfo.getSkinType());
                         String stuId = LiveAppUserInfo.getInstance().getStuId();
                         getInfos.put(liveType + "-" + stuId + "-" + vSectionID, mGetInfo);
-                        com.xueersi.parentsmeeting.modules.livevideo.fragment.BigLiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+                        com.xueersi.parentsmeeting.modules.livevideo.fragment.BigLiveVideoActivity.intentToAfterOther(LiveVideoLoadActivity.this, bundle, otherActivityIntent);
                         finish();
                     }
 
@@ -544,7 +542,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                         LiveMainHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+                                com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentToAfterOther(LiveVideoLoadActivity.this, bundle, otherActivityIntent);
                                 finish();
                             }
                         });
@@ -552,7 +550,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                 },
                 PermissionConfig.PERMISSION_CODE_AUDIO);
         if (have) {
-            com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+            com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentToAfterOther(LiveVideoLoadActivity.this, bundle, otherActivityIntent);
             finish();
         }
     }
@@ -568,7 +566,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                         LiveMainHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+                                com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentToAfterOther(LiveVideoLoadActivity.this, bundle, otherActivityIntent);
                                 finish();
                             }
                         });
@@ -597,7 +595,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                 PermissionConfig.PERMISSION_CODE_CAMERA, PermissionConfig.PERMISSION_CODE_AUDIO);
         //魅族手机无法弹出权限弹窗
         if (have) {
-            com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+            com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentToAfterOther(LiveVideoLoadActivity.this, bundle, otherActivityIntent);
             finish();
 
         }
@@ -639,6 +637,25 @@ public class LiveVideoLoadActivity extends BaseActivity {
 
         Intent intent = new Intent(context, LiveVideoLoadActivity.class);
         intent.putExtras(bundle);
+        context.startActivityForResult(intent, requestCode);
+        context.overridePendingTransition(0, 0);
+    }
+
+    public static void intentAfterTOtherActivity(Activity context, Bundle bundle, int requestCode, Intent otherIntent) {
+
+        //低端机设备检测页拦截
+        if (ShareDataManager.getInstance().getBoolean(ShareBusinessConfig
+                        .SP_APP_DEVICE_NOTICE, false,
+                ShareDataManager.SHAREDATA_USER)) {
+
+            Intent intent = new Intent(context, DeviceDetectionActivity.class);
+            context.startActivity(intent);
+            return;
+        }
+
+        Intent intent = new Intent(context, LiveVideoLoadActivity.class);
+        intent.putExtras(bundle);
+        intent.putExtra(OTHER_ACTIVITY_INTENT, otherIntent);
         context.startActivityForResult(intent, requestCode);
         context.overridePendingTransition(0, 0);
     }

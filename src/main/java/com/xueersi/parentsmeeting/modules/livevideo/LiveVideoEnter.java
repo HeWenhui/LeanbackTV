@@ -18,8 +18,6 @@ import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.route.ReflexCenter;
 import com.xueersi.common.route.XueErSiRouter;
 import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.common.toast.XesToast;
-import com.xueersi.common.util.LoadFileCallBack;
 import com.xueersi.common.util.XrsBroswer;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.are.ContextManager;
@@ -158,7 +156,7 @@ public class LiveVideoEnter {
      */
     public static boolean intentToLiveVideoActivity(final Activity context,
                                                     final String vStuCourseID, final String
-            courseId, final String vSectionID, final int from, boolean isBigLive) {
+                                                            courseId, final String vSectionID, final int from, boolean isBigLive) {
 
         if (TextUtils.isEmpty(vSectionID)) {
             Toast.makeText(context, "直播场次不能为空", Toast.LENGTH_SHORT).show();
@@ -175,6 +173,45 @@ public class LiveVideoEnter {
         bundle.putBoolean("isBigLive", isBigLive);
         bundle.putInt(ENTER_ROOM_FROM, from);
         LiveVideoLoadActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
+
+        return true;
+    }
+
+    /**
+     * 先跳转liveloadactivity,再跳转planDetailActivity，再跳转livevideoActivity
+     *
+     * @param context
+     * @param vStuCourseID
+     * @param courseId
+     * @param vSectionID
+     * @param from
+     * @param isBigLive
+     * @return
+     */
+    public static boolean intentToLiveVideoLoad_PlanDetail_LiveVideoActivity(final Activity context,
+                                                                             final String vStuCourseID,
+                                                                             final String courseId,
+                                                                             final String vSectionID,
+                                                                             final int from,
+                                                                             boolean isBigLive,
+                                                                             Intent otherIntent) {
+
+        if (TextUtils.isEmpty(vSectionID)) {
+            Toast.makeText(context, "直播场次不能为空", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+
+        //这样只有一个loading
+        final Bundle bundle = new Bundle();
+        bundle.putString("courseId", courseId);
+        bundle.putString("vStuCourseID", vStuCourseID);
+        bundle.putString("vSectionID", vSectionID);
+        bundle.putInt("type", LiveVideoConfig.LIVE_TYPE_LIVE);
+        bundle.putBoolean("loadAsserts", false);
+        bundle.putBoolean("isBigLive", isBigLive);
+        bundle.putInt(ENTER_ROOM_FROM, from);
+        LiveVideoLoadActivity.intentAfterTOtherActivity(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE, otherIntent);
 
         return true;
     }
@@ -412,7 +449,7 @@ public class LiveVideoEnter {
             boolean isSupported = LiveAppUserInfo.getInstance().isSupportedEnglishName();
             String skipPlanId =
                     ShareDataManager.getInstance().getString(LiveVideoConfig.LIVE_GOUP_1V2_ENGLISH_SKIPED, "-1",
-                    ShareDataManager.SHAREDATA_USER);
+                            ShareDataManager.SHAREDATA_USER);
             boolean isSkip = skipPlanId.equals(planId);
             // 英文名不在支持列表中，且当前场次没有跳过
             if (bundle.getInt("pattern") == 8 && !isSupported && !isSkip) {

@@ -134,6 +134,21 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements Activity
         context.startActivity(intent);
     }
 
+    public static void intentToAfterOther(Activity context, Bundle bundle, Intent otherIntent) {
+        Intent intent = new Intent(context, LiveVideoActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+        intent.putExtras(bundle);
+        if (otherIntent != null) {
+
+            Intent[] intents = new Intent[2];
+            intents[0] = otherIntent;
+            intents[1] = intent;
+            context.startActivities(intents);
+        } else {
+            context.startActivity(intent);
+        }
+    }
+
     private boolean isResume = true;
 
     @Override
