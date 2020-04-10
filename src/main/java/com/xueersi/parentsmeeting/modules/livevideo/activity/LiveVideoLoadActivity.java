@@ -10,6 +10,7 @@ import com.tencent.smtt.sdk.TbsListener;
 import com.xueersi.common.base.BaseActivity;
 import com.xueersi.common.base.XrsCrashReport;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.permission.XesPermission;
@@ -123,6 +124,15 @@ public class LiveVideoLoadActivity extends BaseActivity {
 
     @Override
     protected void onDestroy() {
+        //结束上一个Activity，即直播提醒的activity
+        if (otherActivityIntent != null) {
+            if (AppConfig.DEBUG) {
+                logger.i("发送BroadCastReceiver成功");
+            }
+            Intent broadCastIntent = new Intent("com.xueersi.parentsmeeting.LIVE_NOTICE_BROADCAST_FILTER");
+            sendBroadcast(broadCastIntent);
+        }
+        logger.i("livevideoloadactivity is destroy");
         EventBus.getDefault().unregister(this);
         super.onDestroy();
         if (FileLogger.runActivity == this) {
@@ -392,7 +402,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                                                         "/englishname"
                                                 , bundle);
                                     } else {
-                                        com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentToAfterOther(LiveVideoLoadActivity.this, bundle,otherActivityIntent);
+                                        com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentToAfterOther(LiveVideoLoadActivity.this, bundle, otherActivityIntent);
                                     }
                                     finish();
                                 }
@@ -413,7 +423,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                 XueErSiRouter.startModule(mContext, "/groupclass/englishname"
                         , bundle);
             } else {
-                com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentToAfterOther(LiveVideoLoadActivity.this, bundle,otherActivityIntent);
+                com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentToAfterOther(LiveVideoLoadActivity.this, bundle, otherActivityIntent);
             }
             finish();
         }
