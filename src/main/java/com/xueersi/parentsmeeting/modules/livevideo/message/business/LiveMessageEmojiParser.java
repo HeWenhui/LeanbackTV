@@ -74,6 +74,8 @@ public class LiveMessageEmojiParser {
                     if (drawable != null) {
                         if (drawable.getIntrinsicWidth() > drawable.getIntrinsicHeight()) {
                             scale = drawable.getIntrinsicWidth() / drawable.getIntrinsicHeight();
+
+                            bounds = (int) (bounds * 1.2);
                         }
                         drawable.setBounds(0, 0, bounds * scale, bounds);
                         span = new VerticalImageSpan(drawable);
