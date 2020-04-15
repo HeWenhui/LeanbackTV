@@ -626,7 +626,12 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
             showQuestion.onHide(oldQuestionEntity);
         }
         if (mQuestionEntity != null && oldQuestionEntity != mQuestionEntity && !mQuestionEntity.isAnswered()) {
-            mQuestionEntity.setAnswered(true);
+            if (mQuestionEntity.getvCategory() == LocalCourseConfig.CATEGORY_VIDEO_CALL) {
+                //针对视频连麦做特殊处理
+                mQuestionEntity.setAnswered(false);
+            }else {
+                mQuestionEntity.setAnswered(true);
+            }
             logger.d("scanQuestion:showQuestion");
             Log.e("Duncan", "showQuestion:" + position);
             showQuestion(oldQuestionEntity, showQuestion);
@@ -645,6 +650,10 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, OnPointCli
         mQuestionEntity = videoQuestionEntity;
         mQuestionEntity.setClick(true);
         mQuestionEntity.setAnswered(true);
+        if (mQuestionEntity.getvCategory() == LocalCourseConfig.CATEGORY_VIDEO_CALL) {
+            //针对视频连麦做特殊处理
+            mQuestionEntity.setAnswered(false);
+        }
         showQuestion(oldQuestionEntity, showQuestion);
     }
 
