@@ -80,6 +80,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
         EventBus.getDefault().register(this);
         String token = LiveAppUserInfo.getInstance().getTalToken();
         Intent intent = getIntent();
+        otherActivityIntent = intent.getParcelableExtra(OTHER_ACTIVITY_INTENT);
 //        Bundle bundle = intent.getExtras();
         //scheme 测试
 //        if (bundle == null) {
