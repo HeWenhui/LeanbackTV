@@ -88,6 +88,7 @@ public class LiveDebugBigClassIml implements LiveAndBackDebug, LiveDebugGetInfo 
         mData.put("eventtype", "" + eventtype);
         mData.put("teacherrole", LiveTopic.MODE_CLASS.equals(getMode()) ? "1" : "4");
         setAnalysis(analysis);
+        setLogParam(eventtype, mData);
         logEntity.logType = LiveBusiLogSendLogRunnable.LOGTYPE_SYS;
         logEntity.mData = mData;
         LiveBusiLog.log(logEntity);
@@ -101,6 +102,7 @@ public class LiveDebugBigClassIml implements LiveAndBackDebug, LiveDebugGetInfo 
         mData.put("eventtype", "" + eventtype);
         mData.put("teacherrole", LiveTopic.MODE_CLASS.equals(getMode()) ? "1" : "4");
         setAnalysis(analysis);
+        setLogParam(eventtype, mData);
         logEntity.logType = LiveBusiLogSendLogRunnable.LOGTYPE_CLICK;
         logEntity.mData = mData;
         LiveBusiLog.log(logEntity);
@@ -118,6 +120,7 @@ public class LiveDebugBigClassIml implements LiveAndBackDebug, LiveDebugGetInfo 
         mData.put("eventtype", "" + eventtype);
         mData.put("teacherrole", LiveTopic.MODE_CLASS.equals(getMode()) ? "1" : "4");
         setAnalysis(analysis);
+        setLogParam(eventtype, mData);
         logEntity.logType = LiveBusiLogSendLogRunnable.LOGTYPE_PV;
         logEntity.mData = mData;
         LiveBusiLog.log(logEntity);
