@@ -831,7 +831,7 @@ public class PreSchoolLiveTrainMsgPager extends BasePrimaryScienceMessagePager {
     /**
      * 热词消息指令
      **/
-    private String[] mHotwordCmd = {"1", "2", "3", "[e]em_19[e]","[e]em_18[e]"};
+    private String[] mHotwordCmd = {"1", "2", "3", "[e]em_19[e]","[e]em_18[e]","[e]em_get[e]"};
     /**
      * 热词资源集
      */
@@ -840,7 +840,8 @@ public class PreSchoolLiveTrainMsgPager extends BasePrimaryScienceMessagePager {
             R.drawable.selector_live_halfbody_hotword_2,
             R.drawable.selector_live_halfbody_hotword_3,
             R.drawable.selector_live_halfbody_hotword_sml,
-            R.drawable.selector_live_halfbody_hotword_heart
+            R.drawable.selector_live_halfbody_hotword_heart,
+            R.drawable.selector_live_halfbody_hotword_get,
     };
 
     private void initCommonWord() {

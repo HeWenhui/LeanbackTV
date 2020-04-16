@@ -9,9 +9,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:includeFontPadding="false"
-        android:paddingTop="5dp"
+        android:paddingTop="4dp"
         android:textColor="@color/white"
+        android:gravity="center_vertical"
         android:textSize="12sp"
+        android:layout_marginBottom="3dp"
+        android:paddingBottom="3dp"
         toos:text="zyy:jintianadsffsaffadsfdsafdsfsafadsfasdfsdfasfdsafsdsafffffffffffafadfdsaddddddddddddddddd"/>
     <!--<com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView-->
     <!--android:id="@+id/tv_livevideo_small_chinese_message_item"-->
