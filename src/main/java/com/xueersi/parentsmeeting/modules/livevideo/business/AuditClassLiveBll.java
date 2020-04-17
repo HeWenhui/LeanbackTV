@@ -3,6 +3,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -19,7 +21,14 @@ import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack.SimpleVPlayerListener;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.SysLogLable;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveCrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
+import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
+import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.share.business.biglive.config.BigLiveCfg;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
@@ -46,12 +55,16 @@ import com.xueersi.parentsmeeting.modules.livevideo.video.TeacherIsPresent;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 import org.xutils.xutils.common.Callback;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -65,6 +78,7 @@ import okhttp3.Response;
  */
 public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
     private String TAG = "AuditClassLiveBllLog";
+    private static final int MSG_TYPE_DISPATCH_NOTICE = 1;
     String liveListenEventid = LiveVideoConfig.LIVE_LISTEN;
     private AuditVideoAction mVideoAction;
     private RoomAction mRoomAction;
@@ -127,6 +141,12 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
     private LiveLog liveLog;
     private boolean isHalfBodyLive = false;
     private boolean isBigLive = false;
+
+    private int isFlatfish = 0;
+    private LiveBusinessResponseParser mBigLiveHttpParser;
+    /**notice 分发handler 用于消峰处理**/
+    private Handler mDispathcHandler;
+    private HandlerThread mNoticeDispatchHT;
 
     public AuditClassLiveBll(Context context, String vStuCourseID, String courseId, String vSectionID, int form) {
         super(context);
@@ -197,15 +217,18 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
     }
 
     private void getInfoBig() {
+        if (mBigLiveHttpParser == null) {
+            mBigLiveHttpParser = new LiveBusinessResponseParser();
+        }
         int planId = Integer.parseInt(mLiveId);
         int iStuCouId = Integer.parseInt(mStuCouId);
         mHttpManager.bigLiveEnter(planId, LiveBusinessResponseParser.getBizIdFromLiveType(LiveVideoConfig.LIVE_TYPE_LIVE),
                 iStuCouId, BigLiveCfg.BIGLIVE_CURRENT_ACCEPTPLANVERSION, new HttpCallBack(false) {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) {
-                        LiveBusinessResponseParser mHttpResponseParser = new LiveBusinessResponseParser();
+                        //LiveBusinessResponseParser mHttpResponseParser = new LiveBusinessResponseParser();
                         JSONObject object = (JSONObject) responseEntity.getJsonObject();
-                        mGetInfo = mHttpResponseParser.parseLiveEnter(object, mLiveTopic, LiveVideoConfig.LIVE_TYPE_LIVE, 0);
+                        mGetInfo = mBigLiveHttpParser.parseLiveEnter(object, mLiveTopic, LiveVideoConfig.LIVE_TYPE_LIVE, 0);
                         if (mGetInfo == null) {
                             XESToastUtils.showToast("服务器异常");
                             mBaseActivity.finish();
@@ -290,15 +313,399 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
 
         @Override
         public void onTopic(String channel, String topicstr, String setBy, long date, boolean changed, String channelId) {
-//            i
+            if(isBigLive){
+                dispatcherBigLiveTopic(channel,topicstr,setBy,date,changed,channelId);
+            }else {
+                dispatcherOldLiveTopic(channel,topicstr,setBy,date,changed,channelId);
+            }
         }
 
         String lastNotice = "";
+        String lastTopic = "";
+        String lastChannel = "";
+        String lastSetBy = "";
+        long lastDate = 0;
+        boolean lastChanged;
+        String lastChannelId;
+
+        /**
+         * 是否还存在缓存notice
+         * @return
+         */
+        private boolean hasCachNotice(){
+            boolean hascachNotice =  mDispathcHandler != null &&  mDispathcHandler.hasMessages(MSG_TYPE_DISPATCH_NOTICE);
+            // Log.e("ckTrac","===>LiveBll2:"+hascachNotice);
+            return hascachNotice;
+        }
+
+        private void dispatcherBigLiveTopic(String channel, String topicstr, String setBy, long date, boolean changed, String channelId){
+            if (lastTopicstr.equals(topicstr) && TextUtils.isEmpty(lastTopic)) {
+                mLogtf.i(TAG+" onTopic(equals):topicstr=" + topicstr);
+                return;
+            }
+            lastTopic = topicstr;
+            lastChannel = channel;
+            lastSetBy = setBy;
+            lastDate = date;
+            lastChanged = changed;
+            lastChannelId = channelId;
+            sendTopic(channel, topicstr, setBy, date, changed, channelId);
+        }
+
+        public void sendTopic(String channel, String topicstr, String setBy, long date, boolean changed,
+                              String channelId) {
+            logger.e(TAG+"======>onTopic_111:" + topicstr);
+            if (hasCachNotice() || TextUtils.isEmpty(topicstr)) {
+                return;
+            }
+            logger.e(TAG+"======>sendTopic_222:" + topicstr);
+            lastTopicstr = topicstr;
+            JSONTokener jsonTokener = null;
+            try {
+                if(!"TOPIC".equals(topicstr)){
+                    jsonTokener = new JSONTokener(topicstr);
+                    JSONObject jsonObject = new JSONObject(jsonTokener);
+                    LiveTopic liveTopic = mBigLiveHttpParser.parseBigLiveTopic(mLiveTopic, jsonObject, mLiveType);
+                    boolean teacherModeChanged = !mLiveTopic.getMode().equals(liveTopic.getMode());
+                    mLogtf.d(SysLogLable.receivedMessageOfTopic,TAG+" bigLive sendTopic mLiveType : "+mLiveType+" ,teacherModeChanged: "+teacherModeChanged);
+                    ////直播相关//////
+                    //if (mLiveType == LIVE_TYPE_LIVE) {
+                    //模式切换
+                    onTeacherMode(liveTopic.getMode());
+                    //}
+                    //////////////
+                    if (teacherModeChanged) {
+                        mLiveTopic.setMode(liveTopic.getMode());
+                        Loger.setDebug(true);
+                        //  Loger.d("___channel: "+channel+"  mode: "+liveTopic.getMode()+"  topic:  "+topicstr);
+                        //mGetInfo.setMode(liveTopic.getMode());
+                    }
+
+                    // mLiveTopic.copy(liveTopic);
+                }
+            } catch (Exception e) {
+                try {
+                    if (jsonTokener != null) {
+                        mLogtf.e(TAG+" onTopic:token=" + jsonTokener, e);
+                    } else {
+                        mLogtf.e(TAG+" onTopic", e);
+                    }
+                } catch (Exception e2) {
+                    mLogtf.e(TAG+" onTopic", e);
+                }
+            }
+        }
+
+        private void dispatcherOldLiveTopic(String channel, String topicstr, String setBy, long date, boolean changed, String channelId){
+            if (lastTopicstr.equals(topicstr)) {
+                mLogtf.i(TAG+" onTopic(equals):topicstr=" + topicstr);
+                return;
+            }
+
+            logger.e(TAG+"======>onTopic:" + topicstr);
+            if ( hasCachNotice()  || TextUtils.isEmpty(topicstr)) {
+                return;
+            }
+            lastTopicstr = topicstr;
+            JSONTokener jsonTokener = null;
+            try {
+                if(!"TOPIC".equals(topicstr)){
+                    jsonTokener = new JSONTokener(topicstr);
+                    JSONObject jsonObject = new JSONObject(jsonTokener);
+                    LiveTopic liveTopic = mHttpResponseParser.parseLiveTopic(mLiveTopic, jsonObject, mLiveType);
+                    boolean teacherModeChanged = !mLiveTopic.getMode().equals(liveTopic.getMode());
+                    mLogtf.d(SysLogLable.receivedMessageOfTopic,TAG+" dispatcherOldLiveTopic mLiveType : "+mLiveType+" ,teacherModeChanged: "+teacherModeChanged);
+                    ////直播相关//////
+                    //if (mLiveType == LIVE_TYPE_LIVE) {
+                    //模式切换
+                    if (!(mLiveTopic.getMode().equals(liveTopic.getMode()))) {
+                        onTeacherModeChange(liveTopic.getMode());
+                    }
+                    if (mVideoAction != null) {
+                        if (LiveTopic.MODE_TRANING.equals(mLiveTopic.getMode())) {
+                            if (mGetInfo.getStudentLiveInfo().isExpe()) {
+                                mVideoAction.onTeacherNotPresent(true);
+                            }
+                        }
+                    }
+                    //}
+                    //////////////
+                    if (teacherModeChanged) {
+
+                        mLiveTopic.setMode(liveTopic.getMode());
+                        Loger.setDebug(true);
+                        //  Loger.d("___channel: "+channel+"  mode: "+liveTopic.getMode()+"  topic:  "+topicstr);
+                        //mGetInfo.setMode(liveTopic.getMode());
+                    }
+                    //mLiveTopic.copy(liveTopic);
+                }
+            } catch (Exception e) {
+                try {
+                    if (jsonTokener != null) {
+                        mLogtf.e(TAG+" onTopic:token=" + jsonTokener, e);
+                    } else {
+                        mLogtf.e(TAG+" onTopic", e);
+                    }
+                } catch (Exception e2) {
+                    mLogtf.e(TAG+" onTopic", e);
+                }
+            }
+        }
 
         @Override
         public void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target,
                              final String notice, String channelId) {
+            try {
+                final JSONObject object = new JSONObject(notice);
+                final int mtype = object.getInt("type");
+                mLogtf.d(SysLogLable.receivedMessageOfNotic,TAG+"onNotice isBigLive : "+isBigLive+" ,sourceNick: "+sourceNick+
+                        " ,sourceLogin: "+sourceLogin+" ,sourceHostname: "+sourceHostname+" ,target: "+target+
+                        " ,notice: "+notice+" ,channelId: "+channelId);
+                if(isBigLive){
+                    com.xueersi.lib.log.Loger.e(TAG, "=======>onNotice:" + mtype + ":" + object.toString());
+                    dispatchNoitce(sourceNick, target, object, mtype);
+                }else {
+                    long seiTimetamp = object.optLong("vts", -1);
+                    com.xueersi.lib.log.Loger.e(TAG, "=======>onNotice:" + mtype + ":" + this);
+                    //分发消息
+                    oldLiveDispatchNotice(sourceNick, target, object, mtype, seiTimetamp);
+                }
 
+            } catch (Exception e) {
+                logger.e(TAG+"onNotice", e);
+                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+            }
+        }
+
+        /**上一次收到notice的真实时间**/
+        long lastNoticeTime = 0L;
+        /**上一次notice 消峰延时时间**/
+        long lastDelayTime = 0L;
+
+        /**
+         * 分发notice 指令
+         * @param sourceNick
+         * @param target
+         * @param object
+         * @param mtype
+         * @throws JSONException
+         */
+        private void dispatchNoitce(final String sourceNick, final String target, final JSONObject object,
+                                    final int mtype) throws JSONException {
+            long timeDelay = getDelayTimeByType(mtype);
+            long noticeTimeOffset = 0L;
+            //计算2次notice 之间的时间差
+
+            if(lastNoticeTime > 0){
+                noticeTimeOffset = System.currentTimeMillis() - lastNoticeTime;
+                noticeTimeOffset = noticeTimeOffset > 0 ? noticeTimeOffset:0;
+            }
+            lastNoticeTime = System.currentTimeMillis();
+
+            // 消峰规则算出需要消峰
+            if(timeDelay >= 0){
+                //上一次延时时间
+                if(lastDelayTime > 0){
+                    //保证 延时消息有序
+                    timeDelay = Math.max((lastDelayTime - noticeTimeOffset+100),timeDelay);
+                    //(lastDelayTime - noticeTimeOffset) > 0 ? (lastDelayTime + timeDelay):timeDelay;
+                }
+                initDispathcHandler();
+                lastDelayTime = timeDelay;
+            }
+            //
+            //  Log.e("EliminationRule","====>BigLive_notice_timeDelay:type="+mtype+":"+timeDelay);
+            Runnable dispatchNoticeTask = new Runnable() {
+
+                @Override
+                public void run() {
+                    if (XESCODE.LIVE_BUSINESS_MODE_CHANGE == mtype) {
+                        String mode = object.optString("mode");
+                        onTeacherMode(mode);
+                    }
+
+                    if (UselessNotice.isUsed(mtype)) {
+                        try {
+                            HashMap<String, String> hashMap = new HashMap<>();
+                            hashMap.put("logtype", "onNotice");
+                            hashMap.put("livetype", "" + mLiveType);
+                            hashMap.put("liveid", "" + mLiveId);
+                            hashMap.put("arts", "" + mGetInfo.getIsArts());
+                            hashMap.put("pattern", "" + mGetInfo.getPattern());
+                            hashMap.put("type", "" + mtype);
+                            UmsAgentManager.umsAgentDebug(mContext, LogConfig.LIVE_NOTICE_UNKNOW, hashMap);
+                        } catch (Exception e) {
+                            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+                        }
+                    }
+                }
+            };
+
+            if(mDispathcHandler != null && timeDelay > 0 ){
+                Message message = Message.obtain(mDispathcHandler,dispatchNoticeTask);
+                message.what = MSG_TYPE_DISPATCH_NOTICE;
+                mDispathcHandler.sendMessageDelayed(message,timeDelay);
+            }else{
+                dispatchNoticeTask.run();
+            }
+        }
+
+        /**
+         * 老师模式变换
+         * @param mode
+         */
+        private void onTeacherMode(String mode) {
+            try {
+                mLogtf.d(SysLogLable.switchLiveMode,TAG+" onTeacherMode oldMode : "+mLiveTopic.getMode()+" ,mode : "+mode);
+                //com.xueersi.lib.log.Loger.e(TAG, "=======>onTeacherMode11111:");
+                if (!(mLiveTopic.getMode().equals(mode))) {
+                    //com.xueersi.lib.log.Loger.e(TAG, "=======>onTeacherMode2222:");
+                    mLiveTopic.setMode(mode);
+                    //mGetInfo.setMode(mode);
+                    if (mVideoAction != null) {
+                        mVideoAction.onModeChange(mode, true);
+                        //Log.e(TAG, " onTeacherMode====>mVideoAction.onModeChange" + mLiveTopic.getMode() + ":" + mode);
+                    }
+                    liveGetPlayServer(true);
+                    //更新学生信息
+                    getStudentLiveInfo();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+            }
+        }
+
+        /**
+         * 分发notice 消息
+         * @param sourceNick
+         * @param target
+         * @param object
+         * @param mtype
+         * @param seiTimetamp
+         */
+        private void oldLiveDispatchNotice(final String sourceNick, final String target,
+                                           final JSONObject object, final int mtype, final long seiTimetamp) {
+            //////////////////////
+            long timeDelay = oldLiveGetTimeByType(mtype);
+            long noticeTimeOffset = 0L;
+            //计算2次notice 之间的时间差
+            if(lastNoticeTime > 0){
+                noticeTimeOffset = System.currentTimeMillis() - lastNoticeTime;
+                noticeTimeOffset = noticeTimeOffset > 0 ? noticeTimeOffset:0;
+            }
+            lastNoticeTime = System.currentTimeMillis();
+
+            // 消峰规则算出需要消峰
+            if(timeDelay >= 0){
+                //上一次延时时间
+                if(lastDelayTime > 0){
+                    //保证 延时消息有序
+                    timeDelay = Math.max((lastDelayTime-noticeTimeOffset+100),timeDelay);//(lastDelayTime - noticeTimeOffset) > 0 ? (lastDelayTime + timeDelay):timeDelay;
+                }
+                initDispathcHandler();
+                lastDelayTime = timeDelay;
+            }
+            // Log.e("EliminationRule","====>OldLive_notice_timeDelay:type="+mtype+":"+timeDelay);
+
+            Runnable dispatchTask = new Runnable() {
+                @Override
+                public void run() {
+                    // Log.e("EliminationRule","====>OldLive_notice_realdispatch_notice_1:type="+mtype);
+
+                    if(XESCODE.MODECHANGE == mtype){
+                        // Log.e("EliminationRule","====>OldLive_notice_realdispatch_notice_2:type="+mtype);
+                        String mode = object.optString("mode");
+                        onTeacherModeChange(mode);
+                    }
+
+                    if (UselessNotice.isUsed(mtype)) {
+                        try {
+                            HashMap<String, String> hashMap = new HashMap<>();
+                            hashMap.put("logtype", "onNotice");
+                            hashMap.put("livetype", "" + mLiveType);
+                            hashMap.put("liveid", "" + mLiveId);
+                            hashMap.put("arts", "" + mGetInfo.getIsArts());
+                            hashMap.put("pattern", "" + mGetInfo.getPattern());
+                            hashMap.put("type", "" + mtype);
+                            UmsAgentManager.umsAgentDebug(mContext, LogConfig.LIVE_NOTICE_UNKNOW, hashMap);
+                        } catch (Exception e) {
+                            LiveCrashReport.postCatchedException(new LiveException(TAG, e));
+                        }
+                    }
+                }
+            };
+
+            if(timeDelay > 0 && mDispathcHandler != null){
+                Message message = Message.obtain(mDispathcHandler,dispatchTask);
+                message.what = MSG_TYPE_DISPATCH_NOTICE;
+                mDispathcHandler.sendMessageDelayed(message,timeDelay);
+            }else{
+                dispatchTask.run();
+            }
+        }
+
+        /**
+         * 老直播间 获取消峰时间控制
+         * @param mtype
+         * @return
+         */
+        private long oldLiveGetTimeByType(int mtype){
+            long reuslt = -1L;
+            if(mGetInfo != null && mGetInfo.getIsEliminationPeak() == 1){
+                reuslt = getDelayTimeByType(mtype);
+            }
+            return reuslt;
+        }
+
+        /**
+         * 大班获取延时时间
+         * @param
+         * @return
+         */
+        private long getDelayTimeByType(int mtype) {
+            //默认值-1区分是否有消峰配置
+            long delayTime = -1L;
+            if(mGetInfo != null && mGetInfo.getEliminationMap() != null && mGetInfo.getEliminationMap().size() > 0){
+                Long time = mGetInfo.getEliminationMap().get(mtype);
+                if(time != null){
+                    Random random = new Random();
+                    delayTime = (long) (Math.random() * time);
+                }
+            }
+            // Log.e("ckTrac","======>LiveBll2:getDelayTimeByType="+delayTime);
+            return delayTime;
+        }
+
+        /**
+         * 初始化 分发handler
+         */
+        private void initDispathcHandler() {
+            if(mDispathcHandler == null){
+                if(mNoticeDispatchHT != null){
+                    mNoticeDispatchHT.quit();
+                }
+                mNoticeDispatchHT = new HandlerThread("AuditClassLiveBll_Notice_Dispatch");
+                mNoticeDispatchHT.start();
+                mDispathcHandler = new Handler(mNoticeDispatchHT.getLooper());
+            }
+        }
+
+        private void onTeacherModeChange(String mode){
+            //String mode = object.optString("mode");
+            String oldMode = mLiveTopic.getMode();
+            mLogtf.d(SysLogLable.switchLiveMode,TAG+" onTeacherModeChange oldMode : "+oldMode+" ,mode: "+mode);
+            if (!oldMode.equals(mode)) {
+                mLiveTopic.setMode(mode);
+                //mGetInfo.setMode(mode);
+                if (mVideoAction != null) {
+                    mVideoAction.onModeChange(mode, true);
+                    //Log.e(TAG, " onTeacherModeChange====>mVideoAction.onModeChange" + oldMode + ":" + mode);
+                }
+                liveGetPlayServer(true);
+                //更新学生信息
+                getStudentLiveInfo();
+            }
         }
 
         @Override
@@ -600,6 +1007,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
             onLiveFailure("服务器异常", null);
             return;
         }
+        //isFlatfish = mGetInfo.getIsFlatfish();
         if (isBigLive) {
             if (mHttpManager != null) {
                 mHttpManager.addHeaderParams("switch-grade", mGetInfo.getGrade() + "");
@@ -730,7 +1138,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
                     auditClassAction.onGetStudyInfo(studyInfo);
                 }
                 String mode = studyInfo.getMode();
-                mLogtf.d("getStudentLiveInfo:onPmSuccess:" + responseEntity.getJsonObject() + ",mode=" + oldMode + "," + mode);
+                mLogtf.d(TAG+" getStudentLiveInfo:onPmSuccess:" + responseEntity.getJsonObject() + ",mode=" + oldMode + "," + mode);
                 if (!oldMode.equals(mode)) {
                     if (mVideoAction != null) {
                         mVideoAction.onModeChange(mode, true);
@@ -766,7 +1174,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
                     auditClassAction.onGetStudyInfo(studyInfo);
                 }
                 String mode = studyInfo.getMode();
-                mLogtf.d("getBigLiveStudentLiveInfo:onPmSuccess:" + responseEntity.getJsonObject() + ",mode=" + oldMode + "," + mode);
+                mLogtf.d(TAG+" getBigLiveStudentLiveInfo:onPmSuccess:" + responseEntity.getJsonObject() + ",mode=" + oldMode + "," + mode);
                 if (!oldMode.equals(mode)) {
                     if (mVideoAction != null) {
                         mVideoAction.onModeChange(mode, true);
@@ -804,7 +1212,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
                         }
 
                         String mode = stuLiveInfo.getMode();
-                        Log.e("parseLiveInfo", "getHalfBodyStuLiveInfo=====>oldMode:" + oldMode + ":" + mode);
+                        Log.e(TAG, "getHalfBodyStuLiveInfo=====>oldMode:" + oldMode + ":" + mode);
                         if (!oldMode.equals(mode)) {
                             if (mVideoAction != null) {
                                 mVideoAction.onModeChange(mode, true);

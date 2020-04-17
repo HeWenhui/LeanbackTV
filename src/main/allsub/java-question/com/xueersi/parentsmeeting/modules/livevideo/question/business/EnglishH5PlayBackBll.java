@@ -299,8 +299,10 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                     @Override
                     public void onClick(View v) {
                         BackMediaPlayerControl mediaPlayerControl = getInstance(BackMediaPlayerControl.class);
-                        mediaPlayerControl.seekTo(questionEntity.getvEndTime() * 1000);
-                        mediaPlayerControl.start();
+                        if (mediaPlayerControl != null) {
+                            mediaPlayerControl.seekTo(questionEntity.getvEndTime() * 1000);
+                            mediaPlayerControl.start();
+                        }
                         showQuestion.onHide(questionEntity);
                     }
                 });

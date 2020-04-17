@@ -8,7 +8,6 @@ import com.tal100.chatsdk.IChatClientListener;
 import com.tal100.chatsdk.IPeerChatListener;
 import com.tal100.chatsdk.IRoomChatListener;
 import com.tal100.chatsdk.PMDefs;
-import com.tencent.cos.xml.utils.StringUtils;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.network.IpAddressUtil;
@@ -18,6 +17,7 @@ import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.AppUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.SysLogLable;
@@ -86,7 +86,6 @@ public class NewIRCMessage implements IIRCMessage {
     private boolean isConnected;
     private boolean isFirstLogin = true;
     private String eventid = "NewIRCMessage";
-    private Map<String, String> analysis;
     private UUID mSid = UUID.randomUUID();
     private String businessId;
 
@@ -183,7 +182,7 @@ public class NewIRCMessage implements IIRCMessage {
             logHashMap.put("loginCode", "" + loginResp.code);
             logHashMap.put("loginInfo", "" + loginResp.info);
             logHashMap.put("connectCount", "" + mConnectCount);
-            UmsAgentManager.umsAgentOtherBusiness(context, UmsConstants.APP_ID, UmsConstants.uploadSystem, logHashMap, analysis);
+            UmsAgentManager.umsAgentDebug(context,  UmsConstants.uploadSystem, logHashMap);
         }
 
         /**
@@ -213,7 +212,7 @@ public class NewIRCMessage implements IIRCMessage {
                     logHashMap.put("logoutInfo", "" + logoutNotice.info);
                     logHashMap.put("nickname", "" + logoutNotice.userInfo.nickname);
                     logHashMap.put("psid", "" + logoutNotice.userInfo.psid);
-                    UmsAgentManager.umsAgentOtherBusiness(context, UmsConstants.APP_ID, UmsConstants.uploadSystem, logHashMap, analysis);
+                    UmsAgentManager.umsAgentDebug(context,  UmsConstants.uploadSystem, logHashMap);
                 } catch (Exception e) {
                     LiveCrashReport.postCatchedException(TAG, e);
                 }
@@ -249,7 +248,7 @@ public class NewIRCMessage implements IIRCMessage {
             Map<String, String> logHashMap = defaultlog();
             logHashMap.put("type", "onKickoutNotice");
             logHashMap.put("code", "" + kickoutNotice.code);
-            UmsAgentManager.umsAgentOtherBusiness(context, UmsConstants.APP_ID, UmsConstants.uploadSystem, logHashMap, analysis);
+            UmsAgentManager.umsAgentDebug(context,UmsConstants.uploadSystem, logHashMap);
         }
 
         /**
@@ -266,12 +265,12 @@ public class NewIRCMessage implements IIRCMessage {
                 Map<String, String> logHashMap = defaultlog();
                 logHashMap.put("type", "netStatusConnecting");
                 logHashMap.put("netStatus", "" + netStatusResp.netStatus);
-                UmsAgentManager.umsAgentOtherBusiness(context, UmsConstants.APP_ID, UmsConstants.uploadSystem, logHashMap, analysis);
+                UmsAgentManager.umsAgentDebug(context, UmsConstants.uploadSystem, logHashMap);
             } else if (PMDefs.NetStatus.PMNetStatus_Connected == netStatusResp.netStatus) {
                 Map<String, String> logHashMap = defaultlog();
                 logHashMap.put("type", "netStatusConnected");
                 logHashMap.put("netStatus", "" + netStatusResp.netStatus);
-                UmsAgentManager.umsAgentOtherBusiness(context, UmsConstants.APP_ID, UmsConstants.uploadSystem, logHashMap, analysis);
+                UmsAgentManager.umsAgentDebug(context, UmsConstants.uploadSystem, logHashMap);
             } else if (PMDefs.NetStatus.PMNetStatus_Unkown == netStatusResp.netStatus ||
                     PMDefs.NetStatus.PMNetStatus_Unavailable == netStatusResp.netStatus ||
                     PMDefs.NetStatus.PMNetStatus_ServerFailed == netStatusResp.netStatus ||
@@ -284,7 +283,7 @@ public class NewIRCMessage implements IIRCMessage {
                 Map<String, String> logHashMap = defaultlog();
                 logHashMap.put("type", "netStatusFail");
                 logHashMap.put("netStatus", "" + netStatusResp.netStatus);
-                UmsAgentManager.umsAgentOtherBusiness(context, UmsConstants.APP_ID, UmsConstants.uploadSystem, logHashMap, analysis);
+                UmsAgentManager.umsAgentDebug(context,  UmsConstants.uploadSystem, logHashMap);
             }
         }
     };
@@ -433,7 +432,7 @@ public class NewIRCMessage implements IIRCMessage {
             logHashMap.put("preMsgId","" + preId);
             logHashMap.put("msgId","" + msgId);
             logHashMap.put("msg", "" + msg);
-            UmsAgentManager.umsAgentOtherBusiness(context, UmsConstants.APP_ID, UmsConstants.uploadSystem, logHashMap, analysis);
+            UmsAgentManager.umsAgentDebug(context, UmsConstants.uploadSystem, logHashMap);
 
         }
     };
@@ -475,7 +474,7 @@ public class NewIRCMessage implements IIRCMessage {
             Map<String, String> logHashMap = defaultlog();
             logHashMap.put("type", "joinRoom");
             logHashMap.put("joinRoomCode", "" + joinRoomResp.code);
-            UmsAgentManager.umsAgentOtherBusiness(context, UmsConstants.APP_ID, UmsConstants.uploadSystem, logHashMap, analysis);
+            UmsAgentManager.umsAgentDebug(context,  UmsConstants.uploadSystem, logHashMap);
 
         }
 
@@ -619,7 +618,7 @@ public class NewIRCMessage implements IIRCMessage {
             logHashMap.put("type", "roomTopic");
             logHashMap.put("roomCode", "" + roomTopic.code);
             logHashMap.put("roomTopic", "" + roomTopic.topic);
-            UmsAgentManager.umsAgentOtherBusiness(context, UmsConstants.APP_ID, UmsConstants.uploadSystem, logHashMap, analysis);
+            UmsAgentManager.umsAgentDebug(context,  UmsConstants.uploadSystem, logHashMap);
 
 //            if (roomTopic.code == PMDefs.ResultCode.Result_RoomTopic) {
 //                return;
@@ -661,7 +660,7 @@ public class NewIRCMessage implements IIRCMessage {
             logHashMap.put("leaveRoomRespCode", "" + leaveRoomResp.code);
             logHashMap.put("leaveRoomRespRoodId", "" + leaveRoomResp.roomId);
             logHashMap.put("leaveRoomRespNicename", "" + leaveRoomResp.userInfo.nickname);
-            UmsAgentManager.umsAgentOtherBusiness(context, UmsConstants.APP_ID, UmsConstants.uploadSystem, logHashMap, analysis);
+            UmsAgentManager.umsAgentDebug(context,  UmsConstants.uploadSystem, logHashMap);
         }
 
         /**
@@ -676,7 +675,7 @@ public class NewIRCMessage implements IIRCMessage {
             logHashMap.put("leaveRoomNoticeInfo", "" + leaveRoomNotice.info);
             logHashMap.put("leaveRoomNoticeRoomId", "" + leaveRoomNotice.roomId);
             logHashMap.put("leaveRoomNoticeNicename", "" + leaveRoomNotice.userInfo.nickname);
-            UmsAgentManager.umsAgentOtherBusiness(context, UmsConstants.APP_ID, UmsConstants.uploadSystem, logHashMap, analysis);
+            UmsAgentManager.umsAgentDebug(context,  UmsConstants.uploadSystem, logHashMap);
         }
 
         private int topicIndex = 0;
@@ -838,7 +837,7 @@ public class NewIRCMessage implements IIRCMessage {
             logHashMap.put("preMsgId","" + preId);
             logHashMap.put("msgId","" + msgId);
             logHashMap.put("msg", "" + msg);
-            UmsAgentManager.umsAgentOtherBusiness(mContext, UmsConstants.APP_ID, UmsConstants.uploadSystem, logHashMap, analysis);
+            UmsAgentManager.umsAgentDebug(mContext,  UmsConstants.uploadSystem, logHashMap);
 
         }
     };
@@ -914,7 +913,7 @@ public class NewIRCMessage implements IIRCMessage {
         logHashMap.put("location", liveInfo.location);
         logHashMap.put("liveId", liveInfo.liveId);
         logHashMap.put("workspace", workSpaceDir.getAbsolutePath());
-        UmsAgentManager.umsAgentOtherBusiness(mContext, UmsConstants.APP_ID, UmsConstants.uploadSystem, logHashMap, analysis);
+        UmsAgentManager.umsAgentDebug(mContext,  UmsConstants.uploadSystem, logHashMap);
 
         logger.i("irc sdk logincode:" + logincode);
     }
@@ -1073,7 +1072,7 @@ public class NewIRCMessage implements IIRCMessage {
             mChatClient.removeListener(mClientListener);
             Map<String, String> logHashMap = defaultlog();
             logHashMap.put("type", "" + "logout");
-            UmsAgentManager.umsAgentOtherBusiness(mContext, UmsConstants.APP_ID, UmsConstants.uploadSystem, logHashMap, analysis);
+            UmsAgentManager.umsAgentDebug(mContext, UmsConstants.uploadSystem, logHashMap);
         }
         isConnected = false;
     }
@@ -1104,15 +1103,20 @@ public class NewIRCMessage implements IIRCMessage {
         for (int i = 0; i < mChannels.length; i++) {
             logMap.put("channel" + i, mChannels[i]);
         }
-        if (analysis == null) {
-            analysis = new HashMap<>();
+        JSONObject analysisJson = new JSONObject();
+
+        try {
+            analysisJson.put("timestamp", "" + System.currentTimeMillis());
+            analysisJson.put("userid", LiveAppUserInfo.getInstance().getStuId());
+            analysisJson.put("planid", liveId);
+            analysisJson.put("clientip", IpAddressUtil.USER_IP);
+            analysisJson.put("traceid", "" + UUID.randomUUID());
+            analysisJson.put("platform", "android");
+            logMap.put("analysis",analysisJson.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
-        analysis.put("timestamp", "" + System.currentTimeMillis());
-        analysis.put("userid", LiveAppUserInfo.getInstance().getStuId());
-        analysis.put("planid", liveId);
-        analysis.put("clientip", IpAddressUtil.USER_IP);
-        analysis.put("traceid", "" + UUID.randomUUID());
-        analysis.put("platform", "android");
+
         return logMap;
     }
 }

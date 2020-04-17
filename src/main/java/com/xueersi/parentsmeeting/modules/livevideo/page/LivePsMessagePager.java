@@ -864,11 +864,15 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
     public static int dp2px(Context context, int dp) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
     }
+    /**
+     * 发送热词消息指令
+     **/
+    private String[] mHotwordCmd = {"[e]em_get[e]", "[e]em_1[e]", "[e]em_16[e]", "666", "2", "1"};
 
     private void initCommonWord() {
         final ArrayList<String> words = new ArrayList<>();
+        words.add("[e]em_20[e]");
         words.add("[e]em_1[e]");
-        words.add("[e]em_11[e]");
         words.add("[e]em_16[e]");
         words.add("666");
         words.add("2");
@@ -882,7 +886,8 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
         lvCommonWord.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String msg = words.get(position);
+                String msg = mHotwordCmd[position];
+//                String msg = words.get(position);
                 upLoadHotWordLog(msg);
                 if (ircState.openchat()) {
                     if (System.currentTimeMillis() - lastSendMsg > SEND_MSG_INTERVAL) {

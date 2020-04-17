@@ -578,14 +578,18 @@ public class HalfBodyArtsLiveMsgPager extends BaseLiveMessagePager {
             });
         }
     }
+    /**
+     * 热词消息指令
+     **/
+    private String[] mHotwordCmd = {"[e]em_get[e]", "[e]em_1[e]", "[e]em_16[e]", "666", "2", "1"};
 
     /**
      * 初始化 热词
      */
     private void initCommonWord() {
         final ArrayList<String> words = new ArrayList<>();
+        words.add("[e]em_20[e]");
         words.add("[e]em_1[e]");
-        words.add("[e]em_11[e]");
         words.add("[e]em_16[e]");
         words.add("666");
         words.add("2");
@@ -613,8 +617,8 @@ public class HalfBodyArtsLiveMsgPager extends BaseLiveMessagePager {
                 if( liveMediaControllerBottom.getController() != null && liveMediaControllerBottom.getController().isShow()){
                     liveMediaControllerBottom.getController().hide();
                 }
-
-                String msg = words.get(position);
+                String msg = mHotwordCmd[position];
+//                String msg = words.get(position);
                 if (ircState.openchat()) {
                     if (System.currentTimeMillis() - lastSendMsg > SEND_MSG_INTERVAL) {
                         boolean send = ircState.sendMessage(msg, "");

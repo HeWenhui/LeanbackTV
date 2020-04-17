@@ -604,11 +604,15 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
             mAudioRequest.release();
         }
     }
+    /**
+     * 发送热词消息指令
+     **/
+    private String[] mHotwordCmd = {"[e]em_get[e]", "[e]em_1[e]", "[e]em_16[e]", "666", "2", "1"};
 
     private void initCommonWord() {
         final ArrayList<String> words = new ArrayList<>();
+        words.add("[e]em_20[e]");
         words.add("[e]em_1[e]");
-        words.add("[e]em_11[e]");
         words.add("[e]em_16[e]");
         words.add("666");
         words.add("2");
@@ -622,7 +626,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         lvCommonWord.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String msg = words.get(position);
+                String msg = mHotwordCmd[position];
                 if (ircState.openchat()) {
                     if (System.currentTimeMillis() - lastSendMsg > SEND_MSG_INTERVAL) {
                         boolean send = sendEvenDriveMessage(msg, "");

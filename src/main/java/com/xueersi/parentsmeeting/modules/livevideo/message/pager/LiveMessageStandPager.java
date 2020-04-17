@@ -2001,7 +2001,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         tvVoiceContent.setText(VOICE_RECOG_HINT);
         tvVoiceCount.setText("");
         tvVoiceCount.setVisibility(View.GONE);
-        logger.i("AudioRequest" + mAudioRequest == null ? "null" : mAudioRequest.toString());
+//        logger.i("AudioRequest" + mAudioRequest == null ? "null" : mAudioRequest.toString());
         if (mAudioRequest != null) {
             mAudioRequest.request(new AudioRequest.OnAudioRequest() {
                 @Override
