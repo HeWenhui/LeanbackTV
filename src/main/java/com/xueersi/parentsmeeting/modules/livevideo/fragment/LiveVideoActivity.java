@@ -10,8 +10,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpCall;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoFragment;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
@@ -29,6 +32,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VPlayerLi
  */
 public class LiveVideoActivity extends LiveVideoActivityBase implements ActivityStatic {
     private String TAG = "LiveVideoActivityLog";
+    private static Logger logger = LoggerFactory.getLogger("LiveVideoActivity");
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -132,6 +136,20 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements Activity
         intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
         intent.putExtras(bundle);
         context.startActivity(intent);
+    }
+
+    public static void intentToAfterOther(Activity context, Bundle bundle, Intent otherIntent) {
+        Intent intent = new Intent(context, LiveVideoActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+        intent.putExtras(bundle);
+        if (otherIntent != null) {
+            Intent[] intents = new Intent[2];
+            intents[0] = otherIntent;
+            intents[1] = intent;
+            context.startActivities(intents);
+        } else {
+            context.startActivity(intent);
+        }
     }
 
     private boolean isResume = true;
