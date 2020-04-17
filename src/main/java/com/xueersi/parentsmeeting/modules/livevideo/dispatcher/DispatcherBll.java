@@ -459,6 +459,8 @@ public class DispatcherBll extends BaseBll {
         videoEntity.setLstVideoQuestion(entity.getEvent());
         videoEntity.setVideoPath(entity.getVideoPath());
         videoEntity.setVideoPaths(entity.getVideoPaths());
+        videoEntity.setProtocol(entity.getProtocol());
+        videoEntity.setFileId(entity.getFileId());
 
         videoEntity.setExpChatId(entity.getExpChatId());
 

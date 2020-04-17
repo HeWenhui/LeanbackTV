@@ -611,6 +611,7 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
         resultEntity.setIsNewCourseWare(jsonObject.optBoolean("isNewCourseWare", false));
         resultEntity.setClassId(jsonObject.optString("classId"));
         String videoPath = jsonObject.optString("videoPath");
+
         JSONArray pathArray = jsonObject.optJSONArray("hostPath");
         ArrayList<String> videoPaths = new ArrayList<>();
         if (pathArray != null) {
@@ -627,6 +628,8 @@ public class DispatcherHttpResponseParser extends HttpResponseParser {
             }
         }
         resultEntity.setVideoPaths(videoPaths);
+        resultEntity.setProtocol(jsonObject.optInt("protocol"));
+        resultEntity.setFileId(jsonObject.optString("fileId"));
         resultEntity.setExamPaperUrl(jsonObject.optString("examPaperUrl"));
         resultEntity.setTestPaperUrl(jsonObject.optString("testPaperUrl"));
         resultEntity.setSpeechEvalUrl(jsonObject.optString("speechEvalUrl"));
