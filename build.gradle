@@ -161,7 +161,7 @@ dependencies {
 
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.monitor)
 
-
+    implementation rootProject.ext.thirdlibraries.fastjson
 
     implementation(rootProject.ext.thirdlibraries.gson){
         changing = true
