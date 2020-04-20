@@ -175,6 +175,7 @@ public class PreSchoolLiveMainMsgPager extends BaseLiveMessagePager {
             R.drawable.selector_live_halfbody_hotword_sml,
             R.drawable.selector_live_halfbody_hotword_heart,
             R.drawable.selector_live_halfbody_hotword_get,
+
     };
 
     /**
