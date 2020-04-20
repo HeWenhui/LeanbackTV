@@ -1065,6 +1065,10 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                         } else {
                             isRight = 0;
                         }
+                        //默认0
+                        if (isRight == -1) {
+                            isRight = 0;
+                        }
                         userAnswer.put("isright", isRight);
                     }
                     if (detailInfo.isExper()) {
