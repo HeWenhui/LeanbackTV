@@ -17,6 +17,7 @@ import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.route.XueErSiRouter;
 import com.xueersi.common.sharedata.ShareDataManager;
+import com.xueersi.common.util.LoginEnter;
 import com.xueersi.common.util.XrsBroswer;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsConstants;
@@ -110,6 +111,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
             logHashMap.put("app_time",
                     "" + (System.currentTimeMillis() - UmsConstants.PROCRESS_CREATE_TIME));
             UmsAgentManager.umsAgentDebug(this, LogConfig.LIVE_TOKEN_NULL, logHashMap.getData());
+            LoginEnter.openLogin(mContext,false,null);
             finishAndExit();
             return;
         }
