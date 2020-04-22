@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
@@ -690,7 +691,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
                     onUserBackPressed();
                 }
             });
-            cancelDialog.setCancelShowText("返回课程列表").setVerifyShowText("继续观看").initInfo("您当前使用的是3G/4G网络，是否继续观看？")
+            cancelDialog.setCancelShowText(ContextManager.getApplication().getResources().getString(R.string.livevideo_tips_back)).setVerifyShowText("继续观看").initInfo("您当前使用的是3G/4G网络，是否继续观看？")
                     .showDialog();
             mIsShowMobileAlert = false;
         }

@@ -27,6 +27,7 @@ import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
@@ -1012,7 +1013,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
                             }
                         }
                     });
-                    cancelDialog.setCancelShowText("返回课程列表").setVerifyShowText("继续观看").initInfo
+                    cancelDialog.setCancelShowText(ContextManager.getApplication().getResources().getString(R.string.livevideo_tips_back)).setVerifyShowText("继续观看").initInfo
                             ("您当前使用的是3G/4G网络，是否继续观看？",
                                     VerifyCancelAlertDialog.CANCEL_SELECTED).showDialog();
                 }
