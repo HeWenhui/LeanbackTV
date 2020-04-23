@@ -3,12 +3,11 @@ package com.xueersi.parentsmeeting.modules.livevideo.liveLog;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.dianping.logan.SendLogRunnable;
 import com.google.gson.Gson;
-import com.xrs.bury.BuryEntity;
-import com.xrs.log.xrsLog.XrsLog;
+import com.hwl.bury.BuryEntity;
+import com.hwl.log.xrsLog.XrsLog;
+import com.hwl.logan.SendLogRunnable;
 import com.xueersi.common.logerhelper.XesLogEntity;
-import com.xueersi.common.logerhelper.bury.XrsLogParser;
 import com.xueersi.lib.framework.utils.JsonUtil;
 import com.xueersi.lib.framework.utils.string.MD5Utils;
 
@@ -59,7 +58,6 @@ public class LiveLogSendLogRunnable extends SendLogRunnable {
 
 
     private static Gson gson = new Gson();
-    private XrsLogParser mXrsLogParser;
 
 
     public static void setPath(String path) {
@@ -74,6 +72,8 @@ public class LiveLogSendLogRunnable extends SendLogRunnable {
 
     @Override
     public void sendLog(File logFile) {
+
+        DebugLog.log("LiveLogSendLogRunnable sendlog");
 
         File file = null;
         if (logFile.getName().contains("bury.copy")) {
@@ -448,8 +448,6 @@ public class LiveLogSendLogRunnable extends SendLogRunnable {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        mXrsLogParser = new XrsLogParser("0123456789012345".getBytes(), "0123456789012345".getBytes());
-        mXrsLogParser.parse(fileStream, out);
 
 
         return file;

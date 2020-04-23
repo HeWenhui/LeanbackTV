@@ -2,8 +2,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.liveLog.busiLog;
 
 import android.util.Log;
 
-import com.dianping.logan.SendLogRunnable;
 import com.google.gson.Gson;
+import com.hwl.logan.SendLogRunnable;
 import com.xrs.log.xrsLog.XrsLogEntity;
 import com.xueersi.common.logerhelper.XesLogEntity;
 import com.xueersi.lib.framework.utils.string.MD5Utils;
@@ -37,7 +37,7 @@ import javax.net.ssl.SSLSession;
  */
 public class LiveBusiLogSendLogRunnable extends SendLogRunnable {
 
-
+    public static final String log_fix="live";
     private static String LOGFILEPATH_1 = "/sdcard/xes/";
     private static String LOGFILEPATH = LOGFILEPATH_1 + "log/";
     private static String LOGFILEPATH_LOGIN = "/storage/emulated/0/Android/data/com.xueersi.parentsmeeting/files/log_v1";
@@ -133,43 +133,43 @@ public class LiveBusiLogSendLogRunnable extends SendLogRunnable {
         try {
 
             //业务日志
-            if (new File(LOGFILEPATH + LiveBusiLogSendLogRunnable.LOGTYPE_SYS + ".txt").exists()) {
+            if (new File(LOGFILEPATH + log_fix+LiveBusiLogSendLogRunnable.LOGTYPE_SYS + ".txt").exists()) {
                DebugLog.log( "日志-------requset--(-1)------------------");
-                FileInputStream fileStream1 = new FileInputStream(new File(LOGFILEPATH + -1 + ".txt"));
+                FileInputStream fileStream1 = new FileInputStream(new File(LOGFILEPATH + log_fix+LiveBusiLogSendLogRunnable.LOGTYPE_SYS + ".txt"));
                 boolean backData1 = doXrsPostRequest(mUploadLogUrl_sys, fileStream1, getActionHeader());
                 new File(LOGFILEPATH + LiveBusiLogSendLogRunnable.LOGTYPE_SYS + ".txt").delete();
                 isSuccess = backData1;
             }
 
             //pv
-            if (new File(LOGFILEPATH + LiveBusiLogSendLogRunnable.LOGTYPE_PV + ".txt").exists()) {
+            if (new File(LOGFILEPATH +log_fix+ LiveBusiLogSendLogRunnable.LOGTYPE_PV + ".txt").exists()) {
                 //Log.e(TAG, "页面日志-------requset--1------------------");
-                FileInputStream fileStream1 = new FileInputStream(new File(LOGFILEPATH + 0 + ".txt"));
+                FileInputStream fileStream1 = new FileInputStream(new File(LOGFILEPATH + log_fix+ LiveBusiLogSendLogRunnable.LOGTYPE_PV  + ".txt"));
                 boolean backData1 = doXrsPostRequest(mUploadLogUrl_pv, fileStream1, getActionHeader());
                 new File(LOGFILEPATH + LiveBusiLogSendLogRunnable.LOGTYPE_PV + ".txt").delete();
                 isSuccess = backData1;
             }
 
             //click
-            if (new File(LOGFILEPATH + LiveBusiLogSendLogRunnable.LOGTYPE_CLICK + ".txt").exists()) {
+            if (new File(LOGFILEPATH +log_fix+ LiveBusiLogSendLogRunnable.LOGTYPE_CLICK + ".txt").exists()) {
                 //Log.e(TAG, "click日志-------requset--2------------------");
-                FileInputStream fileStream2 = new FileInputStream(new File(LOGFILEPATH + 1 + ".txt"));
+                FileInputStream fileStream2 = new FileInputStream(new File(LOGFILEPATH + log_fix+ LiveBusiLogSendLogRunnable.LOGTYPE_CLICK + ".txt"));
                 boolean backData2 = doXrsPostRequest(mUploadLogUrl_click, fileStream2, getActionHeader());
                 new File(LOGFILEPATH + LiveBusiLogSendLogRunnable.LOGTYPE_CLICK + ".txt").delete();
                 isSuccess = backData2;
             }
             //show
-            if (new File(LOGFILEPATH + LiveBusiLogSendLogRunnable.LOGTYPE_SHOW + ".txt").exists()) {
+            if (new File(LOGFILEPATH + log_fix+LiveBusiLogSendLogRunnable.LOGTYPE_SHOW + ".txt").exists()) {
                 //Log.e(TAG, "show日志-------requset--3------------------");
-                FileInputStream fileStream3 = new FileInputStream(new File(LOGFILEPATH + 2 + ".txt"));
+                FileInputStream fileStream3 = new FileInputStream(new File(LOGFILEPATH + log_fix+LiveBusiLogSendLogRunnable.LOGTYPE_SHOW  + ".txt"));
                 boolean backData3 = doXrsPostRequest(mUploadLogUrl_show, fileStream3, getActionHeader());
                 new File(LOGFILEPATH + LiveBusiLogSendLogRunnable.LOGTYPE_SHOW + ".txt").delete();
                 isSuccess = backData3;
             }
             //launch
-            if (new File(LOGFILEPATH + LiveBusiLogSendLogRunnable.LOGTYPE_LAUNCH + ".txt").exists()) {
+            if (new File(LOGFILEPATH +log_fix+ LiveBusiLogSendLogRunnable.LOGTYPE_LAUNCH + ".txt").exists()) {
                 //Log.e(TAG, "launch日志-------requset--4-----------------");
-                FileInputStream fileStream4 = new FileInputStream(new File(LOGFILEPATH + 3 + ".txt"));
+                FileInputStream fileStream4 = new FileInputStream(new File(LOGFILEPATH + log_fix+ LiveBusiLogSendLogRunnable.LOGTYPE_LAUNCH + ".txt"));
                 boolean backData4 = doXrsPostRequest(mUploadLogUrl_launch, fileStream4, getActionHeader());
                 new File(LOGFILEPATH + LiveBusiLogSendLogRunnable.LOGTYPE_LAUNCH + ".txt").delete();
                 isSuccess = backData4;
@@ -415,7 +415,7 @@ public class LiveBusiLogSendLogRunnable extends SendLogRunnable {
      * 按照日志类型，分别写入各自类型文件
      */
     private void writeToFile(XrsLogEntity bury, String log) {
-        String fileName = bury.type + ".txt";
+        String fileName = log_fix+bury.type + ".txt";
 
        DebugLog.log( "livebusiLogInfo:" + log);
         writeTxtToFile(log, LOGFILEPATH, fileName);

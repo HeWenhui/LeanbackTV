@@ -3,15 +3,13 @@ package com.xueersi.parentsmeeting.modules.livevideo.liveLog;
 
 import android.content.Context;
 import android.os.Process;
-import android.util.Log;
 
 
-import com.alibaba.fastjson.JSON;
 import com.google.gson.Gson;
-import com.xrs.bury.xrsbury.BuryPublicParam;
-import com.xrs.log.LogConfig;
-import com.xrs.log.xrsLog.UpdateParamInterface;
-import com.xrs.log.xrsLog.XrsLogPublicParam;
+import com.hwl.bury.xrsbury.BuryPublicParam;
+import com.hwl.log.LogConfig;
+import com.hwl.log.xrsLog.UpdateParamInterface;
+import com.hwl.log.xrsLog.XrsLogPublicParam;
 import com.xueersi.common.base.XueErSiRunningEnvironment;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;

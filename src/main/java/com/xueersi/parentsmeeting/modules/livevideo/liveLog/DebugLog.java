@@ -10,10 +10,11 @@ import android.util.Log;
  * @Version 1.0
  */
 public class DebugLog {
-    public static final boolean LOG=false;
-    public static void log(String log){
-        if (LOG){
-            Log.e("liveBusLog",log);
+    public static final boolean LOG = false;
+
+    public static void log(String log) {
+        if (LOG) {
+            Log.e("liveBusLog", log);
         }
 
     }

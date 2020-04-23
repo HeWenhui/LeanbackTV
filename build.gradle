@@ -163,6 +163,9 @@ dependencies {
 
     implementation rootProject.ext.thirdlibraries.fastjson
 
+    implementation rootProject.ext.xeslibraries.hwllogan
+    implementation rootProject.ext.xeslibraries.hwllog
+
     implementation(rootProject.ext.thirdlibraries.gson){
         changing = true
     }
