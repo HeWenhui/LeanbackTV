@@ -127,7 +127,7 @@ public class LiveBusiLogSendLogRunnable extends SendLogRunnable {
             DebugLog.log("loginFile is exit");
         }
 
-        deleteDir(LOGFILEPATH);//清空临时文件夹
+      //  deleteDir(LOGFILEPATH);//清空临时文件夹不删除文件夹，只删除文件
         String log = getFileContent(logFile);
         DebugLog.log("all_Log------------------:" + log);
         boolean isSuccess = false;
@@ -139,7 +139,7 @@ public class LiveBusiLogSendLogRunnable extends SendLogRunnable {
                 FileInputStream fileStream1 = new FileInputStream(new File(LOGFILEPATH + log_fix + LiveBusiLogSendLogRunnable.LOGTYPE_SYS + ".txt"));
                 boolean backData1 = doXrsPostRequest(mUploadLogUrl_sys, fileStream1, getActionHeader());
                 if (backData1){
-                    new File(LOGFILEPATH + LiveBusiLogSendLogRunnable.LOGTYPE_SYS + ".txt").delete();
+                    new File(LOGFILEPATH + log_fix+LiveBusiLogSendLogRunnable.LOGTYPE_SYS + ".txt").delete();
                     isSuccess = backData1;
                 }
 
@@ -152,7 +152,7 @@ public class LiveBusiLogSendLogRunnable extends SendLogRunnable {
                 FileInputStream fileStream1 = new FileInputStream(new File(LOGFILEPATH + log_fix + LiveBusiLogSendLogRunnable.LOGTYPE_PV + ".txt"));
                 boolean backData1 = doXrsPostRequest(mUploadLogUrl_pv, fileStream1, getActionHeader());
                 if (backData1){
-                    new File(LOGFILEPATH + LiveBusiLogSendLogRunnable.LOGTYPE_PV + ".txt").delete();
+                    new File(LOGFILEPATH +log_fix+ LiveBusiLogSendLogRunnable.LOGTYPE_PV + ".txt").delete();
                     isSuccess = backData1;
                 }
 
@@ -165,7 +165,7 @@ public class LiveBusiLogSendLogRunnable extends SendLogRunnable {
                 FileInputStream fileStream2 = new FileInputStream(new File(LOGFILEPATH + log_fix + LiveBusiLogSendLogRunnable.LOGTYPE_CLICK + ".txt"));
                 boolean backData2 = doXrsPostRequest(mUploadLogUrl_click, fileStream2, getActionHeader());
                 if (backData2){
-                    new File(LOGFILEPATH + LiveBusiLogSendLogRunnable.LOGTYPE_CLICK + ".txt").delete();
+                    new File(LOGFILEPATH +log_fix+ LiveBusiLogSendLogRunnable.LOGTYPE_CLICK + ".txt").delete();
                     isSuccess = backData2;
                 }
 
@@ -176,7 +176,7 @@ public class LiveBusiLogSendLogRunnable extends SendLogRunnable {
                 FileInputStream fileStream3 = new FileInputStream(new File(LOGFILEPATH + log_fix + LiveBusiLogSendLogRunnable.LOGTYPE_SHOW + ".txt"));
                 boolean backData3 = doXrsPostRequest(mUploadLogUrl_show, fileStream3, getActionHeader());
                 if (backData3){
-                    new File(LOGFILEPATH + LiveBusiLogSendLogRunnable.LOGTYPE_SHOW + ".txt").delete();
+                    new File(LOGFILEPATH +log_fix+LiveBusiLogSendLogRunnable.LOGTYPE_SHOW + ".txt").delete();
                     isSuccess = backData3;
                 }
 
@@ -187,7 +187,7 @@ public class LiveBusiLogSendLogRunnable extends SendLogRunnable {
                 FileInputStream fileStream4 = new FileInputStream(new File(LOGFILEPATH + log_fix + LiveBusiLogSendLogRunnable.LOGTYPE_LAUNCH + ".txt"));
                 boolean backData4 = doXrsPostRequest(mUploadLogUrl_launch, fileStream4, getActionHeader());
                 if (backData4){
-                    new File(LOGFILEPATH + LiveBusiLogSendLogRunnable.LOGTYPE_LAUNCH + ".txt").delete();
+                    new File(LOGFILEPATH +log_fix+ LiveBusiLogSendLogRunnable.LOGTYPE_LAUNCH + ".txt").delete();
                     isSuccess = backData4;
                 }
 
